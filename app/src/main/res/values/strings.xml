@@ -1,0 +1,25 @@
+<resources>
+    <string name="app_name">UTutor</string>
+
+    <!-- Strings related to login -->
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password</string>
+    <string name="action_sign_in">Sign in</string>
+    <string name="action_sign_up">Sign up</string>
+    <string name="error_invalid_email">This email address is invalid</string>
+    <string name="error_invalid_password">This password is too short</string>
+    <string name="error_incorrect_password">This password is incorrect</string>
+    <string name="error_field_required">This field is required</string>
+    <string name="action_go_sign_up">Don\'t have an account?</string>
+    <string name="desc_logo">Logo</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="loading">Loading…</string>
+    <string name="action_next">Next</string>
+    <string name="prompt_phone">Phone</string>
+    <string name="action_done">Done</string>
+    <string name="prompt_fisrst_name" />
+    <string name="prompt_first_name">First name</string>
+    <string name="prompt_last_name">Last name</string>
+</resources>
