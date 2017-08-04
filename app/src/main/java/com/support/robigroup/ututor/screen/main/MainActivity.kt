@@ -28,7 +28,6 @@ class MainActivity : AppCompatActivity(), OnMainActivityInteractionListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         logd("onCreate MainActivity")
-
     }
 
     override fun onResume() {

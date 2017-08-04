@@ -12,7 +12,7 @@ import kotlinx.android.synthetic.main.item_topic.view.*
 /**
  * Created by Bimurat Mukhtar on 07.07.2017.
  */
-class NewsDelegateAdapter : ViewTypeDelegateAdapter {
+class TopicsDelegateAdapter : ViewTypeDelegateAdapter {
 
     override fun onCreateViewHolder(parent: ViewGroup): RecyclerView.ViewHolder {
         return NewsViewHolder(parent)

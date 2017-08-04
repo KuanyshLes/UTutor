@@ -11,7 +11,7 @@ import com.support.robigroup.ututor.commons.OnMainActivityInteractionListener
 import android.support.design.widget.Snackbar
 import com.support.robigroup.ututor.commons.RxBaseFragment
 import com.support.robigroup.ututor.model.content.Lesson
-import com.support.robigroup.ututor.screen.main.adapters.NewsAdapter
+import com.support.robigroup.ututor.screen.main.adapters.TopicsAdapter
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_main.*
 
@@ -19,11 +19,11 @@ import kotlinx.android.synthetic.main.fragment_main.*
 class MainFragment : RxBaseFragment() {
 
     companion object {
-        private val KEY_REDDIT_NEWS = "redditNews"
+        private val KEY_REDDIT_NEWS = "recentTopics"
     }
 
-    private var redditNews: Lesson? = null
-    private val newsManager by lazy { TopicsManager() }
+    private var recentTopics: Lesson? = null
+    private val topicsManager by lazy { TopicsManager() }
 
     private var mListener: OnMainActivityInteractionListener? = null
 
@@ -43,15 +43,14 @@ class MainFragment : RxBaseFragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         logd("onActivityCreated MainFragment")
-        main_recycler_view_header.apply {
-            setHasFixedSize(true)
-        }
+        main_recycler_view_header.setHasFixedSize(true)
+        main_recycler_view_content.setHasFixedSize(true)
 
         initAdapter()
 
         if (savedInstanceState != null && savedInstanceState.containsKey(KEY_REDDIT_NEWS)) {
-            redditNews = savedInstanceState.get(KEY_REDDIT_NEWS) as Lesson
-            (main_recycler_view_header.adapter as NewsAdapter).clearAndAddNews(redditNews!!.news)
+            recentTopics = savedInstanceState.get(KEY_REDDIT_NEWS) as Lesson
+            (main_recycler_view_header.adapter as TopicsAdapter).clearAndAddNews(recentTopics!!.news)
             logd("saved State is not null")
         } else {
             logd("saved State is null")
@@ -62,22 +61,22 @@ class MainFragment : RxBaseFragment() {
 
     private fun initAdapter() {
         if (main_recycler_view_header.adapter == null) {
-            main_recycler_view_header.adapter = NewsAdapter()
+            main_recycler_view_header.adapter = TopicsAdapter()
         }
     }
 
     private fun requestTopics() {
         /**
          * first time will send empty string for after parameter.
-         * Next time we will have redditNews set with the next page to
+         * Next time we will have recentTopics set with the next page to
          * navigate with the after param.
          */
-        val subscription = newsManager.getTopics(redditNews?.after ?: "")
+        val subscription = topicsManager.getTopics(recentTopics?.after ?: "")
                 .subscribeOn(Schedulers.io())
                 .subscribe (
-                        { retrievedNews ->
-                            redditNews = retrievedNews
-                            (main_recycler_view_header.adapter as NewsAdapter).addNews(retrievedNews.news)
+                        { retrievedTopics ->
+                            recentTopics = retrievedTopics
+                            (main_recycler_view_header.adapter as TopicsAdapter).addNews(retrievedTopics.news)
                         },
                         { e ->
                             Snackbar.make(main_recycler_view_header, e.message ?: "", Snackbar.LENGTH_LONG).show()
@@ -89,9 +88,10 @@ class MainFragment : RxBaseFragment() {
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        val news = (main_recycler_view_header.adapter as NewsAdapter).getNews()
-        if (redditNews != null && news.size > 0) {
-            outState.putParcelable(KEY_REDDIT_NEWS, redditNews?.copy(news = news))
+        val news = (main_recycler_view_header.adapter as TopicsAdapter).getNews()
+        if (recentTopics != null && news.size > 0) {
+            outState.putParcelable(KEY_REDDIT_NEWS, recentTopics?.copy(news = news))
+            logd("onSaveInstanceState newsSaved")
         }
     }
 

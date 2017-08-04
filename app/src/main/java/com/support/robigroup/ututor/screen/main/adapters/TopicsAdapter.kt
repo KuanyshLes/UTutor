@@ -9,7 +9,7 @@ import com.support.robigroup.ututor.commons.adapter.ViewTypeDelegateAdapter
 import com.support.robigroup.ututor.commons.logd
 import com.support.robigroup.ututor.model.content.TopicItem
 
-class NewsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class TopicsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private val items: ArrayList<ViewType>
     private val delegateAdapters = SparseArrayCompat<ViewTypeDelegateAdapter>()
@@ -19,7 +19,7 @@ class NewsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     init {
         delegateAdapters.put(AdapterConstants.LOADING, LoadingDelegateAdapter())
-        delegateAdapters.put(AdapterConstants.TOPICS, NewsDelegateAdapter())
+        delegateAdapters.put(AdapterConstants.TOPICS, TopicsDelegateAdapter())
         items = ArrayList()
         items.add(loadingItem)
     }
