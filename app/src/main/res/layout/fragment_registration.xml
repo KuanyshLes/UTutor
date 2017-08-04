@@ -7,7 +7,7 @@
 
 
     <ImageView
-        android:id="@+id/imageView"
+        android:id="@+id/main_imageview_right"
         android:layout_width="100dp"
         android:layout_height="130dp"
         android:layout_marginBottom="8dp"
@@ -80,7 +80,7 @@
             android:id="@+id/next_button"
             style="@style/reg_buttons"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:layout_weight="1"
             android:text="@string/action_next" />
     </LinearLayout>

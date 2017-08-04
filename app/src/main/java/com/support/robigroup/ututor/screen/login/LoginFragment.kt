@@ -3,29 +3,23 @@ package com.support.robigroup.ututor.screen.login
 
 import android.content.Context
 import android.graphics.Color
-import android.os.AsyncTask
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.text.SpannableString
 import android.text.Spanned
 import android.text.TextPaint
-import android.text.TextUtils
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
-import android.widget.RelativeLayout
 import android.widget.TextView
-
 import com.support.robigroup.ututor.R
+import com.support.robigroup.ututor.commons.OnLoginActivityInteractionListener
 import com.support.robigroup.ututor.commons.inflate
 import com.support.robigroup.ututor.commons.logd
-import com.support.robigroup.ututor.screen.loading.LoadingDialog
-import com.support.robigroup.ututor.screen.loading.LoadingView
 import kotlinx.android.synthetic.main.fragment_login.*
-import kotlin.properties.Delegates
 
 
 /**
@@ -33,12 +27,18 @@ import kotlin.properties.Delegates
  */
 class LoginFragment : Fragment() {
 
-    private var mListener: OnLoginActivityInterationListener? = null
+    private var mListener: OnLoginActivityInteractionListener? = null
     private var rootLayout: View? = null
 
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        logd("onCreate LoginFragment")
+    }
+
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
+        logd("onCreateView LoginFragment")
         if(rootLayout==null){
             rootLayout = container?.inflate(R.layout.fragment_login)
         }
@@ -47,6 +47,7 @@ class LoginFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+        logd("onActivityCreated LoginFragment")
 
         passwordContainer.setOnEditorActionListener(TextView.OnEditorActionListener { _, id, _ ->
             if (id == EditorInfo.IME_ACTION_DONE || id == EditorInfo.IME_NULL) {
@@ -81,11 +82,6 @@ class LoginFragment : Fragment() {
         go_sign_up_button.movementMethod = LinkMovementMethod.getInstance()
         go_sign_up_button.highlightColor = Color.TRANSPARENT
     }
-    /**
-     * Attempts to sign in or register the account specified by the login form.
-     * If there are form errors (invalid email, missing fields, etc.), the
-     * errors are presented and no actual login attempt is made.
-     */
 
     fun setEmailError(errEmail: String?): View?{
         emailContainer.error = errEmail
@@ -110,17 +106,21 @@ class LoginFragment : Fragment() {
 
     }
 
+
+
     override fun onAttach(context: Context?) {
         super.onAttach(context)
-        if (context is OnLoginActivityInterationListener) {
+        logd("onDetach LoginFragment")
+        if (context is OnLoginActivityInteractionListener) {
             mListener = context
         } else {
-            throw RuntimeException(context!!.toString() + " must implement OnFragmentInteractionListener")
+            throw RuntimeException(context!!.toString() + " must implement OnMainActivityInteractionListener")
         }
     }
 
     override fun onDetach() {
         super.onDetach()
+        logd("onDetach LoginFragment")
         mListener = null
     }
 

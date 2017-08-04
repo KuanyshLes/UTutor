@@ -2,8 +2,8 @@ ext {
     supportVersion = '26.0.0'
     okhttpVersion = '3.4.1'
     retrofitVersion = '2.1.0'
-    rxandroidVersion = '1.2.1'
-    rxjavaVersion = '1.1.10'
+    rxandroidVersion = '2.0.1'
+    rxjavaVersion = '2.1.0'
     picassoVersion = '2.5.2'
     picassoDownloaderVersion = '1.0.2'
 }

@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 
 import com.support.robigroup.ututor.R
+import com.support.robigroup.ututor.commons.OnLoginActivityInteractionListener
 import kotlinx.android.synthetic.main.fragment_registration.*
 
 
@@ -17,7 +18,7 @@ import kotlinx.android.synthetic.main.fragment_registration.*
  */
 class RegistrationFragment : Fragment() {
 
-    private var mListener: OnLoginActivityInterationListener? = null
+    private var mListener: OnLoginActivityInteractionListener? = null
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -34,10 +35,10 @@ class RegistrationFragment : Fragment() {
 
     override fun onAttach(context: Context?) {
         super.onAttach(context)
-        if (context is OnLoginActivityInterationListener) {
+        if (context is OnLoginActivityInteractionListener) {
             mListener = context
         } else {
-            throw RuntimeException(context!!.toString() + " must implement OnFragmentInteractionListener")
+            throw RuntimeException(context!!.toString() + " must implement OnMainActivityInteractionListener")
         }
     }
 

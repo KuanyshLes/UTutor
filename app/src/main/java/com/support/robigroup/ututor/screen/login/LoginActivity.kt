@@ -1,5 +1,6 @@
 package com.support.robigroup.ututor.screen.login
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.AsyncTask
 import android.os.Bundle
@@ -7,7 +8,8 @@ import android.support.v7.app.AppCompatActivity
 import android.text.TextUtils
 import android.view.View
 import com.support.robigroup.ututor.R
-import com.support.robigroup.ututor.commons.logd
+import com.support.robigroup.ututor.commons.OnLoginActivityInteractionListener
+import com.support.robigroup.ututor.commons.toast
 import com.support.robigroup.ututor.model.content.User
 import com.support.robigroup.ututor.screen.loading.LoadingDialog
 import com.support.robigroup.ututor.screen.loading.LoadingView
@@ -15,13 +17,13 @@ import com.support.robigroup.ututor.screen.main.MainActivity
 import io.realm.Realm
 import kotlin.properties.Delegates
 
-class LoginActivity : AppCompatActivity(),OnLoginActivityInterationListener{
+class LoginActivity : AppCompatActivity(), OnLoginActivityInteractionListener {
 
-    val loginFragment: LoginFragment = LoginFragment()
     val regFragment: RegistrationFragment = RegistrationFragment()
     val reg2Fragment: RegFragment2 = RegFragment2()
     private var mAuthTask: UserLoginTask? = null
     var loadingView: LoadingView? = null
+    val TAG_LOGIN_FRAGMENT: String = "loginFragment"
 
     private var realm: Realm by Delegates.notNull()
 
@@ -39,7 +41,7 @@ class LoginActivity : AppCompatActivity(),OnLoginActivityInterationListener{
             startActivity(Intent(this,MainActivity::class.java))
             finish()
         }else if(supportFragmentManager.fragments.size==0){
-            supportFragmentManager.beginTransaction().replace(R.id.container,loginFragment).commit()
+            supportFragmentManager.beginTransaction().replace(R.id.container,LoginFragment(),TAG_LOGIN_FRAGMENT).commit()
         }
     }
 
@@ -56,6 +58,7 @@ class LoginActivity : AppCompatActivity(),OnLoginActivityInterationListener{
         if (mAuthTask != null) {
             return
         }
+        val loginFragment: LoginFragment = supportFragmentManager.findFragmentByTag(TAG_LOGIN_FRAGMENT) as LoginFragment
         loginFragment.resetError()
 
 
@@ -98,7 +101,7 @@ class LoginActivity : AppCompatActivity(),OnLoginActivityInterationListener{
     }
 
     override fun OnDoneButtonClicked(firstName: String, lastName: String) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        startActivity(Intent(this,MainActivity::class.java))
     }
 
     override fun OnUploadPhotoClicked() {
@@ -118,6 +121,7 @@ class LoginActivity : AppCompatActivity(),OnLoginActivityInterationListener{
         else loadingView!!.hideLoadingIndicator()
     }
 
+    @SuppressLint("StaticFieldLeak")
     inner class UserLoginTask internal constructor(private val mEmail: String, private val mPassword: String) : AsyncTask<Void, Void, Boolean>() {
 
         override fun doInBackground(vararg params: Void): Boolean? {
@@ -146,7 +150,15 @@ class LoginActivity : AppCompatActivity(),OnLoginActivityInterationListener{
                 finish()
             } else {
                 showProgress(false)
-                loginFragment.setPasswordError(getString(R.string.error_incorrect_password))!!.requestFocus()
+                val loginFragment: LoginFragment? = supportFragmentManager.findFragmentByTag(TAG_LOGIN_FRAGMENT) as LoginFragment
+                if(loginFragment!=null){
+                    toast("Fragment is not empty")
+                    loginFragment.setPasswordError(getString(R.string.error_incorrect_password))!!.requestFocus()
+                }else{
+                    toast("Fragment is empty")
+
+                }
+
             }
         }
 
