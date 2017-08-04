@@ -1,6 +1,8 @@
 package com.support.robigroup.ututor.screen.main
 
 import com.support.robigroup.ututor.api.RestAPI
+import com.support.robigroup.ututor.commons.logd
+import com.support.robigroup.ututor.model.content.ClassRoom
 import com.support.robigroup.ututor.model.content.Lesson
 import com.support.robigroup.ututor.model.content.TopicItem
 import io.reactivex.Observable
@@ -42,23 +44,31 @@ class TopicsManager(private val api: RestAPI = RestAPI()) {
                 )
                 )
 
-        var lessons: Lesson = Lesson("","", topics)
+        var lessons: Lesson = Lesson("","","", topics)
 
     }
 
-    /**
-     *
-     * Returns Reddit News paginated by the given limit.
-     *
-     * @param after indicates the next page to navigate.
-     * @param limit the number of news to request.
-     */
+    fun getLessons(): Observable<ClassRoom>{
+        return Observable.create{
+            subscriber ->
+            try{
+                var cla: ClassRoom = ClassRoom(MutableList(20 ,{Lesson("MathPathPhysAlgebra")}))
+                Thread.sleep(3000)
+                logd("size ".plus(cla.lessons.size))
+                subscriber.onNext(cla)
+                subscriber.onComplete()
+            }catch (e: InterruptedException){
+                subscriber.onError(Throwable(e.toString()))
+            }
+        }
+    }
     fun getTopics(after: String, limit: String = "10"): Observable<Lesson> {
         val answer: Observable<Lesson> = Observable.create {
             subscriber ->
             try {
                 Thread.sleep(6000)
                 val redditNews = Lesson(
+                        "",
                         "",
                         "",
                         lessons.news)

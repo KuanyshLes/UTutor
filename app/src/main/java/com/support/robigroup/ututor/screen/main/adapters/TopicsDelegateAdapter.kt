@@ -15,15 +15,15 @@ import kotlinx.android.synthetic.main.item_topic.view.*
 class TopicsDelegateAdapter : ViewTypeDelegateAdapter {
 
     override fun onCreateViewHolder(parent: ViewGroup): RecyclerView.ViewHolder {
-        return NewsViewHolder(parent)
+        return TopicsViewHolder(parent)
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, item: ViewType) {
-        holder as NewsViewHolder
+        holder as TopicsViewHolder
         holder.bind(item as TopicItem)
     }
 
-    class NewsViewHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
+    class TopicsViewHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
             parent.inflate(R.layout.item_topic)) {
 
         fun bind(item: TopicItem) = with(itemView) {

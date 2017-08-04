@@ -2,6 +2,9 @@ package com.support.robigroup.ututor;
 
 import android.app.Application;
 import android.support.annotation.NonNull;
+
+import com.support.robigroup.ututor.singleton.SingletonSharedPref;
+
 import io.realm.Realm;
 
 /**
@@ -18,6 +21,7 @@ public class UTutor extends Application {
         sInstance = this;
 
         Realm.init(this);
+        SingletonSharedPref.getInstance(getBaseContext());
 
 //        RealmConfiguration configuration = new RealmConfiguration.Builder()
 //                .rxFactory(new RealmObservableFactory())

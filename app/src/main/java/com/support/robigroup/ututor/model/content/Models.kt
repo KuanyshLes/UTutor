@@ -9,9 +9,31 @@ import com.support.robigroup.ututor.commons.createParcel
 /**
  * Created by Bimurat Mukhtar on 03.08.2017.
  */
+data class ClassRoom(
+        var lessons: List<Lesson> = ArrayList()
+): Parcelable{
+    companion object {
+        @JvmField @Suppress("unused")
+        val CREATOR = createParcel { ClassRoom(it) }
+    }
+    protected constructor(parcelIn: Parcel) : this(
+            mutableListOf<Lesson>().apply {
+                parcelIn.readTypedList(this, Lesson.CREATOR)
+            }
+    )
+
+    override fun writeToParcel(dest: Parcel, flags: Int) {
+        dest.writeTypedList(lessons)
+    }
+
+    override fun describeContents() = 0
+}
+
+
 data class Lesson(
         var after: String = "",
         var before: String = "",
+        var name: String = "",
         var news: List<TopicItem> = ArrayList()
 ): Parcelable {
 
@@ -23,6 +45,7 @@ data class Lesson(
     protected constructor(parcelIn: Parcel) : this(
             parcelIn.readString(),
             parcelIn.readString(),
+            parcelIn.readString(),
             mutableListOf<TopicItem>().apply {
                 parcelIn.readTypedList(this, TopicItem.CREATOR)
             }
@@ -31,6 +54,7 @@ data class Lesson(
     override fun writeToParcel(dest: Parcel, flags: Int) {
         dest.writeString(after)
         dest.writeString(before)
+        dest.writeString(name)
         dest.writeTypedList(news)
     }
 

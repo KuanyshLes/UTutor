@@ -9,9 +9,13 @@ import com.support.robigroup.ututor.R
 import com.support.robigroup.ututor.commons.logd
 import com.support.robigroup.ututor.commons.OnMainActivityInteractionListener
 import android.support.design.widget.Snackbar
+import com.support.robigroup.ututor.api.RestAPI
 import com.support.robigroup.ututor.commons.RxBaseFragment
+import com.support.robigroup.ututor.model.content.ClassRoom
 import com.support.robigroup.ututor.model.content.Lesson
+import com.support.robigroup.ututor.screen.main.adapters.ClassRoomAdapter
 import com.support.robigroup.ututor.screen.main.adapters.TopicsAdapter
+import com.support.robigroup.ututor.singleton.SingletonSharedPref
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_main.*
 
@@ -23,6 +27,7 @@ class MainFragment : RxBaseFragment() {
     }
 
     private var recentTopics: Lesson? = null
+    private var lessons: ClassRoom? = null
     private val topicsManager by lazy { TopicsManager() }
 
     private var mListener: OnMainActivityInteractionListener? = null
@@ -30,7 +35,7 @@ class MainFragment : RxBaseFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         logd("onCreate MainFragment")
-
+        lessons = SingletonSharedPref.getInstance().getString(SingletonSharedPref.Key.CLASS) as ClassRoom? ?: ClassRoom()
     }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
@@ -46,7 +51,7 @@ class MainFragment : RxBaseFragment() {
         main_recycler_view_header.setHasFixedSize(true)
         main_recycler_view_content.setHasFixedSize(true)
 
-        initAdapter()
+        initAdapters()
 
         if (savedInstanceState != null && savedInstanceState.containsKey(KEY_REDDIT_NEWS)) {
             recentTopics = savedInstanceState.get(KEY_REDDIT_NEWS) as Lesson
@@ -55,22 +60,21 @@ class MainFragment : RxBaseFragment() {
         } else {
             logd("saved State is null")
             requestTopics()
+            requestLessons()
         }
 
     }
 
-    private fun initAdapter() {
+    private fun initAdapters() {
         if (main_recycler_view_header.adapter == null) {
             main_recycler_view_header.adapter = TopicsAdapter()
+        }
+        if (main_recycler_view_content.adapter == null) {
+            main_recycler_view_content.adapter = ClassRoomAdapter()
         }
     }
 
     private fun requestTopics() {
-        /**
-         * first time will send empty string for after parameter.
-         * Next time we will have recentTopics set with the next page to
-         * navigate with the after param.
-         */
         val subscription = topicsManager.getTopics(recentTopics?.after ?: "")
                 .subscribeOn(Schedulers.io())
                 .subscribe (
@@ -80,6 +84,22 @@ class MainFragment : RxBaseFragment() {
                         },
                         { e ->
                             Snackbar.make(main_recycler_view_header, e.message ?: "", Snackbar.LENGTH_LONG).show()
+                        }
+                )
+        subscriptions.add(subscription)
+    }
+
+    private fun requestLessons(){
+        val subscription = topicsManager.getLessons()
+                .subscribeOn(Schedulers.io())
+                .subscribe(
+                        { retrievedLessons ->
+                            lessons = retrievedLessons
+                            logd("size2 ".plus(retrievedLessons.lessons.size))
+                            (main_recycler_view_content.adapter as ClassRoomAdapter).clearAndAddNews(retrievedLessons.lessons)
+                        },
+                        { e ->
+                            Snackbar.make(main_recycler_view_header, e.message ?: "bbbb", Snackbar.LENGTH_LONG).show()
                         }
                 )
         subscriptions.add(subscription)
