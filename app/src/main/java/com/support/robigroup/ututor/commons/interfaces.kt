@@ -12,4 +12,6 @@ interface OnLoginActivityInteractionListener {
 }
 interface OnMainActivityInteractionListener {
     fun OnTopicItemClicked(item: TopicItem)
+    fun setDisplayHomeAsEnabled(showHomeAsUp: Boolean)
+    fun setToolbarTitle(title: String)
 }

@@ -5,7 +5,7 @@ import android.support.v7.app.AppCompatActivity
 import android.text.TextUtils
 import android.view.Menu
 import android.widget.AdapterView
-import android.widget.SearchView
+import android.support.v7.widget.SearchView
 import android.widget.Toast
 import com.support.robigroup.ututor.R
 import com.support.robigroup.ututor.commons.OnMainActivityInteractionListener
@@ -15,6 +15,8 @@ import com.support.robigroup.ututor.screen.main.adapters.ListViewAdapter
 import kotlinx.android.synthetic.main.activity_main.*
 import android.app.SearchManager
 import android.content.Context
+import android.view.MenuItem
+import android.view.View
 
 
 class MainActivity : AppCompatActivity(), OnMainActivityInteractionListener {
@@ -79,10 +81,28 @@ class MainActivity : AppCompatActivity(), OnMainActivityInteractionListener {
     }
 
     override fun OnTopicItemClicked(item: TopicItem) {
-
         supportFragmentManager.beginTransaction().replace(R.id.main_container, TopicFragment.newInstance(item),
                 TAG_MAIN_FRAGMENT).addToBackStack(null).commit()
 
     }
+
+    override fun setDisplayHomeAsEnabled(showHomeAsUp: Boolean) {
+        supportActionBar!!.setDisplayHomeAsUpEnabled(showHomeAsUp)
+    }
+
+    override fun setToolbarTitle(title: String) {
+        supportActionBar!!.title = title
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        when(item!!.itemId){
+            android.R.id.home -> {
+                onBackPressed()
+                return true
+            }
+            else -> return super.onOptionsItemSelected(item)
+        }
+    }
+
 
 }

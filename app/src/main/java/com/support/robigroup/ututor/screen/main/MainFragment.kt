@@ -37,6 +37,7 @@ class MainFragment : RxBaseFragment() {
         super.onCreate(savedInstanceState)
         logd("onCreate MainFragment")
         lessons = SingletonSharedPref.getInstance().getString(SingletonSharedPref.Key.CLASS) as ClassRoom? ?: ClassRoom()
+
     }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
@@ -49,6 +50,8 @@ class MainFragment : RxBaseFragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         logd("onActivityCreated MainFragment")
+        mListener!!.setToolbarTitle(getString(R.string.main_title))
+        mListener!!.setDisplayHomeAsEnabled(false)
         main_recycler_view_header.apply {
             setHasFixedSize(true)
         }

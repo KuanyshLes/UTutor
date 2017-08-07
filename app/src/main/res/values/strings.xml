@@ -40,4 +40,10 @@
     <string name="choose_teacher">Выбрать</string>
     <string name="ex_topic_short">С понятием рациональных чисел вы уже наверняка знакомы. Аналогично рациональные функции – это функции,</string>
     <string name="teachers_accepted">Откликнулось</string>
+
+
+
+    //titles
+    <string name="main_title">Главная</string>
+    <string name="profile_title">Профиль</string>
 </resources>

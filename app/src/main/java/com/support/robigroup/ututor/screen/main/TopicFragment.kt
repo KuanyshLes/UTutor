@@ -3,9 +3,7 @@ package com.support.robigroup.ututor.screen.main
 import android.content.Context
 import android.os.Bundle
 import android.support.design.widget.Snackbar
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 
 import com.support.robigroup.ututor.R
 import com.support.robigroup.ututor.commons.OnMainActivityInteractionListener
@@ -22,7 +20,7 @@ import kotlinx.android.synthetic.main.topics.*
 
 class TopicFragment : RxBaseFragment() {
 
-    private var itemTopic: TopicItem? = null
+    private var itemTopic: TopicItem = TopicItem("Error","Error","Error")
 
     private var lessons: ClassRoom? = null
 
@@ -36,14 +34,18 @@ class TopicFragment : RxBaseFragment() {
         }
     }
 
+
+
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        // Inflate the layout for this fragment
         return inflater!!.inflate(R.layout.fragment_topic, container, false)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+
+        mListener!!.setDisplayHomeAsEnabled(true)
+        mListener!!.setToolbarTitle(itemTopic.lesson)
 
         topic_desc.text = itemTopic!!.description
         class_text.text = "${itemTopic!!.group} ${getString(R.string.group)}"
@@ -57,7 +59,11 @@ class TopicFragment : RxBaseFragment() {
         }
         initAdapters()
         requestTopics()
+    }
 
+    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
+        super.onCreateOptionsMenu(menu, inflater)
+        menu!!.clear()
     }
 
     fun initAdapters(){
@@ -67,21 +73,6 @@ class TopicFragment : RxBaseFragment() {
         if(list_teachers.adapter == null){
             list_teachers.adapter = TeachersAdapter()
         }
-    }
-
-
-    override fun onAttach(context: Context?) {
-        super.onAttach(context)
-        if (context is OnMainActivityInteractionListener) {
-            mListener = context
-        } else {
-            throw RuntimeException(context!!.toString() + " must implement OnFragmentInteractionListener")
-        }
-    }
-
-    override fun onDetach() {
-        super.onDetach()
-        mListener = null
     }
 
     private fun requestTopics() {
@@ -115,11 +106,29 @@ class TopicFragment : RxBaseFragment() {
         subscriptions.add(subscription)
     }
 
-    fun hideFindButton(size: Int){
+    private fun hideFindButton(size: Int){
         number_of_teachers.text = getString(R.string.teachers_accepted).plus(": ").plus(size)
         number_of_teachers.visibility = View.VISIBLE
         find_teacher.visibility = View.GONE
+        topics_bottom.visibility = View.GONE
     }
+
+
+    override fun onAttach(context: Context?) {
+        super.onAttach(context)
+        if (context is OnMainActivityInteractionListener) {
+            mListener = context
+        } else {
+            throw RuntimeException(context!!.toString() + " must implement OnFragmentInteractionListener")
+        }
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        mListener = null
+    }
+
+
 
     companion object {
 
