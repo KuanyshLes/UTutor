@@ -46,7 +46,7 @@ class TopicsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         items.removeAt(initPosition)
         notifyItemRemoved(initPosition)
 
-        // insert lessons and the loading at the end of the list
+        // insert teachers and the loading at the end of the list
         items.addAll(lessons)
         items.add(loadingItem)
         notifyItemRangeChanged(initPosition, items.size + 1 /* plus loading item */)

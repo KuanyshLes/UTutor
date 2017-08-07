@@ -16,6 +16,8 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="topic">Тема:</string>
+    <string name="same_topic">Похожие темы</string>
     <string name="loading">Loading…</string>
     <string name="action_next">Next</string>
     <string name="prompt_phone">Phone</string>
@@ -29,4 +31,13 @@
     <string name="search_hint">Пойск по темам</string>
     <string name="ex_math">математика</string>
     <string name="ex_lesson_desc">We defined here a synchronous API that will receive the “after” and “limit” query string. The return type is “Call”, this Call class will allow us to execute the request and know if the request was successful or not, also to extract the response data with the given generic type, in this case, the new defined Kotlin class RedditNewsResponse.</string>
+    <string name="ex_class" >9 класс</string>
+    <string name="find_teacher_text">Найти учителя</string>
+    <string name="group">класс</string>
+    <string name="ex_teacher_name">Валентина Петровна</string>
+    <string name="ex_lessons">Алгебра, Геометрия, Физика</string>
+    <string name="ex_rating">9.5</string>
+    <string name="choose_teacher">Выбрать</string>
+    <string name="ex_topic_short">С понятием рациональных чисел вы уже наверняка знакомы. Аналогично рациональные функции – это функции,</string>
+    <string name="teachers_accepted">Откликнулось</string>
 </resources>

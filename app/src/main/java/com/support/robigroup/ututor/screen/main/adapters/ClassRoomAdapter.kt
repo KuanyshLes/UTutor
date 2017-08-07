@@ -30,7 +30,7 @@ class ClassRoomAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         items.clear()
 
         items.addAll(lessons)
-        logd("${items.size} lessons")
+        logd("${items.size} teachers")
         notifyDataSetChanged()
     }
 

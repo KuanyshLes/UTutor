@@ -7,7 +7,9 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.Toast
+import com.squareup.picasso.Picasso
 
 fun logd(message: String){
     Log.d("myLogs",message)
@@ -19,6 +21,10 @@ fun ViewGroup.inflate(layoutId: Int, attachToRoot: Boolean = false): View {
 
 fun Context.toast(message: CharSequence,length: Int = Toast.LENGTH_SHORT) =
         Toast.makeText(this, message, length).show()
+
+fun ImageView.loadImg(path: String = "https://www.tes.com/sites/default/files/stress_1.jpg"){
+    Picasso.with(context).load(path).centerCrop().into(this)
+}
 
 inline fun <reified T : Parcelable> createParcel(
         crossinline createFromParcel: (Parcel) -> T?): Parcelable.Creator<T> =

@@ -12,7 +12,7 @@ public class SingletonSharedPref {
     private boolean mBulkUpdate = false;
 
     public static class Key {
-        public static final String CLASS = "lessons";
+        public static final String CLASS = "teachers";
         public static final String TOPICS = "topics";
         public static final String USER = "user";
     }

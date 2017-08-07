@@ -1,6 +1,7 @@
 package com.support.robigroup.ututor.commons
 
 import android.net.Uri
+import com.support.robigroup.ututor.model.content.TopicItem
 
 interface OnLoginActivityInteractionListener {
     fun OnSignInButtonClicked (email: String,password: String)
@@ -10,5 +11,5 @@ interface OnLoginActivityInteractionListener {
     fun OnUploadPhotoClicked ()
 }
 interface OnMainActivityInteractionListener {
-    fun onFragmentInteraction(uri: Uri)
+    fun OnTopicItemClicked(item: TopicItem)
 }

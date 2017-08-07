@@ -9,26 +9,27 @@ import com.support.robigroup.ututor.R
 import com.support.robigroup.ututor.commons.logd
 import com.support.robigroup.ututor.commons.OnMainActivityInteractionListener
 import android.support.design.widget.Snackbar
-import com.support.robigroup.ututor.api.RestAPI
 import com.support.robigroup.ututor.commons.RxBaseFragment
 import com.support.robigroup.ututor.model.content.ClassRoom
 import com.support.robigroup.ututor.model.content.Lesson
 import com.support.robigroup.ututor.screen.main.adapters.ClassRoomAdapter
 import com.support.robigroup.ututor.screen.main.adapters.TopicsAdapter
 import com.support.robigroup.ututor.singleton.SingletonSharedPref
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_main.*
+import kotlinx.android.synthetic.main.topics.*
 
 
 class MainFragment : RxBaseFragment() {
 
     companion object {
-        private val KEY_REDDIT_NEWS = "recentTopics"
+        private val KEY_RECENT_TOPICS = "recentTopics"
     }
 
     private var recentTopics: Lesson? = null
     private var lessons: ClassRoom? = null
-    private val topicsManager by lazy { TopicsManager() }
+    private val topicsManager by lazy { MainManager() }
 
     private var mListener: OnMainActivityInteractionListener? = null
 
@@ -48,13 +49,16 @@ class MainFragment : RxBaseFragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         logd("onActivityCreated MainFragment")
-        main_recycler_view_header.setHasFixedSize(true)
-        main_recycler_view_content.setHasFixedSize(true)
-
+        main_recycler_view_header.apply {
+            setHasFixedSize(true)
+        }
+        main_recycler_view_content.apply {
+            setHasFixedSize(true)
+        }
         initAdapters()
 
-        if (savedInstanceState != null && savedInstanceState.containsKey(KEY_REDDIT_NEWS)) {
-            recentTopics = savedInstanceState.get(KEY_REDDIT_NEWS) as Lesson
+        if (savedInstanceState != null && savedInstanceState.containsKey(KEY_RECENT_TOPICS)) {
+            recentTopics = savedInstanceState.get(KEY_RECENT_TOPICS) as Lesson
             (main_recycler_view_header.adapter as TopicsAdapter).clearAndAddNews(recentTopics!!.news)
             logd("saved State is not null")
         } else {
@@ -77,6 +81,7 @@ class MainFragment : RxBaseFragment() {
     private fun requestTopics() {
         val subscription = topicsManager.getTopics(recentTopics?.after ?: "")
                 .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe (
                         { retrievedTopics ->
                             recentTopics = retrievedTopics
@@ -92,6 +97,7 @@ class MainFragment : RxBaseFragment() {
     private fun requestLessons(){
         val subscription = topicsManager.getLessons()
                 .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         { retrievedLessons ->
                             lessons = retrievedLessons
@@ -110,7 +116,7 @@ class MainFragment : RxBaseFragment() {
         super.onSaveInstanceState(outState)
         val news = (main_recycler_view_header.adapter as TopicsAdapter).getNews()
         if (recentTopics != null && news.size > 0) {
-            outState.putParcelable(KEY_REDDIT_NEWS, recentTopics?.copy(news = news))
+            outState.putParcelable(KEY_RECENT_TOPICS, recentTopics?.copy(news = news))
             logd("onSaveInstanceState newsSaved")
         }
     }

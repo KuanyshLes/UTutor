@@ -6,9 +6,7 @@ import com.support.robigroup.ututor.commons.adapter.AdapterConstants
 import com.support.robigroup.ututor.commons.adapter.ViewType
 import com.support.robigroup.ututor.commons.createParcel
 
-/**
- * Created by Bimurat Mukhtar on 03.08.2017.
- */
+
 data class ClassRoom(
         var lessons: List<Lesson> = ArrayList()
 ): Parcelable{
@@ -33,7 +31,7 @@ data class ClassRoom(
 data class Lesson(
         var after: String = "",
         var before: String = "",
-        var name: String = "",
+        var name: String = "Mathematica",
         var news: List<TopicItem> = ArrayList()
 ): Parcelable {
 
@@ -65,7 +63,7 @@ data class Lesson(
 data class TopicItem(
         var lesson: String = "",
         var author: String = "",
-        var title: String = "",
+        var description: String = "",
         var rating: Double = 0.0,
         var created: Long = 0,
         var id: String = "",
@@ -90,7 +88,7 @@ data class TopicItem(
     override fun writeToParcel(dest: Parcel, flags: Int) {
         dest.writeString(lesson)
         dest.writeString(author)
-        dest.writeString(title)
+        dest.writeString(description)
         dest.writeDouble(rating)
         dest.writeLong(created)
         dest.writeString(id)
@@ -100,4 +98,53 @@ data class TopicItem(
     override fun describeContents() = 0
 
     override fun getViewType() = AdapterConstants.TOPICS
+}
+
+data class Teacher(
+        var name: String? = null,
+        var imagePath: String? = null,
+        var rating: Double? = null,
+        var lessons: List<Lesson> = ArrayList()
+): Parcelable{
+    companion object {
+        @JvmField @Suppress("unused")
+        val CREATOR = createParcel { Teacher(it) }
+    }
+    protected constructor(parcelIn: Parcel) : this(
+            parcelIn.readString(),
+            parcelIn.readString(),
+            parcelIn.readDouble(),
+            mutableListOf<Lesson>().apply {
+                parcelIn.readTypedList(this, Lesson.CREATOR)
+            }
+    )
+
+    override fun writeToParcel(dest: Parcel, flags: Int) {
+        dest.writeString(name)
+        dest.writeString(imagePath)
+        dest.writeDouble(rating ?: 0.0)
+        dest.writeTypedList(lessons)
+    }
+
+    override fun describeContents() = 0
+}
+
+data class Teachers(
+        var teachers: List<Teacher> = ArrayList()
+): Parcelable{
+    companion object {
+        @JvmField @Suppress("unused")
+        val CREATOR = createParcel { Teachers(it) }
+    }
+    protected constructor(parcelIn: Parcel) : this(
+            mutableListOf<Teacher>().apply {
+                parcelIn.readTypedList(this, Teacher.CREATOR)
+            }
+    )
+
+    override fun writeToParcel(dest: Parcel, flags: Int) {
+        dest.writeTypedList(teachers)
+    }
+
+    override fun describeContents() = 0
 }

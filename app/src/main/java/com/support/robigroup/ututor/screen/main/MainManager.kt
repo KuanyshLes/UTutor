@@ -2,13 +2,12 @@ package com.support.robigroup.ututor.screen.main
 
 import com.support.robigroup.ututor.api.RestAPI
 import com.support.robigroup.ututor.commons.logd
-import com.support.robigroup.ututor.model.content.ClassRoom
-import com.support.robigroup.ututor.model.content.Lesson
-import com.support.robigroup.ututor.model.content.TopicItem
+import com.support.robigroup.ututor.model.content.*
 import io.reactivex.Observable
 
 
-class TopicsManager(private val api: RestAPI = RestAPI()) {
+class MainManager(private val api: RestAPI = RestAPI()) {
+
 
     companion object {
         private val topics = arrayListOf(
@@ -54,7 +53,6 @@ class TopicsManager(private val api: RestAPI = RestAPI()) {
             try{
                 var cla: ClassRoom = ClassRoom(MutableList(20 ,{Lesson("MathPathPhysAlgebra")}))
                 Thread.sleep(3000)
-                logd("size ".plus(cla.lessons.size))
                 subscriber.onNext(cla)
                 subscriber.onComplete()
             }catch (e: InterruptedException){
@@ -62,6 +60,21 @@ class TopicsManager(private val api: RestAPI = RestAPI()) {
             }
         }
     }
+
+    fun getTeachers(): Observable<Teachers>{
+        return Observable.create{
+            subscriber ->
+            try{
+                var cla: Teachers = Teachers(MutableList(10 ,{ Teacher("MathPathPhysAlgebra","",8.0,MutableList(3 ,{Lesson("MathPathPhysAlgebra")})) }))
+                Thread.sleep(3000)
+                subscriber.onNext(cla)
+                subscriber.onComplete()
+            }catch (e: InterruptedException){
+                subscriber.onError(Throwable(e.toString()))
+            }
+        }
+    }
+
     fun getTopics(after: String, limit: String = "10"): Observable<Lesson> {
         val answer: Observable<Lesson> = Observable.create {
             subscriber ->
@@ -91,7 +104,7 @@ class TopicsManager(private val api: RestAPI = RestAPI()) {
 //                val dataResponse = response.body().data
 //                val news = dataResponse.children.map {
 //                    val item = it.data
-//                    TopicItem(item.author, item.title, item.num_comments,
+//                    TopicItem(item.author, item.description, item.num_comments,
 //                            item.created, item.thumbnail, item.url)
 //                }
 //                val redditNews = RedditNews(
