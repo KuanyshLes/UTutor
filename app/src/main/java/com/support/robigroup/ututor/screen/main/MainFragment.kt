@@ -66,10 +66,13 @@ class MainFragment : RxBaseFragment() {
             logd("saved State is not null")
         } else {
             logd("saved State is null")
-            requestTopics()
-            requestLessons()
         }
+    }
 
+    override fun onResume() {
+        super.onResume()
+        requestTopics()
+        requestLessons()
     }
 
     private fun initAdapters() {
@@ -118,31 +121,12 @@ class MainFragment : RxBaseFragment() {
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         val news = (main_recycler_view_header.adapter as TopicsAdapter).getNews()
-        if (recentTopics != null && news.size > 0) {
+        if (recentTopics != null && news.isNotEmpty()) {
             outState.putParcelable(KEY_RECENT_TOPICS, recentTopics?.copy(news = news))
             logd("onSaveInstanceState newsSaved")
         }
     }
 
-//    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-//        super.onCreateOptionsMenu(menu, inflater)
-//        menu.clear()
-//        inflater.inflate(R.menu.options_menu, menu)
-//        val item = menu.findItem(R.id.search)
-//        val searchView = SearchView((activity as MainActivity).supportActionBar!!.themedContext)
-//        MenuItemCompat.setShowAsAction(item, MenuItemCompat.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW or MenuItemCompat.SHOW_AS_ACTION_IF_ROOM)
-//        MenuItemCompat.setActionView(item, searchView)
-//        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-//            override fun onQueryTextSubmit(query: String): Boolean {
-//                return false
-//            }
-//
-//            override fun onQueryTextChange(newText: String): Boolean {
-//                return false
-//            }
-//        })
-//        logd("onCreateOptionsMenu mainFragment")
-//    }
 
     override fun onAttach(context: Context?) {
         super.onAttach(context)
@@ -159,4 +143,6 @@ class MainFragment : RxBaseFragment() {
         logd("onDetach MainFragment")
         mListener = null
     }
+
+
 }

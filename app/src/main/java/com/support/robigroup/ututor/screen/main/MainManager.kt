@@ -1,7 +1,6 @@
 package com.support.robigroup.ututor.screen.main
 
 import com.support.robigroup.ututor.api.RestAPI
-import com.support.robigroup.ututor.commons.logd
 import com.support.robigroup.ututor.model.content.*
 import io.reactivex.Observable
 
@@ -51,7 +50,7 @@ class MainManager(private val api: RestAPI = RestAPI()) {
         return Observable.create{
             subscriber ->
             try{
-                var cla: ClassRoom = ClassRoom(MutableList(20 ,{Lesson("MathPathPhysAlgebra")}))
+                val cla: ClassRoom = ClassRoom(MutableList(20 ,{Lesson("MathPathPhysAlgebra")}))
                 Thread.sleep(3000)
                 subscriber.onNext(cla)
                 subscriber.onComplete()
@@ -65,7 +64,7 @@ class MainManager(private val api: RestAPI = RestAPI()) {
         return Observable.create{
             subscriber ->
             try{
-                var cla: Teachers = Teachers(MutableList(10 ,{ Teacher("MathPathPhysAlgebra","",8.0,MutableList(3 ,{Lesson("MathPathPhysAlgebra")})) }))
+                val cla: Teachers = Teachers(MutableList(10 ,{ Teacher("MathPathPhysAlgebra","",8.0,MutableList(3 ,{Lesson("MathPathPhysAlgebra")})) }))
                 Thread.sleep(3000)
                 subscriber.onNext(cla)
                 subscriber.onComplete()
@@ -94,29 +93,5 @@ class MainManager(private val api: RestAPI = RestAPI()) {
         }
 
         return answer
-
-//        return Observable.create {
-//            subscriber ->
-//            val callResponse = api.getTopics(after, limit)
-//            val response = callResponse.execute()
-//
-//            if (response.isSuccessful) {
-//                val dataResponse = response.body().data
-//                val news = dataResponse.children.map {
-//                    val item = it.data
-//                    TopicItem(item.author, item.description, item.num_comments,
-//                            item.created, item.thumbnail, item.url)
-//                }
-//                val redditNews = RedditNews(
-//                        dataResponse.after ?: "",
-//                        dataResponse.before ?: "",
-//                        news)
-//
-//                subscriber.onNext(redditNews)
-//                subscriber.onComplete()
-//            } else {
-//                subscriber.onError(Throwable(response.message()))
-//            }
-//        }
     }
 }

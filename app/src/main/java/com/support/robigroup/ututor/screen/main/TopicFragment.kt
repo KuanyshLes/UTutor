@@ -8,6 +8,7 @@ import android.view.*
 import com.support.robigroup.ututor.R
 import com.support.robigroup.ututor.commons.OnMainActivityInteractionListener
 import com.support.robigroup.ututor.commons.RxBaseFragment
+import com.support.robigroup.ututor.commons.logd
 import com.support.robigroup.ututor.model.content.ClassRoom
 import com.support.robigroup.ututor.model.content.TopicItem
 import com.support.robigroup.ututor.screen.main.adapters.TeachersAdapter
@@ -47,8 +48,8 @@ class TopicFragment : RxBaseFragment() {
         mListener!!.setDisplayHomeAsEnabled(true)
         mListener!!.setToolbarTitle(itemTopic.lesson)
 
-        topic_desc.text = itemTopic!!.description
-        class_text.text = "${itemTopic!!.group} ${getString(R.string.group)}"
+        topic_desc.text = itemTopic.description
+        class_text.text = "${itemTopic.group} ${getString(R.string.group)}"
 
         find_teacher.setOnClickListener {
             requestTeacher()
@@ -58,6 +59,10 @@ class TopicFragment : RxBaseFragment() {
             setHasFixedSize(true)
         }
         initAdapters()
+    }
+
+    override fun onResume() {
+        super.onResume()
         requestTopics()
     }
 
@@ -96,6 +101,8 @@ class TopicFragment : RxBaseFragment() {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe (
                         { teachers ->
+                            logd(teachers.teachers.size.toString())
+
                             (list_teachers.adapter as TeachersAdapter).clearAndAddNews(teachers.teachers)
                             hideFindButton(teachers.teachers.size)
                         },

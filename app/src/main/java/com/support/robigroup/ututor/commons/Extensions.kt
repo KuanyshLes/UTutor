@@ -23,7 +23,7 @@ fun Context.toast(message: CharSequence,length: Int = Toast.LENGTH_SHORT) =
         Toast.makeText(this, message, length).show()
 
 fun ImageView.loadImg(path: String = "https://www.tes.com/sites/default/files/stress_1.jpg"){
-    Picasso.with(context).load(path).centerCrop().into(this)
+    Picasso.with(context).load(path).into(this)
 }
 
 inline fun <reified T : Parcelable> createParcel(

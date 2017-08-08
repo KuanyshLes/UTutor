@@ -102,6 +102,7 @@ class LoginActivity : AppCompatActivity(), OnLoginActivityInteractionListener {
 
     override fun OnDoneButtonClicked(firstName: String, lastName: String) {
         startActivity(Intent(this,MainActivity::class.java))
+        finish()
     }
 
     override fun OnUploadPhotoClicked() {

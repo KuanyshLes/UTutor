@@ -9,11 +9,13 @@ open class RxBaseFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
+        logd("onResumeRxBaseFragment")
         subscriptions = CompositeDisposable()
     }
 
     override fun onPause() {
         super.onPause()
         subscriptions.clear()
+        logd("onPauseRxBaseFragment")
     }
 }

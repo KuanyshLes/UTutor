@@ -1,6 +1,5 @@
 package com.support.robigroup.ututor.commons
 
-import android.net.Uri
 import com.support.robigroup.ututor.model.content.TopicItem
 
 interface OnLoginActivityInteractionListener {

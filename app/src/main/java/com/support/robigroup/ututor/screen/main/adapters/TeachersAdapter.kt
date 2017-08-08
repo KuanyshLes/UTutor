@@ -10,9 +10,6 @@ import com.support.robigroup.ututor.model.content.Lesson
 import com.support.robigroup.ututor.model.content.Teacher
 import kotlinx.android.synthetic.main.item_teacher.view.*
 
-/**
- * Created by Bimurat Mukhtar on 04.08.2017.
- */
 class TeachersAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private val items: ArrayList<Teacher> = ArrayList()

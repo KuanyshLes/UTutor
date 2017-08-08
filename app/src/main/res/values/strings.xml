@@ -13,6 +13,7 @@
     <string name="action_go_sign_up">Don\'t have an account?</string>
     <string name="desc_logo">Logo</string>
     <string name="desc_arrow_right">Open</string>
+    <string name="desc_teacher">Teacher</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
@@ -46,4 +47,5 @@
     //titles
     <string name="main_title">Главная</string>
     <string name="profile_title">Профиль</string>
+    <string name="ex_time">9 д. 16 ч.</string>
 </resources>

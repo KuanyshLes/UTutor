@@ -1,11 +1,14 @@
 package com.support.robigroup.ututor.screen.main
 
+import android.app.SearchManager
+import android.content.Context
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.SearchView
 import android.text.TextUtils
 import android.view.Menu
+import android.view.MenuItem
 import android.widget.AdapterView
-import android.support.v7.widget.SearchView
 import android.widget.Toast
 import com.support.robigroup.ututor.R
 import com.support.robigroup.ututor.commons.OnMainActivityInteractionListener
@@ -13,10 +16,6 @@ import com.support.robigroup.ututor.commons.logd
 import com.support.robigroup.ututor.model.content.TopicItem
 import com.support.robigroup.ututor.screen.main.adapters.ListViewAdapter
 import kotlinx.android.synthetic.main.activity_main.*
-import android.app.SearchManager
-import android.content.Context
-import android.view.MenuItem
-import android.view.View
 
 
 class MainActivity : AppCompatActivity(), OnMainActivityInteractionListener {
@@ -36,7 +35,7 @@ class MainActivity : AppCompatActivity(), OnMainActivityInteractionListener {
         setSupportActionBar(toolbar)
 
         adapter = ListViewAdapter(this, R.layout.item_search, searchList = stringArrayList)
-        list_item!!.setAdapter(adapter)
+        list_item!!.adapter = adapter
 
         list_item.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, i, l ->
             Toast.makeText(this@MainActivity, (adapterView.getItemAtPosition(i) as TopicItem).description, Toast.LENGTH_SHORT).show()
@@ -47,7 +46,8 @@ class MainActivity : AppCompatActivity(), OnMainActivityInteractionListener {
         super.onResume()
         logd("onResume MainActivity")
         if(supportFragmentManager.fragments.size==0){
-            supportFragmentManager.beginTransaction().replace(R.id.main_container, MainFragment(),TAG_MAIN_FRAGMENT).commit()
+            supportFragmentManager.beginTransaction().replace(R.id.main_container, MainFragment(),TAG_MAIN_FRAGMENT)
+                    .addToBackStack(null).commit()
         }
     }
 
@@ -60,7 +60,7 @@ class MainActivity : AppCompatActivity(), OnMainActivityInteractionListener {
         searchView!!.setSearchableInfo(
                 searchManager.getSearchableInfo(componentName))
 
-        searchView!!.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String): Boolean {
                 logd("onQueryTextChange "+query)
                 return false
@@ -102,6 +102,16 @@ class MainActivity : AppCompatActivity(), OnMainActivityInteractionListener {
             }
             else -> return super.onOptionsItemSelected(item)
         }
+    }
+
+    override fun onBackPressed() {
+        if(supportFragmentManager.backStackEntryCount==1){
+            supportFragmentManager.popBackStack()
+            finish()
+        }else{
+            super.onBackPressed()
+        }
+
     }
 
 

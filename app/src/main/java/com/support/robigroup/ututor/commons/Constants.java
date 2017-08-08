@@ -4,8 +4,6 @@ import android.graphics.Color;
 import android.support.design.widget.Snackbar;
 import android.view.View;
 
-import static android.net.sip.SipErrorCode.SERVER_ERROR;
-
 /**
  * Created by Bimurat Mukhtar on 19.04.2017.
  */

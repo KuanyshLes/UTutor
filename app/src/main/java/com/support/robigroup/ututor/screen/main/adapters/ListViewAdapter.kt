@@ -56,7 +56,7 @@ class ListViewAdapter(private val activity: MainActivity, resource: Int, private
         var charText = charText
         charText = charText.toLowerCase(Locale.getDefault())
         friendList.clear()
-        if (charText.length == 0) {
+        if (charText.isEmpty()) {
             friendList.clear()
         } else {
             for (s in searchList) {
@@ -69,11 +69,10 @@ class ListViewAdapter(private val activity: MainActivity, resource: Int, private
     }
 
     class ViewHolder(v: View) {
-        val lessonName: TextView
+        val lessonName: TextView = v.findViewById<View>(R.id.lessonName) as TextView
         val lessonDesc: TextView
 
         init {
-            lessonName = v.findViewById<View>(R.id.lessonName) as TextView
             lessonDesc = v.findViewById<View>(R.id.topicName) as TextView
         }
     }

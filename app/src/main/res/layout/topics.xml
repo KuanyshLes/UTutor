@@ -3,11 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@color/colorWhite">
+    android:layout_height="wrap_content">
 
     <ImageView
-        android:id="@+id/main_imageview_right2"
+        android:id="@+id/main_image_right"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
@@ -29,13 +28,13 @@
         android:text="@string/main_topic_text" />
 
     <TextView
-        android:id="@+id/main_textview_see_all2"
+        android:id="@+id/main_text_see_all"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_margin="8dp"
-        android:layout_toLeftOf="@+id/main_imageview_right2"
-        android:layout_toStartOf="@+id/main_imageview_right2"
+        android:layout_toLeftOf="@+id/main_image_right"
+        android:layout_toStartOf="@+id/main_image_right"
         android:text="@string/main_text_see_all"
         android:textStyle="bold" />
 
@@ -45,7 +44,7 @@
         android:layout_height="127dp"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-        android:layout_below="@+id/main_textview_see_all2"
+        android:layout_below="@+id/main_text_see_all"
         android:orientation="horizontal"
         app:layoutManager="android.support.v7.widget.LinearLayoutManager"
         tools:listitem="@layout/item_topic">
