@@ -36,10 +36,20 @@
         <item name="android:maxLines">1</item>
         <item name="android:singleLine">true</item>
     </style>
+
     <style name="email_field">
         <item name="android:inputType">textEmailAddress</item>
         <item name="android:maxLines">1</item>
         <item name="android:singleLine">true</item>
+    </style>
+
+    <style name="finish_dialog_buttons">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:lines">1</item>
+        <item name="android:gravity">center</item>
+        <item name="android:layout_margin">4dp</item>
     </style>
 
 </resources>

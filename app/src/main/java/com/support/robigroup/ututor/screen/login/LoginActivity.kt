@@ -139,7 +139,7 @@ class LoginActivity : AppCompatActivity(), OnLoginActivityInteractionListener {
                     .map { it.split(":") }
                     .firstOrNull { it[0] == mEmail }
                     ?.let {
-                        it[1] == mPassword
+                       return it[1] == mPassword
                     }
                     ?: false
         }

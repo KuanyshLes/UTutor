@@ -40,7 +40,7 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="16dp"
             android:lines="1"
-            android:text="@string/ex_teacher_name"
+            android:text="@string/ex_teacher_full_name"
             app:layout_constraintEnd_toStartOf="@+id/teacher_image"
             app:layout_constraintStart_toEndOf="@+id/cardView"
             app:layout_constraintTop_toTopOf="parent"

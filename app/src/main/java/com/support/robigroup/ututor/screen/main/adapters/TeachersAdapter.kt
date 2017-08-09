@@ -8,6 +8,7 @@ import com.support.robigroup.ututor.commons.loadImg
 import com.support.robigroup.ututor.commons.logd
 import com.support.robigroup.ututor.model.content.Lesson
 import com.support.robigroup.ututor.model.content.Teacher
+import com.support.robigroup.ututor.screen.chat.ChatActivity
 import kotlinx.android.synthetic.main.item_teacher.view.*
 
 class TeachersAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -42,6 +43,9 @@ class TeachersAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             teacher_lessons.text = item.lessons.joinToString { lesson: Lesson -> lesson.name.plus(", ") }
             teacher_rating.text = item.rating.toString()
             teacher_photo.loadImg()
+            teacher_choose.setOnClickListener {
+                ChatActivity.open(itemView.context)
+            }
         }
     }
 }

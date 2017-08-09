@@ -1,5 +1,6 @@
 package com.support.robigroup.ututor.commons
 
+
 import android.content.Context
 import android.os.Parcel
 import android.os.Parcelable
@@ -32,3 +33,4 @@ inline fun <reified T : Parcelable> createParcel(
             override fun createFromParcel(source: Parcel): T? = createFromParcel(source)
             override fun newArray(size: Int): Array<out T?> = arrayOfNulls(size)
         }
+

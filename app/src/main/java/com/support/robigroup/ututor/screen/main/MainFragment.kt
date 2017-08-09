@@ -120,11 +120,12 @@ class MainFragment : RxBaseFragment() {
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        val news = (main_recycler_view_header.adapter as TopicsAdapter).getNews()
-        if (recentTopics != null && news.isNotEmpty()) {
-            outState.putParcelable(KEY_RECENT_TOPICS, recentTopics?.copy(news = news))
-            logd("onSaveInstanceState newsSaved")
-        }
+//        logd("onSaveInstanceState main fragment newsSaved")
+//        val news = (main_recycler_view_header.adapter as TopicsAdapter).getNews()
+//        if (recentTopics != null && news.isNotEmpty()) {
+//            outState.putParcelable(KEY_RECENT_TOPICS, recentTopics?.copy(news = news))
+//
+//        }
     }
 
 

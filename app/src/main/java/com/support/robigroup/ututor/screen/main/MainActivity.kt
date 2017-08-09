@@ -105,6 +105,7 @@ class MainActivity : AppCompatActivity(), OnMainActivityInteractionListener {
     }
 
     override fun onBackPressed() {
+        logd("onBackPressed MainActivity" )
         if(supportFragmentManager.backStackEntryCount==1){
             supportFragmentManager.popBackStack()
             finish()
