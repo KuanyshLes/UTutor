@@ -2,16 +2,11 @@ package com.support.robigroup.ututor.screen.chat
 
 import android.app.AlertDialog
 import android.app.Dialog
-import android.content.DialogInterface
-import android.content.Intent
+import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.DialogFragment
 import android.widget.Button
 import com.support.robigroup.ututor.R
-import com.support.robigroup.ututor.screen.main.MainActivity
-import android.app.Activity
-
-
 
 
 class FinishDialog : DialogFragment() {
@@ -22,7 +17,7 @@ class FinishDialog : DialogFragment() {
         fun onDialogPositiveClick(dialog: DialogFragment)
     }
 
-    override fun onAttach(activity: Activity?) {
+    override fun onAttach(activity: Context?) {
         super.onAttach(activity)
         // Verify that the host activity implements the callback interface
         try {

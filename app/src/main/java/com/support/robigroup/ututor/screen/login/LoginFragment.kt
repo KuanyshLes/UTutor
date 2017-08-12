@@ -14,12 +14,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import android.widget.AutoCompleteTextView
+import android.widget.Button
+import android.widget.EditText
 import android.widget.TextView
 import com.support.robigroup.ututor.R
 import com.support.robigroup.ututor.commons.OnLoginActivityInteractionListener
 import com.support.robigroup.ututor.commons.inflate
 import com.support.robigroup.ututor.commons.logd
-import kotlinx.android.synthetic.main.fragment_login.*
+import org.w3c.dom.Text
 
 
 /**
@@ -28,7 +31,10 @@ import kotlinx.android.synthetic.main.fragment_login.*
 class LoginFragment : Fragment() {
 
     private var mListener: OnLoginActivityInteractionListener? = null
-    private var rootLayout: View? = null
+    private var passwordContainer: EditText? = null
+    private var email_sign_in_button: Button? = null
+    private var go_sign_up_button: TextView? = null
+    private var emailContainer: AutoCompleteTextView? = null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -39,17 +45,19 @@ class LoginFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         logd("onCreateView LoginFragment")
-        if(rootLayout==null){
-            rootLayout = container?.inflate(R.layout.fragment_login)
-        }
-        return rootLayout
+        val view: View? = container?.inflate(R.layout.fragment_login)
+        passwordContainer = view!!.findViewById(R.id.passwordContainer)
+        email_sign_in_button = view.findViewById(R.id.email_sign_in_button)
+        go_sign_up_button = view.findViewById(R.id.go_sign_up_button)
+        emailContainer = view.findViewById(R.id.emailContainer)
+        return view
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        logd("onActivityCreated LoginFragment")
+    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        logd("onViewCreated LoginFragment")
 
-        passwordContainer.setOnEditorActionListener(TextView.OnEditorActionListener { _, id, _ ->
+        passwordContainer!!.setOnEditorActionListener(TextView.OnEditorActionListener { _, id, _ ->
             if (id == EditorInfo.IME_ACTION_DONE || id == EditorInfo.IME_NULL) {
                 attemptLogin()
                 return@OnEditorActionListener true
@@ -57,7 +65,7 @@ class LoginFragment : Fragment() {
             false
         })
 
-        email_sign_in_button.setOnClickListener { attemptLogin() }
+        email_sign_in_button!!.setOnClickListener { attemptLogin() }
 
         //Editing clickable 'sign up' inside other text
         var accountCheck: String = resources.getString(R.string.action_go_sign_up)
@@ -78,18 +86,25 @@ class LoginFragment : Fragment() {
             }
         }
         ss.setSpan(clickableSpan, i1, i2, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-        go_sign_up_button.text = ss
-        go_sign_up_button.movementMethod = LinkMovementMethod.getInstance()
-        go_sign_up_button.highlightColor = Color.TRANSPARENT
+        go_sign_up_button!!.text = ss
+        go_sign_up_button!!.movementMethod = LinkMovementMethod.getInstance()
+        go_sign_up_button!!.highlightColor = Color.TRANSPARENT
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        logd("onActivityCreated LoginFragment")
     }
 
     fun setEmailError(errEmail: String?): View?{
-        emailContainer.error = errEmail
+        emailContainer!!.error = errEmail
         return emailContainer
     }
 
     fun setPasswordError(passError: String?): View?{
-        passwordContainer.error = passError
+        if(view!=null){
+            (view as View).findViewById<EditText>(R.id.passwordContainer).error = passError
+        }
         return passwordContainer
     }
 
@@ -99,8 +114,8 @@ class LoginFragment : Fragment() {
     }
 
     private fun attemptLogin() {
-        val emailStr = emailContainer.text.toString()
-        val passwordStr = passwordContainer.text.toString()
+        val emailStr = emailContainer!!.text.toString()
+        val passwordStr = passwordContainer!!.text.toString()
         mListener!!.OnSignInButtonClicked(emailStr,passwordStr)
 
 

@@ -3,19 +3,10 @@ package com.support.robigroup.ututor.commons;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 
-import com.support.robigroup.ututor.screen.main.MainActivity;
-
-import static com.support.robigroup.ututor.commons.Constants.BAD_REQUEST;
-import static com.support.robigroup.ututor.commons.Constants.FORBIDDEN;
-import static com.support.robigroup.ututor.commons.Constants.NOT_FOUND;
-import static com.support.robigroup.ututor.commons.Constants.SERVER_ERROR;
-import static com.support.robigroup.ututor.commons.Constants.UNAUTHORIZED;
 
 
 public class Functions {
@@ -80,74 +71,5 @@ public class Functions {
         if(progressDialog.isShowing()){
             progressDialog.cancel();
         }
-    }
-
-    public static boolean errorHandler(int code){
-
-        Functions.cancelProgressDialog();
-
-        if(code >= 200 && code < 300) {
-            return true;
-        }
-        Snackbar snackbar = Snackbar.make(((MainActivity)context).findViewById(android.R.id.content)
-                , "YROO XRKSVI GIRZMTOV", Snackbar.LENGTH_LONG);
-        switch(code) {
-            case BAD_REQUEST:
-                snackbar.setText("Client's data is already exist on server or is invalid");
-                snackbar.setActionTextColor(Color.RED);
-                break;
-            case UNAUTHORIZED:
-                snackbar.setText("Client is not authorized");
-                snackbar.setActionTextColor(Color.RED);
-                break;
-            case FORBIDDEN:
-                snackbar.setText("Forbidden request");
-                snackbar.setActionTextColor(Color.RED);
-                break;
-            case NOT_FOUND:
-                snackbar.setText("API not found");
-                snackbar.setActionTextColor(Color.RED);
-                break;
-            case SERVER_ERROR:
-                snackbar.setText("Server is experiencing problems");
-                snackbar.setActionTextColor(Color.RED);
-                break;
-        }
-        snackbar.show();
-        return false;
-    }
-
-    public static boolean errorHandler(int code,String message){
-
-        Functions.cancelProgressDialog();
-        if(code >= 200 && code < 300) {
-            return true;
-        }
-        Snackbar snackbar = Snackbar.make(((MainActivity)context).findViewById(android.R.id.content)
-                , message, Snackbar.LENGTH_LONG);
-        switch(code) {
-            case BAD_REQUEST:
-                snackbar.setText(message);
-                snackbar.setActionTextColor(Color.RED);
-                break;
-            case UNAUTHORIZED:
-                snackbar.setText("Client is not authorized");
-                snackbar.setActionTextColor(Color.RED);
-                break;
-            case FORBIDDEN:
-                snackbar.setText("Forbidden request");
-                snackbar.setActionTextColor(Color.RED);
-                break;
-            case NOT_FOUND:
-                snackbar.setText("API not found");
-                snackbar.setActionTextColor(Color.RED);
-                break;
-            case SERVER_ERROR:
-                snackbar.setText("Server is experiencing problems");
-                snackbar.setActionTextColor(Color.RED);
-                break;
-        }
-        snackbar.show();
-        return false;
     }
 }

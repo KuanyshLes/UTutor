@@ -112,7 +112,6 @@ class MainActivity : AppCompatActivity(), OnMainActivityInteractionListener {
         }else{
             super.onBackPressed()
         }
-
     }
 
 

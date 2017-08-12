@@ -9,6 +9,7 @@ import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.app.DialogFragment;
+import android.util.Log;
 import android.view.View;
 
 import com.stfalcon.chatkit.messages.MessageHolders;
@@ -24,6 +25,8 @@ import com.support.robigroup.ututor.screen.chat.custom.media.holders.OutcomingVo
 import com.support.robigroup.ututor.screen.main.MainActivity;
 
 import org.jetbrains.annotations.NotNull;
+
+import static com.support.robigroup.ututor.commons.ExtensionsKt.logd;
 
 public class ChatActivity extends DemoMessagesActivity
         implements MessageInput.InputListener,
@@ -56,9 +59,10 @@ public class ChatActivity extends DemoMessagesActivity
             }
         });
 
-//        Intent intent = new Intent();
-//        intent.setClass(mContext, SignalRService.class);
-//        bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+        logd("beforeStartingService");
+        Intent intent = new Intent();
+        intent.setClass(mContext, SignalRService.class);
+        bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
 
         this.messagesList = (MessagesList) findViewById(R.id.messagesList);
         initAdapter();
@@ -79,7 +83,7 @@ public class ChatActivity extends DemoMessagesActivity
                         this);
 
 
-        super.messagesAdapter = new MessagesListAdapter<>(super.senderId, holders, super.imageLoader);
+        super.messagesAdapter = new MessagesListAdapter<>(super.senderId, holders, null);
         super.messagesAdapter.enableSelectionMode(this);
         super.messagesAdapter.setLoadMoreListener(this);
         this.messagesList.setAdapter(super.messagesAdapter);
@@ -139,6 +143,9 @@ public class ChatActivity extends DemoMessagesActivity
     public boolean onSubmit(CharSequence input) {
         super.messagesAdapter.addToStart(
                 MessagesFixtures.getTextMessage(input.toString()), true);
+        if(mBound){
+//            mService.sendMessage_To();
+        }
         return true;
     }
 

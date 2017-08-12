@@ -5,6 +5,7 @@ package com.support.robigroup.ututor.api
 */
 
 
+
 class RedditNewsResponse(val data: RedditDataResponse)
 
 class RedditDataResponse(

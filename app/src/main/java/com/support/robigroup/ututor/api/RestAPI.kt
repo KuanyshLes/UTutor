@@ -1,23 +1,40 @@
 package com.support.robigroup.ututor.api
 
-import retrofit2.Call
+import com.support.robigroup.ututor.Constants
+import okhttp3.Interceptor
 import retrofit2.Retrofit
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
+import okhttp3.OkHttpClient
+import okhttp3.Response
+import java.io.IOException
+
 
 class RestAPI{
 
-    private val redditApi: RedditApi
+    companion object {
 
-    init {
-        val retrofit = Retrofit.Builder()
-                .baseUrl("https://www.reddit.com")
+        var client = OkHttpClient.Builder().addInterceptor(object : Interceptor {
+            @Throws(IOException::class)
+            override fun intercept(chain: Interceptor.Chain): Response {
+                val newRequest = chain.request().newBuilder()
+                        .addHeader("Content-Type", "application/x-www-form-urlencoded")
+                        .build()
+                return chain.proceed(newRequest)
+            }
+        }).build()
+
+        private val retrofit = Retrofit.Builder()
+                .baseUrl(Constants.BASE_URL)
+                .client(client)
                 .addConverterFactory(GsonConverterFactory.create())
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .build()
 
-        redditApi = retrofit.create(RedditApi::class.java)
+        private val apiInterface: APIInterface = retrofit.create(APIInterface::class.java)
+
+        fun getApi(): APIInterface = apiInterface
     }
 
-    fun getNews(after: String, limit: String): Call<RedditNewsResponse> {
-        return redditApi.getTop(after, limit)
-    }
+
 }
