@@ -1,4 +1,4 @@
-package com.support.robigroup.ututor.commons.model;
+package com.support.robigroup.ututor.screen.chat.model;
 
 import com.stfalcon.chatkit.commons.models.IMessage;
 import com.stfalcon.chatkit.commons.models.MessageContentType;

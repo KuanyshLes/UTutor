@@ -1,5 +1,7 @@
 package com.support.robigroup.ututor.api
 
+import com.support.robigroup.ututor.model.content.Lesson
+import com.support.robigroup.ututor.model.content.TopicItem
 import io.reactivex.Observable
 import okhttp3.RequestBody
 import retrofit2.Call
@@ -16,6 +18,14 @@ interface APIInterface {
     fun getToken(
             @Body data: HashMap<String,String>
     ): Observable<Response<String>>
+
+    @GET("api/sprs/topics")
+    fun getTopicsBySubject(@Query("subject") subject: Int = 5): Observable<Response<List<TopicItem>>>
+
+    @GET("api/sprs/subjects")
+    fun getSubjects(@Query("class") classRoom: Int = 10, @Query("lang")lang : String = "kk-KZ"): Observable<Response<List<Lesson>>>
+
+
 
 
 }

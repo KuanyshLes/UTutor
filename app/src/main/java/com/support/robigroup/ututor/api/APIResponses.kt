@@ -1,9 +1,5 @@
 package com.support.robigroup.ututor.api
 
-/**
- * Created by Bimurat Mukhtar on 17.07.2017.
-*/
-
 
 
 class RedditNewsResponse(val data: RedditDataResponse)

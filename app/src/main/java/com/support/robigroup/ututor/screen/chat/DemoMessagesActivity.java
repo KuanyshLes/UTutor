@@ -14,7 +14,7 @@ import com.stfalcon.chatkit.messages.MessagesListAdapter;
 import com.support.robigroup.ututor.R;
 import com.support.robigroup.ututor.commons.AppUtils;
 import com.support.robigroup.ututor.commons.fixtures.MessagesFixtures;
-import com.support.robigroup.ututor.commons.model.Message;
+import com.support.robigroup.ututor.screen.chat.model.Message;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;

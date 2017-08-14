@@ -1,8 +1,8 @@
 package com.support.robigroup.ututor.commons.fixtures;
 
-import com.support.robigroup.ututor.commons.model.Dialog;
-import com.support.robigroup.ututor.commons.model.Message;
-import com.support.robigroup.ututor.commons.model.User;
+import com.support.robigroup.ututor.screen.chat.model.Dialog;
+import com.support.robigroup.ututor.screen.chat.model.Message;
+import com.support.robigroup.ututor.screen.chat.model.User;
 
 import java.util.ArrayList;
 import java.util.Calendar;

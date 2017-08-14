@@ -13,6 +13,7 @@ import com.support.robigroup.ututor.model.content.User
 import com.support.robigroup.ututor.screen.loading.LoadingDialog
 import com.support.robigroup.ututor.screen.loading.LoadingView
 import com.support.robigroup.ututor.screen.main.MainActivity
+import com.support.robigroup.ututor.singleton.SingletonSharedPref
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -34,7 +35,7 @@ class LoginActivity : AppCompatActivity(), OnLoginActivityInteractionListener {
 
     private var realm: Realm by Delegates.notNull()
 
-    private val mockServerResponse: String = "{ \"access_token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJiZXliaXQ5MkBnbWFpbC5jb20iLCJqdGkiOiIwZmIwNWZjOC0zYTg5LTRhYTktYTc1Ny03NDMyNmJjZDdmMTYiLCJpYXQiOjE1MDI1MzM4NjMsIm5iZiI6MTUwMjUzMzg2MywiZXhwIjoxNTAzMTM4NjYzLCJpc3MiOiJVVHV0b3JJc3N1ZXIiLCJhdWQiOiJVVHV0b3JBdWRpZW5jZSJ9.qEKjlQdafZRSIULM39GSL006Sew9fRxpw0rsooj7kmg\", \"expires_in\": 604800 }"
+    private val mockServerResponse: String = "{ \"access_token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJiZXliaXQ5MkBnbWFpbC5jb20iLCJqdGkiOiJjYWJkODAxYi0xYjY1LTQ3NjEtOWQyYi0xY2Q1YzQ1MzA4ZGYiLCJpYXQiOjE1MDI1NDE1NjMsIm5iZiI6MTUwMjU0MTU2MywiZXhwIjoxNTAzMTQ2MzYzLCJpc3MiOiJVVHV0b3JJc3N1ZXIiLCJhdWQiOiJVVHV0b3JBdWRpZW5jZSJ9._te8D9oerdPXOKJQX0u0qnlaaQx1TMSCzAYUQBTivq8\", \"expires_in\": 604800 }"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -144,6 +145,7 @@ class LoginActivity : AppCompatActivity(), OnLoginActivityInteractionListener {
 
     private fun saveTokenAndFinish(stringResult: String?){
         val jsonResult = JSONObject(stringResult)
+        SingletonSharedPref.getInstance().put(Constants.KEY_RES_TOKEN,jsonResult.getString(Constants.KEY_RES_TOKEN))
         realm.executeTransaction {
             realm.deleteAll()
             val user = realm.createObject(User::class.java,jsonResult.getString(Constants.KEY_RES_TOKEN))

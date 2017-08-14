@@ -21,6 +21,7 @@ public class UTutor extends Application {
         sInstance = this;
 
         Realm.init(this);
+
         SingletonSharedPref.getInstance(getBaseContext());
 
 //        RealmConfiguration configuration = new RealmConfiguration.Builder()

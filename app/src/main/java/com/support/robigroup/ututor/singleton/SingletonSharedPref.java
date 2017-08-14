@@ -67,7 +67,7 @@ public class SingletonSharedPref {
      * SharedPreferences does not handle doubles so they have to
      * cast to and from String.
      *
-     * @param key The name of the preference to store.
+     * @param key The Text of the preference to store.
      * @param val The new value for the preference.
      */
     public void put(String key, double val) {
@@ -121,7 +121,7 @@ public class SingletonSharedPref {
      * SharedPreferences does not handle doubles so they have to
      * cast to and from String.
      *
-     * @param key The name of the preference to fetch.
+     * @param key The Text of the preference to fetch.
      */
     public double getDouble(String key) {
         return getDouble(key, 0);
@@ -134,7 +134,7 @@ public class SingletonSharedPref {
      * SharedPreferences does not handle doubles so they have to
      * cast to and from String.
      *
-     * @param key The name of the preference to fetch.
+     * @param key The Text of the preference to fetch.
      */
     public double getDouble(String key, double defaultValue) {
         try {
@@ -155,7 +155,7 @@ public class SingletonSharedPref {
     /**
      * Remove keys from SharedPreferences.
      *
-     * @param keys The name of the key(s) to be removed.
+     * @param keys The Text of the key(s) to be removed.
      */
     public void remove(String... keys) {
         doEdit();

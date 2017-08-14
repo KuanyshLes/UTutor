@@ -39,7 +39,7 @@ class ClassRoomAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             parent.inflate(R.layout.item_lesson)) {
 
         fun bind(item: Lesson) = with(itemView) {
-            main_lesson_title_textview.text = item.name
+            main_lesson_title_textview.text = item.Text
         }
     }
 }

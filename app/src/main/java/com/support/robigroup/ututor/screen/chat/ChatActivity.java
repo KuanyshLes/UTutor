@@ -9,7 +9,6 @@ import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.app.DialogFragment;
-import android.util.Log;
 import android.view.View;
 
 import com.stfalcon.chatkit.messages.MessageHolders;
@@ -19,7 +18,7 @@ import com.stfalcon.chatkit.messages.MessagesListAdapter;
 import com.support.robigroup.ututor.R;
 import com.support.robigroup.ututor.SignalRService;
 import com.support.robigroup.ututor.commons.fixtures.MessagesFixtures;
-import com.support.robigroup.ututor.commons.model.Message;
+import com.support.robigroup.ututor.screen.chat.model.Message;
 import com.support.robigroup.ututor.screen.chat.custom.media.holders.IncomingVoiceMessageViewHolder;
 import com.support.robigroup.ututor.screen.chat.custom.media.holders.OutcomingVoiceMessageViewHolder;
 import com.support.robigroup.ututor.screen.main.MainActivity;

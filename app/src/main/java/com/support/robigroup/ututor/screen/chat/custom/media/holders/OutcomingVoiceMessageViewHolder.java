@@ -7,7 +7,7 @@ import com.stfalcon.chatkit.messages.MessageHolders;
 import com.stfalcon.chatkit.utils.DateFormatter;
 import com.support.robigroup.ututor.R;
 import com.support.robigroup.ututor.commons.FormatUtils;
-import com.support.robigroup.ututor.commons.model.Message;
+import com.support.robigroup.ututor.screen.chat.model.Message;
 
 /*
  * Created by troy379 on 05.04.17.

@@ -40,7 +40,7 @@ class TeachersAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
         fun bind(item: Teacher) = with(itemView) {
             teacher_name.text = item.name
-            teacher_lessons.text = item.lessons.joinToString { lesson: Lesson -> lesson.name.plus(", ") }
+            teacher_lessons.text = item.lessons.joinToString { lesson: Lesson -> lesson.Text.plus(", ") }
             teacher_rating.text = item.rating.toString()
             teacher_photo.loadImg()
             teacher_choose.setOnClickListener {

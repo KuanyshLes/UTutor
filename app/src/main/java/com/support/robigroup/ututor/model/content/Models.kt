@@ -29,9 +29,7 @@ data class ClassRoom(
 
 
 data class Lesson(
-        var after: String = "",
-        var before: String = "",
-        var name: String = "Mathematica",
+        var Text: String = "Mathematica",
         var news: List<TopicItem> = ArrayList()
 ): Parcelable {
 
@@ -42,17 +40,13 @@ data class Lesson(
 
     protected constructor(parcelIn: Parcel) : this(
             parcelIn.readString(),
-            parcelIn.readString(),
-            parcelIn.readString(),
             mutableListOf<TopicItem>().apply {
                 parcelIn.readTypedList(this, TopicItem.CREATOR)
             }
     )
 
     override fun writeToParcel(dest: Parcel, flags: Int) {
-        dest.writeString(after)
-        dest.writeString(before)
-        dest.writeString(name)
+        dest.writeString(Text)
         dest.writeTypedList(news)
     }
 
