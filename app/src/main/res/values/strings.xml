@@ -49,6 +49,9 @@
     <string name="main_title">Главная</string>
     <string name="profile_title">Профиль</string>
     <string name="ex_time">9 д. 16 ч.</string>
+    <string name="lang">kk-KZ</string>
+    <string name="wait">wait</string>
+    <string name="sending">sending</string>
 
 
     // for chat

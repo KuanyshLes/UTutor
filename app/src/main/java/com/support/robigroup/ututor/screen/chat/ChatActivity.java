@@ -103,8 +103,8 @@ public class ChatActivity extends DemoMessagesActivity
 //            // Call a method from the SignalRService.
 //            // However, if this call were something that might hang, then this request should
 //            // occur in a separate thread to avoid slowing down the activity performance.
-//            EditText editText = (EditText) findViewById(R.id.edit_message);
-//            EditText editText_Receiver = (EditText) findViewById(R.id.edit_receiver);
+//            EditText editText = (EditText) findViewById(R.Id.edit_message);
+//            EditText editText_Receiver = (EditText) findViewById(R.Id.edit_receiver);
 //            if (editText != null && editText.getText().length() > 0) {
 //                String receiver = editText_Receiver.getText().toString();
 //                String message = editText.getText().toString();

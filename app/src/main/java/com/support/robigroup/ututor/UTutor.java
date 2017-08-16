@@ -5,7 +5,10 @@ import android.support.annotation.NonNull;
 
 import com.support.robigroup.ututor.singleton.SingletonSharedPref;
 
+import io.realm.DynamicRealm;
 import io.realm.Realm;
+import io.realm.RealmConfiguration;
+import io.realm.RealmMigration;
 
 /**
  * @author Artur Vasilov
@@ -21,6 +24,10 @@ public class UTutor extends Application {
         sInstance = this;
 
         Realm.init(this);
+        RealmConfiguration config = new RealmConfiguration.Builder()
+                .deleteRealmIfMigrationNeeded()
+                .build();
+        Realm.setDefaultConfiguration(config);
 
         SingletonSharedPref.getInstance(getBaseContext());
 
@@ -28,10 +35,5 @@ public class UTutor extends Application {
 //                .rxFactory(new RealmObservableFactory())
 //                .build();
 //        Realm.setDefaultConfiguration(configuration);
-    }
-
-    @NonNull
-    public static UTutor getAppContext() {
-        return sInstance;
     }
 }

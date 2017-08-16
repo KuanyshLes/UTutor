@@ -9,7 +9,9 @@ import com.support.robigroup.ututor.R
 import com.support.robigroup.ututor.commons.logd
 import com.support.robigroup.ututor.commons.OnMainActivityInteractionListener
 import android.support.design.widget.Snackbar
+import android.util.Log
 import com.support.robigroup.ututor.commons.RxBaseFragment
+import com.support.robigroup.ututor.commons.requestErrorHandler
 import com.support.robigroup.ututor.model.content.ClassRoom
 import com.support.robigroup.ututor.model.content.Lesson
 import com.support.robigroup.ututor.screen.main.adapters.ClassRoomAdapter
@@ -62,7 +64,7 @@ class MainFragment : RxBaseFragment() {
 
         if (savedInstanceState != null && savedInstanceState.containsKey(KEY_RECENT_TOPICS)) {
             recentTopics = savedInstanceState.get(KEY_RECENT_TOPICS) as Lesson
-            (main_recycler_view_header.adapter as TopicsAdapter).clearAndAddNews(recentTopics!!.news)
+            (main_recycler_view_header.adapter as TopicsAdapter).clearAndAddNews(recentTopics!!.topics)
             logd("saved State is not null")
         } else {
             logd("saved State is null")
@@ -71,8 +73,8 @@ class MainFragment : RxBaseFragment() {
 
     override fun onResume() {
         super.onResume()
-        requestTopics()
-        requestLessons()
+        requestSubjects(10,getString(R.string.lang))
+        requestTopics(5)
     }
 
     private fun initAdapters() {
@@ -84,14 +86,18 @@ class MainFragment : RxBaseFragment() {
         }
     }
 
-    private fun requestTopics() {
-        val subscription = topicsManager.getTopics(recentTopics?.after ?: "")
+    private fun requestTopics(subjectId: Int) {
+
+        val subscription = MainManager().getTopics(subjectId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe (
                         { retrievedTopics ->
-                            recentTopics = retrievedTopics
-                            (main_recycler_view_header.adapter as TopicsAdapter).addNews(retrievedTopics.news)
+                            if(activity.requestErrorHandler(retrievedTopics.code(),retrievedTopics.message())){
+                                (main_recycler_view_header.adapter as TopicsAdapter).addNews(retrievedTopics.body())
+                            }else{
+                                //TODO handle errors
+                            }
                         },
                         { e ->
                             Snackbar.make(main_recycler_view_header, e.message ?: "", Snackbar.LENGTH_LONG).show()
@@ -100,18 +106,21 @@ class MainFragment : RxBaseFragment() {
         subscriptions.add(subscription)
     }
 
-    private fun requestLessons(){
-        val subscription = topicsManager.getLessons()
+    private fun requestSubjects(classNumber :Int, lang: String){
+        val subscription = topicsManager.getLessons(classNumber,lang)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         { retrievedLessons ->
-                            lessons = retrievedLessons
-                            logd("size2 ".plus(retrievedLessons.lessons.size))
-                            (main_recycler_view_content.adapter as ClassRoomAdapter).clearAndAddNews(retrievedLessons.lessons)
+                            if(activity.requestErrorHandler(retrievedLessons.code(),retrievedLessons.message())){
+                                lessons!!.lessons = retrievedLessons.body()!!
+                                (main_recycler_view_content.adapter as ClassRoomAdapter).clearAndAddNews(retrievedLessons.body())
+                            }else{
+                                //TODO handle http errors
+                            }
                         },
                         { e ->
-                            Snackbar.make(main_recycler_view_header, e.message ?: "bbbb", Snackbar.LENGTH_LONG).show()
+                            Snackbar.make(main_recycler_view_header, e.message ?: "", Snackbar.LENGTH_LONG).show()
                         }
                 )
         subscriptions.add(subscription)
@@ -121,9 +130,9 @@ class MainFragment : RxBaseFragment() {
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
 //        logd("onSaveInstanceState main fragment newsSaved")
-//        val news = (main_recycler_view_header.adapter as TopicsAdapter).getNews()
-//        if (recentTopics != null && news.isNotEmpty()) {
-//            outState.putParcelable(KEY_RECENT_TOPICS, recentTopics?.copy(news = news))
+//        val topics = (main_recycler_view_header.adapter as TopicsAdapter).getTopics()
+//        if (recentTopics != null && topics.isNotEmpty()) {
+//            outState.putParcelable(KEY_RECENT_TOPICS, recentTopics?.copy(topics = topics))
 //
 //        }
     }

@@ -26,10 +26,10 @@ class ClassRoomAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     override fun getItemCount(): Int = items.size
 
-    fun clearAndAddNews(lessons: List<Lesson>) {
+    fun clearAndAddNews(lessons: List<Lesson>?) {
         items.clear()
 
-        items.addAll(lessons)
+        items.addAll(lessons!!)
         logd("${items.size} teachers")
         notifyDataSetChanged()
     }

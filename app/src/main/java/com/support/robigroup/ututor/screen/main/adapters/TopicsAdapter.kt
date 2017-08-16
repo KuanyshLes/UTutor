@@ -40,14 +40,14 @@ class TopicsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         return delegateAdapters.get(viewType).onCreateViewHolder(parent)
     }
 
-    fun addNews(lessons: List<TopicItem>) {
+    fun addNews(lessons: List<TopicItem>?) {
         // first remove loading and notify
         val initPosition = items.size - 1
         items.removeAt(initPosition)
         notifyItemRemoved(initPosition)
 
         // insert teachers and the loading at the end of the list
-        items.addAll(lessons)
+        items.addAll(lessons!!)
         items.add(loadingItem)
         notifyItemRangeChanged(initPosition, items.size + 1 /* plus loading item */)
     }

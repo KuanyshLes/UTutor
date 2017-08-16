@@ -38,7 +38,7 @@ class TopicsDelegateAdapter : ViewTypeDelegateAdapter {
         fun bind(item: TopicItem) = with(itemView) {
 
             main_lesson_title.text = item.lesson
-            topic_description_text.text = item.description
+            topic_description_text.text = item.Text
             date_create.text = item.created.toString()
             //TODO add time
             topic_rating.text = item.rating.toString()

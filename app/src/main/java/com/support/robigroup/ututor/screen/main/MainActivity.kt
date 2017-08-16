@@ -26,7 +26,7 @@ class MainActivity : AppCompatActivity(), OnMainActivityInteractionListener {
     private var stringArrayList: MutableList<TopicItem>
     private var adapter: ListViewAdapter? = null
     init {
-        stringArrayList = MutableList(40,{TopicItem(description = "math is math is mismath exception",lesson = "Physika")})
+        stringArrayList = MutableList(40,{TopicItem(Text = "math is math is mismath exception",lesson = "Physika")})
     }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,7 +38,7 @@ class MainActivity : AppCompatActivity(), OnMainActivityInteractionListener {
         list_item!!.adapter = adapter
 
         list_item.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, i, l ->
-            Toast.makeText(this@MainActivity, (adapterView.getItemAtPosition(i) as TopicItem).description, Toast.LENGTH_SHORT).show()
+            Toast.makeText(this@MainActivity, (adapterView.getItemAtPosition(i) as TopicItem).Text, Toast.LENGTH_SHORT).show()
         }
     }
 

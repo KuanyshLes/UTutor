@@ -9,6 +9,7 @@ import com.support.robigroup.ututor.R
 import com.support.robigroup.ututor.commons.OnMainActivityInteractionListener
 import com.support.robigroup.ututor.commons.RxBaseFragment
 import com.support.robigroup.ututor.commons.logd
+import com.support.robigroup.ututor.commons.requestErrorHandler
 import com.support.robigroup.ututor.model.content.ClassRoom
 import com.support.robigroup.ututor.model.content.TopicItem
 import com.support.robigroup.ututor.screen.main.adapters.TeachersAdapter
@@ -48,7 +49,7 @@ class TopicFragment : RxBaseFragment() {
         mListener!!.setDisplayHomeAsEnabled(true)
         mListener!!.setToolbarTitle(itemTopic.lesson)
 
-        topic_desc.text = itemTopic.description
+        topic_desc.text = itemTopic.Text
         class_text.text = "${itemTopic.group} ${getString(R.string.group)}"
 
         find_teacher.setOnClickListener {
@@ -63,7 +64,7 @@ class TopicFragment : RxBaseFragment() {
 
     override fun onResume() {
         super.onResume()
-        requestTopics()
+        requestTopics(5)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
@@ -80,13 +81,17 @@ class TopicFragment : RxBaseFragment() {
         }
     }
 
-    private fun requestTopics() {
-        val subscription = MainManager().getTopics("")
+    private fun requestTopics(subjectId: Int) {
+        val subscription = MainManager().getTopics(subjectId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe (
                         { retrievedTopics ->
-                            (main_recycler_view_header.adapter as TopicsAdapter).addNews(retrievedTopics.news)
+                            if(activity.requestErrorHandler(retrievedTopics.code(),retrievedTopics.message())){
+                                (main_recycler_view_header.adapter as TopicsAdapter).addNews(retrievedTopics.body())
+                            }else{
+                                //TODO handle errors
+                            }
                         },
                         { e ->
                             Snackbar.make(main_recycler_view_header, e.message ?: "", Snackbar.LENGTH_LONG).show()

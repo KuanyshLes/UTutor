@@ -48,10 +48,6 @@ public class Functions {
         alert.show();
     }
 
-    public static void messageOrderExists(){
-        builtAlertMessageWithText("Вы уже создали заказ, удалите его и попробуйте снова!");
-    }
-
     public static boolean isOnline() {
         ConnectivityManager cm =
                 (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);

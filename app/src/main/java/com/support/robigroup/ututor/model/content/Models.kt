@@ -29,8 +29,9 @@ data class ClassRoom(
 
 
 data class Lesson(
-        var Text: String = "Mathematica",
-        var news: List<TopicItem> = ArrayList()
+        var Id: Int? = null,
+        var Text: String? = null,
+        var topics: List<TopicItem> = ArrayList()
 ): Parcelable {
 
     companion object {
@@ -39,6 +40,7 @@ data class Lesson(
     }
 
     protected constructor(parcelIn: Parcel) : this(
+            parcelIn.readInt(),
             parcelIn.readString(),
             mutableListOf<TopicItem>().apply {
                 parcelIn.readTypedList(this, TopicItem.CREATOR)
@@ -46,8 +48,9 @@ data class Lesson(
     )
 
     override fun writeToParcel(dest: Parcel, flags: Int) {
+        dest.writeInt(Id!!)
         dest.writeString(Text)
-        dest.writeTypedList(news)
+        dest.writeTypedList(topics)
     }
 
     override fun describeContents() = 0
@@ -57,10 +60,10 @@ data class Lesson(
 data class TopicItem(
         var lesson: String = "",
         var author: String = "",
-        var description: String = "",
+        var Text: String = "",
         var rating: Double = 0.0,
         var created: Long = 0,
-        var id: String = "",
+        var Id: String = "",
         var group: Int = 0
 ) : ViewType, Parcelable {
 
@@ -82,10 +85,10 @@ data class TopicItem(
     override fun writeToParcel(dest: Parcel, flags: Int) {
         dest.writeString(lesson)
         dest.writeString(author)
-        dest.writeString(description)
+        dest.writeString(Text)
         dest.writeDouble(rating)
         dest.writeLong(created)
-        dest.writeString(id)
+        dest.writeString(Id)
         dest.writeInt(group)
     }
 
@@ -95,10 +98,15 @@ data class TopicItem(
 }
 
 data class Teacher(
-        var name: String? = null,
-        var imagePath: String? = null,
-        var rating: Double? = null,
-        var lessons: List<Lesson> = ArrayList()
+        val Id: String,
+        var rating: Float? = null,
+        var Languages: String? = null,
+        var Classes: String? = null,
+        var FirstName: String?= null,
+        var LastName: String? = null,
+        var MiddleName: String? = null,
+        var Birthday: String? = null,
+        var Image: String? = null
 ): Parcelable{
     companion object {
         @JvmField @Suppress("unused")
@@ -106,18 +114,26 @@ data class Teacher(
     }
     protected constructor(parcelIn: Parcel) : this(
             parcelIn.readString(),
+            parcelIn.readFloat(),
             parcelIn.readString(),
-            parcelIn.readDouble(),
-            mutableListOf<Lesson>().apply {
-                parcelIn.readTypedList(this, Lesson.CREATOR)
-            }
+            parcelIn.readString(),
+            parcelIn.readString(),
+            parcelIn.readString(),
+            parcelIn.readString(),
+            parcelIn.readString(),
+            parcelIn.readString()
     )
 
     override fun writeToParcel(dest: Parcel, flags: Int) {
-        dest.writeString(name)
-        dest.writeString(imagePath)
-        dest.writeDouble(rating ?: 0.0)
-        dest.writeTypedList(lessons)
+        dest.writeString(Id)
+        dest.writeFloat(rating ?: 0.0F)
+        dest.writeString(Languages)
+        dest.writeString(Classes)
+        dest.writeString(FirstName)
+        dest.writeString(LastName)
+        dest.writeString(MiddleName)
+        dest.writeString(Birthday)
+        dest.writeString(Image)
     }
 
     override fun describeContents() = 0

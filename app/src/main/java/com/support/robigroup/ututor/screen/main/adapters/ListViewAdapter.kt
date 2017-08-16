@@ -46,7 +46,7 @@ class ListViewAdapter(private val activity: MainActivity, resource: Int, private
             holder = convertView.tag as ViewHolder
         }
         holder.lessonName.text = getItem(position)!!.lesson
-        holder.lessonDesc.text = getItem(position)!!.description
+        holder.lessonDesc.text = getItem(position)!!.Text
 
         return convertView
     }
@@ -60,7 +60,7 @@ class ListViewAdapter(private val activity: MainActivity, resource: Int, private
             friendList.clear()
         } else {
             for (s in searchList) {
-                if (s.description.contains(charText)) {
+                if (s.Text.contains(charText)) {
                     friendList.add(s)
                 }
             }

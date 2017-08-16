@@ -2,11 +2,15 @@ package com.support.robigroup.ututor.commons
 
 
 import android.app.Activity
+import android.app.ProgressDialog
 import android.content.Context
+import android.content.DialogInterface
 import android.graphics.Color
+import android.net.ConnectivityManager
 import android.os.Parcel
 import android.os.Parcelable
 import android.support.design.widget.Snackbar
+import android.support.v7.app.AlertDialog
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -15,10 +19,28 @@ import android.widget.ImageView
 import android.widget.Toast
 import com.squareup.picasso.Picasso
 import com.support.robigroup.ututor.Constants
-import retrofit2.Response
+import com.support.robigroup.ututor.R
 
 fun logd(message: String){
     Log.d("myLogs",message)
+}
+
+var progressDialog: ProgressDialog? = null
+
+fun Context.builtMessageWait(title: String = getString(R.string.sending), message: String = getString(R.string.wait)) {
+    if(progressDialog==null){
+        progressDialog = ProgressDialog(applicationContext)
+    }
+    progressDialog?.setMessage(message)
+    progressDialog?.setTitle(title)
+    progressDialog?.setCancelable(false)
+    progressDialog?.show()
+}
+
+fun cancelProgressDialog() {
+    if (progressDialog!=null&&progressDialog!!.isShowing()) {
+        progressDialog!!.cancel()
+    }
 }
 
 fun ViewGroup.inflate(layoutId: Int, attachToRoot: Boolean = false): View {
@@ -39,13 +61,28 @@ inline fun <reified T : Parcelable> createParcel(
             override fun newArray(size: Int): Array<out T?> = arrayOfNulls(size)
         }
 
-fun Activity.requestErrorHandler(response: Response<String>, parentView: View = window.decorView.rootView): Snackbar? {
+fun Context.isOnline(): Boolean {
+    val cm = applicationContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+    val netInfo = cm.activeNetworkInfo
+    return netInfo != null && netInfo.isConnectedOrConnecting
+}
 
-    val code: Int = response.code()
+fun Context.builtMessageNoInternet() {
+    val builder = AlertDialog.Builder(applicationContext)
+    builder.setMessage("Проверьте интернет соединение!")
+            .setCancelable(true)
+            .setPositiveButton("OK"){dialog,_ -> dialog.cancel()}
+    val alert = builder.create()
+    alert.show()
+}
+
+
+fun Activity.requestErrorHandler(code: Int, message: String, parentView: View = window.decorView.rootView): Boolean {
+
     if (code in 200 until 300) {
-        return null
+        return true
     }
-    val snackbar = Snackbar.make(parentView, response.message(), Snackbar.LENGTH_LONG)
+    val snackbar = Snackbar.make(parentView, message, Snackbar.LENGTH_LONG)
     when (code) {
         Constants.BAD_REQUEST -> {
             snackbar.setText("Client's data is already exist on server or is invalid")
@@ -69,5 +106,6 @@ fun Activity.requestErrorHandler(response: Response<String>, parentView: View = 
         }
     }
     snackbar.show()
-    return snackbar
+    return false
 }
+

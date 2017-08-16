@@ -19,7 +19,6 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import io.realm.Realm
 import kotlinx.android.synthetic.main.fragment_login.*
-import okhttp3.RequestBody
 import org.json.JSONObject
 import kotlin.properties.Delegates
 
@@ -33,15 +32,12 @@ class LoginActivity : AppCompatActivity(), OnLoginActivityInteractionListener {
 
     val compositeDisposable: CompositeDisposable = CompositeDisposable()
 
-    private var realm: Realm by Delegates.notNull()
-
-    private val mockServerResponse: String = "{ \"access_token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJiZXliaXQ5MkBnbWFpbC5jb20iLCJqdGkiOiJjYWJkODAxYi0xYjY1LTQ3NjEtOWQyYi0xY2Q1YzQ1MzA4ZGYiLCJpYXQiOjE1MDI1NDE1NjMsIm5iZiI6MTUwMjU0MTU2MywiZXhwIjoxNTAzMTQ2MzYzLCJpc3MiOiJVVHV0b3JJc3N1ZXIiLCJhdWQiOiJVVHV0b3JBdWRpZW5jZSJ9._te8D9oerdPXOKJQX0u0qnlaaQx1TMSCzAYUQBTivq8\", \"expires_in\": 604800 }"
+    private val mockServerResponse: String = "{ \"access_token\": \"bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJiZXliaXQ5MkBnbWFpbC5jb20iLCJqdGkiOiJjYWJkODAxYi0xYjY1LTQ3NjEtOWQyYi0xY2Q1YzQ1MzA4ZGYiLCJpYXQiOjE1MDI1NDE1NjMsIm5iZiI6MTUwMjU0MTU2MywiZXhwIjoxNTAzMTQ2MzYzLCJpc3MiOiJVVHV0b3JJc3N1ZXIiLCJhdWQiOiJVVHV0b3JBdWRpZW5jZSJ9._te8D9oerdPXOKJQX0u0qnlaaQx1TMSCzAYUQBTivq8\", \"expires_in\": 604800 }"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
         logd("onCreateLoginActivity")
-        realm = Realm.getDefaultInstance()
 
         if(isSignedIn()){
             startActivity(Intent(this,MainActivity::class.java))
@@ -71,7 +67,6 @@ class LoginActivity : AppCompatActivity(), OnLoginActivityInteractionListener {
     override fun onDestroy() {
         logd("onDestroyLoginActivity")
         compositeDisposable.clear()
-        realm.close() // Remember to close Realm when done.
         super.onDestroy()
     }
 
@@ -82,27 +77,27 @@ class LoginActivity : AppCompatActivity(), OnLoginActivityInteractionListener {
     }
 
     private fun isSignedIn(): Boolean{
-        return realm.where(User::class.java).count()>0
+        return !SingletonSharedPref.getInstance().getString(Constants.KEY_TOKEN,"").equals("")
     }
 
-    override fun OnSignInButtonClicked(emailStr: String, passwordStr: String) {
+    override fun OnSignInButtonClicked(email: String, password: String) {
 
         val loginFragment: LoginFragment = supportFragmentManager.findFragmentByTag(TAG_LOGIN_FRAGMENT) as LoginFragment
         logd(loginFragment.equals(this.loginFragment).toString())
         loginFragment.resetError()
         var cancel = false
         var requestView: View? = null
-        if (TextUtils.isEmpty(passwordStr)) {
+        if (TextUtils.isEmpty(password)) {
             requestView = loginFragment.setPasswordError(getString(R.string.error_field_required))
             cancel = true
-        }else if (!isPasswordValid(passwordStr)) {
+        }else if (!isPasswordValid(password)) {
             requestView = loginFragment.setPasswordError(getString(R.string.error_invalid_password))
             cancel = true
         }
-        if (TextUtils.isEmpty(emailStr)) {
+        if (TextUtils.isEmpty(email)) {
             requestView = loginFragment.setEmailError(getString(R.string.error_field_required))
             cancel = true
-        } else if (!isEmailValid(emailStr)) {
+        } else if (!isEmailValid(email)) {
             requestView = loginFragment.setEmailError(getString(R.string.error_invalid_email))
             cancel = true
         }
@@ -126,7 +121,7 @@ class LoginActivity : AppCompatActivity(), OnLoginActivityInteractionListener {
                             showProgress(false)
                             when(result.code()){
                                 Constants.BAD_REQUEST -> loginFragment.setPasswordError(result.message())!!.requestFocus()
-                                else -> this.requestErrorHandler(result)
+                                else -> this.requestErrorHandler(result.code(),result.message())
                             }
                         }
 
@@ -145,14 +140,7 @@ class LoginActivity : AppCompatActivity(), OnLoginActivityInteractionListener {
 
     private fun saveTokenAndFinish(stringResult: String?){
         val jsonResult = JSONObject(stringResult)
-        SingletonSharedPref.getInstance().put(Constants.KEY_RES_TOKEN,jsonResult.getString(Constants.KEY_RES_TOKEN))
-        realm.executeTransaction {
-            realm.deleteAll()
-            val user = realm.createObject(User::class.java,jsonResult.getString(Constants.KEY_RES_TOKEN))
-            user.email = emailContainer.text.toString()
-        }
-        val user = realm.where(User::class.java).findFirst()
-        logd("${user.email} ${user.firstName} ${user.token}")
+        SingletonSharedPref.getInstance().put(Constants.KEY_TOKEN,jsonResult.getString(Constants.KEY_RES_TOKEN))
         showProgress(false)
         startActivity(Intent(baseContext,MainActivity::class.java))
         finish()

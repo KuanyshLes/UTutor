@@ -8,7 +8,7 @@ object Constants {
     val NOT_FOUND = 404 // не найден, not our problem
     val SERVER_ERROR = 500 //not our problem
 
-    val TOKEN = ""
+    val KEY_TOKEN = "TOKEN"
     val KEY_EMAIL = "username"
     val KEY_PASSWORD = "password"
     val KEY_RES_TOKEN = "access_token"

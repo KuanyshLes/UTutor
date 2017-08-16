@@ -8,6 +8,9 @@ import retrofit2.converter.gson.GsonConverterFactory
 import okhttp3.OkHttpClient
 import okhttp3.Response
 import java.io.IOException
+import com.google.gson.GsonBuilder
+import com.squareup.moshi.Moshi
+import retrofit2.converter.moshi.MoshiConverterFactory
 
 
 class RestAPI{
@@ -27,7 +30,12 @@ class RestAPI{
         private val retrofit = Retrofit.Builder()
                 .baseUrl(Constants.BASE_URL)
                 .client(client)
-                .addConverterFactory(GsonConverterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create(
+                        GsonBuilder()
+                        .setLenient()
+                        .create()
+                ))
+//                .addConverterFactory(MoshiConverterFactory.create().asLenient())
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .build()
 
