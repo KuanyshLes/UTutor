@@ -13,7 +13,9 @@ object Constants {
     val KEY_PASSWORD = "password"
     val KEY_RES_TOKEN = "access_token"
     val KEY_RES_EXPIRES = "expires_in"
+    val KEY_BEARER = "bearer "
 
     val BASE_URL = "http://ututor.azurewebsites.net/"
+
 
 }

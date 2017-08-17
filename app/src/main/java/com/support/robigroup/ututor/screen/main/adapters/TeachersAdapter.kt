@@ -6,14 +6,15 @@ import com.support.robigroup.ututor.R
 import com.support.robigroup.ututor.commons.inflate
 import com.support.robigroup.ututor.commons.loadImg
 import com.support.robigroup.ututor.commons.logd
-import com.support.robigroup.ututor.model.content.Lesson
 import com.support.robigroup.ututor.model.content.Teacher
 import com.support.robigroup.ututor.screen.chat.ChatActivity
+import com.support.robigroup.ututor.screen.main.TopicFragment
 import kotlinx.android.synthetic.main.item_teacher.view.*
 
-class TeachersAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class TeachersAdapter(fragmentTopic: TopicFragment) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private val items: ArrayList<Teacher> = ArrayList()
+    val fragment:TopicFragment = fragmentTopic
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder?, position: Int) {
         holder as TeachersViewHolder
@@ -35,16 +36,17 @@ class TeachersAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     }
 
 
-    class TeachersViewHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
+    inner class TeachersViewHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
             parent.inflate(R.layout.item_teacher)) {
 
         fun bind(item: Teacher) = with(itemView) {
-            teacher_name.text = item.name
-            teacher_lessons.text = item.lessons.joinToString { lesson: Lesson -> lesson.Text.plus(", ") }
-            teacher_rating.text = item.rating.toString()
+            teacher_name.text = item.FirstName
+            teacher_lessons.text = item.Classes
+            teacher_rating.text = item.Raiting.toString()
             teacher_photo.loadImg()
-            teacher_choose.setOnClickListener {
-                ChatActivity.open(itemView.context)
+            teacher_choose_button.setOnClickListener {
+                ChatActivity.open(itemView.context,item)
+                fragment.onTeacherItemClicked(item,itemView)
             }
         }
     }

@@ -3,7 +3,7 @@ package com.support.robigroup.ututor
 import org.junit.Assert
 import org.junit.Test
 import com.google.gson.GsonBuilder
-import com.support.robigroup.ututor.model.content.Lesson
+import com.support.robigroup.ututor.model.content.Subject
 import com.support.robigroup.ututor.model.content.TopicItem
 
 
@@ -26,7 +26,7 @@ class SubjectsJsonResultTest {
     fun isJsonCorrectLessonConvert() {
         val gson = GsonBuilder().create()
         val json: String = "[{\"Id\":2,\"Text\":\"Математика\"},{\"Id\":5,\"Text\":\"Физика\"}]"
-        val results: List<Lesson> = gson.fromJson(json , Array<Lesson>::class.java).toList()
+        val results: List<Subject> = gson.fromJson(json , Array<Subject>::class.java).toList()
         Assert.assertNotNull(results)
         Assert.assertNotNull(results[0].Id)
         Assert.assertNotNull(results[0].Text)

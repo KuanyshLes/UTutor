@@ -14,7 +14,7 @@ import kotlinx.android.synthetic.main.item_topic.view.*
 /**
  * Created by Bimurat Mukhtar on 07.07.2017.
  */
-class TopicsDelegateAdapter : ViewTypeDelegateAdapter {
+class RecentTopicsDelegateAdapter : ViewTypeDelegateAdapter {
     var context: Context? = null
 
     override fun onCreateViewHolder(parent: ViewGroup): RecyclerView.ViewHolder {
@@ -37,7 +37,7 @@ class TopicsDelegateAdapter : ViewTypeDelegateAdapter {
 
         fun bind(item: TopicItem) = with(itemView) {
 
-            main_lesson_title.text = item.lesson
+            main_lesson_title.text = item.Text
             topic_description_text.text = item.Text
             date_create.text = item.created.toString()
             //TODO add time

@@ -6,10 +6,9 @@ import android.view.ViewGroup
 import com.support.robigroup.ututor.commons.adapter.AdapterConstants
 import com.support.robigroup.ututor.commons.adapter.ViewType
 import com.support.robigroup.ututor.commons.adapter.ViewTypeDelegateAdapter
-import com.support.robigroup.ututor.commons.logd
 import com.support.robigroup.ututor.model.content.TopicItem
 
-class TopicsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class RecentTopicsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private val items: ArrayList<ViewType>
     private val delegateAdapters = SparseArrayCompat<ViewTypeDelegateAdapter>()
@@ -19,9 +18,9 @@ class TopicsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     init {
         delegateAdapters.put(AdapterConstants.LOADING, LoadingDelegateAdapter())
-        delegateAdapters.put(AdapterConstants.TOPICS, TopicsDelegateAdapter())
+        delegateAdapters.put(AdapterConstants.TOPICS, RecentTopicsDelegateAdapter())
         items = ArrayList()
-        items.add(loadingItem)
+//        items.add(loadingItem)
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
@@ -40,26 +39,21 @@ class TopicsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         return delegateAdapters.get(viewType).onCreateViewHolder(parent)
     }
 
-    fun addNews(lessons: List<TopicItem>?) {
+    fun addRecentTopics(lessons: List<TopicItem>?) {
         // first remove loading and notify
-        val initPosition = items.size - 1
-        items.removeAt(initPosition)
-        notifyItemRemoved(initPosition)
-
-        // insert teachers and the loading at the end of the list
+        val initPosition = items.size
+//        items.removeAt(initPosition)
+//        notifyItemRemoved(initPosition)
         items.addAll(lessons!!)
-        items.add(loadingItem)
-        notifyItemRangeChanged(initPosition, items.size + 1 /* plus loading item */)
+//        items.add(loadingItem)
+        notifyItemRangeChanged(initPosition, items.size /* plus loading item */)
     }
 
-    fun clearAndAddNews(news: List<TopicItem>?) {
+    fun clearAndAddRecentTopics(news: List<TopicItem>?) {
         items.clear()
-        logd("${items.size} asdf")
-        notifyItemRangeRemoved(0, getLastPosition())
-
         items.addAll(news!!)
-        items.add(loadingItem)
-        notifyItemRangeInserted(0, items.size)
+//        items.add(loadingItem)
+        notifyDataSetChanged()
     }
 
     fun getNews(): List<TopicItem> {
@@ -67,7 +61,4 @@ class TopicsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                 .filter { it.getViewType() == AdapterConstants.TOPICS }
                 .map { it as TopicItem }
     }
-
-    private fun getLastPosition() = if (items.lastIndex == -1) 0 else items.lastIndex
-
 }

@@ -1,8 +1,12 @@
 package com.support.robigroup.ututor.screen.main
 
 import android.app.SearchManager
+import android.content.ComponentName
 import android.content.Context
+import android.content.Intent
+import android.content.ServiceConnection
 import android.os.Bundle
+import android.os.IBinder
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.SearchView
 import android.text.TextUtils
@@ -11,26 +15,43 @@ import android.view.MenuItem
 import android.widget.AdapterView
 import android.widget.Toast
 import com.support.robigroup.ututor.R
+import com.support.robigroup.ututor.SignalRService
 import com.support.robigroup.ututor.commons.OnMainActivityInteractionListener
 import com.support.robigroup.ututor.commons.logd
+import com.support.robigroup.ututor.model.content.Subject
 import com.support.robigroup.ututor.model.content.TopicItem
 import com.support.robigroup.ututor.screen.main.adapters.ListViewAdapter
+import io.realm.Realm
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlin.properties.Delegates
 
 
 class MainActivity : AppCompatActivity(), OnMainActivityInteractionListener {
-
     companion object {
+
         private val TAG_MAIN_FRAGMENT: String = "mainFragment"
     }
     private var stringArrayList: MutableList<TopicItem>
     private var adapter: ListViewAdapter? = null
+    private var realm: Realm by Delegates.notNull()
+
+    private var mService: SignalRService? = null
+    private var mBound = false
+
+
     init {
-        stringArrayList = MutableList(40,{TopicItem(Text = "math is math is mismath exception",lesson = "Physika")})
+        stringArrayList = MutableList(40,{TopicItem(Id = 0, Text = "math is math is mismath exception")})
     }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        realm = Realm.getDefaultInstance()
+
+
+        val intent = Intent()
+        intent.setClass(this, SignalRService::class.java)
+        bindService(intent, mConnection, Context.BIND_AUTO_CREATE)
+
         logd("onCreate MainActivity")
         setSupportActionBar(toolbar)
 
@@ -50,7 +71,6 @@ class MainActivity : AppCompatActivity(), OnMainActivityInteractionListener {
                     .addToBackStack(null).commit()
         }
     }
-
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.options_menu, menu)
@@ -80,10 +100,14 @@ class MainActivity : AppCompatActivity(), OnMainActivityInteractionListener {
         return super.onCreateOptionsMenu(menu)
     }
 
+
     override fun OnTopicItemClicked(item: TopicItem) {
         supportFragmentManager.beginTransaction().replace(R.id.main_container, TopicFragment.newInstance(item),
                 TAG_MAIN_FRAGMENT).addToBackStack(null).commit()
+    }
 
+    override fun OnSubjectItemClicked(item: Subject) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     override fun setDisplayHomeAsEnabled(showHomeAsUp: Boolean) {
@@ -113,6 +137,28 @@ class MainActivity : AppCompatActivity(), OnMainActivityInteractionListener {
             super.onBackPressed()
         }
     }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        unbindService(mConnection)
+        realm.close()
+    }
+
+    private val mConnection = object : ServiceConnection {
+        override fun onServiceConnected(className: ComponentName,
+                                        service: IBinder) {
+            // We've bound to SignalRService, cast the IBinder and get SignalRService instance
+            val binder = service as SignalRService.LocalBinder
+            mService = binder.service
+            mBound = true
+        }
+
+        override fun onServiceDisconnected(arg0: ComponentName) {
+            mBound = false
+        }
+    }
+
+
 
 
 }

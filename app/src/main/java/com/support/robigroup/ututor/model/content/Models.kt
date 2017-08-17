@@ -5,30 +5,32 @@ import android.os.Parcelable
 import com.support.robigroup.ututor.commons.adapter.AdapterConstants
 import com.support.robigroup.ututor.commons.adapter.ViewType
 import com.support.robigroup.ututor.commons.createParcel
+import io.realm.RealmObject
+import io.realm.annotations.PrimaryKey
 
 
 data class ClassRoom(
-        var lessons: List<Lesson> = ArrayList()
+        var subjects: List<Subject> = ArrayList()
 ): Parcelable{
     companion object {
         @JvmField @Suppress("unused")
         val CREATOR = createParcel { ClassRoom(it) }
     }
     protected constructor(parcelIn: Parcel) : this(
-            mutableListOf<Lesson>().apply {
-                parcelIn.readTypedList(this, Lesson.CREATOR)
+            mutableListOf<Subject>().apply {
+                parcelIn.readTypedList(this, Subject.CREATOR)
             }
     )
 
     override fun writeToParcel(dest: Parcel, flags: Int) {
-        dest.writeTypedList(lessons)
+        dest.writeTypedList(subjects)
     }
 
     override fun describeContents() = 0
 }
 
 
-data class Lesson(
+data class Subject(
         var Id: Int? = null,
         var Text: String? = null,
         var topics: List<TopicItem> = ArrayList()
@@ -36,7 +38,7 @@ data class Lesson(
 
     companion object {
         @JvmField @Suppress("unused")
-        val CREATOR = createParcel { Lesson(it) }
+        val CREATOR = createParcel { Subject(it) }
     }
 
     protected constructor(parcelIn: Parcel) : this(
@@ -58,13 +60,13 @@ data class Lesson(
 }
 
 data class TopicItem(
-        var lesson: String = "",
-        var author: String = "",
+        var language: String = "",
         var Text: String = "",
         var rating: Double = 0.0,
         var created: Long = 0,
-        var Id: String = "",
-        var group: Int = 0
+        var subjectId: Int = 0,
+        val Id: Int,
+        var classRoom: Int = 0
 ) : ViewType, Parcelable {
 
     companion object {
@@ -75,21 +77,19 @@ data class TopicItem(
     protected constructor(parcelIn: Parcel) : this(
             parcelIn.readString(),
             parcelIn.readString(),
-            parcelIn.readString(),
             parcelIn.readDouble(),
             parcelIn.readLong(),
-            parcelIn.readString(),
+            parcelIn.readInt(),
             parcelIn.readInt()
     )
 
     override fun writeToParcel(dest: Parcel, flags: Int) {
-        dest.writeString(lesson)
-        dest.writeString(author)
+        dest.writeString(language)
         dest.writeString(Text)
         dest.writeDouble(rating)
         dest.writeLong(created)
-        dest.writeString(Id)
-        dest.writeInt(group)
+        dest.writeInt(Id)
+        dest.writeInt(classRoom)
     }
 
     override fun describeContents() = 0
@@ -99,7 +99,7 @@ data class TopicItem(
 
 data class Teacher(
         val Id: String,
-        var rating: Float? = null,
+        var Raiting: Float? = null,
         var Languages: String? = null,
         var Classes: String? = null,
         var FirstName: String?= null,
@@ -126,7 +126,7 @@ data class Teacher(
 
     override fun writeToParcel(dest: Parcel, flags: Int) {
         dest.writeString(Id)
-        dest.writeFloat(rating ?: 0.0F)
+        dest.writeFloat(Raiting ?: 0.0F)
         dest.writeString(Languages)
         dest.writeString(Classes)
         dest.writeString(FirstName)
@@ -158,3 +158,25 @@ data class Teachers(
 
     override fun describeContents() = 0
 }
+
+data class Lesson(
+        val LearnerId: String,
+        val TeacherId: String,
+        var RequestTime: String,
+        val SubjectName: String,
+        val Class: Int,
+        val Learner: String,
+        val TopicId: Int,
+        val TopicTitle: String,
+        val Id: String
+)
+
+open class RequestListen(
+        @PrimaryKey var Id: Int = 0,
+        var status: Int = 0
+): RealmObject()
+
+data class LoginResponse(
+        val access_token: String,
+        val expires_in: Int
+)

@@ -39,7 +39,9 @@
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
         <service android:name=".SignalRService"
-            android:exported="false"/>
+            android:enabled="true"
+            android:exported="false"
+            android:stopWithTask="false"/>
     </application>
 
 </manifest>

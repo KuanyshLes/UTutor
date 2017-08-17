@@ -9,13 +9,12 @@ import com.support.robigroup.ututor.R
 import com.support.robigroup.ututor.commons.logd
 import com.support.robigroup.ututor.commons.OnMainActivityInteractionListener
 import android.support.design.widget.Snackbar
-import android.util.Log
 import com.support.robigroup.ututor.commons.RxBaseFragment
 import com.support.robigroup.ututor.commons.requestErrorHandler
 import com.support.robigroup.ututor.model.content.ClassRoom
-import com.support.robigroup.ututor.model.content.Lesson
+import com.support.robigroup.ututor.model.content.Subject
 import com.support.robigroup.ututor.screen.main.adapters.ClassRoomAdapter
-import com.support.robigroup.ututor.screen.main.adapters.TopicsAdapter
+import com.support.robigroup.ututor.screen.main.adapters.RecentTopicsAdapter
 import com.support.robigroup.ututor.singleton.SingletonSharedPref
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -29,7 +28,7 @@ class MainFragment : RxBaseFragment() {
         private val KEY_RECENT_TOPICS = "recentTopics"
     }
 
-    private var recentTopics: Lesson? = null
+    private var recentTopics: Subject? = null
     private var lessons: ClassRoom? = null
     private val topicsManager by lazy { MainManager() }
 
@@ -61,32 +60,24 @@ class MainFragment : RxBaseFragment() {
             setHasFixedSize(true)
         }
         initAdapters()
-
-        if (savedInstanceState != null && savedInstanceState.containsKey(KEY_RECENT_TOPICS)) {
-            recentTopics = savedInstanceState.get(KEY_RECENT_TOPICS) as Lesson
-            (main_recycler_view_header.adapter as TopicsAdapter).clearAndAddNews(recentTopics!!.topics)
-            logd("saved State is not null")
-        } else {
-            logd("saved State is null")
-        }
     }
 
     override fun onResume() {
         super.onResume()
         requestSubjects(10,getString(R.string.lang))
-        requestTopics(5)
+        requestRecentTopics(5)
     }
 
     private fun initAdapters() {
         if (main_recycler_view_header.adapter == null) {
-            main_recycler_view_header.adapter = TopicsAdapter()
+            main_recycler_view_header.adapter = RecentTopicsAdapter()
         }
         if (main_recycler_view_content.adapter == null) {
             main_recycler_view_content.adapter = ClassRoomAdapter()
         }
     }
 
-    private fun requestTopics(subjectId: Int) {
+    private fun requestRecentTopics(subjectId: Int) {
 
         val subscription = MainManager().getTopics(subjectId)
                 .subscribeOn(Schedulers.io())
@@ -94,7 +85,7 @@ class MainFragment : RxBaseFragment() {
                 .subscribe (
                         { retrievedTopics ->
                             if(activity.requestErrorHandler(retrievedTopics.code(),retrievedTopics.message())){
-                                (main_recycler_view_header.adapter as TopicsAdapter).addNews(retrievedTopics.body())
+                                (main_recycler_view_header.adapter as RecentTopicsAdapter).clearAndAddRecentTopics(retrievedTopics.body())
                             }else{
                                 //TODO handle errors
                             }
@@ -113,8 +104,8 @@ class MainFragment : RxBaseFragment() {
                 .subscribe(
                         { retrievedLessons ->
                             if(activity.requestErrorHandler(retrievedLessons.code(),retrievedLessons.message())){
-                                lessons!!.lessons = retrievedLessons.body()!!
-                                (main_recycler_view_content.adapter as ClassRoomAdapter).clearAndAddNews(retrievedLessons.body())
+                                lessons!!.subjects = retrievedLessons.body()!!
+                                (main_recycler_view_content.adapter as ClassRoomAdapter).clearAndAddSubjects(retrievedLessons.body())
                             }else{
                                 //TODO handle http errors
                             }
@@ -125,18 +116,6 @@ class MainFragment : RxBaseFragment() {
                 )
         subscriptions.add(subscription)
     }
-
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-//        logd("onSaveInstanceState main fragment newsSaved")
-//        val topics = (main_recycler_view_header.adapter as TopicsAdapter).getTopics()
-//        if (recentTopics != null && topics.isNotEmpty()) {
-//            outState.putParcelable(KEY_RECENT_TOPICS, recentTopics?.copy(topics = topics))
-//
-//        }
-    }
-
 
     override fun onAttach(context: Context?) {
         super.onAttach(context)

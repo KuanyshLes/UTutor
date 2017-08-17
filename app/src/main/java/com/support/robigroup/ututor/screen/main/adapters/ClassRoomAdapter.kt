@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import com.support.robigroup.ututor.R
 import com.support.robigroup.ututor.commons.inflate
 import com.support.robigroup.ututor.commons.logd
-import com.support.robigroup.ututor.model.content.Lesson
+import com.support.robigroup.ututor.model.content.Subject
 import kotlinx.android.synthetic.main.item_lesson.view.*
 
 /**
@@ -13,7 +13,7 @@ import kotlinx.android.synthetic.main.item_lesson.view.*
  */
 class ClassRoomAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    private val items: ArrayList<Lesson> = ArrayList()
+    private val items: ArrayList<Subject> = ArrayList()
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder?, position: Int) {
         holder as LessonsViewHolder
@@ -26,10 +26,10 @@ class ClassRoomAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     override fun getItemCount(): Int = items.size
 
-    fun clearAndAddNews(lessons: List<Lesson>?) {
+    fun clearAndAddSubjects(subjects: List<Subject>?) {
         items.clear()
 
-        items.addAll(lessons!!)
+        items.addAll(subjects!!)
         logd("${items.size} teachers")
         notifyDataSetChanged()
     }
@@ -38,7 +38,7 @@ class ClassRoomAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     class LessonsViewHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
             parent.inflate(R.layout.item_lesson)) {
 
-        fun bind(item: Lesson) = with(itemView) {
+        fun bind(item: Subject) = with(itemView) {
             main_lesson_title_textview.text = item.Text
         }
     }

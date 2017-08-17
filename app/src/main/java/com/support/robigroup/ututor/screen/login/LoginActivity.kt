@@ -9,6 +9,7 @@ import com.support.robigroup.ututor.Constants
 import com.support.robigroup.ututor.R
 import com.support.robigroup.ututor.api.RestAPI
 import com.support.robigroup.ututor.commons.*
+import com.support.robigroup.ututor.model.content.LoginResponse
 import com.support.robigroup.ututor.model.content.User
 import com.support.robigroup.ututor.screen.loading.LoadingDialog
 import com.support.robigroup.ututor.screen.loading.LoadingView
@@ -51,7 +52,7 @@ class LoginActivity : AppCompatActivity(), OnLoginActivityInteractionListener {
         super.onResume()
         logd("onResumeLoginActivity")
         //TODO delete it
-        saveTokenAndFinish(mockServerResponse)
+//        saveTokenAndFinish(mockServerResponse)
     }
 
     override fun onPause() {
@@ -77,6 +78,7 @@ class LoginActivity : AppCompatActivity(), OnLoginActivityInteractionListener {
     }
 
     private fun isSignedIn(): Boolean{
+
         return !SingletonSharedPref.getInstance().getString(Constants.KEY_TOKEN,"").equals("")
     }
 
@@ -105,11 +107,8 @@ class LoginActivity : AppCompatActivity(), OnLoginActivityInteractionListener {
             showProgress(true)
             logd("before get token")
 
-            val data: HashMap<String,String> = HashMap()
-            data.put(Constants.KEY_EMAIL,"beybit92@gmail.com")
-            data.put(Constants.KEY_PASSWORD,"q1w2e3r4")
             compositeDisposable.add(
-                    RestAPI.getApi().getToken(data)
+                    RestAPI.getApi().getToken("beybit92@gmail.com","1q2w3e4r")
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribeOn(Schedulers.io())
                     .subscribe({
@@ -138,9 +137,8 @@ class LoginActivity : AppCompatActivity(), OnLoginActivityInteractionListener {
         }
     }
 
-    private fun saveTokenAndFinish(stringResult: String?){
-        val jsonResult = JSONObject(stringResult)
-        SingletonSharedPref.getInstance().put(Constants.KEY_TOKEN,jsonResult.getString(Constants.KEY_RES_TOKEN))
+    private fun saveTokenAndFinish(stringResult: LoginResponse?){
+        SingletonSharedPref.getInstance().put(Constants.KEY_TOKEN,Constants.KEY_BEARER.plus(stringResult!!.access_token))
         showProgress(false)
         startActivity(Intent(baseContext,MainActivity::class.java))
         finish()

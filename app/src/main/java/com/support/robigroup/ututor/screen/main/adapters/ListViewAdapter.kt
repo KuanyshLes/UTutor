@@ -45,7 +45,7 @@ class ListViewAdapter(private val activity: MainActivity, resource: Int, private
             // if holder created, get tag from view
             holder = convertView.tag as ViewHolder
         }
-        holder.lessonName.text = getItem(position)!!.lesson
+        holder.lessonName.text = getItem(position)!!.Text
         holder.lessonDesc.text = getItem(position)!!.Text
 
         return convertView

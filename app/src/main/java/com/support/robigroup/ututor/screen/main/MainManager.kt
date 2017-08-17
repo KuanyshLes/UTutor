@@ -12,10 +12,10 @@ class MainManager(
         private val TOKEN: String = SingletonSharedPref.getInstance().getString(KEY_TOKEN),
         private val api: RestAPI = RestAPI()) {
 
-    fun getLessons(classRoom: Int,lang: String): Flowable<Response<List<Lesson>>>
+    fun getLessons(classRoom: Int,lang: String): Flowable<Response<List<Subject>>>
         = RestAPI.getApi().getSubjects(classRoom,lang)
 
-    fun getTeachers(classRoom: Int,language: String,subjectId: Int,topicId: Int): Flowable<Response<List<Teacher>>>
+    fun getTeachers(classRoom: Int = 10,language: String ="kk-KZ",subjectId: Int = 2,topicId: Int=2): Flowable<Response<List<Teacher>>>
         = RestAPI.getApi().getTeachersByTopic(
                 classRoom,
                 language,
@@ -26,7 +26,7 @@ class MainManager(
     fun getTopics(subjectId: Int): Flowable<Response<List<TopicItem>>>
         = RestAPI.getApi().getTopicsBySubject(subjectId)
 
-    fun postLessonRequest(teacherId: String, topicId: Int)
+    fun postLessonRequest(teacherId: String, topicId: Int): Flowable<Response<Lesson>>
         = RestAPI.getApi().postLessonRequest(teacherId,topicId)
 
 }

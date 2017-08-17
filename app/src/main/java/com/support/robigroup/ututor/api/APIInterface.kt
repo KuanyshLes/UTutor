@@ -1,12 +1,9 @@
 package com.support.robigroup.ututor.api
 
 import com.support.robigroup.ututor.Constants
-import com.support.robigroup.ututor.model.content.Lesson
-import com.support.robigroup.ututor.model.content.Teacher
-import com.support.robigroup.ututor.model.content.TopicItem
+import com.support.robigroup.ututor.model.content.*
 import com.support.robigroup.ututor.singleton.SingletonSharedPref
 import io.reactivex.Flowable
-import io.reactivex.Observable
 import retrofit2.Call
 import retrofit2.Response
 import retrofit2.http.*
@@ -17,10 +14,13 @@ interface APIInterface {
     fun getTop(@Query("after") after: String,
                @Query("limit") limit: String): Call<RedditNewsResponse>
 
+
+    @FormUrlEncoded
     @POST("token")
     fun getToken(
-            @Body data: HashMap<String,String>
-    ): Flowable<Response<String>>
+            @Field("username") username: String,
+            @Field("password") password: String
+    ): Flowable<Response<LoginResponse>>
 
     @GET("api/sprs/topics")
     fun getTopicsBySubject(
@@ -33,7 +33,7 @@ interface APIInterface {
             @Query("class") classRoom: Int,
             @Query("lang")lang : String,
             @Header("Authorization") header: String = SingletonSharedPref.getInstance().getString(Constants.KEY_TOKEN)
-    ): Flowable<Response<List<Lesson>>>
+    ): Flowable<Response<List<Subject>>>
 
     @POST("api/learner/search/teachers")
     fun getTeachersByTopic(
@@ -49,6 +49,6 @@ interface APIInterface {
             @Query("TeacherId") teacherId: String,
             @Query("TopicId") topicId: Int,
             @Header("Authorization") header: String = SingletonSharedPref.getInstance().getString(Constants.KEY_TOKEN)
-    )
+    ): Flowable<Response<Lesson>>
 
 }

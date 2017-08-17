@@ -18,6 +18,7 @@ import com.stfalcon.chatkit.messages.MessagesListAdapter;
 import com.support.robigroup.ututor.R;
 import com.support.robigroup.ututor.SignalRService;
 import com.support.robigroup.ututor.commons.fixtures.MessagesFixtures;
+import com.support.robigroup.ututor.model.content.Teacher;
 import com.support.robigroup.ututor.screen.chat.model.Message;
 import com.support.robigroup.ututor.screen.chat.custom.media.holders.IncomingVoiceMessageViewHolder;
 import com.support.robigroup.ututor.screen.chat.custom.media.holders.OutcomingVoiceMessageViewHolder;
@@ -37,19 +38,22 @@ public class ChatActivity extends DemoMessagesActivity
     private final Context mContext = this;
     private SignalRService mService;
     private boolean mBound = false;
+    private Teacher teacher;
 
     private MessagesList messagesList;
 
     private static final byte CONTENT_TYPE_VOICE = 1;
+    private static final String KEY_TEACHER = "teacher";
 
-    public static void open(Context context) {
-        context.startActivity(new Intent(context, ChatActivity.class));
+    public static void open(Context context,Teacher teacher) {
+        context.startActivity(new Intent(context, ChatActivity.class).putExtra(KEY_TEACHER,teacher));
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
+        teacher = getIntent().getParcelableExtra(KEY_TEACHER);
 
         findViewById(R.id.text_finish).setOnClickListener(new View.OnClickListener() {
             @Override

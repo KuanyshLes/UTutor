@@ -52,6 +52,8 @@
     <string name="lang">kk-KZ</string>
     <string name="wait">wait</string>
     <string name="sending">sending</string>
+    <string name="waiting">Ожидание</string>
+    <string name="declined">Отказал</string>
 
 
     // for chat
