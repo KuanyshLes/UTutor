@@ -51,4 +51,10 @@ interface APIInterface {
             @Header("Authorization") header: String = SingletonSharedPref.getInstance().getString(Constants.KEY_TOKEN)
     ): Flowable<Response<Lesson>>
 
+    @GET("api/lesson/chat")
+    fun getInformationAboutChat(
+            @Query("subject") subject: Int,
+            @Header("Authorization") header: String = SingletonSharedPref.getInstance().getString(Constants.KEY_TOKEN)
+    ): Flowable<Response<List<TopicItem>>>
+
 }

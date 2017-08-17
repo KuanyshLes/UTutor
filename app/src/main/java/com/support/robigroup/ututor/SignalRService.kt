@@ -1,37 +1,21 @@
 package com.support.robigroup.ututor
 
-import android.app.Service
-import android.content.BroadcastReceiver
+import android.app.IntentService
 import android.content.Intent
-import android.content.IntentFilter
 import android.os.Binder
-import android.os.Bundle
-import android.os.Handler
 import android.os.IBinder
-import android.os.Looper
-import android.os.Message
-import android.os.Messenger
-import android.os.RemoteException
-import android.util.Log
-
+import com.support.robigroup.ututor.commons.logd
 import com.support.robigroup.ututor.singleton.SingletonSharedPref
-
-import java.util.concurrent.ExecutionException
-
+import microsoft.aspnet.signalr.client.ConnectionState
 import microsoft.aspnet.signalr.client.Credentials
 import microsoft.aspnet.signalr.client.Platform
-import microsoft.aspnet.signalr.client.SignalRFuture
-import microsoft.aspnet.signalr.client.http.Request
 import microsoft.aspnet.signalr.client.http.android.AndroidPlatformComponent
 import microsoft.aspnet.signalr.client.hubs.HubConnection
 import microsoft.aspnet.signalr.client.hubs.HubProxy
-import microsoft.aspnet.signalr.client.hubs.SubscriptionHandler3
-import microsoft.aspnet.signalr.client.transport.ClientTransport
-import microsoft.aspnet.signalr.client.transport.ServerSentEventsTransport
+import java.util.concurrent.ExecutionException
 
-import com.support.robigroup.ututor.commons.logd
+class SignalRService : IntentService("SignalRService") {
 
-class SignalRService : Service() {
 
     private var mHubConnection: HubConnection? = null
     private var mHubProxy: HubProxy? = null
@@ -40,10 +24,9 @@ class SignalRService : Service() {
     private val SERVER_URL = Constants.BASE_URL
     private val SERVER_HUB_CHAT = "chat"
     private val CLIENT_METHOD_BROADAST_MESSAGE = "lessonChatReceived"
+    private val TAG_SIGNALR = "signalR"
 
-
-
-
+    var currentConnectionState: ConnectionState = ConnectionState.Disconnected
 
     override fun onCreate() {
         super.onCreate()
@@ -51,27 +34,26 @@ class SignalRService : Service() {
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
         val result = super.onStartCommand(intent, flags, startId)
-        startSignalR()
-
+        logd("onStartCommand",TAG_SIGNALR)
         return result
     }
 
-    override fun onDestroy() {
+    override fun onHandleIntent(p0: Intent?) {
+        logd("onHandleIntent",TAG_SIGNALR)
+        if(currentConnectionState != ConnectionState.Connected){
+            startSignalR()
+        }
+    }
 
+    override fun onDestroy() {
         mHubConnection!!.stop()
         super.onDestroy()
     }
 
     override fun onBind(intent: Intent): IBinder? {
-        // Return the communication channel to the service.
-        startSignalR()
         return mBinder
     }
 
-    /**
-     * Class used for the client Binder.  Because we know this service always
-     * runs in the same process as its clients, we don't need to deal with IPC.
-     */
     inner class LocalBinder : Binder() {
         // Return this instance of SignalRService so clients can call public methods
         val service: SignalRService
@@ -102,22 +84,44 @@ class SignalRService : Service() {
         mHubConnection!!.credentials = Credentials { request -> request.addHeader("Authorization",TOKEN) }
         mHubProxy = mHubConnection!!.createHubProxy(SERVER_HUB_CHAT)
 
-        val clientTransport = ServerSentEventsTransport(mHubConnection!!.logger)
-        val signalRFuture = mHubConnection!!.start(clientTransport)
-
-        try {
-            signalRFuture.get()
-        } catch (e: InterruptedException) {
-            Log.e("SimpleSignalR", e.toString())
-            return
-        } catch (e: ExecutionException) {
-            Log.e("SimpleSignalR", e.toString())
-            return
+        mHubConnection!!.stateChanged { fromState, toState ->
+            logd("${fromState.name} -> ${toState.name}",TAG_SIGNALR)
+            currentConnectionState = toState
         }
+
+        mHubConnection!!.closed {
+            logd("closed",TAG_SIGNALR)
+//            connectSignalR(mHubConnection)
+        }
+
+        connectSignalR(mHubConnection)
+
+//        val clientTransport = ServerSentEventsTransport(mHubConnection!!.logger)
+//        val signalRFuture = mHubConnection!!.start(clientTransport)
+//        try {
+//            signalRFuture.get()
+//        } catch (e: InterruptedException) {
+//            Log.e("SimpleSignalR", e.toString())
+//            return
+//        } catch (e: ExecutionException) {
+//            Log.e("SimpleSignalR", e.toString())
+//            return
+//        }
 
         sendMessage("Hello from BNK!")
 
         mHubProxy!!.on(CLIENT_METHOD_BROADAST_MESSAGE,
                 { aLong, time, message -> logd("chat " + aLong!!.toString() + " " + time + " " + message) }, Long::class.java, String::class.java, String::class.java)
+    }
+
+    fun connectSignalR(connection: HubConnection?){
+        try {
+            connection!!.start().get()
+        } catch (e: InterruptedException) {
+            e.printStackTrace()
+        } catch (e: ExecutionException) {
+            e.printStackTrace()
+        }
+
     }
 }

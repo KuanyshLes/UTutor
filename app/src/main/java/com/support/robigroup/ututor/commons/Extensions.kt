@@ -21,8 +21,8 @@ import com.squareup.picasso.Picasso
 import com.support.robigroup.ututor.Constants
 import com.support.robigroup.ututor.R
 
-fun logd(message: String){
-    Log.d("myLogs",message)
+fun logd(message: String,tag: String = "myLogs"){
+    Log.d(tag,message)
 }
 
 var progressDialog: ProgressDialog? = null

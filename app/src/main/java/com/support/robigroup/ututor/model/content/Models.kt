@@ -60,13 +60,13 @@ data class Subject(
 }
 
 data class TopicItem(
-        var language: String = "",
-        var Text: String = "",
-        var rating: Double = 0.0,
-        var created: Long = 0,
-        var subjectId: Int = 0,
-        val Id: Int,
-        var classRoom: Int = 0
+        var language: String? = null,
+        var Text: String? = null,
+        var rating: Double? = null,
+        var created: Long? = null,
+        var subjectId: Int? = null,
+        val Id: Int? = 0,
+        var classRoom: Int? = null
 ) : ViewType, Parcelable {
 
     companion object {
@@ -84,12 +84,12 @@ data class TopicItem(
     )
 
     override fun writeToParcel(dest: Parcel, flags: Int) {
-        dest.writeString(language)
-        dest.writeString(Text)
-        dest.writeDouble(rating)
-        dest.writeLong(created)
-        dest.writeInt(Id)
-        dest.writeInt(classRoom)
+        dest.writeString(language ?: "error")
+        dest.writeString(Text ?: "error")
+        dest.writeDouble(rating ?: 0.0)
+        dest.writeLong(created ?: 0L)
+        dest.writeInt(Id ?: 0)
+        dest.writeInt(classRoom ?: 0)
     }
 
     override fun describeContents() = 0

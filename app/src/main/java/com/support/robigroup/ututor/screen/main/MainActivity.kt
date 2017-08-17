@@ -1,12 +1,9 @@
 package com.support.robigroup.ututor.screen.main
 
 import android.app.SearchManager
-import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
-import android.content.ServiceConnection
 import android.os.Bundle
-import android.os.IBinder
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.SearchView
 import android.text.TextUtils
@@ -35,22 +32,17 @@ class MainActivity : AppCompatActivity(), OnMainActivityInteractionListener {
     private var adapter: ListViewAdapter? = null
     private var realm: Realm by Delegates.notNull()
 
-    private var mService: SignalRService? = null
-    private var mBound = false
-
-
     init {
         stringArrayList = MutableList(40,{TopicItem(Id = 0, Text = "math is math is mismath exception")})
     }
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+
         setContentView(R.layout.activity_main)
         realm = Realm.getDefaultInstance()
 
-
         val intent = Intent()
         intent.setClass(this, SignalRService::class.java)
-        bindService(intent, mConnection, Context.BIND_AUTO_CREATE)
+        startService(intent)
 
         logd("onCreate MainActivity")
         setSupportActionBar(toolbar)
@@ -61,6 +53,8 @@ class MainActivity : AppCompatActivity(), OnMainActivityInteractionListener {
         list_item.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, i, l ->
             Toast.makeText(this@MainActivity, (adapterView.getItemAtPosition(i) as TopicItem).Text, Toast.LENGTH_SHORT).show()
         }
+
+        super.onCreate(savedInstanceState)
     }
 
     override fun onResume() {
@@ -140,25 +134,7 @@ class MainActivity : AppCompatActivity(), OnMainActivityInteractionListener {
 
     override fun onDestroy() {
         super.onDestroy()
-        unbindService(mConnection)
         realm.close()
     }
-
-    private val mConnection = object : ServiceConnection {
-        override fun onServiceConnected(className: ComponentName,
-                                        service: IBinder) {
-            // We've bound to SignalRService, cast the IBinder and get SignalRService instance
-            val binder = service as SignalRService.LocalBinder
-            mService = binder.service
-            mBound = true
-        }
-
-        override fun onServiceDisconnected(arg0: ComponentName) {
-            mBound = false
-        }
-    }
-
-
-
 
 }

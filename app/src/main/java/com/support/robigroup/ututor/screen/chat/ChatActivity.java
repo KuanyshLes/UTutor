@@ -36,8 +36,6 @@ public class ChatActivity extends DemoMessagesActivity
         FinishDialog.NoticeDialogListener {
 
     private final Context mContext = this;
-    private SignalRService mService;
-    private boolean mBound = false;
     private Teacher teacher;
 
     private MessagesList messagesList;
@@ -62,10 +60,9 @@ public class ChatActivity extends DemoMessagesActivity
             }
         });
 
-        logd("beforeStartingService");
         Intent intent = new Intent();
         intent.setClass(mContext, SignalRService.class);
-        bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+        startService(intent);
 
         this.messagesList = (MessagesList) findViewById(R.id.messagesList);
         initAdapter();
@@ -92,16 +89,6 @@ public class ChatActivity extends DemoMessagesActivity
         this.messagesList.setAdapter(super.messagesAdapter);
     }
 
-    @Override
-    protected void onStop() {
-        // Unbind from the service
-        if (mBound) {
-            unbindService(mConnection);
-            mBound = false;
-        }
-        super.onStop();
-    }
-
     public void sendMessage(View view) {
 //        if (mBound) {
 //            // Call a method from the SignalRService.
@@ -122,33 +109,10 @@ public class ChatActivity extends DemoMessagesActivity
         dialogFragment.show(getSupportFragmentManager(),"finishDialog");
     }
 
-    /**
-     * Defines callbacks for service binding, passed to bindService()
-     */
-    private final ServiceConnection mConnection = new ServiceConnection() {
-
-        @Override
-        public void onServiceConnected(ComponentName className,
-                                       IBinder service) {
-            // We've bound to SignalRService, cast the IBinder and get SignalRService instance
-            SignalRService.LocalBinder binder = (SignalRService.LocalBinder) service;
-            mService = binder.getService();
-            mBound = true;
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName arg0) {
-            mBound = false;
-        }
-    };
-
     @Override
     public boolean onSubmit(CharSequence input) {
         super.messagesAdapter.addToStart(
                 MessagesFixtures.getTextMessage(input.toString()), true);
-        if(mBound){
-//            mService.sendMessage_To();
-        }
         return true;
     }
 

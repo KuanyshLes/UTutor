@@ -20,3 +20,4 @@ class RedditNewsDataResponse(
         val thumbnail: String,
         val url: String
 )
+

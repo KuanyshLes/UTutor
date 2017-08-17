@@ -60,7 +60,7 @@ class ListViewAdapter(private val activity: MainActivity, resource: Int, private
             friendList.clear()
         } else {
             for (s in searchList) {
-                if (s.Text.contains(charText)) {
+                if (s.Text!!.contains(charText)) {
                     friendList.add(s)
                 }
             }
