@@ -159,7 +159,7 @@ data class Teachers(
     override fun describeContents() = 0
 }
 
-data class Lesson(
+data class LessonRequestForTeacher(
         val LearnerId: String,
         val TeacherId: String,
         var RequestTime: String,
@@ -179,4 +179,12 @@ open class RequestListen(
 data class LoginResponse(
         val access_token: String,
         val expires_in: Int
+)
+
+data class CustomMessage(
+        val Id: Long,
+        val Time: String,
+        val FileThumbnail: String,
+        val File: String?,
+        val Message: String?
 )

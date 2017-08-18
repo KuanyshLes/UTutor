@@ -11,7 +11,7 @@ import com.support.robigroup.ututor.commons.OnMainActivityInteractionListener
 import com.support.robigroup.ututor.commons.RxBaseFragment
 import com.support.robigroup.ututor.commons.logd
 import com.support.robigroup.ututor.commons.requestErrorHandler
-import com.support.robigroup.ututor.model.content.Lesson
+import com.support.robigroup.ututor.model.content.LessonRequestForTeacher
 import com.support.robigroup.ututor.model.content.RequestListen
 import com.support.robigroup.ututor.model.content.Teacher
 import com.support.robigroup.ututor.model.content.TopicItem
@@ -22,7 +22,6 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import io.realm.Realm
 import io.realm.RealmChangeListener
-import io.realm.RealmResults
 import kotlinx.android.synthetic.main.fragment_topic.*
 import kotlinx.android.synthetic.main.topics.*
 import kotlin.properties.Delegates
@@ -73,6 +72,7 @@ class TopicFragment : RxBaseFragment() {
         }
         initAdapters()
         requestSameTopics(5)
+
 
 
     }
@@ -145,13 +145,14 @@ class TopicFragment : RxBaseFragment() {
     }
 
     fun requestLessonToTeacher(teacherId: String = "bbbb", topicId: Int = 4){
+
         val subscription = MainManager().postLessonRequest(teacherId,topicId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe (
                         { teachers ->
                             if(activity.requestErrorHandler(teachers.code(),teachers.message())){
-                                logd(Gson().toJson(teachers.body(), Lesson::class.java))
+                                logd(Gson().toJson(teachers.body(), LessonRequestForTeacher::class.java))
                                 currentButton!!.setText(R.string.waiting)
                                 requestExists = true
                                 setRealmOnChangeListener()
@@ -169,14 +170,17 @@ class TopicFragment : RxBaseFragment() {
 
     fun setRealmOnChangeListener(){
         val realm: Realm = Realm.getDefaultInstance()
+        val request = realm.where(RequestListen::class.java).findFirst()
         realm.executeTransaction {
-            val request = realm.createObject(RequestListen::class.java,0)
+            if(request==null){
+                val request = realm.createObject(RequestListen::class.java,0)
+            }
             request.status = 0
         }
-        val requests = realm.where(RequestListen::class.java).findAll()
-        val changeListener = RealmChangeListener<RealmResults<RequestListen>> {
+        val requests = realm.where(RequestListen::class.java).findFirst()
+        val changeListener = RealmChangeListener<RequestListen> {
             rs ->
-            if(rs[0].status==1){
+            if(rs.status==1){
                 ChatActivity.open(this.activity,currentTeacher)
             }else{
                 requestExists = false
@@ -184,12 +188,14 @@ class TopicFragment : RxBaseFragment() {
             }
         }
         requests.addChangeListener(changeListener)
+
+
     }
 
     fun removeChangeListeners(){
         val realm: Realm = Realm.getDefaultInstance()
-        val requests = realm.where(RequestListen::class.java).findAll()
-        requests.removeAllChangeListeners()
+        val request: RequestListen? = realm.where(RequestListen::class.java).findFirst()
+        request?.removeAllChangeListeners()
     }
 
     private fun hideFindButton(size: Int){

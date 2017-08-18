@@ -1,13 +1,15 @@
 package com.support.robigroup.ututor.api
 
 import com.support.robigroup.ututor.Constants
+import com.support.robigroup.ututor.commons.ChatLesson
+import com.support.robigroup.ututor.commons.RedditNewsResponse
 import com.support.robigroup.ututor.model.content.*
 import com.support.robigroup.ututor.singleton.SingletonSharedPref
 import io.reactivex.Flowable
+import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Response
 import retrofit2.http.*
-import java.util.HashMap
 
 interface APIInterface {
     @GET("/top.json")
@@ -49,12 +51,28 @@ interface APIInterface {
             @Query("TeacherId") teacherId: String,
             @Query("TopicId") topicId: Int,
             @Header("Authorization") header: String = SingletonSharedPref.getInstance().getString(Constants.KEY_TOKEN)
-    ): Flowable<Response<Lesson>>
+    ): Flowable<Response<LessonRequestForTeacher>>
 
     @GET("api/lesson/chat")
     fun getInformationAboutChat(
             @Query("subject") subject: Int,
             @Header("Authorization") header: String = SingletonSharedPref.getInstance().getString(Constants.KEY_TOKEN)
-    ): Flowable<Response<List<TopicItem>>>
+    ): Flowable<Response<ChatLesson>>
+
+    @GET("api/lesson/chat/messages")
+    fun getChatMeassages(
+            @Query("subject") subject: Int,
+            @Header("Authorization") header: String = SingletonSharedPref.getInstance().getString(Constants.KEY_TOKEN)
+    ): Flowable<Response<ChatLesson>>
+
+    @GET("api/lesson/chat/ready")
+    fun postChatReady(
+            @Header("Authorization") header: String = SingletonSharedPref.getInstance().getString(Constants.KEY_TOKEN)
+    ): Flowable<ResponseBody>
+
+    @GET("api/lesson/chat/complete")
+    fun postChatComplete(
+            @Header("Authorization") header: String = SingletonSharedPref.getInstance().getString(Constants.KEY_TOKEN)
+    ): Flowable<ResponseBody>
 
 }

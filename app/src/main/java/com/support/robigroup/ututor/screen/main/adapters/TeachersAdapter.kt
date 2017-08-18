@@ -45,7 +45,6 @@ class TeachersAdapter(fragmentTopic: TopicFragment) : RecyclerView.Adapter<Recyc
             teacher_rating.text = item.Raiting.toString()
             teacher_photo.loadImg()
             teacher_choose_button.setOnClickListener {
-                ChatActivity.open(itemView.context,item)
                 fragment.onTeacherItemClicked(item,itemView)
             }
         }

@@ -44,7 +44,6 @@ class MainActivity : AppCompatActivity(), OnMainActivityInteractionListener {
         intent.setClass(this, SignalRService::class.java)
         startService(intent)
 
-        logd("onCreate MainActivity")
         setSupportActionBar(toolbar)
 
         adapter = ListViewAdapter(this, R.layout.item_search, searchList = stringArrayList)

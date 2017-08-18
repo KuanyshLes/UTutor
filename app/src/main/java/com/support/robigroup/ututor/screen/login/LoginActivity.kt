@@ -8,9 +8,11 @@ import android.view.View
 import com.support.robigroup.ututor.Constants
 import com.support.robigroup.ututor.R
 import com.support.robigroup.ututor.api.RestAPI
-import com.support.robigroup.ututor.commons.*
+import com.support.robigroup.ututor.commons.OnLoginActivityInteractionListener
+import com.support.robigroup.ututor.commons.logd
+import com.support.robigroup.ututor.commons.requestErrorHandler
+import com.support.robigroup.ututor.commons.toast
 import com.support.robigroup.ututor.model.content.LoginResponse
-import com.support.robigroup.ututor.model.content.User
 import com.support.robigroup.ututor.screen.loading.LoadingDialog
 import com.support.robigroup.ututor.screen.loading.LoadingView
 import com.support.robigroup.ututor.screen.main.MainActivity
@@ -18,10 +20,6 @@ import com.support.robigroup.ututor.singleton.SingletonSharedPref
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
-import io.realm.Realm
-import kotlinx.android.synthetic.main.fragment_login.*
-import org.json.JSONObject
-import kotlin.properties.Delegates
 
 class LoginActivity : AppCompatActivity(), OnLoginActivityInteractionListener {
 

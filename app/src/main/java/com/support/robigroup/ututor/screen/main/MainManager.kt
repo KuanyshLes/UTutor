@@ -26,7 +26,7 @@ class MainManager(
     fun getTopics(subjectId: Int): Flowable<Response<List<TopicItem>>>
         = RestAPI.getApi().getTopicsBySubject(subjectId)
 
-    fun postLessonRequest(teacherId: String, topicId: Int): Flowable<Response<Lesson>>
+    fun postLessonRequest(teacherId: String, topicId: Int): Flowable<Response<LessonRequestForTeacher>>
         = RestAPI.getApi().postLessonRequest(teacherId,topicId)
 
 }
