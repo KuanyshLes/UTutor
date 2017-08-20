@@ -26,4 +26,5 @@
     <dimen name="reg_logo_width">100dp</dimen>
     <dimen name="reg_logo_height" >150dp</dimen>
     <dimen name="lesson_title_text_size" >16sp</dimen>
+    <dimen name="icon_time_height_width" >35dp</dimen>
 </resources>

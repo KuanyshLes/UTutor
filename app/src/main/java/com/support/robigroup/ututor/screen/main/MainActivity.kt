@@ -17,6 +17,7 @@ import com.support.robigroup.ututor.commons.OnMainActivityInteractionListener
 import com.support.robigroup.ututor.commons.logd
 import com.support.robigroup.ututor.model.content.Subject
 import com.support.robigroup.ututor.model.content.TopicItem
+import com.support.robigroup.ututor.screen.topic.TopicFragment
 import com.support.robigroup.ututor.screen.main.adapters.ListViewAdapter
 import io.realm.Realm
 import kotlinx.android.synthetic.main.activity_main.*
@@ -33,7 +34,7 @@ class MainActivity : AppCompatActivity(), OnMainActivityInteractionListener {
     private var realm: Realm by Delegates.notNull()
 
     init {
-        stringArrayList = MutableList(40,{TopicItem(Id = 0, Text = "math is math is mismath exception")})
+        stringArrayList = MutableList(40, { TopicItem(Id = 0, Text = "math is math is mismath exception") })
     }
     override fun onCreate(savedInstanceState: Bundle?) {
 

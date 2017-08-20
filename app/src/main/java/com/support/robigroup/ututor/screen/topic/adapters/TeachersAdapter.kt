@@ -1,4 +1,4 @@
-package com.support.robigroup.ututor.screen.main.adapters
+package com.support.robigroup.ututor.screen.topic.adapters
 
 import android.support.v7.widget.RecyclerView
 import android.view.ViewGroup
@@ -7,14 +7,13 @@ import com.support.robigroup.ututor.commons.inflate
 import com.support.robigroup.ututor.commons.loadImg
 import com.support.robigroup.ututor.commons.logd
 import com.support.robigroup.ututor.model.content.Teacher
-import com.support.robigroup.ututor.screen.chat.ChatActivity
-import com.support.robigroup.ututor.screen.main.TopicFragment
+import com.support.robigroup.ututor.screen.topic.TopicFragment
 import kotlinx.android.synthetic.main.item_teacher.view.*
 
 class TeachersAdapter(fragmentTopic: TopicFragment) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private val items: ArrayList<Teacher> = ArrayList()
-    val fragment:TopicFragment = fragmentTopic
+    val fragment: TopicFragment = fragmentTopic
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder?, position: Int) {
         holder as TeachersViewHolder

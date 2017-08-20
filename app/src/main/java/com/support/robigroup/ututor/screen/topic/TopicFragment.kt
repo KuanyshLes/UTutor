@@ -1,4 +1,4 @@
-package com.support.robigroup.ututor.screen.main
+package com.support.robigroup.ututor.screen.topic
 
 import android.content.Context
 import android.os.Bundle
@@ -16,8 +16,9 @@ import com.support.robigroup.ututor.model.content.RequestListen
 import com.support.robigroup.ututor.model.content.Teacher
 import com.support.robigroup.ututor.model.content.TopicItem
 import com.support.robigroup.ututor.screen.chat.ChatActivity
+import com.support.robigroup.ututor.api.MainManager
 import com.support.robigroup.ututor.screen.main.adapters.RecentTopicsAdapter
-import com.support.robigroup.ututor.screen.main.adapters.TeachersAdapter
+import com.support.robigroup.ututor.screen.topic.adapters.TeachersAdapter
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import io.realm.Realm
@@ -79,7 +80,7 @@ class TopicFragment : RxBaseFragment() {
 
     override fun onSaveInstanceState(outState: Bundle?) {
         super.onSaveInstanceState(outState)
-        outState?.putParcelable(TopicFragment.ARG_TOPIC_ITEM, itemTopic)
+        outState?.putParcelable(ARG_TOPIC_ITEM, itemTopic)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
@@ -138,13 +139,13 @@ class TopicFragment : RxBaseFragment() {
 
     fun onTeacherItemClicked(item: Teacher,itemView: View? ){
         if(!requestExists){
-            requestLessonToTeacher()
+            requestLessonToTeacher(item.Id,itemTopic.Id ?: 4)
             currentTeacher = item
             currentButton = itemView!!.findViewById<Button>(R.id.teacher_choose_button) as Button
         }
     }
 
-    fun requestLessonToTeacher(teacherId: String = "bbbb", topicId: Int = 4){
+    fun requestLessonToTeacher(teacherId: String , topicId: Int ){
 
         val subscription = MainManager().postLessonRequest(teacherId,topicId)
                 .subscribeOn(Schedulers.io())
@@ -170,10 +171,10 @@ class TopicFragment : RxBaseFragment() {
 
     fun setRealmOnChangeListener(){
         val realm: Realm = Realm.getDefaultInstance()
-        val request = realm.where(RequestListen::class.java).findFirst()
+        var request = realm.where(RequestListen::class.java).findFirst()
         realm.executeTransaction {
             if(request==null){
-                val request = realm.createObject(RequestListen::class.java,0)
+                request = realm.createObject(RequestListen::class.java,0)
             }
             request.status = 0
         }

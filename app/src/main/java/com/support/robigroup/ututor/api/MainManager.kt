@@ -1,4 +1,4 @@
-package com.support.robigroup.ututor.screen.main
+package com.support.robigroup.ututor.api
 
 import com.support.robigroup.ututor.Constants.KEY_TOKEN
 import com.support.robigroup.ututor.api.RestAPI

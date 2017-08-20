@@ -1,4 +1,4 @@
-package com.support.robigroup.ututor.model.content;
+package com.support.robigroup.ututor.screen.chat.model;
 
 public class CustomMessage {
     public Long id;

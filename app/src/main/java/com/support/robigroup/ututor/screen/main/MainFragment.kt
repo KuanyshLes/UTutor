@@ -9,6 +9,7 @@ import com.support.robigroup.ututor.R
 import com.support.robigroup.ututor.commons.logd
 import com.support.robigroup.ututor.commons.OnMainActivityInteractionListener
 import android.support.design.widget.Snackbar
+import com.support.robigroup.ututor.api.MainManager
 import com.support.robigroup.ututor.commons.RxBaseFragment
 import com.support.robigroup.ututor.commons.requestErrorHandler
 import com.support.robigroup.ututor.model.content.ClassRoom
@@ -60,12 +61,12 @@ class MainFragment : RxBaseFragment() {
             setHasFixedSize(true)
         }
         initAdapters()
+        requestRecentTopics(5)
     }
 
     override fun onResume() {
         super.onResume()
         requestSubjects(10,getString(R.string.lang))
-        requestRecentTopics(5)
     }
 
     private fun initAdapters() {

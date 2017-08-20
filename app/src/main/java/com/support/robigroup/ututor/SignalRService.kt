@@ -54,7 +54,6 @@ class SignalRService : IntentService("SignalRService") {
         }
         mHubConnection!!.closed {
             logd("closed",TAG_SIGNALR)
-            Thread.sleep(10000)
             connectSignalR(mHubConnection)
         }
         connectSignalR(mHubConnection)
@@ -63,7 +62,7 @@ class SignalRService : IntentService("SignalRService") {
         sendMessage("Hello from BNK!")
         mHubProxy!!.on(CLIENT_METHOD_BROADAST_MESSAGE,
                 { custom -> logd("chat " + Gson().toJson(custom,CustomMessage::class.java)) }, CustomMessage::class.java)
-
+        mHubProxy!!.subscribe(this)
     }
 
     override fun onCreate() {
