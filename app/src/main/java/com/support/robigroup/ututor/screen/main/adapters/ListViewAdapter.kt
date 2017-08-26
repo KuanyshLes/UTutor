@@ -14,7 +14,12 @@ import com.support.robigroup.ututor.screen.main.MainActivity
 import java.util.ArrayList
 import java.util.Locale
 
-class ListViewAdapter(private val activity: MainActivity, resource: Int, private val friendList: MutableList<TopicItem> = ArrayList<TopicItem>(), private val searchList:  MutableList<TopicItem>)
+class ListViewAdapter(
+        private val activity: MainActivity,
+        resource: Int,
+        private val friendList: MutableList<TopicItem> = ArrayList<TopicItem>(),
+        private var searchList:  MutableList<TopicItem>,
+        private val showEmptyResultsEnabled: Boolean = false)
     : ArrayAdapter<TopicItem>(activity, resource, friendList) {
 
     override fun getCount(): Int {
@@ -57,23 +62,28 @@ class ListViewAdapter(private val activity: MainActivity, resource: Int, private
         charText = charText.toLowerCase(Locale.getDefault())
         friendList.clear()
         if (charText.isEmpty()) {
-            friendList.clear()
+            if(showEmptyResultsEnabled) friendList.addAll(searchList)
+            else friendList.clear()
         } else {
-            for (s in searchList) {
-                if (s.Text!!.contains(charText)) {
-                    friendList.add(s)
-                }
-            }
+            searchList
+                    .asSequence()
+                    .filter { it.Text!!.contains(charText) }
+                    .mapTo(friendList){ it }
         }
         notifyDataSetChanged()
     }
 
+    fun updateSearchList(newList: MutableList<TopicItem>){
+        searchList = newList
+    }
+
     class ViewHolder(v: View) {
         val lessonName: TextView = v.findViewById<View>(R.id.lessonName) as TextView
-        val lessonDesc: TextView
+        val lessonDesc: TextView = v.findViewById<View>(R.id.topicName) as TextView
+    }
 
-        init {
-            lessonDesc = v.findViewById<View>(R.id.topicName) as TextView
-        }
+    fun hideResults(){
+        friendList.clear()
+        notifyDataSetChanged()
     }
 }

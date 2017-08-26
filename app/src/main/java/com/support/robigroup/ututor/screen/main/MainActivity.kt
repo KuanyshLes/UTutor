@@ -15,6 +15,7 @@ import com.support.robigroup.ututor.R
 import com.support.robigroup.ututor.SignalRService
 import com.support.robigroup.ututor.commons.OnMainActivityInteractionListener
 import com.support.robigroup.ututor.commons.logd
+import com.support.robigroup.ututor.model.content.ClassRoom
 import com.support.robigroup.ututor.model.content.Subject
 import com.support.robigroup.ututor.model.content.TopicItem
 import com.support.robigroup.ututor.screen.topic.TopicFragment
@@ -32,6 +33,7 @@ class MainActivity : AppCompatActivity(), OnMainActivityInteractionListener {
     private var stringArrayList: MutableList<TopicItem>
     private var adapter: ListViewAdapter? = null
     private var realm: Realm by Delegates.notNull()
+    private val EX_LANG = "kk-KZ"
 
     init {
         stringArrayList = MutableList(40, { TopicItem(Id = 0, Text = "math is math is mismath exception") })
@@ -48,10 +50,12 @@ class MainActivity : AppCompatActivity(), OnMainActivityInteractionListener {
         setSupportActionBar(toolbar)
 
         adapter = ListViewAdapter(this, R.layout.item_search, searchList = stringArrayList)
-        list_item!!.adapter = adapter
+        listview_results!!.adapter = adapter
 
-        list_item.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, i, l ->
-            Toast.makeText(this@MainActivity, (adapterView.getItemAtPosition(i) as TopicItem).Text, Toast.LENGTH_SHORT).show()
+        listview_results.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, i, l ->
+            val clickedTopicItem = adapterView.getItemAtPosition(i) as TopicItem
+            clickedTopicItem.classRoom =
+            OnTopicItemClicked(adapterView.getItemAtPosition(i) as TopicItem)
         }
 
         super.onCreate(savedInstanceState)
@@ -84,7 +88,7 @@ class MainActivity : AppCompatActivity(), OnMainActivityInteractionListener {
                 logd("onQueryTextChange "+newText)
                 if (TextUtils.isEmpty(newText)) {
                     adapter!!.filter("")
-                    list_item.clearTextFilter()
+                    listview_results.clearTextFilter()
                 } else {
                     adapter!!.filter(newText)
                 }
@@ -96,12 +100,18 @@ class MainActivity : AppCompatActivity(), OnMainActivityInteractionListener {
 
 
     override fun OnTopicItemClicked(item: TopicItem) {
-        supportFragmentManager.beginTransaction().replace(R.id.main_container, TopicFragment.newInstance(item),
-                TAG_MAIN_FRAGMENT).addToBackStack(null).commit()
+        supportFragmentManager.beginTransaction().replace(R.id.main_container, TopicFragment.newInstance(item))
+                .addToBackStack(null).commit()
+    }
+
+    override fun OnClassItemClicked(item: ClassRoom) {
+        supportFragmentManager.beginTransaction().replace(R.id.main_container, SubjectsFragment.newInstance(item.number,EX_LANG))
+                .addToBackStack(null).commit()
     }
 
     override fun OnSubjectItemClicked(item: Subject) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        supportFragmentManager.beginTransaction().replace(R.id.main_container, SearchFragment.newInstance(item))
+                .addToBackStack(null).commit()
     }
 
     override fun setDisplayHomeAsEnabled(showHomeAsUp: Boolean) {
@@ -134,6 +144,9 @@ class MainActivity : AppCompatActivity(), OnMainActivityInteractionListener {
 
     override fun onDestroy() {
         super.onDestroy()
+        val intent = Intent()
+        intent.setClass(this, SignalRService::class.java)
+        stopService(intent)
         realm.close()
     }
 

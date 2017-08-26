@@ -16,6 +16,7 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="@color/colorYellow"
+            app:titleTextColor="@color/colorWhite"
             android:gravity="center"
             app:popupTheme="@style/AppTheme.PopupOverlay" />
 
@@ -31,7 +32,7 @@
     </FrameLayout>
 
     <ListView
-        android:id="@+id/list_item"
+        android:id="@+id/listview_results"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:scrollbars="none"

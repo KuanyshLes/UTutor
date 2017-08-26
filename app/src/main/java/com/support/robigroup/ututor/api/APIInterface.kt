@@ -4,6 +4,8 @@ import com.support.robigroup.ututor.Constants
 import com.support.robigroup.ututor.commons.ChatLesson
 import com.support.robigroup.ututor.commons.RedditNewsResponse
 import com.support.robigroup.ututor.model.content.*
+import com.support.robigroup.ututor.screen.chat.model.CustomMessage
+import com.support.robigroup.ututor.screen.chat.model.MyMessage
 import com.support.robigroup.ututor.singleton.SingletonSharedPref
 import io.reactivex.Flowable
 import okhttp3.ResponseBody
@@ -55,24 +57,35 @@ interface APIInterface {
 
     @GET("api/lesson/chat")
     fun getInformationAboutChat(
-            @Query("subject") subject: Int,
             @Header("Authorization") header: String = SingletonSharedPref.getInstance().getString(Constants.KEY_TOKEN)
     ): Flowable<Response<ChatLesson>>
 
     @GET("api/lesson/chat/messages")
     fun getChatMeassages(
-            @Query("subject") subject: Int,
             @Header("Authorization") header: String = SingletonSharedPref.getInstance().getString(Constants.KEY_TOKEN)
     ): Flowable<Response<ChatLesson>>
 
     @GET("api/lesson/chat/ready")
     fun postChatReady(
             @Header("Authorization") header: String = SingletonSharedPref.getInstance().getString(Constants.KEY_TOKEN)
-    ): Flowable<ResponseBody>
+    ): Flowable<Response<ResponseBody>>
 
     @GET("api/lesson/chat/complete")
     fun postChatComplete(
             @Header("Authorization") header: String = SingletonSharedPref.getInstance().getString(Constants.KEY_TOKEN)
-    ): Flowable<ResponseBody>
+    ): Flowable<Response<ResponseBody>>
+
+    @POST("api/lesson/chat/message")
+    fun postTextMessage(
+            @Query("message") messageText: String,
+            @Query("file") file64base: String,
+            @Header("Authorization") header: String = SingletonSharedPref.getInstance().getString(Constants.KEY_TOKEN)
+    ): Flowable<Response<CustomMessage>>
+
+    @POST("api/lesson/chat/message")
+    fun postTextMessage(
+            @Query("message") messageText: String,
+            @Header("Authorization") header: String = SingletonSharedPref.getInstance().getString(Constants.KEY_TOKEN)
+    ): Flowable<Response<CustomMessage>>
 
 }

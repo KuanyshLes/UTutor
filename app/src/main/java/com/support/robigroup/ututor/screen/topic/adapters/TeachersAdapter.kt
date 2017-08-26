@@ -43,9 +43,18 @@ class TeachersAdapter(fragmentTopic: TopicFragment) : RecyclerView.Adapter<Recyc
             teacher_lessons.text = item.Classes
             teacher_rating.text = item.Raiting.toString()
             teacher_photo.loadImg()
+            teacher_button_hide.setOnClickListener {
+                removeAt(layoutPosition)
+            }
             teacher_choose_button.setOnClickListener {
                 fragment.onTeacherItemClicked(item,itemView)
             }
         }
     }
+
+    fun removeAt(position: Int) {
+        items.removeAt(position)
+        notifyItemRemoved(position)
+    }
+
 }

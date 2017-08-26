@@ -1,140 +1,154 @@
 package com.support.robigroup.ututor
 
-import android.app.IntentService
+import android.app.Service
 import android.content.Intent
-import android.os.Binder
 import android.os.IBinder
 import android.util.Log
 import com.google.gson.Gson
 import com.support.robigroup.ututor.commons.logd
-import com.support.robigroup.ututor.model.content.CustomMessage
 import com.support.robigroup.ututor.model.content.RequestListen
+import com.support.robigroup.ututor.screen.chat.model.CustomMessage
+import com.support.robigroup.ututor.screen.chat.model.MyMessage
 import com.support.robigroup.ututor.singleton.SingletonSharedPref
 import io.realm.Realm
-import microsoft.aspnet.signalr.client.*
+import microsoft.aspnet.signalr.client.ConnectionState
+import microsoft.aspnet.signalr.client.Logger
+import microsoft.aspnet.signalr.client.Platform
 import microsoft.aspnet.signalr.client.http.android.AndroidPlatformComponent
 import microsoft.aspnet.signalr.client.hubs.HubConnection
 import microsoft.aspnet.signalr.client.hubs.HubProxy
-import microsoft.aspnet.signalr.client.transport.ServerSentEventsTransport
-import java.net.URLEncoder
+import microsoft.aspnet.signalr.client.transport.LongPollingTransport
 import java.util.concurrent.ExecutionException
 import kotlin.properties.Delegates
 
-class SignalRService : IntentService("SignalRService") {
-
+class SignalRService : Service() {
+    override fun onBind(p0: Intent?): IBinder {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
 
     private var mHubConnection: HubConnection? = null
     private var mHubProxy: HubProxy? = null
-    private val mBinder = LocalBinder()
     private val TOKEN = SingletonSharedPref.getInstance().getString(Constants.KEY_TOKEN)
     private val SERVER_URL = Constants.BASE_URL
     private val SERVER_HUB_CHAT = "chat"
-    private val CLIENT_METHOD_BROADAST_MESSAGE = "lessonChatReceived"
     private val TAG_SIGNALR = "signalR"
     private var realm: Realm by Delegates.notNull()
 
+    //chat responses
+    private val CLIENT_METHOD_BROADAST_MESSAGE = "lessonChatReceived"
+    private val TEACHER_ACCEPTED = "TeacherAccepted"
+    private val CHAT_READY= "ChatReady"
+
+
     var currentConnectionState: ConnectionState = ConnectionState.Disconnected
-
-    private fun startSignalR() {
-        Platform.loadPlatformComponent(AndroidPlatformComponent())
-
-        val neededToken = TOKEN.replace("bearer ","")
-        logd(TOKEN+"\n"+neededToken,tag = TAG_SIGNALR)
-
-        mHubConnection = HubConnection(SERVER_URL+"signalr","authorization="+neededToken,false, object : Logger {
-            override fun log(message: String, level: LogLevel) {
-                logd(message)
-            }
-        })
-
-        mHubProxy = mHubConnection!!.createHubProxy(SERVER_HUB_CHAT)
-        mHubConnection!!.stateChanged { fromState, toState ->
-            logd("${fromState.name} -> ${toState.name}",TAG_SIGNALR)
-            currentConnectionState = toState
-        }
-        mHubConnection!!.closed {
-            logd("closed",TAG_SIGNALR)
-            connectSignalR(mHubConnection)
-        }
-        connectSignalR(mHubConnection)
-
-
-        sendMessage("Hello from BNK!")
-        mHubProxy!!.on(CLIENT_METHOD_BROADAST_MESSAGE,
-                { custom -> logd("chat " + Gson().toJson(custom,CustomMessage::class.java)) }, CustomMessage::class.java)
-        mHubProxy!!.subscribe(this)
-    }
 
     override fun onCreate() {
         super.onCreate()
         realm = Realm.getDefaultInstance()
+
         startSignalR()
     }
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
         val result = super.onStartCommand(intent, flags, startId)
-        logd("onStartCommand",TAG_SIGNALR)
         return result
     }
 
-    override fun onHandleIntent(p0: Intent?) {
-        logd("onHandleIntent",TAG_SIGNALR)
-
-
-    }
-
     override fun onDestroy() {
-        mHubConnection?.stop()
+//        mHubConnection?.stop()
+        realm.close()
         super.onDestroy()
     }
 
-    override fun onBind(intent: Intent): IBinder? {
-        return mBinder
-    }
-
-    inner class LocalBinder : Binder() {
-        // Return this instance of SignalRService so clients can call public methods
-        val service: SignalRService
-            get() = this@SignalRService
-    }
-
-    /**
-     * method for clients (activities)
-     */
     fun sendMessage(message: String) {
         val SERVER_METHOD_SEND = "Send"
         mHubProxy!!.invoke(SERVER_METHOD_SEND, message)
     }
 
-    /**
-     * method for clients (activities)
-     */
     fun sendMessage_To(receiverName: String, message: String) {
         val SERVER_METHOD_SEND_TO = "SendChatMessage"
         mHubProxy!!.invoke(SERVER_METHOD_SEND_TO, receiverName, message)
     }
 
-    fun connectSignalR(connection: HubConnection?){
-        val clientTransport = ServerSentEventsTransport(mHubConnection!!.logger)
-        val signalRFuture = mHubConnection!!.start(clientTransport)
-        try {
-            signalRFuture.get()
-        } catch (e: InterruptedException) {
-            Log.e(TAG_SIGNALR, e.toString())
-            return
-        } catch (e: ExecutionException) {
-            Log.e(TAG_SIGNALR, e.toString())
-            return
+    private fun startSignalR() {
+        Platform.loadPlatformComponent(AndroidPlatformComponent())
+
+        val neededToken = TOKEN.replace("bearer ","")
+        val logger = Logger { message, level -> logd(level.toString() +":  " + message,TAG_SIGNALR+"LogLevel") }
+
+        mHubConnection = HubConnection("http://ututor.azurewebsites.net","authorization="+neededToken,true, logger)
+
+        mHubProxy = mHubConnection!!.createHubProxy(SERVER_HUB_CHAT)
+
+        mHubConnection!!.closed {
+            logd("closed",TAG_SIGNALR)
+            startSignalR()
         }
+        connectSignalR()
     }
 
-    private fun notifyTeacherAccepted(){
-        val realm = Realm.getDefaultInstance()
+    fun connectSignalR(){
+
+        val awaitConnection = mHubConnection!!.start(LongPollingTransport(mHubConnection!!.logger))
+        try {
+            awaitConnection.get()
+        } catch (e: InterruptedException) {
+            Log.e("onErrorOccured",e.toString())
+        } catch (e: ExecutionException) {
+            Log.e("onErrorOccured",e.toString())
+
+
+        }
+
+        mHubConnection!!.reconnecting {
+            mHubConnection!!.stop()
+        }
+
+        mHubProxy!!.subscribe(object : Any() {
+            @SuppressWarnings("unused")
+            fun TeacherAccepted(message: String){
+                logd(message,TAG_SIGNALR)
+                notifyTeacherAccepted(message)
+            }
+            @SuppressWarnings("unused")
+            fun ChatReady(){
+                notifyChatReady()
+            }
+            @SuppressWarnings("unused")
+            fun lessonChatReceived(message: CustomMessage){
+                logd(Gson().toJson(message, CustomMessage::class.java))
+                notifyMessageReceived(message)
+            }
+        })
+
+        mHubConnection!!.received( { json ->
+            Log.e("onMessageReceived ", json.toString())
+        })
+    }
+
+    private fun notifyTeacherAccepted(message: String){
         val request = realm.where(RequestListen::class.java).findFirst()
         realm.executeTransaction {
-            request.status = 1
+            request.status = Constants.STATUS_ACCEPTED
         }
     }
 
+    private fun notifyChatReady(){
+        val request = realm.where(RequestListen::class.java).findFirst()
+        realm.executeTransaction {
+            request.status = Constants.STATUS_TEACHER_CONFIRMED
+        }
+    }
 
+    private fun notifyMessageReceived(message: CustomMessage){
+        Realm.getDefaultInstance().executeTransactionAsync {
+            val realmMessage = Realm.getDefaultInstance().where(CustomMessage::class.java).findFirst()
+            realmMessage.Id = message.Id
+            realmMessage.File = message.File
+            realmMessage.FileThumbnail = message.FileThumbnail
+            realmMessage.Message = message.Message
+            realmMessage.Time = message.Time
+        }
+    }
 }
+

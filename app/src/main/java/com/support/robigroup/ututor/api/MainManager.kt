@@ -2,9 +2,14 @@ package com.support.robigroup.ututor.api
 
 import com.support.robigroup.ututor.Constants.KEY_TOKEN
 import com.support.robigroup.ututor.api.RestAPI
+import com.support.robigroup.ututor.commons.ChatLesson
+import com.support.robigroup.ututor.commons.MessagesResponse
 import com.support.robigroup.ututor.model.content.*
+import com.support.robigroup.ututor.screen.chat.model.CustomMessage
+import com.support.robigroup.ututor.screen.chat.model.MyMessage
 import com.support.robigroup.ututor.singleton.SingletonSharedPref
 import io.reactivex.Flowable
+import okhttp3.ResponseBody
 import retrofit2.Response
 
 
@@ -28,5 +33,15 @@ class MainManager(
 
     fun postLessonRequest(teacherId: String, topicId: Int): Flowable<Response<LessonRequestForTeacher>>
         = RestAPI.getApi().postLessonRequest(teacherId,topicId)
+
+    fun postLearnerReady(): Flowable<Response<ResponseBody>> = RestAPI.getApi().postChatReady()
+
+    fun postChatComplete(): Flowable<Response<ResponseBody>> = RestAPI.getApi().postChatComplete()
+
+    fun getChatInformation(): Flowable<Response<ChatLesson>> = RestAPI.getApi().getInformationAboutChat()
+
+    fun sendTextMessage(messageText: String,file64base: String? = null): Flowable<Response<CustomMessage>> =
+            if(file64base != null) RestAPI.getApi().postTextMessage(messageText,file64base)
+            else RestAPI.getApi().postTextMessage(messageText)
 
 }

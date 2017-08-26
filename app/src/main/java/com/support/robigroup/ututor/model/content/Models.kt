@@ -2,6 +2,7 @@ package com.support.robigroup.ututor.model.content
 
 import android.os.Parcel
 import android.os.Parcelable
+import com.stfalcon.chatkit.commons.models.IMessage
 import com.support.robigroup.ututor.commons.adapter.AdapterConstants
 import com.support.robigroup.ututor.commons.adapter.ViewType
 import com.support.robigroup.ututor.commons.createParcel
@@ -10,22 +11,19 @@ import io.realm.annotations.PrimaryKey
 
 
 data class ClassRoom(
-        var subjects: List<Subject> = ArrayList()
+        val number: Int
 ): Parcelable{
     companion object {
         @JvmField @Suppress("unused")
         val CREATOR = createParcel { ClassRoom(it) }
     }
     protected constructor(parcelIn: Parcel) : this(
-            mutableListOf<Subject>().apply {
-                parcelIn.readTypedList(this, Subject.CREATOR)
-            }
+            parcelIn.readInt()
     )
 
     override fun writeToParcel(dest: Parcel, flags: Int) {
-        dest.writeTypedList(subjects)
+        dest.writeInt(number)
     }
-
     override fun describeContents() = 0
 }
 
@@ -33,6 +31,7 @@ data class ClassRoom(
 data class Subject(
         var Id: Int? = null,
         var Text: String? = null,
+        var classNumber: Int? = null,
         var topics: List<TopicItem> = ArrayList()
 ): Parcelable {
 
@@ -44,6 +43,7 @@ data class Subject(
     protected constructor(parcelIn: Parcel) : this(
             parcelIn.readInt(),
             parcelIn.readString(),
+            parcelIn.readInt(),
             mutableListOf<TopicItem>().apply {
                 parcelIn.readTypedList(this, TopicItem.CREATOR)
             }
@@ -52,6 +52,7 @@ data class Subject(
     override fun writeToParcel(dest: Parcel, flags: Int) {
         dest.writeInt(Id!!)
         dest.writeString(Text)
+        dest.writeInt(classNumber!!)
         dest.writeTypedList(topics)
     }
 
@@ -179,12 +180,4 @@ open class RequestListen(
 data class LoginResponse(
         val access_token: String,
         val expires_in: Int
-)
-
-data class CustomMessage(
-        val Id: Long,
-        val Time: String,
-        val FileThumbnail: String,
-        val File: String?,
-        val Message: String?
 )

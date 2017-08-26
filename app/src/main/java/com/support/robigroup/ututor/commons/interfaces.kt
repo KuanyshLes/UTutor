@@ -1,8 +1,10 @@
 package com.support.robigroup.ututor.commons
 
+import com.support.robigroup.ututor.model.content.ClassRoom
 import com.support.robigroup.ututor.model.content.Subject
 import com.support.robigroup.ututor.model.content.Teacher
 import com.support.robigroup.ututor.model.content.TopicItem
+import com.support.robigroup.ututor.screen.main.adapters.ListViewAdapter
 
 interface OnLoginActivityInteractionListener {
     fun OnSignInButtonClicked (email: String,password: String)
@@ -14,6 +16,7 @@ interface OnLoginActivityInteractionListener {
 interface OnMainActivityInteractionListener {
     fun OnTopicItemClicked(item: TopicItem)
     fun OnSubjectItemClicked(item: Subject)
+    fun OnClassItemClicked(item: ClassRoom)
     fun setDisplayHomeAsEnabled(showHomeAsUp: Boolean)
     fun setToolbarTitle(title: String)
 }

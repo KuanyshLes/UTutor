@@ -10,6 +10,7 @@
     <string name="error_invalid_password">This password is too short</string>
     <string name="error_incorrect_password">This password is incorrect</string>
     <string name="error_field_required">This field is required</string>
+    <string name="error_request_exists">Запрос уже был создан или отменен</string>
     <string name="action_go_sign_up">Don\'t have an account?</string>
     <string name="desc_logo">Logo</string>
     <string name="desc_arrow_right">Open</string>
@@ -54,6 +55,7 @@
     <string name="sending">sending</string>
     <string name="waiting">Ожидание</string>
     <string name="declined">Отказал</string>
+    <string name="ready">Готов</string>
 
 
     // for chat
@@ -70,16 +72,20 @@
     <string name="open_chat">Открыть чат</string>
     <string name="durationLesson">Длительность урока</string>
     <string name="ex_duration_lesson">29 минут 34 секунды</string>
-    <string name="ex_learner" >Андрей Земский</string>
+    <string name="ex_learner">Андрей Земский</string>
     <string name="ex_country">Русский</string>
-    <string name="prof_my_cost_h" >Мой счет:</string>
+    <string name="prof_my_cost_h">Мой счет:</string>
     <string name="prof_top_up_balance">Пополнить баланс</string>
     <string name="ex_prof_balance">10.00$</string>
     <string name="prof_rating_by_lessons">Рейтинг по предметам</string>
+    <string name="teacher_hide_button_text">Скрыть</string>
+    <string name="topic_hide_teacher">Скрыть</string>
+    <string name="class_name">класс</string>
+    <string name="ex_class_name">10 класс</string>
 
     <string-array name="view_types_dialog">
-        <item name="image">Image (default)</item>
-        <item name="voice">Voice message (custom)</item>
+        <item name="image">From gallery</item>
+        <!--<item name="voice">Voice message (custom)</item>-->
     </string-array>
 
 </resources>

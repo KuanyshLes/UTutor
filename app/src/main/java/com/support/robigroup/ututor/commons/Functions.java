@@ -55,7 +55,7 @@ public class Functions {
         return netInfo != null && netInfo.isConnectedOrConnecting();
     }
 
-    public static void builtMessageWait(){
+    public static void builtMessageWait(Context context){
         progressDialog = new ProgressDialog(context);
         progressDialog.setMessage("Wait");
         progressDialog.setTitle("Sending...");

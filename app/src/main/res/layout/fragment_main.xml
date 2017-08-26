@@ -6,14 +6,15 @@
     tools:context="com.support.robigroup.ututor.screen.main.MainFragment">
 
     <include layout="@layout/topics"
-        android:id="@+id/include" />
+        android:id="@+id/include"
+        android:visibility="gone"/>
 
 
     <TextView
         android:id="@+id/main_text_all_lessons"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="0dp"
         android:background="@color/colorGrey"
         android:padding="8dp"
         android:text="@string/all_lessons"
@@ -27,7 +28,6 @@
         android:layout_height="0dp"
         android:orientation="vertical"
         app:layoutManager="android.support.v7.widget.LinearLayoutManager"
-
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
@@ -36,7 +36,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/main_text_all_lessons"
         app:layout_constraintVertical_bias="0.5"
-        tools:listitem="@layout/item_lesson" />
+        tools:listitem="@layout/item_class" />
 
 
 </android.support.constraint.ConstraintLayout>

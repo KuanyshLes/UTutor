@@ -8,6 +8,8 @@ object Constants {
     val NOT_FOUND = 404 // не найден, not our problem
     val SERVER_ERROR = 500 //not our problem
 
+
+
     val KEY_TOKEN = "TOKEN"
     val KEY_EMAIL = "username"
     val KEY_PASSWORD = "password"
@@ -16,6 +18,13 @@ object Constants {
     val KEY_BEARER = "bearer "
 
     val BASE_URL = "http://ututor.azurewebsites.net/"
+
+    //chat constants
+    val STATUS_NOT_REQUESTED = 0
+    val STATUS_REQUESTED = 1
+    val STATUS_ACCEPTED = 2
+    val STATUS_LEARNER_CONFIRMED = 3
+    val STATUS_TEACHER_CONFIRMED = 4
 
 
 }

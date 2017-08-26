@@ -6,9 +6,8 @@
     android:orientation="vertical">
 
 
-    <ImageView
+   <ImageView
         android:id="@+id/teacher_image3"
-        tools:layout_editor_absoluteY="15dp"
         android:layout_width="20dp"
         android:layout_height="20dp"
         android:layout_marginBottom="8dp"
@@ -22,7 +21,6 @@
 
     <TextView
         android:id="@+id/teacher_rating3"
-        tools:layout_editor_absoluteY="16dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
