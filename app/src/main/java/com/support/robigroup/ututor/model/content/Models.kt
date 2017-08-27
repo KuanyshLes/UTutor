@@ -3,6 +3,7 @@ package com.support.robigroup.ututor.model.content
 import android.os.Parcel
 import android.os.Parcelable
 import com.stfalcon.chatkit.commons.models.IMessage
+import com.support.robigroup.ututor.Constants
 import com.support.robigroup.ututor.commons.adapter.AdapterConstants
 import com.support.robigroup.ututor.commons.adapter.ViewType
 import com.support.robigroup.ututor.commons.createParcel
@@ -61,13 +62,9 @@ data class Subject(
 }
 
 data class TopicItem(
-        var language: String? = null,
-        var Text: String? = null,
-        var rating: Double? = null,
-        var created: Long? = null,
-        var subjectId: Int? = null,
         val Id: Int? = 0,
-        var classRoom: Int? = null
+        var Text: String? = null,
+        var subject: Subject? = null
 ) : ViewType, Parcelable {
 
     companion object {
@@ -76,21 +73,15 @@ data class TopicItem(
     }
 
     protected constructor(parcelIn: Parcel) : this(
-            parcelIn.readString(),
-            parcelIn.readString(),
-            parcelIn.readDouble(),
-            parcelIn.readLong(),
             parcelIn.readInt(),
-            parcelIn.readInt()
-    )
+            parcelIn.readString(),
+            parcelIn.readParcelable<Subject>(Subject::class.java.classLoader)
+            )
 
     override fun writeToParcel(dest: Parcel, flags: Int) {
-        dest.writeString(language ?: "error")
-        dest.writeString(Text ?: "error")
-        dest.writeDouble(rating ?: 0.0)
-        dest.writeLong(created ?: 0L)
         dest.writeInt(Id ?: 0)
-        dest.writeInt(classRoom ?: 0)
+        dest.writeString(Text ?: "error")
+        dest.writeParcelable(subject,flags)
     }
 
     override fun describeContents() = 0
@@ -107,7 +98,8 @@ data class Teacher(
         var LastName: String? = null,
         var MiddleName: String? = null,
         var Birthday: String? = null,
-        var Image: String? = null
+        var Image: String? = null,
+        var Status: Int = Constants.STATUS_NOT_REQUESTED
 ): Parcelable{
     companion object {
         @JvmField @Suppress("unused")
@@ -122,7 +114,8 @@ data class Teacher(
             parcelIn.readString(),
             parcelIn.readString(),
             parcelIn.readString(),
-            parcelIn.readString()
+            parcelIn.readString(),
+            parcelIn.readInt()
     )
 
     override fun writeToParcel(dest: Parcel, flags: Int) {
@@ -135,6 +128,7 @@ data class Teacher(
         dest.writeString(MiddleName)
         dest.writeString(Birthday)
         dest.writeString(Image)
+        dest.writeInt(Status)
     }
 
     override fun describeContents() = 0

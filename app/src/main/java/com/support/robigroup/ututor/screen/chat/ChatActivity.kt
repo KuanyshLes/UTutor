@@ -4,10 +4,14 @@ import android.app.AlertDialog
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.net.Uri
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v4.app.DialogFragment
 import android.support.v7.app.AppCompatActivity
+import android.util.Base64
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -19,10 +23,13 @@ import com.stfalcon.chatkit.messages.MessageHolders
 import com.stfalcon.chatkit.messages.MessageInput
 import com.stfalcon.chatkit.messages.MessagesList
 import com.stfalcon.chatkit.messages.MessagesListAdapter
+import com.stfalcon.contentmanager.ContentManager
+import com.support.robigroup.ututor.Constants
 import com.support.robigroup.ututor.R
 import com.support.robigroup.ututor.SignalRService
 import com.support.robigroup.ututor.api.MainManager
 import com.support.robigroup.ututor.commons.AppUtils
+import com.support.robigroup.ututor.commons.Functions
 import com.support.robigroup.ututor.commons.requestErrorHandler
 import com.support.robigroup.ututor.model.content.Teacher
 import com.support.robigroup.ututor.screen.chat.model.CustomMessage
@@ -35,7 +42,7 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import io.realm.Realm
 import io.realm.RealmChangeListener
-import io.realm.RealmResults
+import java.io.ByteArrayOutputStream
 
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -43,19 +50,31 @@ import java.util.Locale
 import kotlin.properties.Delegates
 
 
-class ChatActivity : AppCompatActivity(), MessageInput.InputListener, MessageInput.AttachmentsListener, MessageHolders.ContentChecker<Message>, DialogInterface.OnClickListener, FinishDialog.NoticeDialogListener, MessagesListAdapter.SelectionListener, MessagesListAdapter.OnLoadMoreListener {
+class ChatActivity : AppCompatActivity(),
+        MessageInput.InputListener,
+        MessageInput.AttachmentsListener,
+        MessageHolders.ContentChecker<Message>,
+        DialogInterface.OnClickListener,
+        FinishDialog.NoticeDialogListener,
+        MessagesListAdapter.SelectionListener,
+        MessagesListAdapter.OnLoadMoreListener,
+        ContentManager.PickContentListener{
+
 
     private var messagesList: MessagesList? = null
     private var messagesAdapter: MessagesListAdapter<MyMessage>? = null
     private val subscriptions: CompositeDisposable by lazy {
         CompositeDisposable()
     }
+    private var contentManager: ContentManager? = null
 
     private var user: User = User("mukhtar","Mukhtar",null,true)
     private var teacher: User by Delegates.notNull()
     private var menu: Menu? = null
     private var selectionCount: Int = 0
     private var lastLoadedDate: Date? = null
+    private var realm: Realm by Delegates.notNull()
+    private var realmChangeListener: RealmChangeListener<CustomMessage> by Delegates.notNull()
     private var imageLoader: ImageLoader? = null
     private val ex_teacher = "{\"Birthday\":\"0001-01-01T00:00:00\",\"Classes\":\"1,10\",\"FirstName\":\"Aktore\",\"Id\":\"8ce5ddc5-46cf-4306-b994-af004b09729e\",\"Languages\":\"kk-KZ,ru-KZ\",\"LastName\":\"Niyazymbetov\",\"Raiting\":0.0}"
 
@@ -63,19 +82,30 @@ class ChatActivity : AppCompatActivity(), MessageInput.InputListener, MessageInp
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_chat)
 
-        val realm = Realm.getDefaultInstance()
+        contentManager = ContentManager(this,this)
+
+        realm = Realm.getDefaultInstance()
         var result = realm.where(CustomMessage::class.java).findFirst()
         realm.executeTransaction {
             if(result == null){
                 result = realm.createObject(CustomMessage::class.java)
             }
         }
-        realm.where(CustomMessage::class.java).findFirst().addChangeListener <CustomMessage> {
-                    message ->
-                    messagesAdapter?.addToStart(MyMessage(message,teacher),true)
-                }
+        realmChangeListener = RealmChangeListener {
+            message ->
+            if(message.File!=null&&message.FileThumbnail!=null){
+                val myMessage = CustomMessage(message.Id,message.Time,Constants.BASE_URL+message.FileThumbnail,
+                        Constants.BASE_URL+message.File,message.Message)
+                messagesAdapter?.addToStart(MyMessage(myMessage,teacher),true)
+            }else{
+                messagesAdapter?.addToStart(MyMessage(message,teacher),true)
+            }
+        }
 
-        val teacher: Teacher = intent.getParcelableExtra<Teacher>(KEY_TEACHER) as Teacher
+        realm.where(CustomMessage::class.java).findFirst().addChangeListener(realmChangeListener)
+
+//        val teacher: Teacher = intent.getParcelableExtra<Teacher>(KEY_TEACHER) as Teacher
+        val teacher: Teacher = Gson().fromJson(ex_teacher,Teacher::class.java)
         this.teacher = User(teacher.Id,teacher.FirstName,teacher.Image,true)
 
 
@@ -102,7 +132,8 @@ class ChatActivity : AppCompatActivity(), MessageInput.InputListener, MessageInp
     }
 
     override fun onDestroy() {
-        Realm.getDefaultInstance().removeAllChangeListeners()
+        realm.where(CustomMessage::class.java).findFirst().removeChangeListener(realmChangeListener)
+        realm.close()
         super.onDestroy()
     }
 
@@ -144,8 +175,8 @@ class ChatActivity : AppCompatActivity(), MessageInput.InputListener, MessageInp
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        this.menu = menu
         menuInflater.inflate(R.menu.chat_actions_menu, menu)
+        this.menu = menu
         onSelectionChanged(0)
         return true
     }
@@ -184,7 +215,7 @@ class ChatActivity : AppCompatActivity(), MessageInput.InputListener, MessageInp
     }
 
     private fun sendMessage(input: CharSequence){
-        val subscription = MainManager().sendTextMessage(input.toString())
+        val subscription = MainManager().sendMessage(messageText = input.toString())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
@@ -203,15 +234,23 @@ class ChatActivity : AppCompatActivity(), MessageInput.InputListener, MessageInp
         subscriptions.add(subscription)
     }
 
-    private fun sendFileMessage(input: CharSequence){
-        val subscription = MainManager().sendTextMessage(input.toString())
+    private fun sendFileMessage(imageUri: String){
+        val encodedImage = Functions.getEncodedImage(imageUri)
+
+        val subscription = MainManager().sendMessage(file64base = encodedImage)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
-                        { message ->
-                            if(requestErrorHandler(message.code(),message.message())){
-                                val myMessage: MyMessage? = MyMessage(message.body()!!,user)
-                                messagesAdapter!!.addToStart(myMessage, true)
+                        { messageResponse ->
+                            if(requestErrorHandler(messageResponse.code(),messageResponse.message())){
+                                val message: CustomMessage = messageResponse.body()!!
+                                if(message.File!=null&&message.FileThumbnail!=null){
+                                    val myMessage = CustomMessage(message.Id,message.Time,Constants.BASE_URL+message.FileThumbnail,
+                                            Constants.BASE_URL+message.File,message.Message)
+                                    messagesAdapter?.addToStart(MyMessage(myMessage,teacher),true)
+                                }else{
+                                    messagesAdapter?.addToStart(MyMessage(message,teacher),true)
+                                }
                             }else{
                                 //TODO handle http errors
                             }
@@ -249,7 +288,9 @@ class ChatActivity : AppCompatActivity(), MessageInput.InputListener, MessageInp
 
     override fun onClick(dialogInterface: DialogInterface, i: Int) {
         when (i) {
-            0 -> messagesAdapter!!.addToStart(MyMessage(CustomMessage(3218498,"00:35","https://vlast.kz/media/pages/mt/1481870380x9dmr_1000x768.jpg","","https://vlast.kz/media/pages/mt/1481870380x9dmr_1000x768.jpg"),user), true)
+            0 ->
+//                messagesAdapter!!.addToStart(MyMessage(CustomMessage(3218498,"00:35","https://vlast.kz/media/pages/mt/1481870380x9dmr_1000x768.jpg","","https://vlast.kz/media/pages/mt/1481870380x9dmr_1000x768.jpg"),user), true)
+                contentManager?.pickContent(ContentManager.Content.IMAGE)
 //            1 -> messagesAdapter!!.addToStart(MessagesFixtures.getVoiceMessage(), true)
         }
     }
@@ -259,6 +300,48 @@ class ChatActivity : AppCompatActivity(), MessageInput.InputListener, MessageInp
         dialog.dismiss()
         startActivity(Intent(this@ChatActivity, MainActivity::class.java))
         finish()
+    }
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        super.onRestoreInstanceState(savedInstanceState)
+        contentManager?.onRestoreInstanceState(savedInstanceState)
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        contentManager?.onSaveInstanceState(outState)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
+        super.onActivityResult(requestCode, resultCode, data)
+        //Need for handle result
+        contentManager?.onActivityResult(requestCode, resultCode, data)
+    }
+
+    override fun onStartContentLoading() {
+
+    }
+
+    override fun onContentLoaded(uri: Uri?, contentType: String?) {
+        if (contentType.equals(ContentManager.Content.IMAGE.toString())) {
+            //You can use any library for display image Fresco, Picasso, ImageLoader
+            //For sample:
+            if(uri!=null){
+                messagesAdapter!!.addToStart(MyMessage(CustomMessage(3218498,"00:35",uri.toString(),uri.toString(),"https://vlast.kz/media/pages/mt/1481870380x9dmr_1000x768.jpg"),user), true)
+            }
+        }
+    }
+
+    override fun onCanceled() {
+    }
+
+    override fun onError(error: String?) {
+        Snackbar.make(findViewById(android.R.id.content), error ?: "", Snackbar.LENGTH_LONG).show()
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        contentManager?.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
 
     companion object {

@@ -11,7 +11,7 @@ data class MyMessage(
         private val customMessage: CustomMessage,
         var User: User?
 ) : IMessage, MessageContentType.Image{
-    override fun getImageUrl(): String? = customMessage.FileThumbnail ?: null
+    override fun getImageUrl(): String? = customMessage.File ?: null
 
     override fun getId(): String = customMessage.Id.toString()
 

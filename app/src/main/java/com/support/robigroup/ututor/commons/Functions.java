@@ -3,10 +3,19 @@ package com.support.robigroup.ututor.commons;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.v7.app.AlertDialog;
+import android.util.Base64;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 
 
 public class Functions {
@@ -67,5 +76,27 @@ public class Functions {
         if(progressDialog.isShowing()){
             progressDialog.cancel();
         }
+    }
+
+    public static String getEncodedImage(String fileName) {
+
+        String encodedString = null;
+        try {
+            InputStream inputStream = new FileInputStream(fileName);
+            byte[] bytes;
+            byte[] buffer = new byte[8192];
+            int bytesRead;
+            ByteArrayOutputStream output = new ByteArrayOutputStream();
+
+            while ((bytesRead = inputStream.read(buffer)) != -1) {
+                output.write(buffer, 0, bytesRead);
+            }
+
+            bytes = output.toByteArray();
+            encodedString = Base64.encodeToString(bytes, Base64.DEFAULT);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return encodedString;
     }
 }

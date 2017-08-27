@@ -45,11 +45,12 @@ class SignalRService : Service() {
     override fun onCreate() {
         super.onCreate()
         realm = Realm.getDefaultInstance()
-
-        startSignalR()
+        if(mHubConnection==null||mHubConnection!!.state==ConnectionState.Disconnected){
+            startSignalR()
+        }
     }
 
-    override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         val result = super.onStartCommand(intent, flags, startId)
         return result
     }
@@ -89,6 +90,23 @@ class SignalRService : Service() {
 
     fun connectSignalR(){
 
+        mHubProxy!!.subscribe(object : Any() {
+            @SuppressWarnings("unused")
+            fun TeacherAccepted(message: String){
+                logd(message,TAG_SIGNALR)
+                notifyTeacherAccepted(message)
+            }
+            @SuppressWarnings("unused")
+            fun ChatReady(){
+                notifyesChatReadyFromTeacher()
+            }
+            @SuppressWarnings("unused")
+            fun lessonChatReceived(message: CustomMessage){
+                logd(Gson().toJson(message, CustomMessage::class.java))
+                notifyMessageReceived(message)
+            }
+        })
+
         val awaitConnection = mHubConnection!!.start(LongPollingTransport(mHubConnection!!.logger))
         try {
             awaitConnection.get()
@@ -104,36 +122,21 @@ class SignalRService : Service() {
             mHubConnection!!.stop()
         }
 
-        mHubProxy!!.subscribe(object : Any() {
-            @SuppressWarnings("unused")
-            fun TeacherAccepted(message: String){
-                logd(message,TAG_SIGNALR)
-                notifyTeacherAccepted(message)
-            }
-            @SuppressWarnings("unused")
-            fun ChatReady(){
-                notifyChatReady()
-            }
-            @SuppressWarnings("unused")
-            fun lessonChatReceived(message: CustomMessage){
-                logd(Gson().toJson(message, CustomMessage::class.java))
-                notifyMessageReceived(message)
-            }
-        })
-
         mHubConnection!!.received( { json ->
             Log.e("onMessageReceived ", json.toString())
         })
     }
 
     private fun notifyTeacherAccepted(message: String){
+        val realm = Realm.getDefaultInstance()
         val request = realm.where(RequestListen::class.java).findFirst()
         realm.executeTransaction {
             request.status = Constants.STATUS_ACCEPTED
         }
     }
 
-    private fun notifyChatReady(){
+    private fun notifyesChatReadyFromTeacher(){
+        val realm = Realm.getDefaultInstance()
         val request = realm.where(RequestListen::class.java).findFirst()
         realm.executeTransaction {
             request.status = Constants.STATUS_TEACHER_CONFIRMED
@@ -141,7 +144,7 @@ class SignalRService : Service() {
     }
 
     private fun notifyMessageReceived(message: CustomMessage){
-        Realm.getDefaultInstance().executeTransactionAsync {
+        Realm.getDefaultInstance().executeTransaction {
             val realmMessage = Realm.getDefaultInstance().where(CustomMessage::class.java).findFirst()
             realmMessage.Id = message.Id
             realmMessage.File = message.File

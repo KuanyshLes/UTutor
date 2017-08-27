@@ -1,12 +1,12 @@
 package com.support.robigroup.ututor.api
 
 import com.support.robigroup.ututor.Constants.KEY_TOKEN
-import com.support.robigroup.ututor.api.RestAPI
 import com.support.robigroup.ututor.commons.ChatLesson
-import com.support.robigroup.ututor.commons.MessagesResponse
-import com.support.robigroup.ututor.model.content.*
+import com.support.robigroup.ututor.model.content.LessonRequestForTeacher
+import com.support.robigroup.ututor.model.content.Subject
+import com.support.robigroup.ututor.model.content.Teacher
+import com.support.robigroup.ututor.model.content.TopicItem
 import com.support.robigroup.ututor.screen.chat.model.CustomMessage
-import com.support.robigroup.ututor.screen.chat.model.MyMessage
 import com.support.robigroup.ututor.singleton.SingletonSharedPref
 import io.reactivex.Flowable
 import okhttp3.ResponseBody
@@ -40,8 +40,45 @@ class MainManager(
 
     fun getChatInformation(): Flowable<Response<ChatLesson>> = RestAPI.getApi().getInformationAboutChat()
 
-    fun sendTextMessage(messageText: String,file64base: String? = null): Flowable<Response<CustomMessage>> =
-            if(file64base != null) RestAPI.getApi().postTextMessage(messageText,file64base)
-            else RestAPI.getApi().postTextMessage(messageText)
+    fun sendMessage(messageText: String? = null, file64base: String? = null): Flowable<Response<CustomMessage>> =
+            if(file64base != null&&messageText!=null) RestAPI.getApi().postTextMessageWithPhoto(messageText,file64base)
+            else if(file64base!=null) RestAPI.getApi().postPhotoMessage(file64base)
+            else if(messageText!=null) RestAPI.getApi().postTextMessage(messageText)
+            else Flowable.empty()
 
+//    fun sendFileMessage(encodedString:String): Flowable<Response<CustomMessage>>{
+//        return Flowable.create( {
+//            subscriber ->
+//            val connection: HttpURLConnection? = null
+//            try {
+//                val url = URL(Constants.BASE_URL+"api/lesson/chat/message/file")
+//                val con = url.openConnection() as HttpURLConnection
+//                val data = JSONObject()
+//                data.put("File",encodedString)
+//                con.requestMethod = "POST"
+//                con.useCaches = false
+//                con.doInput = true
+//                con.doOutput = true
+//                con.setRequestProperty("Connection", "Keep-Alive")
+//                con.doOutput = true
+//
+//                val os = con.getOutputStream()
+//                val writer = BufferedWriter(OutputStreamWriter(os, "UTF-8"))
+//
+//                //make request
+//                writer.write(data)
+//                writer.flush()
+//                writer.close()
+//                reader = BufferedReader(InputStreamReader(con.getInputStream()))
+//                val sb = StringBuilder()
+//                var line: String? = null
+//                while ((line = reader.readLine()) != null) {
+//                    sb.append(line)
+//                }
+//                return Flowable.
+//            } catch (ex: Exception) {
+//                subscriber.onError(ex)
+//            }
+//        },BackpressureStrategy.LATEST)
+//    }
 }

@@ -10,7 +10,7 @@
     <string name="error_invalid_password">This password is too short</string>
     <string name="error_incorrect_password">This password is incorrect</string>
     <string name="error_field_required">This field is required</string>
-    <string name="error_request_exists">Запрос уже был создан или отменен</string>
+    <string name="error_request_exists">Запрос был создан</string>
     <string name="action_go_sign_up">Don\'t have an account?</string>
     <string name="desc_logo">Logo</string>
     <string name="desc_arrow_right">Open</string>

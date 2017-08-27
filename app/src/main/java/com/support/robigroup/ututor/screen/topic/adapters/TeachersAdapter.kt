@@ -14,6 +14,7 @@ class TeachersAdapter(fragmentTopic: TopicFragment) : RecyclerView.Adapter<Recyc
 
     private val items: ArrayList<Teacher> = ArrayList()
     val fragment: TopicFragment = fragmentTopic
+    var clickedItemNumber: Int? = null
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder?, position: Int) {
         holder as TeachersViewHolder
@@ -47,6 +48,7 @@ class TeachersAdapter(fragmentTopic: TopicFragment) : RecyclerView.Adapter<Recyc
                 removeAt(layoutPosition)
             }
             teacher_choose_button.setOnClickListener {
+                clickedItemNumber = layoutPosition
                 fragment.onTeacherItemClicked(item,itemView)
             }
         }
@@ -55,6 +57,21 @@ class TeachersAdapter(fragmentTopic: TopicFragment) : RecyclerView.Adapter<Recyc
     fun removeAt(position: Int) {
         items.removeAt(position)
         notifyItemRemoved(position)
+        logd("removed item "+position)
+    }
+    fun clearOthers(){
+        if(clickedItemNumber!=null){
+            logd(items.size.toString()+" "+clickedItemNumber)
+            val position: Int = clickedItemNumber!!
+            if(position!=0)
+                for(i in 0 .. position){
+                    removeAt(i)
+                }
+            for(i in position+1 until items.size){
+                removeAt(i)
+            }
+        }
+
     }
 
 }

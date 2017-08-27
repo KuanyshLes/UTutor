@@ -44,6 +44,7 @@ class TopicFragment : RxBaseFragment() {
     var currentButton: Button? = null
     var currentStatus: Int = Constants.STATUS_NOT_REQUESTED
     var countDownCounter: CountDownTimer? = null
+    private var changeListener: RealmChangeListener<RequestListen>? = null
     private var realm: Realm by Delegates.notNull()
 
 
@@ -70,20 +71,20 @@ class TopicFragment : RxBaseFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         mListener!!.setDisplayHomeAsEnabled(true)
-        mListener!!.setToolbarTitle(itemTopic.Text ?: "error")
+        mListener!!.setToolbarTitle(itemTopic.subject?.Text ?: "error")
 
         topic_desc.text = itemTopic.Text
-        class_text.text = "${itemTopic.classRoom} ${getString(R.string.group)}"
+        class_text.text = "${itemTopic.subject?.classNumber} ${getString(R.string.group)}"
 
         find_teacher.setOnClickListener {
             requestTeacher()
         }
 
-        main_recycler_view_header.apply {
-            setHasFixedSize(true)
-        }
+//        main_recycler_view_header.apply {
+//            setHasFixedSize(true)
+//        }
         initAdapters()
-        requestSameTopics(5)
+//        requestSameTopics(5)
 
 
 
@@ -92,6 +93,9 @@ class TopicFragment : RxBaseFragment() {
     override fun onSaveInstanceState(outState: Bundle?) {
         super.onSaveInstanceState(outState)
         outState?.putParcelable(ARG_TOPIC_ITEM, itemTopic)
+        if(currentStatus>Constants.STATUS_NOT_REQUESTED){
+            outState?.putParcelable(ARG_TEACHER,currentTeacher)
+        }
     }
 
     override fun onPrepareOptionsMenu(menu: Menu?) {
@@ -100,9 +104,9 @@ class TopicFragment : RxBaseFragment() {
     }
 
     fun initAdapters(){
-        if (main_recycler_view_header.adapter == null) {
-            main_recycler_view_header.adapter = RecentTopicsAdapter()
-        }
+//        if (main_recycler_view_header.adapter == null) {
+//            main_recycler_view_header.adapter = RecentTopicsAdapter()
+//        }
         if(list_teachers.adapter == null){
             list_teachers.adapter = TeachersAdapter(this)
         }
@@ -153,13 +157,17 @@ class TopicFragment : RxBaseFragment() {
         when(currentStatus){
             Constants.STATUS_NOT_REQUESTED ->{
                 requestLessonToTeacher(item.Id,itemTopic.Id ?: 4)
+                currentStatus = Constants.STATUS_REQUESTED
                 currentTeacher = item
                 currentButton = itemView!!.findViewById<Button>(R.id.teacher_choose_button) as Button
             }
             Constants.STATUS_REQUESTED ->{
                 Snackbar.make(main_recycler_view_header, getString(R.string.error_request_exists), Snackbar.LENGTH_LONG).show()
             }
-            Constants.STATUS_ACCEPTED ->{
+            Constants.STATUS_ACCEPTED->{
+                postLearnerReady()
+            }
+            Constants.STATUS_TEACHER_CONFIRMED->{
                 postLearnerReady()
             }
         }
@@ -198,15 +206,16 @@ class TopicFragment : RxBaseFragment() {
                         { teachers ->
                             if(activity.requestErrorHandler(teachers.code(),teachers.message())){
                                 logd(Gson().toJson(teachers.body(), LessonRequestForTeacher::class.java))
+                                (list_teachers.adapter as TeachersAdapter).clearOthers()
                                 currentButton!!.setText(R.string.waiting)
-                                currentStatus = Constants.STATUS_REQUESTED
                                 setRealmOnChangeListener()
-//                                startSignalR()
+
                             }else{
-                                //TODO handle server errors
+                                currentStatus = Constants.STATUS_NOT_REQUESTED
                             }
                         },
                         { e ->
+                            currentStatus = Constants.STATUS_NOT_REQUESTED
                             Snackbar.make(main_recycler_view_header, e.message ?: "", Snackbar.LENGTH_LONG).show()
                             e.printStackTrace()
                         }
@@ -224,7 +233,7 @@ class TopicFragment : RxBaseFragment() {
             currentStatus = Constants.STATUS_REQUESTED
         }
         val requests = realm.where(RequestListen::class.java).findFirst()
-        val changeListener = RealmChangeListener<RequestListen> {
+        changeListener = RealmChangeListener {
             rs ->
             if(rs.status==Constants.STATUS_ACCEPTED&&currentStatus==Constants.STATUS_REQUESTED){
                 currentStatus = Constants.STATUS_ACCEPTED
@@ -267,9 +276,8 @@ class TopicFragment : RxBaseFragment() {
         number_of_teachers.text = getString(R.string.teachers_accepted).plus(": ").plus(size)
         number_of_teachers.visibility = View.VISIBLE
         find_teacher.visibility = View.GONE
-        topics_bottom.visibility = View.GONE
+//        topics_bottom.visibility = View.GONE
     }
-
 
     override fun onAttach(context: Context?) {
         super.onAttach(context)
@@ -285,15 +293,15 @@ class TopicFragment : RxBaseFragment() {
         mListener = null
     }
 
-    override fun onStop() {
-        super.onStop()
+    override fun onDestroy() {
+        super.onDestroy()
         countDownCounter?.cancel()
-        realm.removeAllChangeListeners()
         realm.close()
     }
 
     companion object {
         val ARG_TOPIC_ITEM = "topicItem"
+        val ARG_TEACHER = "teacher"
         fun newInstance(item: TopicItem): TopicFragment {
             val fragment = TopicFragment()
             val bundle = Bundle()
@@ -302,22 +310,4 @@ class TopicFragment : RxBaseFragment() {
             return fragment
         }
     }
-
-
-    private fun notifyTeacherAccepted(message: String){
-        val realm = Realm.getDefaultInstance()
-        val request = realm.where(RequestListen::class.java).findFirst()
-        realm.executeTransaction {
-            request.status = Constants.STATUS_ACCEPTED
-        }
-    }
-
-    private fun notifyesChatReadyFromTeacher(){
-        val realm = Realm.getDefaultInstance()
-        val request = realm.where(RequestListen::class.java).findFirst()
-        realm.executeTransaction {
-            request.status = Constants.STATUS_TEACHER_CONFIRMED
-        }
-    }
-
 }

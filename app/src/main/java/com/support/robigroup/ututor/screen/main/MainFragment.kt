@@ -39,16 +39,15 @@ class MainFragment : RxBaseFragment() {
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        // Inflate the layout for this fragment
-        logd("onCreateView MainFragment")
         return inflater!!.inflate(R.layout.fragment_main, container, false)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        logd("onActivityCreated MainFragment")
         mListener!!.setToolbarTitle(getString(R.string.main_title))
         mListener!!.setDisplayHomeAsEnabled(false)
+
+        //TODO implement after backend
 //        main_recycler_view_header.apply {
 //            setHasFixedSize(true)
 //        }
@@ -60,9 +59,9 @@ class MainFragment : RxBaseFragment() {
     }
 
     private fun initAdapters() {
-        if (main_recycler_view_header.adapter == null) {
-            main_recycler_view_header.adapter = RecentTopicsAdapter()
-        }
+//        if (main_recycler_view_header.adapter == null) {
+//            main_recycler_view_header.adapter = RecentTopicsAdapter()
+//        }
         if (main_recycler_view_content.adapter == null) {
             main_recycler_view_content.adapter = ClassAdapter(classes,mListener)
         }

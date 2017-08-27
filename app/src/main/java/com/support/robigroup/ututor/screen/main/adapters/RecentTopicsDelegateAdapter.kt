@@ -39,9 +39,9 @@ class RecentTopicsDelegateAdapter : ViewTypeDelegateAdapter {
 
             main_lesson_title.text = item.Text
             topic_description_text.text = item.Text
-            date_create.text = item.created.toString()
+            date_create.text = "noBackEnd"
             //TODO add time
-            topic_rating.text = item.rating.toString()
+            topic_rating.text = "noBackEnd"
 
         }
     }

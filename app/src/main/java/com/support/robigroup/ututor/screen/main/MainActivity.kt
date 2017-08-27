@@ -32,7 +32,6 @@ class MainActivity : AppCompatActivity(), OnMainActivityInteractionListener {
     }
     private var stringArrayList: MutableList<TopicItem>
     private var adapter: ListViewAdapter? = null
-    private var realm: Realm by Delegates.notNull()
     private val EX_LANG = "kk-KZ"
 
     init {
@@ -41,7 +40,6 @@ class MainActivity : AppCompatActivity(), OnMainActivityInteractionListener {
     override fun onCreate(savedInstanceState: Bundle?) {
 
         setContentView(R.layout.activity_main)
-        realm = Realm.getDefaultInstance()
 
         val intent = Intent()
         intent.setClass(this, SignalRService::class.java)
@@ -54,7 +52,6 @@ class MainActivity : AppCompatActivity(), OnMainActivityInteractionListener {
 
         listview_results.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, i, l ->
             val clickedTopicItem = adapterView.getItemAtPosition(i) as TopicItem
-            clickedTopicItem.classRoom =
             OnTopicItemClicked(adapterView.getItemAtPosition(i) as TopicItem)
         }
 
@@ -146,8 +143,6 @@ class MainActivity : AppCompatActivity(), OnMainActivityInteractionListener {
         super.onDestroy()
         val intent = Intent()
         intent.setClass(this, SignalRService::class.java)
-        stopService(intent)
-        realm.close()
     }
 
 }

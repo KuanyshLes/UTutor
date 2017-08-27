@@ -15,7 +15,6 @@ import com.support.robigroup.ututor.model.content.Subject
 import com.support.robigroup.ututor.screen.main.adapters.ListViewAdapter
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.topics.*
 import kotlin.properties.Delegates
 
 class SearchFragment : RxBaseFragment() {
@@ -34,8 +33,8 @@ class SearchFragment : RxBaseFragment() {
         setHasOptionsMenu(true)
 
 
-        adapter = ListViewAdapter(activity = activity as MainActivity,
-                resource = R.layout.item_search,
+        adapter = ListViewAdapter(activity as MainActivity,
+                R.layout.item_search,
                 searchList = subject.topics.toMutableList(),
                 showEmptyResultsEnabled = true)
         listView = activity.findViewById(R.id.listview_results)
@@ -82,7 +81,12 @@ class SearchFragment : RxBaseFragment() {
                 }.subscribe (
                         { retrievedTopics ->
                             if(activity.requestErrorHandler(retrievedTopics.code(),retrievedTopics.message())){
-                                adapter.updateSearchList(retrievedTopics.body()!!.toMutableList())
+                                val topics = retrievedTopics.body()!!
+                                        .map {
+                                            it.subject = subject
+                                            it
+                                        }
+                                adapter.updateSearchList(topics.toMutableList())
                                 adapter.filter("")
                                 Functions.cancelProgressDialog()
                             }else{
