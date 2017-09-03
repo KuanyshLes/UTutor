@@ -2,36 +2,55 @@ package com.support.robigroup.ututor.screen.topic.adapters
 
 import android.support.v7.widget.RecyclerView
 import android.view.ViewGroup
+import com.support.robigroup.ututor.Constants
 import com.support.robigroup.ututor.R
+import com.support.robigroup.ututor.commons.OnTopicActivityInteractionListener
 import com.support.robigroup.ututor.commons.inflate
 import com.support.robigroup.ututor.commons.loadImg
 import com.support.robigroup.ututor.commons.logd
 import com.support.robigroup.ututor.model.content.Teacher
-import com.support.robigroup.ututor.screen.topic.TopicFragment
+import com.support.robigroup.ututor.model.content.Teachers
 import kotlinx.android.synthetic.main.item_teacher.view.*
 
-class TeachersAdapter(fragmentTopic: TopicFragment) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class TeachersAdapter(private val interactionListener: OnTopicActivityInteractionListener) : RecyclerView.Adapter<TeachersAdapter.TeachersViewHolder>() {
 
     private val items: ArrayList<Teacher> = ArrayList()
-    val fragment: TopicFragment = fragmentTopic
     var clickedItemNumber: Int? = null
 
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder?, position: Int) {
-        holder as TeachersViewHolder
+    override fun onBindViewHolder(holder: TeachersViewHolder, position: Int) {
         holder.bind(items[position])
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+    fun getTeachers(): Teachers{
+        val res = Teachers()
+        (res.teachers as ArrayList).addAll(items)
+        return res
+    }
+
+    fun getRequestedTeacher(initFun: (Teacher,Int) -> Unit): Boolean{
+        if(items.size==0) return false
+        else{
+            for(i in 0 until items.size){
+                val item = items[i]
+                if(item.Status!=Constants.STATUS_NOT_REQUESTED){
+                    initFun(item,i)
+                    return true
+                }
+            }
+            return false
+        }
+
+    }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TeachersViewHolder {
         return TeachersViewHolder(parent)
     }
 
     override fun getItemCount(): Int = items.size
 
-    fun clearAndAddNews(lessons: List<Teacher>) {
+    fun clearAndAddTeachers(lessons: List<Teacher>) {
         items.clear()
-
         items.addAll(lessons)
-        logd("${items.size} teachers")
         notifyDataSetChanged()
     }
 
@@ -49,7 +68,7 @@ class TeachersAdapter(fragmentTopic: TopicFragment) : RecyclerView.Adapter<Recyc
             }
             teacher_choose_button.setOnClickListener {
                 clickedItemNumber = layoutPosition
-                fragment.onTeacherItemClicked(item,itemView)
+                interactionListener.OnTeacherItemClicked(item,itemView)
             }
         }
     }
@@ -57,8 +76,8 @@ class TeachersAdapter(fragmentTopic: TopicFragment) : RecyclerView.Adapter<Recyc
     fun removeAt(position: Int) {
         items.removeAt(position)
         notifyItemRemoved(position)
-        logd("removed item "+position)
     }
+
     fun clearOthers(){
         if(clickedItemNumber!=null){
             logd(items.size.toString()+" "+clickedItemNumber)
@@ -71,7 +90,6 @@ class TeachersAdapter(fragmentTopic: TopicFragment) : RecyclerView.Adapter<Recyc
                 removeAt(i)
             }
         }
-
     }
 
 }

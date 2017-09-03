@@ -30,6 +30,7 @@ import com.support.robigroup.ututor.SignalRService
 import com.support.robigroup.ututor.api.MainManager
 import com.support.robigroup.ututor.commons.AppUtils
 import com.support.robigroup.ututor.commons.Functions
+import com.support.robigroup.ututor.commons.logd
 import com.support.robigroup.ututor.commons.requestErrorHandler
 import com.support.robigroup.ututor.model.content.Teacher
 import com.support.robigroup.ututor.screen.chat.model.CustomMessage
@@ -96,18 +97,19 @@ class ChatActivity : AppCompatActivity(),
             if(message.File!=null&&message.FileThumbnail!=null){
                 val myMessage = CustomMessage(message.Id,message.Time,Constants.BASE_URL+message.FileThumbnail,
                         Constants.BASE_URL+message.File,message.Message)
+                logd(Gson().toJson(myMessage,CustomMessage::class.java),"mymessage2")
                 messagesAdapter?.addToStart(MyMessage(myMessage,teacher),true)
             }else{
+                logd(Gson().toJson(message,CustomMessage::class.java),"mymessage2")
                 messagesAdapter?.addToStart(MyMessage(message,teacher),true)
             }
         }
 
         realm.where(CustomMessage::class.java).findFirst().addChangeListener(realmChangeListener)
 
-//        val teacher: Teacher = intent.getParcelableExtra<Teacher>(KEY_TEACHER) as Teacher
-        val teacher: Teacher = Gson().fromJson(ex_teacher,Teacher::class.java)
+        val teacher: Teacher = intent.getParcelableExtra<Teacher>(KEY_TEACHER) as Teacher
+//        val teacher: Teacher = Gson().fromJson(ex_teacher,Teacher::class.java)
         this.teacher = User(teacher.Id,teacher.FirstName,teacher.Image,true)
-
 
         findViewById<View>(R.id.text_finish).setOnClickListener { showFinishDialog() }
 
@@ -234,6 +236,26 @@ class ChatActivity : AppCompatActivity(),
         subscriptions.add(subscription)
     }
 
+    private fun closeChat(){
+        val subscription = MainManager().postChatComplete()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        { message ->
+                            if(requestErrorHandler(message.code(),message.message())){
+                                startActivity(Intent(this@ChatActivity, MainActivity::class.java))
+                                finish()
+                            }else{
+                                //TODO handle http errors
+                            }
+                        },
+                        { e ->
+                            Snackbar.make(findViewById(android.R.id.content), e.message ?: "", Snackbar.LENGTH_LONG).show()
+                        }
+                )
+        subscriptions.add(subscription)
+    }
+
     private fun sendFileMessage(imageUri: String){
         val encodedImage = Functions.getEncodedImage(imageUri)
 
@@ -298,8 +320,7 @@ class ChatActivity : AppCompatActivity(),
 
     override fun onDialogPositiveClick(dialog: DialogFragment) {
         dialog.dismiss()
-        startActivity(Intent(this@ChatActivity, MainActivity::class.java))
-        finish()
+        closeChat()
     }
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {

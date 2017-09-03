@@ -10,7 +10,6 @@ import android.text.TextUtils
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.AdapterView
-import android.widget.Toast
 import com.support.robigroup.ututor.R
 import com.support.robigroup.ututor.SignalRService
 import com.support.robigroup.ututor.commons.OnMainActivityInteractionListener
@@ -18,11 +17,9 @@ import com.support.robigroup.ututor.commons.logd
 import com.support.robigroup.ututor.model.content.ClassRoom
 import com.support.robigroup.ututor.model.content.Subject
 import com.support.robigroup.ututor.model.content.TopicItem
-import com.support.robigroup.ututor.screen.topic.TopicFragment
 import com.support.robigroup.ututor.screen.main.adapters.ListViewAdapter
-import io.realm.Realm
+import com.support.robigroup.ututor.screen.topic.TopicActivity
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlin.properties.Delegates
 
 
 class MainActivity : AppCompatActivity(), OnMainActivityInteractionListener {
@@ -30,13 +27,11 @@ class MainActivity : AppCompatActivity(), OnMainActivityInteractionListener {
 
         private val TAG_MAIN_FRAGMENT: String = "mainFragment"
     }
-    private var stringArrayList: MutableList<TopicItem>
+    private var stringArrayList:
+            MutableList<TopicItem> = MutableList(40, { TopicItem(Id = 0, Text = "math is math is mismath exception") })
     private var adapter: ListViewAdapter? = null
     private val EX_LANG = "kk-KZ"
 
-    init {
-        stringArrayList = MutableList(40, { TopicItem(Id = 0, Text = "math is math is mismath exception") })
-    }
     override fun onCreate(savedInstanceState: Bundle?) {
 
         setContentView(R.layout.activity_main)
@@ -54,7 +49,6 @@ class MainActivity : AppCompatActivity(), OnMainActivityInteractionListener {
             val clickedTopicItem = adapterView.getItemAtPosition(i) as TopicItem
             OnTopicItemClicked(adapterView.getItemAtPosition(i) as TopicItem)
         }
-
         super.onCreate(savedInstanceState)
     }
 
@@ -97,8 +91,7 @@ class MainActivity : AppCompatActivity(), OnMainActivityInteractionListener {
 
 
     override fun OnTopicItemClicked(item: TopicItem) {
-        supportFragmentManager.beginTransaction().replace(R.id.main_container, TopicFragment.newInstance(item))
-                .addToBackStack(null).commit()
+        TopicActivity.open(this,item)
     }
 
     override fun OnClassItemClicked(item: ClassRoom) {
@@ -141,8 +134,6 @@ class MainActivity : AppCompatActivity(), OnMainActivityInteractionListener {
 
     override fun onDestroy() {
         super.onDestroy()
-        val intent = Intent()
-        intent.setClass(this, SignalRService::class.java)
     }
 
 }

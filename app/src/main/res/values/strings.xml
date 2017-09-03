@@ -11,6 +11,7 @@
     <string name="error_incorrect_password">This password is incorrect</string>
     <string name="error_field_required">This field is required</string>
     <string name="error_request_exists">Запрос был создан</string>
+    <string name="error_request_already_confirmed">Запрос уже отправлен</string>
     <string name="action_go_sign_up">Don\'t have an account?</string>
     <string name="desc_logo">Logo</string>
     <string name="desc_arrow_right">Open</string>
@@ -56,6 +57,7 @@
     <string name="waiting">Ожидание</string>
     <string name="declined">Отказал</string>
     <string name="ready">Готов</string>
+    <string name="error">Ошибка</string>
 
 
     // for chat

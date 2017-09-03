@@ -1,5 +1,6 @@
 package com.support.robigroup.ututor.commons
 
+import android.view.View
 import com.support.robigroup.ututor.model.content.ClassRoom
 import com.support.robigroup.ututor.model.content.Subject
 import com.support.robigroup.ututor.model.content.Teacher
@@ -19,4 +20,8 @@ interface OnMainActivityInteractionListener {
     fun OnClassItemClicked(item: ClassRoom)
     fun setDisplayHomeAsEnabled(showHomeAsUp: Boolean)
     fun setToolbarTitle(title: String)
+}
+
+interface OnTopicActivityInteractionListener{
+    fun OnTeacherItemClicked(item: Teacher,view: View)
 }

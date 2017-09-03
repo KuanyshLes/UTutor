@@ -23,8 +23,8 @@ data class MyMessage(
 }
 
 open class CustomMessage(
-        var Id: Long? = null,
-        var Time: String? = null,
+        var Id: Long = 0,
+        var Time: String = "",
         var FileThumbnail: String? = null,
         var File: String? = null,
         var Message: String? = null

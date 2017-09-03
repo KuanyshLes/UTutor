@@ -39,9 +39,6 @@ class SignalRService : Service() {
     private val TEACHER_ACCEPTED = "TeacherAccepted"
     private val CHAT_READY= "ChatReady"
 
-
-    var currentConnectionState: ConnectionState = ConnectionState.Disconnected
-
     override fun onCreate() {
         super.onCreate()
         realm = Realm.getDefaultInstance()
@@ -56,7 +53,7 @@ class SignalRService : Service() {
     }
 
     override fun onDestroy() {
-//        mHubConnection?.stop()
+        mHubConnection?.stop()
         realm.close()
         super.onDestroy()
     }
@@ -77,50 +74,46 @@ class SignalRService : Service() {
         val neededToken = TOKEN.replace("bearer ","")
         val logger = Logger { message, level -> logd(level.toString() +":  " + message,TAG_SIGNALR+"LogLevel") }
 
-        mHubConnection = HubConnection("http://ututor.azurewebsites.net","authorization="+neededToken,true, logger)
+        mHubConnection = HubConnection("http://ututor.kz","authorization="+neededToken,true, logger)
 
         mHubProxy = mHubConnection!!.createHubProxy(SERVER_HUB_CHAT)
 
-        mHubConnection!!.closed {
-            logd("closed",TAG_SIGNALR)
-            startSignalR()
-        }
+//        mHubConnection!!.closed {
+//            logd("closed",TAG_SIGNALR)
+//            startSignalR()
+//        }
         connectSignalR()
     }
 
     fun connectSignalR(){
 
         mHubProxy!!.subscribe(object : Any() {
-            @SuppressWarnings("unused")
             fun TeacherAccepted(message: String){
-                logd(message,TAG_SIGNALR)
+                logd(message,"eventCome")
                 notifyTeacherAccepted(message)
             }
-            @SuppressWarnings("unused")
             fun ChatReady(){
+                logd("chat ready","eventCome")
                 notifyesChatReadyFromTeacher()
             }
-            @SuppressWarnings("unused")
             fun lessonChatReceived(message: CustomMessage){
-                logd(Gson().toJson(message, CustomMessage::class.java))
+                logd("chat event kelip resultat shygardy ","eventCome")
                 notifyMessageReceived(message)
             }
         })
 
-        val awaitConnection = mHubConnection!!.start(LongPollingTransport(mHubConnection!!.logger))
+        val awaitConnection = mHubConnection!!.start()
         try {
             awaitConnection.get()
         } catch (e: InterruptedException) {
             Log.e("onErrorOccured",e.toString())
         } catch (e: ExecutionException) {
             Log.e("onErrorOccured",e.toString())
-
-
         }
 
-        mHubConnection!!.reconnecting {
-            mHubConnection!!.stop()
-        }
+//        mHubConnection!!.reconnecting {
+////            mHubConnection!!.stop()
+//        }
 
         mHubConnection!!.received( { json ->
             Log.e("onMessageReceived ", json.toString())
@@ -146,6 +139,7 @@ class SignalRService : Service() {
     private fun notifyMessageReceived(message: CustomMessage){
         Realm.getDefaultInstance().executeTransaction {
             val realmMessage = Realm.getDefaultInstance().where(CustomMessage::class.java).findFirst()
+            logd(Gson().toJson(message,CustomMessage::class.java),"mymessage1")
             realmMessage.Id = message.Id
             realmMessage.File = message.File
             realmMessage.FileThumbnail = message.FileThumbnail

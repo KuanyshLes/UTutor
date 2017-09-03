@@ -17,7 +17,7 @@ object Constants {
     val KEY_RES_EXPIRES = "expires_in"
     val KEY_BEARER = "bearer "
 
-    val BASE_URL = "http://ututor.azurewebsites.net/"
+    val BASE_URL = "http://ututor.kz/"
 
     //chat constants
     val STATUS_NOT_REQUESTED = 0
