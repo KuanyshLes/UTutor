@@ -8,6 +8,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
 import android.support.design.widget.Snackbar
 import android.support.v4.app.DialogFragment
 import android.support.v7.app.AppCompatActivity
@@ -43,6 +44,7 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import io.realm.Realm
 import io.realm.RealmChangeListener
+import kotlinx.android.synthetic.main.activity_chat.*
 import java.io.ByteArrayOutputStream
 
 import java.text.SimpleDateFormat
@@ -83,6 +85,8 @@ class ChatActivity : AppCompatActivity(),
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_chat)
 
+
+
         contentManager = ContentManager(this,this)
 
         realm = Realm.getDefaultInstance()
@@ -100,16 +104,20 @@ class ChatActivity : AppCompatActivity(),
                 logd(Gson().toJson(myMessage,CustomMessage::class.java),"mymessage2")
                 messagesAdapter?.addToStart(MyMessage(myMessage,teacher),true)
             }else{
-                logd(Gson().toJson(message,CustomMessage::class.java),"mymessage2")
-                messagesAdapter?.addToStart(MyMessage(message,teacher),true)
+                val myMessage = CustomMessage(message.Id,message.Time,Message = message.Message)
+                logd(Gson().toJson(myMessage,CustomMessage::class.java),"mymessage2")
+                messagesAdapter?.addToStart(MyMessage(myMessage,teacher),true)
             }
         }
 
         realm.where(CustomMessage::class.java).findFirst().addChangeListener(realmChangeListener)
 
-        val teacher: Teacher = intent.getParcelableExtra<Teacher>(KEY_TEACHER) as Teacher
-//        val teacher: Teacher = Gson().fromJson(ex_teacher,Teacher::class.java)
+//        val teacher: Teacher = intent.getParcelableExtra<Teacher>(KEY_TEACHER) as Teacher
+        val teacher: Teacher = Gson().fromJson(ex_teacher,Teacher::class.java)
         this.teacher = User(teacher.Id,teacher.FirstName,teacher.Image,true)
+
+        setSupportActionBar(toolbar)
+        teacher_name_title.text =this.teacher.name
 
         findViewById<View>(R.id.text_finish).setOnClickListener { showFinishDialog() }
 
@@ -172,7 +180,8 @@ class ChatActivity : AppCompatActivity(),
 
     override fun onSelectionChanged(count: Int) {
         selectionCount = count
-        menu!!.findItem(R.id.action_delete).isVisible = count > 0
+        menu!!
+                .findItem(R.id.action_delete).isVisible = count > 0
         menu!!.findItem(R.id.action_copy).isVisible = count > 0
     }
 
@@ -271,7 +280,8 @@ class ChatActivity : AppCompatActivity(),
                                             Constants.BASE_URL+message.File,message.Message)
                                     messagesAdapter?.addToStart(MyMessage(myMessage,teacher),true)
                                 }else{
-                                    messagesAdapter?.addToStart(MyMessage(message,teacher),true)
+                                    val myMessage = CustomMessage(message.Id,message.Time,Message = message.Message)
+                                    messagesAdapter?.addToStart(MyMessage(myMessage,teacher),true)
                                 }
                             }else{
                                 //TODO handle http errors

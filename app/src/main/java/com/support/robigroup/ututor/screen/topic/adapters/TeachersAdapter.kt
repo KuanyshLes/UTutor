@@ -70,6 +70,11 @@ class TeachersAdapter(private val interactionListener: OnTopicActivityInteractio
                 clickedItemNumber = layoutPosition
                 interactionListener.OnTeacherItemClicked(item,itemView)
             }
+            when(item.Status){
+                Constants.STATUS_REQUESTED -> teacher_choose_button.text = itemView.context.getString(R.string.waiting)
+                Constants.STATUS_LEARNER_CONFIRMED -> teacher_choose_button.text = itemView.context.getString(R.string.waiting)
+                Constants.STATUS_TEACHER_CONFIRMED -> teacher_choose_button.text = itemView.context.getString(R.string.ready)
+            }
         }
     }
 
@@ -82,13 +87,13 @@ class TeachersAdapter(private val interactionListener: OnTopicActivityInteractio
         if(clickedItemNumber!=null){
             logd(items.size.toString()+" "+clickedItemNumber)
             val position: Int = clickedItemNumber!!
-            if(position!=0)
-                for(i in 0 .. position){
-                    removeAt(i)
-                }
             for(i in position+1 until items.size){
-                removeAt(i)
+                removeAt(position+1)
             }
+            if(position!=0)
+                for(i in 0 until position){
+                    removeAt(0)
+                }
         }
     }
 

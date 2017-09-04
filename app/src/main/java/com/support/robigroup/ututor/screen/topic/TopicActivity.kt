@@ -14,6 +14,7 @@ import com.google.gson.Gson
 import com.support.robigroup.ututor.Constants
 import com.support.robigroup.ututor.R
 import com.support.robigroup.ututor.api.MainManager
+import com.support.robigroup.ututor.commons.ChatLesson
 import com.support.robigroup.ututor.commons.OnTopicActivityInteractionListener
 import com.support.robigroup.ututor.commons.logd
 import com.support.robigroup.ututor.commons.requestErrorHandler
@@ -71,7 +72,6 @@ class TopicActivity : AppCompatActivity(), OnTopicActivityInteractionListener {
         }
         if(savedInstanceState!=null){
             itemTopic = savedInstanceState.getParcelable(ARG_TOPIC_ITEM)
-            val tcs = savedInstanceState.getParcelable<Teachers>(ARG_ADAPTER).teachers
             myAdapter.clearAndAddTeachers(savedInstanceState.getParcelable<Teachers>(ARG_ADAPTER).teachers)
             myAdapter.getRequestedTeacher({teacher, i -> initFun(teacher,i) })
         }else{
@@ -86,18 +86,19 @@ class TopicActivity : AppCompatActivity(), OnTopicActivityInteractionListener {
         find_teacher.setOnClickListener {
             requestTeacher()
         }
+
+
 //        if (main_recycler_view_header.adapter == null) {
 //            main_recycler_view_header.adapter = RecentTopicsAdapter()
 //        }
     }
 
     private fun initFun(teacher: Teacher,position: Int){
+
         currentTeacher = teacher
-        Handler().postDelayed(
-                {
-                    currentButton = list_teachers.findViewHolderForAdapterPosition(position).itemView!!.findViewById(R.id.teacher_choose_button)
-                },20
-        )
+        if(currentTeacher!!.Status!=Constants.STATUS_NOT_REQUESTED){
+            checkUpdates()
+        }
         when(currentTeacher!!.Status){
             Constants.STATUS_REQUESTED ->{
                 number_of_teachers.visibility = View.GONE
@@ -151,6 +152,26 @@ class TopicActivity : AppCompatActivity(), OnTopicActivityInteractionListener {
                         },
                         { e ->
                             Snackbar.make(findViewById(android.R.id.content), e.message ?: "", Snackbar.LENGTH_LONG).show()
+                        }
+                )
+        subscriptions.add(subscription)
+    }
+
+    private fun checkUpdates(){
+        val subscription = MainManager().getChatInformation()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe (
+                        { teachers ->
+                            if(requestErrorHandler(teachers.code(),teachers.message())){
+                                logd(Gson().toJson(teachers.body(), ChatLesson::class.java))
+                            }else{
+                                //TODO handle server errors
+                            }
+                        },
+                        { e ->
+                            Snackbar.make(findViewById(android.R.id.content), e.message ?: "", Snackbar.LENGTH_LONG).show()
+                            e.printStackTrace()
                         }
                 )
         subscriptions.add(subscription)
