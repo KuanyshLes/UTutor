@@ -106,7 +106,7 @@ class LoginActivity : AppCompatActivity(), OnLoginActivityInteractionListener {
             logd("before get token")
 
             compositeDisposable.add(
-                    RestAPI.getApi().getToken("beybit92@gmail.com","1q2w3e4r")
+                    RestAPI.getApi().getToken(email,password)
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribeOn(Schedulers.io())
                     .subscribe({
