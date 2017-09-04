@@ -112,8 +112,8 @@ class ChatActivity : AppCompatActivity(),
 
         realm.where(CustomMessage::class.java).findFirst().addChangeListener(realmChangeListener)
 
-//        val teacher: Teacher = intent.getParcelableExtra<Teacher>(KEY_TEACHER) as Teacher
-        val teacher: Teacher = Gson().fromJson(ex_teacher,Teacher::class.java)
+        val teacher: Teacher = intent.getParcelableExtra<Teacher>(KEY_TEACHER) as Teacher
+//        val teacher: Teacher = Gson().fromJson(ex_teacher,Teacher::class.java)
         this.teacher = User(teacher.Id,teacher.FirstName,teacher.Image,true)
 
         setSupportActionBar(toolbar)
