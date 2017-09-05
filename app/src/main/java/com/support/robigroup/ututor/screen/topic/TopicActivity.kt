@@ -208,7 +208,7 @@ class TopicActivity : AppCompatActivity(), OnTopicActivityInteractionListener {
                 .subscribe (
                         { teachers ->
                             if(requestErrorHandler(teachers.code(),teachers.message())){
-                                if(teachers.body().equals("ready")){
+                                if(teachers.body().toString().equals("ready")){
                                     ChatActivity.open(this,currentTeacher!!)
                                 }else{
                                     currentButton!!.text = getString(R.string.waiting)
@@ -302,7 +302,7 @@ class TopicActivity : AppCompatActivity(), OnTopicActivityInteractionListener {
         changeListener = RealmChangeListener {
             rs ->
             if(rs.status==Constants.STATUS_ACCEPTED&&currentTeacher!!.Status==Constants.STATUS_REQUESTED){
-                currentTeacher!!.Status = Congtstants.STATUS_ACCEPTED
+                currentTeacher!!.Status = Constants.STATUS_ACCEPTED
                 OnTeacherAccepted()
             }else if(rs.status==Constants.STATUS_TEACHER_CONFIRMED&&currentTeacher!!.Status==Constants.STATUS_LEARNER_CONFIRMED){
                 ChatActivity.open(this,currentTeacher!!)
