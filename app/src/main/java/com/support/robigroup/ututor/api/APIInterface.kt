@@ -68,7 +68,7 @@ interface APIInterface {
     @GET("Lesson/ReadyForChat")  //   api/lesson/chat/ready
     fun postChatReady(
             @Header("Authorization") header: String = SingletonSharedPref.getInstance().getString(Constants.KEY_TOKEN)
-    ): Flowable<Response<ResponseBody>>
+    ): Flowable<Response<String>>
 
     @GET("Lesson/Complete")
     fun postChatComplete(

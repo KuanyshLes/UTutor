@@ -34,7 +34,7 @@ class MainManager(
     fun postLessonRequest(teacherId: String, topicId: Int): Flowable<Response<LessonRequestForTeacher>>
         = RestAPI.getApi().postLessonRequest(teacherId,topicId)
 
-    fun postLearnerReady(): Flowable<Response<ResponseBody>> = RestAPI.getApi().postChatReady()
+    fun postLearnerReady(): Flowable<Response<String>> = RestAPI.getApi().postChatReady()
 
     fun postChatComplete(): Flowable<Response<ResponseBody>> = RestAPI.getApi().postChatComplete()
 

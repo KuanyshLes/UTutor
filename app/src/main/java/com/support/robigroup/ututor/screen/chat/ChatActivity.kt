@@ -4,19 +4,14 @@ import android.app.AlertDialog
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
-import android.os.Handler
 import android.support.design.widget.Snackbar
 import android.support.v4.app.DialogFragment
 import android.support.v7.app.AppCompatActivity
-import android.util.Base64
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-
 import com.google.gson.Gson
 import com.squareup.picasso.Picasso
 import com.stfalcon.chatkit.commons.ImageLoader
@@ -33,6 +28,7 @@ import com.support.robigroup.ututor.commons.AppUtils
 import com.support.robigroup.ututor.commons.Functions
 import com.support.robigroup.ututor.commons.logd
 import com.support.robigroup.ututor.commons.requestErrorHandler
+import com.support.robigroup.ututor.model.content.RequestListen
 import com.support.robigroup.ututor.model.content.Teacher
 import com.support.robigroup.ututor.screen.chat.model.CustomMessage
 import com.support.robigroup.ututor.screen.chat.model.Message
@@ -44,12 +40,10 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import io.realm.Realm
 import io.realm.RealmChangeListener
+import io.realm.RealmObjectChangeListener
 import kotlinx.android.synthetic.main.activity_chat.*
-import java.io.ByteArrayOutputStream
-
 import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
+import java.util.*
 import kotlin.properties.Delegates
 
 
@@ -109,8 +103,17 @@ class ChatActivity : AppCompatActivity(),
                 messagesAdapter?.addToStart(MyMessage(myMessage,teacher),true)
             }
         }
+        result.addChangeListener(realmChangeListener)
 
-        realm.where(CustomMessage::class.java).findFirst().addChangeListener(realmChangeListener)
+        realm.where(RequestListen::class.java).findFirst().addChangeListener(
+                RealmChangeListener<RequestListen>{
+                    rs ->
+                    if(rs.status==Constants.STATUS_COMPLETED) {
+                        closeChat()
+                    }
+                }
+        )
+
 
         val teacher: Teacher = intent.getParcelableExtra<Teacher>(KEY_TEACHER) as Teacher
 //        val teacher: Teacher = Gson().fromJson(ex_teacher,Teacher::class.java)

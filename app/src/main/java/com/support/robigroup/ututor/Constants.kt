@@ -26,6 +26,7 @@ object Constants {
     val STATUS_LEARNER_CONFIRMED = 3
     val STATUS_TEACHER_CONFIRMED = 4
     val STATUS_DECLINED = 5
+    val STATUS_COMPLETED = 6
 
 
 }

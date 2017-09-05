@@ -64,7 +64,6 @@ class TopicActivity : AppCompatActivity(), OnTopicActivityInteractionListener {
         setContentView(R.layout.activity_topic)
 
         subscriptions = CompositeDisposable()
-        realm = Realm.getDefaultInstance()
 
         myAdapter = TeachersAdapter(this)
         if(list_teachers.adapter == null){
@@ -86,6 +85,9 @@ class TopicActivity : AppCompatActivity(), OnTopicActivityInteractionListener {
         find_teacher.setOnClickListener {
             requestTeacher()
         }
+
+        realm = Realm.getDefaultInstance()
+
 
 
 //        if (main_recycler_view_header.adapter == null) {
@@ -206,19 +208,14 @@ class TopicActivity : AppCompatActivity(), OnTopicActivityInteractionListener {
                 .subscribe (
                         { teachers ->
                             if(requestErrorHandler(teachers.code(),teachers.message())){
-                                if(currentTeacher!!.Status==Constants.STATUS_TEACHER_CONFIRMED){
+                                if(teachers.body().equals("ready")){
                                     ChatActivity.open(this,currentTeacher!!)
-
                                 }else{
                                     currentButton!!.text = getString(R.string.waiting)
                                     currentTeacher!!.Status = Constants.STATUS_LEARNER_CONFIRMED
                                 }
                             }else{
                                 currentButton!!.text = getString(R.string.error)
-                                if(currentTeacher!!.Status==Constants.STATUS_TEACHER_CONFIRMED){
-                                    ChatActivity.open(this,currentTeacher!!)
-                                }
-                                currentTeacher!!.Status = Constants.STATUS_LEARNER_CONFIRMED
                             }
                         },
                         { e ->
@@ -238,6 +235,7 @@ class TopicActivity : AppCompatActivity(), OnTopicActivityInteractionListener {
                                 (list_teachers.adapter as TeachersAdapter).clearOthers()
                                 currentButton!!.setText(R.string.waiting)
                                 number_of_teachers.visibility = View.GONE
+                                currentTeacher!!.Status = Constants.STATUS_REQUESTED
                                 setRealmOnChangeListener()
                             }else{
                                 currentTeacher!!.Status = Constants.STATUS_NOT_REQUESTED
@@ -294,19 +292,17 @@ class TopicActivity : AppCompatActivity(), OnTopicActivityInteractionListener {
 
     //Additional private methods
     private fun setRealmOnChangeListener(){
-        var request = realm.where(RequestListen::class.java).findFirst()
+        var request = realm.where(RequestListen::class.java).equalTo("Id",0).findFirst()
         realm.executeTransaction {
             if(request==null){
                 request = realm.createObject(RequestListen::class.java,0)
             }
             request.status = Constants.STATUS_REQUESTED
-            currentTeacher!!.Status = Constants.STATUS_REQUESTED
         }
-        val requests = realm.where(RequestListen::class.java).findFirst()
         changeListener = RealmChangeListener {
             rs ->
             if(rs.status==Constants.STATUS_ACCEPTED&&currentTeacher!!.Status==Constants.STATUS_REQUESTED){
-                currentTeacher!!.Status = Constants.STATUS_ACCEPTED
+                currentTeacher!!.Status = Congtstants.STATUS_ACCEPTED
                 OnTeacherAccepted()
             }else if(rs.status==Constants.STATUS_TEACHER_CONFIRMED&&currentTeacher!!.Status==Constants.STATUS_LEARNER_CONFIRMED){
                 ChatActivity.open(this,currentTeacher!!)
@@ -314,7 +310,7 @@ class TopicActivity : AppCompatActivity(), OnTopicActivityInteractionListener {
                 currentTeacher!!.Status = Constants.STATUS_TEACHER_CONFIRMED
             }
         }
-        requests.addChangeListener(changeListener)
+        request.addChangeListener(changeListener)
     }
 
     private fun getTimeWaitingInMinutes(millis: Long): String

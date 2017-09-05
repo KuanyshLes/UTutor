@@ -78,10 +78,10 @@ class SignalRService : Service() {
 
         mHubProxy = mHubConnection!!.createHubProxy(SERVER_HUB_CHAT)
 
-//        mHubConnection!!.closed {
-//            logd("closed",TAG_SIGNALR)
-//            startSignalR()
-//        }
+        mHubConnection!!.closed {
+            logd("closed",TAG_SIGNALR)
+            startSignalR()
+        }
         connectSignalR()
     }
 
@@ -100,9 +100,12 @@ class SignalRService : Service() {
                 logd("chat event kelip resultat shygardy ","eventCome")
                 notifyMessageReceived(message)
             }
+            fun ChatCompleted(){
+                notifyChatCompleted()
+            }
         })
 
-        val awaitConnection = mHubConnection!!.start()
+        val awaitConnection = mHubConnection!!.start(LongPollingTransport(mHubConnection!!.logger))
         try {
             awaitConnection.get()
         } catch (e: InterruptedException) {
@@ -111,13 +114,21 @@ class SignalRService : Service() {
             Log.e("onErrorOccured",e.toString())
         }
 
-//        mHubConnection!!.reconnecting {
-////            mHubConnection!!.stop()
-//        }
+        mHubConnection!!.reconnecting {
+            mHubConnection!!.stop()
+        }
 
         mHubConnection!!.received( { json ->
             Log.e("onMessageReceived ", json.toString())
         })
+    }
+
+    private fun notifyChatCompleted() {
+        val realm = Realm.getDefaultInstance()
+        val request = realm.where(RequestListen::class.java).findFirst()
+        realm.executeTransaction {
+            request.status = Constants.STATUS_COMPLETED
+        }
     }
 
     private fun notifyTeacherAccepted(message: String){
@@ -139,7 +150,6 @@ class SignalRService : Service() {
     private fun notifyMessageReceived(message: CustomMessage){
         Realm.getDefaultInstance().executeTransaction {
             val realmMessage = Realm.getDefaultInstance().where(CustomMessage::class.java).findFirst()
-            logd(Gson().toJson(message,CustomMessage::class.java),"mymessage1")
             realmMessage.Id = message.Id
             realmMessage.File = message.File
             realmMessage.FileThumbnail = message.FileThumbnail
