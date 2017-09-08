@@ -1,11 +1,9 @@
 package com.support.robigroup.ututor.api
 
 import com.support.robigroup.ututor.Constants
-import com.support.robigroup.ututor.commons.ChatLesson
 import com.support.robigroup.ututor.commons.RedditNewsResponse
 import com.support.robigroup.ututor.model.content.*
 import com.support.robigroup.ututor.screen.chat.model.CustomMessage
-import com.support.robigroup.ututor.screen.chat.model.MyMessage
 import com.support.robigroup.ututor.singleton.SingletonSharedPref
 import io.reactivex.Flowable
 import okhttp3.ResponseBody

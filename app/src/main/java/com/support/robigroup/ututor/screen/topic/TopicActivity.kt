@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.CountDownTimer
-import android.os.Handler
 import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
@@ -14,18 +13,13 @@ import com.google.gson.Gson
 import com.support.robigroup.ututor.Constants
 import com.support.robigroup.ututor.R
 import com.support.robigroup.ututor.api.MainManager
-import com.support.robigroup.ututor.commons.ChatLesson
 import com.support.robigroup.ututor.commons.OnTopicActivityInteractionListener
 import com.support.robigroup.ututor.commons.logd
 import com.support.robigroup.ututor.commons.requestErrorHandler
-import com.support.robigroup.ututor.model.content.RequestListen
-import com.support.robigroup.ututor.model.content.Teacher
-import com.support.robigroup.ututor.model.content.Teachers
-import com.support.robigroup.ututor.model.content.TopicItem
+import com.support.robigroup.ututor.model.content.*
 import com.support.robigroup.ututor.screen.chat.ChatActivity
 import com.support.robigroup.ututor.screen.main.adapters.RecentTopicsAdapter
 import com.support.robigroup.ututor.screen.topic.adapters.TeachersAdapter
-import com.support.robigroup.ututor.singleton.SingletonSharedPref
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -33,8 +27,6 @@ import io.realm.Realm
 import io.realm.RealmChangeListener
 import kotlinx.android.synthetic.main.activity_topic.*
 import kotlinx.android.synthetic.main.topics.*
-import microsoft.aspnet.signalr.client.hubs.HubConnection
-import microsoft.aspnet.signalr.client.hubs.HubProxy
 import java.util.concurrent.TimeUnit
 import kotlin.properties.Delegates
 
@@ -208,7 +200,8 @@ class TopicActivity : AppCompatActivity(), OnTopicActivityInteractionListener {
                 .subscribe (
                         { teachers ->
                             if(requestErrorHandler(teachers.code(),teachers.message())){
-                                if(teachers.body().toString().equals("ready")){
+                                val res: String? =teachers.body()?.charStream()?.readText()
+                                if(res != null && res.equals("ready")){
                                     ChatActivity.open(this,currentTeacher!!)
                                 }else{
                                     currentButton!!.text = getString(R.string.waiting)
@@ -257,7 +250,7 @@ class TopicActivity : AppCompatActivity(), OnTopicActivityInteractionListener {
             Constants.STATUS_NOT_REQUESTED ->{
                 currentTeacher = item
                 currentTeacher!!.Status = Constants.STATUS_REQUESTED
-                currentButton = itemView.findViewById<Button>(R.id.teacher_choose_button) as Button
+                currentButton = itemView.findViewById<Button>(R.id.teacher_choose_button)
                 requestLessonToTeacher(item.Id,itemTopic.Id!!)
             }
             Constants.STATUS_REQUESTED ->{
@@ -292,12 +285,12 @@ class TopicActivity : AppCompatActivity(), OnTopicActivityInteractionListener {
 
     //Additional private methods
     private fun setRealmOnChangeListener(){
-        var request = realm.where(RequestListen::class.java).equalTo("Id",0).findFirst()
+        var request = realm.where(RequestListen::class.java).equalTo("Id",0L).findFirst()
         realm.executeTransaction {
             if(request==null){
                 request = realm.createObject(RequestListen::class.java,0)
             }
-            request.status = Constants.STATUS_REQUESTED
+            request?.status = Constants.STATUS_REQUESTED
         }
         changeListener = RealmChangeListener {
             rs ->
@@ -310,7 +303,7 @@ class TopicActivity : AppCompatActivity(), OnTopicActivityInteractionListener {
                 currentTeacher!!.Status = Constants.STATUS_TEACHER_CONFIRMED
             }
         }
-        request.addChangeListener(changeListener)
+        request?.addChangeListener(changeListener)
     }
 
     private fun getTimeWaitingInMinutes(millis: Long): String

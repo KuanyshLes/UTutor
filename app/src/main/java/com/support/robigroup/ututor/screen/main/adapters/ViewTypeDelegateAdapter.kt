@@ -1,8 +1,9 @@
-package com.support.robigroup.ututor.commons.adapter
+package com.support.robigroup.ututor.screen.main.adapters
 
 
 import android.support.v7.widget.RecyclerView
 import android.view.ViewGroup
+import com.support.robigroup.ututor.screen.main.adapters.ViewType
 
 interface ViewTypeDelegateAdapter {
 

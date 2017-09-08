@@ -3,9 +3,7 @@ package com.support.robigroup.ututor.screen.main.adapters
 import android.support.v4.util.SparseArrayCompat
 import android.support.v7.widget.RecyclerView
 import android.view.ViewGroup
-import com.support.robigroup.ututor.commons.adapter.AdapterConstants
-import com.support.robigroup.ututor.commons.adapter.ViewType
-import com.support.robigroup.ututor.commons.adapter.ViewTypeDelegateAdapter
+import com.support.robigroup.ututor.screen.main.adapters.ViewType
 import com.support.robigroup.ututor.model.content.TopicItem
 
 class RecentTopicsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {

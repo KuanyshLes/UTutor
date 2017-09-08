@@ -7,12 +7,15 @@ import android.text.TextUtils
 import android.view.View
 import com.support.robigroup.ututor.Constants
 import com.support.robigroup.ututor.R
+import com.support.robigroup.ututor.api.MainManager
 import com.support.robigroup.ututor.api.RestAPI
 import com.support.robigroup.ututor.commons.OnLoginActivityInteractionListener
 import com.support.robigroup.ututor.commons.logd
 import com.support.robigroup.ututor.commons.requestErrorHandler
 import com.support.robigroup.ututor.commons.toast
+import com.support.robigroup.ututor.model.content.ChatLesson
 import com.support.robigroup.ututor.model.content.LoginResponse
+import com.support.robigroup.ututor.screen.chat.ChatActivity
 import com.support.robigroup.ututor.screen.loading.LoadingDialog
 import com.support.robigroup.ututor.screen.loading.LoadingView
 import com.support.robigroup.ututor.screen.main.MainActivity
@@ -20,6 +23,7 @@ import com.support.robigroup.ututor.singleton.SingletonSharedPref
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
+import io.realm.Realm
 
 class LoginActivity : AppCompatActivity(), OnLoginActivityInteractionListener {
 
@@ -39,8 +43,7 @@ class LoginActivity : AppCompatActivity(), OnLoginActivityInteractionListener {
         logd("onCreateLoginActivity")
 
         if(isSignedIn()){
-            startActivity(Intent(this,MainActivity::class.java))
-            finish()
+            checkChatState()
         }else if(supportFragmentManager.fragments.size==0){
             supportFragmentManager.beginTransaction().replace(R.id.container,loginFragment,TAG_LOGIN_FRAGMENT).commit()
         }
@@ -138,8 +141,40 @@ class LoginActivity : AppCompatActivity(), OnLoginActivityInteractionListener {
     private fun saveTokenAndFinish(stringResult: LoginResponse?){
         SingletonSharedPref.getInstance().put(Constants.KEY_TOKEN,Constants.KEY_BEARER.plus(stringResult!!.access_token))
         showProgress(false)
-        startActivity(Intent(baseContext,MainActivity::class.java))
-        finish()
+        checkChatState()
+    }
+
+    private fun startMainOrChatActivity(chatLesson: ChatLesson?){
+        logd(SingletonSharedPref.getInstance().getString(Constants.KEY_TOKEN))
+        val realm = Realm.getDefaultInstance()
+        realm.executeTransaction {
+            realm.copyToRealmOrUpdate(chatLesson)
+        }
+        if(chatLesson!=null&&chatLesson.LearnerReady&&chatLesson.TeacherReady&&chatLesson.StatusId!=4){
+            startActivity(Intent(baseContext,ChatActivity::class.java))
+            finish()
+        }else{
+            startActivity(Intent(baseContext,MainActivity::class.java))
+            finish()
+        }
+    }
+
+    private fun checkChatState(){
+        compositeDisposable.add(
+                MainManager()
+                        .getChatInformation()
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribeOn(Schedulers.io())
+                        .subscribe({
+                            result ->
+                            if(requestErrorHandler(result.code(),result.message())){
+                                startMainOrChatActivity(result.body())
+                            }
+                        },{
+                            error ->
+                            logd(error.toString())
+                            toast(error.message.toString())
+                        }))
     }
 
     override fun OnSignUpTextClicked() {
@@ -168,8 +203,8 @@ class LoginActivity : AppCompatActivity(), OnLoginActivityInteractionListener {
     }
 
     private fun showProgress(show: Boolean) {
-        if(show) loadingView!!.showLoadingIndicator()
-        else loadingView!!.hideLoadingIndicator()
+        if(show) loadingView.showLoadingIndicator()
+        else loadingView.hideLoadingIndicator()
     }
 }
 

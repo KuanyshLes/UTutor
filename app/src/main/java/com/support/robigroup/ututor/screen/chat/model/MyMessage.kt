@@ -10,12 +10,12 @@ import java.util.*
 data class MyMessage(
         private val customMessage: CustomMessage,
         var User: User?
-) : IMessage, MessageContentType.Image{
-    override fun getImageUrl(): String? = customMessage.File ?: null
+) : IMessage, MessageContentType.Image, MessageContentType{
+    override fun getImageUrl(): String? = customMessage.File
 
     override fun getId(): String = customMessage.Id.toString()
 
-    override fun getCreatedAt(): Date = SimpleDateFormat("HH:mm").parse(customMessage.Time ?: "00:00")
+    override fun getCreatedAt(): Date = SimpleDateFormat("HH:mm").parse(customMessage.Time)
 
     override fun getUser(): IUser? = User
 

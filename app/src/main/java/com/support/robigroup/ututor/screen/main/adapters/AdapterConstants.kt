@@ -1,4 +1,4 @@
-package com.support.robigroup.ututor.commons.adapter
+package com.support.robigroup.ututor.screen.main.adapters
 
 object AdapterConstants {
     val TOPICS = 1

@@ -21,24 +21,6 @@ class RedditNewsDataResponse(
 
 
 
-class ChatLesson(
-        val Id: Int,
-        val TopicId: Int,
-        val CreateTime: String,
-        val StartTime: String,
-        val EndTime: String,
-        val StatusId: Int,
-        val Duration: String,
-        val TeacherId: String,
-        val LearnerId: String,
-        val SubjectName: String,
-        val TopicTitle: String,
-        val Class: Int,
-        val Learner: String,
-        val Teacher: String,
-        val TeacherReady: Boolean,
-        val LearnerReady: Boolean
-)
 
 class MessagesResponse(
         val Id: Int,

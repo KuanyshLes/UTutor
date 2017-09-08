@@ -2,10 +2,9 @@ package com.support.robigroup.ututor.model.content
 
 import android.os.Parcel
 import android.os.Parcelable
-import com.stfalcon.chatkit.commons.models.IMessage
 import com.support.robigroup.ututor.Constants
-import com.support.robigroup.ututor.commons.adapter.AdapterConstants
-import com.support.robigroup.ututor.commons.adapter.ViewType
+import com.support.robigroup.ututor.screen.main.adapters.AdapterConstants
+import com.support.robigroup.ututor.screen.main.adapters.ViewType
 import com.support.robigroup.ututor.commons.createParcel
 import io.realm.RealmObject
 import io.realm.annotations.PrimaryKey
@@ -167,7 +166,7 @@ data class LessonRequestForTeacher(
 )
 
 open class RequestListen(
-        @PrimaryKey var Id: Int = 0,
+        @PrimaryKey var Id: Int = Constants.STATUS_TEACHER_CONFIRMED,
         var status: Int = 0
 ): RealmObject()
 
@@ -175,3 +174,24 @@ data class LoginResponse(
         val access_token: String,
         val expires_in: Int
 )
+
+
+open class ChatLesson(
+        @PrimaryKey var Id: Int = 0,
+        var TopicId: Int = 0,
+        var CreateTime: String? = null,
+        var StartTime: String? = null,
+        var EndTime: String? = null,
+        var StatusId: Int = 0,
+        var Duration: String? = null,
+        var TeacherId: String = "",
+        var LearnerId: String = "",
+        var SubjectName: String = "",
+        var TopicTitle: String = "",
+        var Class: Int = 0,
+        var Learner: String = "",
+        var Teacher: String = "",
+        var TeacherReady: Boolean = false,
+        var LearnerReady: Boolean = false
+): RealmObject()
+

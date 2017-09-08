@@ -1,11 +1,7 @@
 package com.support.robigroup.ututor.api
 
 import com.support.robigroup.ututor.Constants.KEY_TOKEN
-import com.support.robigroup.ututor.commons.ChatLesson
-import com.support.robigroup.ututor.model.content.LessonRequestForTeacher
-import com.support.robigroup.ututor.model.content.Subject
-import com.support.robigroup.ututor.model.content.Teacher
-import com.support.robigroup.ututor.model.content.TopicItem
+import com.support.robigroup.ututor.model.content.*
 import com.support.robigroup.ututor.screen.chat.model.CustomMessage
 import com.support.robigroup.ututor.singleton.SingletonSharedPref
 import io.reactivex.Flowable

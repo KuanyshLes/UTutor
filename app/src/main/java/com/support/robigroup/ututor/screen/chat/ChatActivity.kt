@@ -30,8 +30,9 @@ import com.support.robigroup.ututor.commons.logd
 import com.support.robigroup.ututor.commons.requestErrorHandler
 import com.support.robigroup.ututor.model.content.RequestListen
 import com.support.robigroup.ututor.model.content.Teacher
+import com.support.robigroup.ututor.screen.chat.custom.media.holders.CustomIncomingMessageViewHolder
+import com.support.robigroup.ututor.screen.chat.custom.media.holders.CustomOutcomingMessageViewHolder
 import com.support.robigroup.ututor.screen.chat.model.CustomMessage
-import com.support.robigroup.ututor.screen.chat.model.Message
 import com.support.robigroup.ututor.screen.chat.model.MyMessage
 import com.support.robigroup.ututor.screen.chat.model.User
 import com.support.robigroup.ututor.screen.main.MainActivity
@@ -40,7 +41,6 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import io.realm.Realm
 import io.realm.RealmChangeListener
-import io.realm.RealmObjectChangeListener
 import kotlinx.android.synthetic.main.activity_chat.*
 import java.text.SimpleDateFormat
 import java.util.*
@@ -50,7 +50,7 @@ import kotlin.properties.Delegates
 class ChatActivity : AppCompatActivity(),
         MessageInput.InputListener,
         MessageInput.AttachmentsListener,
-        MessageHolders.ContentChecker<Message>,
+        MessageHolders.ContentChecker<MyMessage>,
         DialogInterface.OnClickListener,
         FinishDialog.NoticeDialogListener,
         MessagesListAdapter.SelectionListener,
@@ -79,44 +79,10 @@ class ChatActivity : AppCompatActivity(),
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_chat)
 
-
-
         contentManager = ContentManager(this,this)
 
-        realm = Realm.getDefaultInstance()
-        var result = realm.where(CustomMessage::class.java).findFirst()
-        realm.executeTransaction {
-            if(result == null){
-                result = realm.createObject(CustomMessage::class.java)
-            }
-        }
-        realmChangeListener = RealmChangeListener {
-            message ->
-            if(message.File!=null&&message.FileThumbnail!=null){
-                val myMessage = CustomMessage(message.Id,message.Time,Constants.BASE_URL+message.FileThumbnail,
-                        Constants.BASE_URL+message.File,message.Message)
-                logd(Gson().toJson(myMessage,CustomMessage::class.java),"mymessage2")
-                messagesAdapter?.addToStart(MyMessage(myMessage,teacher),true)
-            }else{
-                val myMessage = CustomMessage(message.Id,message.Time,Message = message.Message)
-                logd(Gson().toJson(myMessage,CustomMessage::class.java),"mymessage2")
-                messagesAdapter?.addToStart(MyMessage(myMessage,teacher),true)
-            }
-        }
-        result.addChangeListener(realmChangeListener)
-
-        realm.where(RequestListen::class.java).findFirst().addChangeListener(
-                RealmChangeListener<RequestListen>{
-                    rs ->
-                    if(rs.status==Constants.STATUS_COMPLETED) {
-                        closeChat()
-                    }
-                }
-        )
-
-
-        val teacher: Teacher = intent.getParcelableExtra<Teacher>(KEY_TEACHER) as Teacher
-//        val teacher: Teacher = Gson().fromJson(ex_teacher,Teacher::class.java)
+//        val teacher: Teacher = intent.getParcelableExtra<Teacher>(KEY_TEACHER) as Teacher
+        val teacher: Teacher = Gson().fromJson(ex_teacher,Teacher::class.java)
         this.teacher = User(teacher.Id,teacher.FirstName,teacher.Image,true)
 
         setSupportActionBar(toolbar)
@@ -138,30 +104,74 @@ class ChatActivity : AppCompatActivity(),
         input.setAttachmentsListener(this)
     }
 
+    override fun onRestart() {
+        super.onRestart()
+        setOnRealmChangeListeners()
+    }
+
+    private fun setOnRealmChangeListeners(){
+        realm = Realm.getDefaultInstance()
+        var result = realm.where(CustomMessage::class.java).findFirst()
+        realm.executeTransaction {
+            if(result == null){
+                result = realm.createObject(CustomMessage::class.java)
+            }
+        }
+        realmChangeListener = RealmChangeListener {
+            message ->
+            if(message.File!=null&&message.FileThumbnail!=null){
+                val myMessage = CustomMessage(message.Id,message.Time,Constants.BASE_URL+message.FileThumbnail,
+                        Constants.BASE_URL+message.File,message.Message)
+                logd(Gson().toJson(myMessage,CustomMessage::class.java),"mymessage2")
+                messagesAdapter?.addToStart(MyMessage(myMessage,teacher),true)
+            }else{
+                val myMessage = CustomMessage(message.Id,message.Time,Message = message.Message)
+                logd(Gson().toJson(myMessage,CustomMessage::class.java),"mymessage2")
+                messagesAdapter?.addToStart(MyMessage(myMessage,teacher),true)
+            }
+        }
+        result?.addChangeListener(realmChangeListener)
+
+        realm.executeTransaction{
+            realm.createObject(RequestListen::class.java,0)
+                    .addChangeListener(
+                            RealmChangeListener<RequestListen>{
+                                rs ->
+                                if(rs?.status==Constants.STATUS_COMPLETED) {
+                                    closeChat()
+                                }
+                            })
+        }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        setOnRealmChangeListeners()
+    }
 
     override fun onStop() {
         subscriptions.clear()
+        realm.where(CustomMessage::class.java).findFirst()?.removeChangeListener(realmChangeListener)
+        realm.close()
         super.onStop()
     }
 
     override fun onDestroy() {
-        realm.where(CustomMessage::class.java).findFirst().removeChangeListener(realmChangeListener)
-        realm.close()
         super.onDestroy()
     }
 
     private fun initAdapter() {
-        //        MessageHolders holders = new MessageHolders();
-        //                .registerContentType(
-        //                        CONTENT_TYPE_VOICE,
-        //                        IncomingVoiceMessageViewHolder.class,
-        //                        R.layout.item_custom_incoming_voice_message,
-        //                        OutcomingVoiceMessageViewHolder.class,
-        //                        R.layout.item_custom_outcoming_voice_message,
-        //                        this);
+        val holders = MessageHolders()
+                .registerContentType(
+                        CONTENT_TYPE_IMAGE_TEXT,
+                        CustomIncomingMessageViewHolder::class.java,
+                        R.layout.item_incoming_text_image_message,
+                        CustomOutcomingMessageViewHolder::class.java,
+                        R.layout.item_outcoming_text_image_message,
+                        this)
 
 
-        messagesAdapter = MessagesListAdapter(user.id, imageLoader)
+        messagesAdapter = MessagesListAdapter(user.id, holders,imageLoader)
         messagesAdapter!!.enableSelectionMode(this)
 //        messagesAdapter!!.setLoadMoreListener(this)
         messagesList!!.setAdapter(messagesAdapter)
@@ -183,8 +193,7 @@ class ChatActivity : AppCompatActivity(),
 
     override fun onSelectionChanged(count: Int) {
         selectionCount = count
-        menu!!
-                .findItem(R.id.action_delete).isVisible = count > 0
+        menu!!.findItem(R.id.action_delete).isVisible = count > 0
         menu!!.findItem(R.id.action_copy).isVisible = count > 0
     }
 
@@ -312,12 +321,11 @@ class ChatActivity : AppCompatActivity(),
                 .show()
     }
 
-    override fun hasContentFor(message: Message, type: Byte): Boolean {
-//        when (type) {
-//            CONTENT_TYPE_VOICE -> return message.voice != null
-//                    && message.voice.url != null
-//                    && !message.voice.url.isEmpty()
-//        }
+    override fun hasContentFor(message: MyMessage, type: Byte): Boolean {
+        when (type) {
+            CONTENT_TYPE_IMAGE_TEXT -> return message.imageUrl != null
+                    && message.text != null
+        }
         return false
     }
 
@@ -380,7 +388,7 @@ class ChatActivity : AppCompatActivity(),
 
     companion object {
 
-        private val CONTENT_TYPE_VOICE: Byte = 1
+        private val CONTENT_TYPE_IMAGE_TEXT: Byte = 1
         private val KEY_TEACHER = "teacher"
         private val TOTAL_MESSAGES_COUNT = 100
 

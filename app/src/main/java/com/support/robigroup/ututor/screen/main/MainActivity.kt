@@ -45,9 +45,9 @@ class MainActivity : AppCompatActivity(), OnMainActivityInteractionListener {
         adapter = ListViewAdapter(this, R.layout.item_search, searchList = stringArrayList)
         listview_results!!.adapter = adapter
 
-        listview_results.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, i, l ->
+        listview_results.onItemClickListener = AdapterView.OnItemClickListener { adapterView, _, i, _ ->
             val clickedTopicItem = adapterView.getItemAtPosition(i) as TopicItem
-            OnTopicItemClicked(adapterView.getItemAtPosition(i) as TopicItem)
+            OnTopicItemClicked(clickedTopicItem)
         }
         super.onCreate(savedInstanceState)
     }

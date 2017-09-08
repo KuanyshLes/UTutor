@@ -127,7 +127,7 @@ class SignalRService : Service() {
         val realm = Realm.getDefaultInstance()
         val request = realm.where(RequestListen::class.java).findFirst()
         realm.executeTransaction {
-            request.status = Constants.STATUS_COMPLETED
+            request?.status = Constants.STATUS_COMPLETED
         }
     }
 
@@ -135,7 +135,7 @@ class SignalRService : Service() {
         val realm = Realm.getDefaultInstance()
         val request = realm.where(RequestListen::class.java).findFirst()
         realm.executeTransaction {
-            request.status = Constants.STATUS_ACCEPTED
+            request?.status = Constants.STATUS_ACCEPTED
         }
     }
 
@@ -143,18 +143,18 @@ class SignalRService : Service() {
         val realm = Realm.getDefaultInstance()
         val request = realm.where(RequestListen::class.java).findFirst()
         realm.executeTransaction {
-            request.status = Constants.STATUS_TEACHER_CONFIRMED
+            request?.status = Constants.STATUS_TEACHER_CONFIRMED
         }
     }
 
     private fun notifyMessageReceived(message: CustomMessage){
         Realm.getDefaultInstance().executeTransaction {
             val realmMessage = Realm.getDefaultInstance().where(CustomMessage::class.java).findFirst()
-            realmMessage.Id = message.Id
-            realmMessage.File = message.File
-            realmMessage.FileThumbnail = message.FileThumbnail
-            realmMessage.Message = message.Message
-            realmMessage.Time = message.Time
+            realmMessage?.Id = message.Id
+            realmMessage?.File = message.File
+            realmMessage?.FileThumbnail = message.FileThumbnail
+            realmMessage?.Message = message.Message
+            realmMessage?.Time = message.Time
         }
     }
 }
