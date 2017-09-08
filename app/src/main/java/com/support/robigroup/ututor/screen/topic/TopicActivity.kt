@@ -91,7 +91,7 @@ class TopicActivity : AppCompatActivity(), OnTopicActivityInteractionListener {
 
         currentTeacher = teacher
         if(currentTeacher!!.Status!=Constants.STATUS_NOT_REQUESTED){
-            checkUpdates()
+//            checkUpdates()
         }
         when(currentTeacher!!.Status){
             Constants.STATUS_REQUESTED ->{
@@ -151,25 +151,25 @@ class TopicActivity : AppCompatActivity(), OnTopicActivityInteractionListener {
         subscriptions.add(subscription)
     }
 
-    private fun checkUpdates(){
-        val subscription = MainManager().getChatInformation()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe (
-                        { teachers ->
-                            if(requestErrorHandler(teachers.code(),teachers.message())){
-                                logd(Gson().toJson(teachers.body(), ChatLesson::class.java))
-                            }else{
-                                //TODO handle server errors
-                            }
-                        },
-                        { e ->
-                            Snackbar.make(findViewById(android.R.id.content), e.message ?: "", Snackbar.LENGTH_LONG).show()
-                            e.printStackTrace()
-                        }
-                )
-        subscriptions.add(subscription)
-    }
+//    private fun checkUpdates(){
+//        val subscription = MainManager().getChatInformation()
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe (
+//                        { teachers ->
+//                            if(requestErrorHandler(teachers.code(),teachers.message())){
+//                                logd(Gson().toJson(teachers.body(), ChatLesson::class.java))
+//                            }else{
+//                                //TODO handle server errors
+//                            }
+//                        },
+//                        { e ->
+//                            Snackbar.make(findViewById(android.R.id.content), e.message ?: "", Snackbar.LENGTH_LONG).show()
+//                            e.printStackTrace()
+//                        }
+//                )
+//        subscriptions.add(subscription)
+//    }
 
     private fun requestTeacher() {
         val subscription = MainManager().getTeachers()

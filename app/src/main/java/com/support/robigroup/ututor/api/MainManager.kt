@@ -34,7 +34,7 @@ class MainManager(
 
     fun postChatComplete(): Flowable<Response<ResponseBody>> = RestAPI.getApi().postChatComplete()
 
-    fun getChatInformation(): Flowable<Response<ChatLesson>> = RestAPI.getApi().getInformationAboutChat()
+//    fun getChatInformation(): Flowable<Response<ChatLesson>> = RestAPI.getApi().getInformationAboutChat()
 
     fun sendMessage(messageText: String? = null, file64base: String? = null): Flowable<Response<CustomMessage>> =
             if(file64base != null&&messageText!=null) RestAPI.getApi().postTextMessageWithPhoto(messageText,file64base)

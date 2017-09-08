@@ -81,8 +81,8 @@ class ChatActivity : AppCompatActivity(),
 
         contentManager = ContentManager(this,this)
 
-//        val teacher: Teacher = intent.getParcelableExtra<Teacher>(KEY_TEACHER) as Teacher
-        val teacher: Teacher = Gson().fromJson(ex_teacher,Teacher::class.java)
+        val teacher: Teacher = intent.getParcelableExtra<Teacher>(KEY_TEACHER) as Teacher
+//        val teacher: Teacher = Gson().fromJson(ex_teacher,Teacher::class.java)
         this.teacher = User(teacher.Id,teacher.FirstName,teacher.Image,true)
 
         setSupportActionBar(toolbar)
@@ -132,16 +132,18 @@ class ChatActivity : AppCompatActivity(),
         }
         result?.addChangeListener(realmChangeListener)
 
-        realm.executeTransaction{
-            realm.createObject(RequestListen::class.java,0)
-                    .addChangeListener(
-                            RealmChangeListener<RequestListen>{
-                                rs ->
-                                if(rs?.status==Constants.STATUS_COMPLETED) {
-                                    closeChat()
-                                }
-                            })
-        }
+        var closeListener = realm.where(RequestListen::class.java).findFirst()
+        if(closeListener==null)
+            realm.executeTransaction{
+                closeListener = realm.createObject(RequestListen::class.java,0)
+            }
+        closeListener?.addChangeListener(
+                RealmChangeListener<RequestListen>{
+                    rs ->
+                    if(rs?.status==Constants.STATUS_COMPLETED) {
+                        closeChat()
+                    }
+                })
     }
 
     override fun onStart() {

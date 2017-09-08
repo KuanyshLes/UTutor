@@ -28,7 +28,6 @@ class SignalRService : Service() {
 
     private var mHubConnection: HubConnection? = null
     private var mHubProxy: HubProxy? = null
-    private val TOKEN = SingletonSharedPref.getInstance().getString(Constants.KEY_TOKEN)
     private val SERVER_URL = Constants.BASE_URL
     private val SERVER_HUB_CHAT = "chat"
     private val TAG_SIGNALR = "signalR"
@@ -71,7 +70,7 @@ class SignalRService : Service() {
     private fun startSignalR() {
         Platform.loadPlatformComponent(AndroidPlatformComponent())
 
-        val neededToken = TOKEN.replace("bearer ","")
+        val neededToken = SingletonSharedPref.getInstance().getString(Constants.KEY_TOKEN).replace("bearer ","")
         val logger = Logger { message, level -> logd(level.toString() +":  " + message,TAG_SIGNALR+"LogLevel") }
 
         mHubConnection = HubConnection("http://ututor.kz","authorization="+neededToken,true, logger)
