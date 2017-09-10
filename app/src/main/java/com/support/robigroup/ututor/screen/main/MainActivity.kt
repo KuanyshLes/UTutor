@@ -14,11 +14,13 @@ import com.support.robigroup.ututor.R
 import com.support.robigroup.ututor.SignalRService
 import com.support.robigroup.ututor.commons.OnMainActivityInteractionListener
 import com.support.robigroup.ututor.commons.logd
+import com.support.robigroup.ututor.model.content.ChatInformation
 import com.support.robigroup.ututor.model.content.ClassRoom
 import com.support.robigroup.ututor.model.content.Subject
 import com.support.robigroup.ututor.model.content.TopicItem
 import com.support.robigroup.ututor.screen.main.adapters.ListViewAdapter
 import com.support.robigroup.ututor.screen.topic.TopicActivity
+import io.realm.Realm
 import kotlinx.android.synthetic.main.activity_main.*
 
 
@@ -89,6 +91,12 @@ class MainActivity : AppCompatActivity(), OnMainActivityInteractionListener {
         return super.onCreateOptionsMenu(menu)
     }
 
+    override fun checkChatState() {
+        val chatInformation: ChatInformation? = Realm.getDefaultInstance().where(ChatInformation::class.java).findFirst()
+        if(chatInformation != null){
+            TopicActivity.open(this,TopicItem())
+        }
+    }
 
     override fun OnTopicItemClicked(item: TopicItem) {
         TopicActivity.open(this,item)

@@ -1,5 +1,6 @@
 package com.support.robigroup.ututor.screen.topic.adapters
 
+import android.os.CountDownTimer
 import android.support.v7.widget.RecyclerView
 import android.view.ViewGroup
 import com.support.robigroup.ututor.Constants
@@ -52,6 +53,40 @@ class TeachersAdapter(private val interactionListener: OnTopicActivityInteractio
         items.clear()
         items.addAll(lessons)
         notifyDataSetChanged()
+    }
+
+    fun OnLearnerReady(){
+
+    }
+
+    fun OnTeacherReady(){
+
+    }
+
+    fun OnAcceptedState(){
+//        countDownCounter = object : CountDownTimer(90000, 1000) {
+//            override fun onTick(millisUntilFinished: Long) {
+//                if(currentTeacher!!.Status==Constants.STATUS_LEARNER_CONFIRMED){
+//                    currentButton?.text = getString(R.string.waiting)+getTimeWaitingInMinutes(millisUntilFinished)
+//                }
+//            }
+//            override fun onFinish() {
+//                currentTeacher!!.Status=Constants.STATUS_NOT_REQUESTED
+//                currentButton!!.text = getString(R.string.declined)
+//            }
+//        }.start()
+    }
+
+    fun OnRequestedState(){
+
+    }
+
+    fun OnErrorButton(){
+
+    }
+
+    fun OnNotRequestedState(){
+
     }
 
 

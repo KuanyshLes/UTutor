@@ -20,6 +20,7 @@ object Constants {
     val BASE_URL = "http://ututor.kz/"
 
     //chat constants
+    val STATUS_REQUESTED_WAIT = -1
     val STATUS_NOT_REQUESTED = 0
     val STATUS_REQUESTED = 1
     val STATUS_ACCEPTED = 2

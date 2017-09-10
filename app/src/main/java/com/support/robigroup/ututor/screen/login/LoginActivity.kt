@@ -9,10 +9,9 @@ import com.support.robigroup.ututor.Constants
 import com.support.robigroup.ututor.R
 import com.support.robigroup.ututor.api.MainManager
 import com.support.robigroup.ututor.api.RestAPI
-import com.support.robigroup.ututor.commons.OnLoginActivityInteractionListener
-import com.support.robigroup.ututor.commons.logd
-import com.support.robigroup.ututor.commons.requestErrorHandler
-import com.support.robigroup.ututor.commons.toast
+import com.support.robigroup.ututor.commons.*
+import com.support.robigroup.ututor.model.content.ChatInformation
+import com.support.robigroup.ututor.model.content.ChatLesson
 //import com.support.robigroup.ututor.model.content.ChatLesson
 import com.support.robigroup.ututor.model.content.LoginResponse
 import com.support.robigroup.ututor.screen.chat.ChatActivity
@@ -35,15 +34,15 @@ class LoginActivity : AppCompatActivity(), OnLoginActivityInteractionListener {
 
     val compositeDisposable: CompositeDisposable = CompositeDisposable()
 
-    private val mockServerResponse: String = "{ \"access_token\": \"bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJiZXliaXQ5MkBnbWFpbC5jb20iLCJqdGkiOiJjYWJkODAxYi0xYjY1LTQ3NjEtOWQyYi0xY2Q1YzQ1MzA4ZGYiLCJpYXQiOjE1MDI1NDE1NjMsIm5iZiI6MTUwMjU0MTU2MywiZXhwIjoxNTAzMTQ2MzYzLCJpc3MiOiJVVHV0b3JJc3N1ZXIiLCJhdWQiOiJVVHV0b3JBdWRpZW5jZSJ9._te8D9oerdPXOKJQX0u0qnlaaQx1TMSCzAYUQBTivq8\", \"expires_in\": 604800 }"
-
     override fun onCreate(savedInstanceState: Bundle?) {
+
+        //TODO move indide else if super.OnCreate method if signedIn
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
         logd("onCreateLoginActivity")
 
         if(isSignedIn()){
-//            checkChatState()
+            checkChatState()
         }else if(supportFragmentManager.fragments.size==0){
             supportFragmentManager.beginTransaction().replace(R.id.container,loginFragment,TAG_LOGIN_FRAGMENT).commit()
         }
@@ -52,8 +51,6 @@ class LoginActivity : AppCompatActivity(), OnLoginActivityInteractionListener {
     override fun onResume() {
         super.onResume()
         logd("onResumeLoginActivity")
-        //TODO delete it
-//        saveTokenAndFinish(mockServerResponse)
     }
 
     override fun onPause() {
@@ -110,29 +107,29 @@ class LoginActivity : AppCompatActivity(), OnLoginActivityInteractionListener {
 
             compositeDisposable.add(
                     RestAPI.getApi().getToken(email,password)
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribeOn(Schedulers.io())
-                    .subscribe({
-                        result ->
-                        logd(result.toString())
-                        if(result.isSuccessful){
-                            saveTokenAndFinish(result.body())
-                        }else{
-                            showProgress(false)
-                            when(result.code()){
-                                Constants.BAD_REQUEST -> loginFragment.setPasswordError(result.message())!!.requestFocus()
-                                else -> this.requestErrorHandler(result.code(),result.message())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribeOn(Schedulers.io())
+                            .subscribe({
+                                result ->
+                                logd(result.toString())
+                                if(result.isSuccessful){
+                                    saveTokenAndFinish(result.body())
+                                }else{
+                                    showProgress(false)
+                                    when(result.code()){
+                                        Constants.BAD_REQUEST -> loginFragment.setPasswordError(result.message())!!.requestFocus()
+                                        else -> this.requestErrorHandler(result.code(),result.message())
+                                    }
+                                }
+
+
+                            },{
+                                error ->
+                                showProgress(false)
+                                logd(error.toString())
+                                toast(error.message.toString())
                             }
-                        }
-
-
-                    },{
-                        error ->
-                        showProgress(false)
-                        logd(error.toString())
-                        toast(error.message.toString())
-                    }
-                    ))
+                            ))
         }else{
             requestView!!.requestFocus()
         }
@@ -141,41 +138,50 @@ class LoginActivity : AppCompatActivity(), OnLoginActivityInteractionListener {
     private fun saveTokenAndFinish(stringResult: LoginResponse?){
         SingletonSharedPref.getInstance().put(Constants.KEY_TOKEN,Constants.KEY_BEARER.plus(stringResult!!.access_token))
         showProgress(false)
-//        checkChatState()
+        checkChatState()
     }
 
-//    private fun startMainOrChatActivity(chatLesson: ChatLesson?){
-//        logd(SingletonSharedPref.getInstance().getString(Constants.KEY_TOKEN))
-//        val realm = Realm.getDefaultInstance()
-//        realm.executeTransaction {
-//            realm.copyToRealmOrUpdate(chatLesson)
-//        }
-//        if(chatLesson!=null&&chatLesson.LearnerReady&&chatLesson.TeacherReady&&chatLesson.StatusId!=4){
-//            startActivity(Intent(baseContext,ChatActivity::class.java))
-//            finish()
-//        }else{
-//            startActivity(Intent(baseContext,MainActivity::class.java))
-//            finish()
-//        }
-//    }
+    private fun startMainOrChatActivity(chatLesson: ChatLesson?){
+        logd(SingletonSharedPref.getInstance().getString(Constants.KEY_TOKEN))
 
-//    private fun checkChatState(){
-//        compositeDisposable.add(
-//                MainManager()
-//                        .getChatInformation()
-//                        .observeOn(AndroidSchedulers.mainThread())
-//                        .subscribeOn(Schedulers.io())
-//                        .subscribe({
-//                            result ->
-//                            if(requestErrorHandler(result.code(),result.message())){
-////                                startMainOrChatActivity(result.body())
-//                            }
-//                        },{
-//                            error ->
-//                            logd(error.toString())
-//                            toast(error.message.toString())
-//                        }))
-//    }
+        if(chatLesson!=null){
+            val realm = Realm.getDefaultInstance()
+            realm.executeTransaction {
+                realm.copyToRealmOrUpdate(Functions.getChatInformation(chatLesson))
+            }
+        }
+
+        if(chatLesson!=null&&chatLesson.LearnerReady&&chatLesson.TeacherReady&&chatLesson.StatusId!=4){
+            startActivity(Intent(baseContext,ChatActivity::class.java))
+            finish()
+        }else{
+            startActivity(Intent(baseContext,MainActivity::class.java))
+            finish()
+        }
+    }
+
+
+    private fun checkChatState(){
+        compositeDisposable.add(
+                MainManager()
+                        .getChatInformation()
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribeOn(Schedulers.io())
+                        .subscribe({
+                            result ->
+                            if(requestErrorHandler(result.code(),result.message())){
+                                startMainOrChatActivity(result.body())
+                            }else{
+                                startMainOrChatActivity(null)
+                            }
+                        },{
+                            error ->
+                            logd(error.toString())
+                            toast(error.message.toString())
+                            startMainOrChatActivity(null)
+
+                        }))
+    }
 
     override fun OnSignUpTextClicked() {
         supportFragmentManager.beginTransaction().replace(R.id.container,regFragment).addToBackStack(null).commit()

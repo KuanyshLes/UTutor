@@ -20,6 +20,7 @@ interface OnMainActivityInteractionListener {
     fun OnClassItemClicked(item: ClassRoom)
     fun setDisplayHomeAsEnabled(showHomeAsUp: Boolean)
     fun setToolbarTitle(title: String)
+    fun checkChatState()
 }
 
 interface OnTopicActivityInteractionListener{

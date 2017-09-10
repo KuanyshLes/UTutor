@@ -7,6 +7,7 @@ import com.support.robigroup.ututor.screen.main.adapters.AdapterConstants
 import com.support.robigroup.ututor.screen.main.adapters.ViewType
 import com.support.robigroup.ututor.commons.createParcel
 import io.realm.RealmObject
+import io.realm.annotations.Ignore
 import io.realm.annotations.PrimaryKey
 
 
@@ -75,7 +76,7 @@ data class TopicItem(
             parcelIn.readInt(),
             parcelIn.readString(),
             parcelIn.readParcelable<Subject>(Subject::class.java.classLoader)
-            )
+    )
 
     override fun writeToParcel(dest: Parcel, flags: Int) {
         dest.writeInt(Id ?: 0)
@@ -173,5 +174,43 @@ data class LoginResponse(
 open class RequestListen(
         @PrimaryKey var Id: Int = Constants.STATUS_TEACHER_CONFIRMED,
         var status: Int = 0
+): RealmObject()
+
+
+data class ChatLesson(
+        val Id: Int = 0,
+        var TopicId: Int = 0,
+        var CreateTime: String? = null,
+        var StartTime: String? = null,
+        var EndTime: String? = null,
+        var StatusId: Int = 0,
+        var Duration: String? = null,
+        var TeacherId: String = "",
+        var LearnerId: String = "",
+        var SubjectName: String = "",
+        var TopicTitle: String = "",
+        var Learner: String = "",
+        var Teacher: String = "",
+        var TeacherReady: Boolean = false,
+        var LearnerReady: Boolean = false,
+        var Class: Int = 0
+)
+open class ChatInformation(
+        var Id: Int? = -1,
+        var TopicId: Int? = null,
+        var CreateTime: String? = null,
+        var StartTime: String? = null,
+        var EndTime: String? = null,
+        var StatusId: Int = 0,
+        var Duration: String? = null,
+        var TeacherId: String = "",
+        var LearnerId: String = "",
+        var SubjectName: String = "",
+        var TopicTitle: String = "",
+        var Learner: String = "",
+        var Teacher: String = "",
+        var TeacherReady: Boolean = false,
+        var LearnerReady: Boolean = false,
+        var ClassNumber: Int? = null
 ): RealmObject()
 

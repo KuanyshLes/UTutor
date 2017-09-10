@@ -28,6 +28,7 @@ import com.support.robigroup.ututor.commons.AppUtils
 import com.support.robigroup.ututor.commons.Functions
 import com.support.robigroup.ututor.commons.logd
 import com.support.robigroup.ututor.commons.requestErrorHandler
+import com.support.robigroup.ututor.model.content.ChatInformation
 import com.support.robigroup.ututor.model.content.RequestListen
 import com.support.robigroup.ututor.model.content.Teacher
 import com.support.robigroup.ututor.screen.chat.custom.media.holders.CustomIncomingMessageViewHolder
@@ -65,15 +66,16 @@ class ChatActivity : AppCompatActivity(),
     }
     private var contentManager: ContentManager? = null
 
-    private var user: User = User("mukhtar","Mukhtar",null,true)
+    private var user: User by Delegates.notNull()
     private var teacher: User by Delegates.notNull()
+    private var chatLesson: ChatInformation by Delegates.notNull()
     private var menu: Menu? = null
     private var selectionCount: Int = 0
     private var lastLoadedDate: Date? = null
     private var realm: Realm by Delegates.notNull()
     private var realmChangeListener: RealmChangeListener<CustomMessage> by Delegates.notNull()
     private var imageLoader: ImageLoader? = null
-    private val ex_teacher = "{\"Birthday\":\"0001-01-01T00:00:00\",\"Classes\":\"1,10\",\"FirstName\":\"Aktore\",\"Id\":\"8ce5ddc5-46cf-4306-b994-af004b09729e\",\"Languages\":\"kk-KZ,ru-KZ\",\"LastName\":\"Niyazymbetov\",\"Raiting\":0.0}"
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -81,9 +83,9 @@ class ChatActivity : AppCompatActivity(),
 
         contentManager = ContentManager(this,this)
 
-        val teacher: Teacher = intent.getParcelableExtra<Teacher>(KEY_TEACHER) as Teacher
-//        val teacher: Teacher = Gson().fromJson(ex_teacher,Teacher::class.java)
-        this.teacher = User(teacher.Id,teacher.FirstName,teacher.Image,true)
+        chatLesson = Realm.getDefaultInstance().where(ChatInformation::class.java).findFirst()!!
+        teacher = User(chatLesson.TeacherId,chatLesson.Teacher,null,true)
+        user = User(chatLesson.LearnerId,chatLesson.Learner,null,true)
 
         setSupportActionBar(toolbar)
         teacher_name_title.text =this.teacher.name
@@ -395,8 +397,8 @@ class ChatActivity : AppCompatActivity(),
         private val TOTAL_MESSAGES_COUNT = 100
 
 
-        fun open(context: Context, teacher: Teacher) {
-            context.startActivity(Intent(context, ChatActivity::class.java).putExtra(KEY_TEACHER, teacher))
+        fun open(context: Context) {
+            context.startActivity(Intent(context, ChatActivity::class.java))
         }
     }
 

@@ -25,6 +25,7 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import io.realm.Realm
 import io.realm.RealmChangeListener
+import io.realm.RealmObjectChangeListener
 import kotlinx.android.synthetic.main.activity_topic.*
 import kotlinx.android.synthetic.main.topics.*
 import java.util.concurrent.TimeUnit
@@ -33,12 +34,9 @@ import kotlin.properties.Delegates
 class TopicActivity : AppCompatActivity(), OnTopicActivityInteractionListener {
 
     private var itemTopic: TopicItem by Delegates.notNull()
-    private var currentTeacher: Teacher? = null
-    private var currentButton: Button? = null
-    private var countDownCounter: CountDownTimer? = null
+    private var chatInformation: ChatInformation? = null
     private var myAdapter: TeachersAdapter by Delegates.notNull()
-    private var changeListener: RealmChangeListener<RequestListen>? = null
-    private var realm: Realm by Delegates.notNull()
+    private var changeListener: RealmChangeListener<ChatInformation>? = null
     private var subscriptions: CompositeDisposable by Delegates.notNull()
 
     companion object {
@@ -77,27 +75,20 @@ class TopicActivity : AppCompatActivity(), OnTopicActivityInteractionListener {
         find_teacher.setOnClickListener {
             requestTeacher()
         }
-
-        realm = Realm.getDefaultInstance()
-
-
-
 //        if (main_recycler_view_header.adapter == null) {
 //            main_recycler_view_header.adapter = RecentTopicsAdapter()
 //        }
     }
 
     private fun initFun(teacher: Teacher,position: Int){
-
         currentTeacher = teacher
         if(currentTeacher!!.Status!=Constants.STATUS_NOT_REQUESTED){
-//            checkUpdates()
+            checkUpdates()
         }
         when(currentTeacher!!.Status){
             Constants.STATUS_REQUESTED ->{
                 number_of_teachers.visibility = View.GONE
                 find_teacher.visibility = View.GONE
-                setRealmOnChangeListener()
             }
             Constants.STATUS_LEARNER_CONFIRMED ->{
 
@@ -127,8 +118,6 @@ class TopicActivity : AppCompatActivity(), OnTopicActivityInteractionListener {
     override fun onDestroy() {
         super.onDestroy()
         subscriptions.clear()
-        countDownCounter?.cancel()
-        realm.close()
     }
 
     //WebRequests
@@ -151,25 +140,25 @@ class TopicActivity : AppCompatActivity(), OnTopicActivityInteractionListener {
         subscriptions.add(subscription)
     }
 
-//    private fun checkUpdates(){
-//        val subscription = MainManager().getChatInformation()
-//                .subscribeOn(Schedulers.io())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe (
-//                        { teachers ->
-//                            if(requestErrorHandler(teachers.code(),teachers.message())){
-//                                logd(Gson().toJson(teachers.body(), ChatLesson::class.java))
-//                            }else{
-//                                //TODO handle server errors
-//                            }
-//                        },
-//                        { e ->
-//                            Snackbar.make(findViewById(android.R.id.content), e.message ?: "", Snackbar.LENGTH_LONG).show()
-//                            e.printStackTrace()
-//                        }
-//                )
-//        subscriptions.add(subscription)
-//    }
+    private fun checkUpdates(){
+        val subscription = MainManager().getChatInformation()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe (
+                        { teachers ->
+                            if(requestErrorHandler(teachers.code(),teachers.message())){
+                                logd(Gson().toJson(teachers.body(), ChatLesson::class.java))
+                            }else{
+                                //TODO handle server errors
+                            }
+                        },
+                        { e ->
+                            Snackbar.make(findViewById(android.R.id.content), e.message ?: "", Snackbar.LENGTH_LONG).show()
+                            e.printStackTrace()
+                        }
+                )
+        subscriptions.add(subscription)
+    }
 
     private fun requestTeacher() {
         val subscription = MainManager().getTeachers()
@@ -200,15 +189,9 @@ class TopicActivity : AppCompatActivity(), OnTopicActivityInteractionListener {
                 .subscribe (
                         { teachers ->
                             if(requestErrorHandler(teachers.code(),teachers.message())){
-                                val res: String? =teachers.body()?.charStream()?.readText()
-                                if(res != null && res.equals("ready")){
-                                    ChatActivity.open(this,currentTeacher!!)
-                                }else{
-                                    currentButton!!.text = getString(R.string.waiting)
-                                    currentTeacher!!.Status = Constants.STATUS_LEARNER_CONFIRMED
-                                }
+                                OnLearnerReady(teachers.body()?.charStream()?.readText())
                             }else{
-                                currentButton!!.text = getString(R.string.error)
+                                myAdapter.OnErrorButton()
                             }
                         },
                         { e ->
@@ -223,19 +206,17 @@ class TopicActivity : AppCompatActivity(), OnTopicActivityInteractionListener {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe (
-                        { teachers ->
-                            if(requestErrorHandler(teachers.code(),teachers.message())){
-                                (list_teachers.adapter as TeachersAdapter).clearOthers()
-                                currentButton!!.setText(R.string.waiting)
-                                number_of_teachers.visibility = View.GONE
-                                currentTeacher!!.Status = Constants.STATUS_REQUESTED
-                                setRealmOnChangeListener()
+                        { chatInformation ->
+                            if(requestErrorHandler(chatInformation.code(),chatInformation.message())){
+                                if(chatInformation.body()!=null){
+                                    onSuccessRequestedState(chatInformation.body())
+                                }
                             }else{
-                                currentTeacher!!.Status = Constants.STATUS_NOT_REQUESTED
+                                myAdapter.OnNotRequestedState()
                             }
                         },
                         { e ->
-                            currentTeacher!!.Status = Constants.STATUS_NOT_REQUESTED
+                            myAdapter.OnNotRequestedState()
                             Snackbar.make(findViewById(android.R.id.content), e.message ?: "", Snackbar.LENGTH_LONG).show()
                             e.printStackTrace()
                         }
@@ -243,14 +224,11 @@ class TopicActivity : AppCompatActivity(), OnTopicActivityInteractionListener {
         subscriptions.add(subscription)
     }
 
-
     //Events
-    override fun OnTeacherItemClicked(item: Teacher,itemView: View){
+    override fun OnTeacherItemClicked(item: Teacher,view: View){
         when(item.Status){
             Constants.STATUS_NOT_REQUESTED ->{
-                currentTeacher = item
-                currentTeacher!!.Status = Constants.STATUS_REQUESTED
-                currentButton = itemView.findViewById<Button>(R.id.teacher_choose_button)
+                myAdapter.OnRequestedState()
                 requestLessonToTeacher(item.Id,itemTopic.Id!!)
             }
             Constants.STATUS_REQUESTED ->{
@@ -268,42 +246,66 @@ class TopicActivity : AppCompatActivity(), OnTopicActivityInteractionListener {
         }
     }
 
-    private fun OnTeacherAccepted(){
-        currentButton?.text = getString(R.string.ready)
-        countDownCounter = object : CountDownTimer(90000, 1000) {
-            override fun onTick(millisUntilFinished: Long) {
-                if(currentTeacher!!.Status==Constants.STATUS_LEARNER_CONFIRMED){
-                    currentButton?.text = getString(R.string.waiting)+getTimeWaitingInMinutes(millisUntilFinished)
+    //Additional private methods
+    private fun onSuccessRequestedState(requestForTeacher: LessonRequestForTeacher? = null){
+        (list_teachers.adapter as TeachersAdapter).clearOthers()
+        myAdapter.OnRequestedState()
+        number_of_teachers.visibility = View.GONE
+
+        if(requestForTeacher!=null){
+            val realm = Realm.getDefaultInstance()
+            chatInformation = ChatInformation(
+                    ClassNumber = requestForTeacher.Class,
+                    TopicId = requestForTeacher.TopicId,
+                    Learner = requestForTeacher.Learner,
+                    TeacherId = requestForTeacher.TeacherId,
+                    StatusId = -1,
+                    SubjectName = requestForTeacher.SubjectName,
+                    TopicTitle = requestForTeacher.TopicTitle,
+                    LearnerId = requestForTeacher.LearnerId
+            )
+            realm.where(ChatInformation::class.java).findAll().deleteAllFromRealm()
+            realm.executeTransaction {
+                val request = realm.copyToRealm(chatInformation)
+                RealmObjectChangeListener<ChatInformation> {
+                    rs, changeset ->
+                    if(changeset!=null&&!changeset.isDeleted&&rs.StatusId!=Constants.STATUS_REQUESTED_WAIT){
+                        if(!rs.TeacherReady&&!rs.LearnerReady){
+                            OnTeacherAccepted()
+                        }else if(rs.TeacherReady&&rs.LearnerReady){
+                            ChatActivity.open(this)
+                        }else if(rs.TeacherReady){
+                            OnTeacherReady()
+                        }else if(rs.LearnerReady){
+                            OnLearnerReady(null) //TODO  change this line
+                        }
+                    }
                 }
+                request?.addChangeListener(changeListener)
             }
-            override fun onFinish() {
-                currentTeacher!!.Status=Constants.STATUS_NOT_REQUESTED
-                currentButton!!.text = getString(R.string.declined)
-            }
-        }.start()
+        }
     }
 
-    //Additional private methods
-    private fun setRealmOnChangeListener(){
-        var request = realm.where(RequestListen::class.java).equalTo("Id",0L).findFirst()
+    private fun OnTeacherReady(){
+        //TODO teacher ready
+        myAdapter.OnTeacherReady()
+    }
+
+    private fun OnLearnerReady(res: String?){
+        val realm = Realm.getDefaultInstance()
         realm.executeTransaction {
-            if(request==null){
-                request = realm.createObject(RequestListen::class.java,0)
-            }
-            request?.status = Constants.STATUS_REQUESTED
+            realm.where(ChatInformation::class.java).findFirst()?.LearnerReady = true
         }
-        changeListener = RealmChangeListener {
-            rs ->
-            if(rs.status==Constants.STATUS_ACCEPTED&&currentTeacher!!.Status==Constants.STATUS_REQUESTED){
-                currentTeacher!!.Status = Constants.STATUS_ACCEPTED
-                OnTeacherAccepted()
-            }else if(rs.status==Constants.STATUS_TEACHER_CONFIRMED&&currentTeacher!!.Status==Constants.STATUS_LEARNER_CONFIRMED){
-                ChatActivity.open(this,currentTeacher!!)
-            }else if(rs.status== Constants.STATUS_TEACHER_CONFIRMED&&currentTeacher!!.Status==Constants.STATUS_ACCEPTED){
-                currentTeacher!!.Status = Constants.STATUS_TEACHER_CONFIRMED
-            }
+        if(res != null && res.equals("ready")){
+            ChatActivity.open(this)
+        }else{
+            myAdapter.OnLearnerReady()
         }
-        request?.addChangeListener(changeListener)
+        realm.close()
+    }
+
+    private fun OnTeacherAccepted(){
+        myAdapter.OnAcceptedState()
     }
 
     private fun getTimeWaitingInMinutes(millis: Long): String

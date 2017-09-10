@@ -10,11 +10,8 @@ import com.support.robigroup.ututor.R
 import com.support.robigroup.ututor.api.MainManager
 import com.support.robigroup.ututor.commons.OnMainActivityInteractionListener
 import com.support.robigroup.ututor.commons.RxBaseFragment
-import com.support.robigroup.ututor.commons.logd
 import com.support.robigroup.ututor.commons.requestErrorHandler
 import com.support.robigroup.ututor.model.content.ClassRoom
-import com.support.robigroup.ututor.model.content.Subject
-import com.support.robigroup.ututor.screen.chat.ChatActivity
 import com.support.robigroup.ututor.screen.main.adapters.ClassAdapter
 import com.support.robigroup.ututor.screen.main.adapters.RecentTopicsAdapter
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -44,10 +41,9 @@ class MainFragment : RxBaseFragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        mListener!!.setToolbarTitle(getString(R.string.main_title))
-        mListener!!.setDisplayHomeAsEnabled(false)
+        mListener?.setToolbarTitle(getString(R.string.main_title))
+        mListener?.setDisplayHomeAsEnabled(false)
 
-        //TODO implement after backend
 //        main_recycler_view_header.apply {
 //            setHasFixedSize(true)
 //        }
@@ -56,6 +52,7 @@ class MainFragment : RxBaseFragment() {
         }
         initAdapters()
 //        requestRecentTopics(5)
+        mListener?.checkChatState()
     }
 
     private fun initAdapters() {
