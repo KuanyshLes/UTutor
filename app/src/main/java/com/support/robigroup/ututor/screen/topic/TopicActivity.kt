@@ -2,6 +2,7 @@ package com.support.robigroup.ututor.screen.topic
 
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.support.design.widget.Snackbar
@@ -20,6 +21,7 @@ import com.support.robigroup.ututor.model.content.*
 import com.support.robigroup.ututor.screen.chat.ChatActivity
 import com.support.robigroup.ututor.screen.main.adapters.RecentTopicsAdapter
 import com.support.robigroup.ututor.screen.topic.adapters.TeachersAdapter
+import com.support.robigroup.ututor.singleton.SingletonSharedPref
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -34,17 +36,14 @@ import kotlin.properties.Delegates
 class TopicActivity : AppCompatActivity(), OnTopicActivityInteractionListener {
 
     private var itemTopic: TopicItem by Delegates.notNull()
-    private var chatInformation: ChatInformation? = null
     private var myAdapter: TeachersAdapter by Delegates.notNull()
     private var changeListener: RealmChangeListener<ChatInformation>? = null
     private var subscriptions: CompositeDisposable by Delegates.notNull()
 
     companion object {
         val ARG_TOPIC_ITEM = "topicItem"
-        val ARG_TEACHER = "teacher"
         val ARG_ADAPTER = "adapter"
         fun open(context: Context, item: TopicItem){
-            val intent = Intent()
             context.startActivity(Intent(context, TopicActivity::class.java).putExtra(ARG_TOPIC_ITEM,item))
         }
     }
@@ -54,15 +53,17 @@ class TopicActivity : AppCompatActivity(), OnTopicActivityInteractionListener {
         setContentView(R.layout.activity_topic)
 
         subscriptions = CompositeDisposable()
-
         myAdapter = TeachersAdapter(this)
         if(list_teachers.adapter == null){
             list_teachers.adapter = myAdapter
         }
-        if(savedInstanceState!=null){
-            itemTopic = savedInstanceState.getParcelable(ARG_TOPIC_ITEM)
-            myAdapter.clearAndAddTeachers(savedInstanceState.getParcelable<Teachers>(ARG_ADAPTER).teachers)
-            myAdapter.getRequestedTeacher({teacher, i -> initFun(teacher,i) })
+
+        val realm = Realm.getDefaultInstance()
+        val chatInfo = realm.where(ChatInformation::class.java).findFirst()
+        realm.close()
+        if(chatInfo!=null&&chatInfo.StatusId!=Constants.STATUS_REQUESTED_WAIT){
+            itemTopic = Gson().fromJson(SingletonSharedPref.getInstance().getString(ARG_TOPIC_ITEM),TopicItem::class.java)
+            myAdapter.clearAndAddTeachers(Gson().fromJson(SingletonSharedPref.getInstance().getString(ARG_ADAPTER),Teachers::class.java).teachers)
         }else{
             itemTopic = intent.getParcelableExtra(ARG_TOPIC_ITEM)
         }
@@ -80,25 +81,6 @@ class TopicActivity : AppCompatActivity(), OnTopicActivityInteractionListener {
 //        }
     }
 
-    private fun initFun(teacher: Teacher,position: Int){
-        currentTeacher = teacher
-        if(currentTeacher!!.Status!=Constants.STATUS_NOT_REQUESTED){
-            checkUpdates()
-        }
-        when(currentTeacher!!.Status){
-            Constants.STATUS_REQUESTED ->{
-                number_of_teachers.visibility = View.GONE
-                find_teacher.visibility = View.GONE
-            }
-            Constants.STATUS_LEARNER_CONFIRMED ->{
-
-            }
-            Constants.STATUS_TEACHER_CONFIRMED ->{
-
-            }
-        }
-    }
-
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         when(item!!.itemId){
             android.R.id.home -> {
@@ -109,15 +91,16 @@ class TopicActivity : AppCompatActivity(), OnTopicActivityInteractionListener {
         }
     }
 
-    override fun onSaveInstanceState(outState: Bundle?) {
-        super.onSaveInstanceState(outState)
-        outState?.putParcelable(ARG_TOPIC_ITEM, itemTopic)
-        outState?.putParcelable(ARG_ADAPTER,myAdapter.getTeachers())
-    }
-
     override fun onDestroy() {
         super.onDestroy()
         subscriptions.clear()
+        val realm = Realm.getDefaultInstance()
+        val chatInfo = realm.where(ChatInformation::class.java).findFirst()
+        if(chatInfo != null && chatInfo.StatusId!=Constants.STATUS_REQUESTED_WAIT && !(chatInfo.TeacherReady&&chatInfo.LearnerReady)){
+            SingletonSharedPref.getInstance().put(ARG_TOPIC_ITEM,Gson().toJson(itemTopic,TopicItem::class.java))
+            SingletonSharedPref.getInstance().put(ARG_ADAPTER,Gson().toJson(myAdapter.getTeachers(),Teachers::class.java))
+        }
+
     }
 
     //WebRequests
@@ -226,44 +209,37 @@ class TopicActivity : AppCompatActivity(), OnTopicActivityInteractionListener {
 
     //Events
     override fun OnTeacherItemClicked(item: Teacher,view: View){
-        when(item.Status){
-            Constants.STATUS_NOT_REQUESTED ->{
-                myAdapter.OnRequestedState()
-                requestLessonToTeacher(item.Id,itemTopic.Id!!)
-            }
-            Constants.STATUS_REQUESTED ->{
-                Snackbar.make(findViewById(android.R.id.content), getString(R.string.error_request_exists), Snackbar.LENGTH_LONG).show()
-            }
-            Constants.STATUS_ACCEPTED->{
-                postLearnerReady()
-            }
-            Constants.STATUS_TEACHER_CONFIRMED->{
-                postLearnerReady()
-            }
-            Constants.STATUS_LEARNER_CONFIRMED->{
-                Snackbar.make(findViewById(android.R.id.content),getString(R.string.error_request_exists), Snackbar.LENGTH_LONG).show()
+        if(item.chatInformation==null){
+            requestLessonToTeacher(item.Id,itemTopic.Id!!)
+        }else{
+            var info: ChatInformation = item.chatInformation!!
+            if(info.TeacherReady&&info.LearnerReady){
+                ChatActivity.open(this)
+            }else if(!info.LearnerReady){
+
             }
         }
+
     }
 
     //Additional private methods
     private fun onSuccessRequestedState(requestForTeacher: LessonRequestForTeacher? = null){
-        (list_teachers.adapter as TeachersAdapter).clearOthers()
-        myAdapter.OnRequestedState()
         number_of_teachers.visibility = View.GONE
 
         if(requestForTeacher!=null){
             val realm = Realm.getDefaultInstance()
-            chatInformation = ChatInformation(
+            val chatInformation = ChatInformation(
                     ClassNumber = requestForTeacher.Class,
                     TopicId = requestForTeacher.TopicId,
                     Learner = requestForTeacher.Learner,
                     TeacherId = requestForTeacher.TeacherId,
-                    StatusId = -1,
+                    StatusId = Constants.STATUS_REQUESTED_WAIT,
                     SubjectName = requestForTeacher.SubjectName,
                     TopicTitle = requestForTeacher.TopicTitle,
-                    LearnerId = requestForTeacher.LearnerId
+                    LearnerId = requestForTeacher.LearnerId,
+                    RequestTime = requestForTeacher.RequestTime
             )
+            myAdapter.OnRequestedState(chatInformation)
             realm.where(ChatInformation::class.java).findAll().deleteAllFromRealm()
             realm.executeTransaction {
                 val request = realm.copyToRealm(chatInformation)
@@ -287,7 +263,6 @@ class TopicActivity : AppCompatActivity(), OnTopicActivityInteractionListener {
     }
 
     private fun OnTeacherReady(){
-        //TODO teacher ready
         myAdapter.OnTeacherReady()
     }
 

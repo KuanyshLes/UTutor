@@ -144,7 +144,7 @@ class LoginActivity : AppCompatActivity(), OnLoginActivityInteractionListener {
     private fun startMainOrChatActivity(chatLesson: ChatLesson?){
         logd(SingletonSharedPref.getInstance().getString(Constants.KEY_TOKEN))
 
-        if(chatLesson!=null){
+        if(chatLesson!=null&&chatLesson.StatusId!=4){
             val realm = Realm.getDefaultInstance()
             realm.executeTransaction {
                 realm.copyToRealmOrUpdate(Functions.getChatInformation(chatLesson))

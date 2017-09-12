@@ -99,11 +99,11 @@ class SubjectsFragment : RxBaseFragment() {
 
     companion object {
 
-        // TODO: Customize parameter argument names
+
         private val ARG_CLASS_NUMBER = "classNumber"
         private val ARG_LANGUAGE = "language"
 
-        // TODO: Customize parameter initialization
+
         fun newInstance(classNumber: Int, lang: String): SubjectsFragment {
             val fragment = SubjectsFragment()
             val args = Bundle()

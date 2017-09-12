@@ -9,6 +9,7 @@ import com.support.robigroup.ututor.commons.OnTopicActivityInteractionListener
 import com.support.robigroup.ututor.commons.inflate
 import com.support.robigroup.ututor.commons.loadImg
 import com.support.robigroup.ututor.commons.logd
+import com.support.robigroup.ututor.model.content.ChatInformation
 import com.support.robigroup.ututor.model.content.Teacher
 import com.support.robigroup.ututor.model.content.Teachers
 import kotlinx.android.synthetic.main.item_teacher.view.*
@@ -16,7 +17,6 @@ import kotlinx.android.synthetic.main.item_teacher.view.*
 class TeachersAdapter(private val interactionListener: OnTopicActivityInteractionListener) : RecyclerView.Adapter<TeachersAdapter.TeachersViewHolder>() {
 
     private val items: ArrayList<Teacher> = ArrayList()
-    var clickedItemNumber: Int? = null
 
     override fun onBindViewHolder(holder: TeachersViewHolder, position: Int) {
         holder.bind(items[position])
@@ -28,19 +28,17 @@ class TeachersAdapter(private val interactionListener: OnTopicActivityInteractio
         return res
     }
 
-    fun getRequestedTeacher(initFun: (Teacher,Int) -> Unit): Boolean{
-        if(items.size==0) return false
+    private fun getRequestedTeacherAndPostition(): Pair<Teacher,Int>?{
+        if(items.size==0) return null
         else{
             for(i in 0 until items.size){
                 val item = items[i]
-                if(item.Status!=Constants.STATUS_NOT_REQUESTED){
-                    initFun(item,i)
-                    return true
+                if(item.chatInformation!=null&&item.chatInformation?.StatusId!=0){
+                    return Pair(item,i)
                 }
             }
-            return false
+            return null
         }
-
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TeachersViewHolder {
@@ -77,8 +75,14 @@ class TeachersAdapter(private val interactionListener: OnTopicActivityInteractio
 //        }.start()
     }
 
-    fun OnRequestedState(){
-
+    fun OnRequestedState(chatInformation: ChatInformation){
+        for(i in 0 until items.size){
+            val current = items[i]
+            if(current.Id.equals(chatInformation.TeacherId)){
+                current.chatInformation = chatInformation
+                clearOthers(i)
+            }
+        }
     }
 
     fun OnErrorButton(){
@@ -86,9 +90,26 @@ class TeachersAdapter(private val interactionListener: OnTopicActivityInteractio
     }
 
     fun OnNotRequestedState(){
-
+        val teacher = getRequestedTeacherAndPostition()
+        if(teacher!=null){
+            teacher.first.chatInformation = null
+        }
     }
 
+    fun removeAt(position: Int) {
+        items.removeAt(position)
+        notifyItemRemoved(position)
+    }
+
+    fun clearOthers(position: Int){
+        for(i in position+1 until items.size){
+            removeAt(position+1)
+        }
+        if(position!=0)
+            for(i in 0 until position){
+                removeAt(0)
+            }
+    }
 
     inner class TeachersViewHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
             parent.inflate(R.layout.item_teacher)) {
@@ -102,34 +123,13 @@ class TeachersAdapter(private val interactionListener: OnTopicActivityInteractio
                 removeAt(layoutPosition)
             }
             teacher_choose_button.setOnClickListener {
-                clickedItemNumber = layoutPosition
                 interactionListener.OnTeacherItemClicked(item,itemView)
             }
-            when(item.Status){
+            when(item.chatInformation?.StatusId){
                 Constants.STATUS_REQUESTED -> teacher_choose_button.text = itemView.context.getString(R.string.waiting)
                 Constants.STATUS_LEARNER_CONFIRMED -> teacher_choose_button.text = itemView.context.getString(R.string.waiting)
                 Constants.STATUS_TEACHER_CONFIRMED -> teacher_choose_button.text = itemView.context.getString(R.string.ready)
             }
         }
     }
-
-    fun removeAt(position: Int) {
-        items.removeAt(position)
-        notifyItemRemoved(position)
-    }
-
-    fun clearOthers(){
-        if(clickedItemNumber!=null){
-            logd(items.size.toString()+" "+clickedItemNumber)
-            val position: Int = clickedItemNumber!!
-            for(i in position+1 until items.size){
-                removeAt(position+1)
-            }
-            if(position!=0)
-                for(i in 0 until position){
-                    removeAt(0)
-                }
-        }
-    }
-
 }

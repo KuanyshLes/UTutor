@@ -99,7 +99,7 @@ data class Teacher(
         var MiddleName: String? = null,
         var Birthday: String? = null,
         var Image: String? = null,
-        var Status: Int = Constants.STATUS_NOT_REQUESTED
+        var chatInformation: ChatInformation? = null
 ): Parcelable{
     companion object {
         @JvmField @Suppress("unused")
@@ -115,7 +115,7 @@ data class Teacher(
             parcelIn.readString(),
             parcelIn.readString(),
             parcelIn.readString(),
-            parcelIn.readInt()
+            parcelIn.readParcelable<ChatInformation>(ChatInformation::class.java.classLoader)
     )
 
     override fun writeToParcel(dest: Parcel, flags: Int) {
@@ -128,7 +128,7 @@ data class Teacher(
         dest.writeString(MiddleName)
         dest.writeString(Birthday)
         dest.writeString(Image)
-        dest.writeInt(Status)
+        dest.writeParcelable(chatInformation,flags)
     }
 
     override fun describeContents() = 0
@@ -195,13 +195,15 @@ data class ChatLesson(
         var LearnerReady: Boolean = false,
         var Class: Int = 0
 )
+
 open class ChatInformation(
         var Id: Int? = -1,
         var TopicId: Int? = null,
+        var RequestTime: String? = null,
         var CreateTime: String? = null,
         var StartTime: String? = null,
         var EndTime: String? = null,
-        var StatusId: Int = 0,
+        var StatusId: Int = -1,
         var Duration: String? = null,
         var TeacherId: String = "",
         var LearnerId: String = "",
@@ -212,5 +214,51 @@ open class ChatInformation(
         var TeacherReady: Boolean = false,
         var LearnerReady: Boolean = false,
         var ClassNumber: Int? = null
-): RealmObject()
+): RealmObject(),Parcelable{
+    constructor(parcel: Parcel) : this(
+            parcel.readValue(Int::class.java.classLoader) as? Int,
+            parcel.readValue(Int::class.java.classLoader) as? Int,
+            parcel.readString(),
+            parcel.readString(),
+            parcel.readString(),
+            parcel.readString(),
+            parcel.readInt(),
+            parcel.readString(),
+            parcel.readString(),
+            parcel.readString(),
+            parcel.readString(),
+            parcel.readString(),
+            parcel.readString(),
+            parcel.readString(),
+            parcel.readByte() != 0.toByte(),
+            parcel.readByte() != 0.toByte(),
+            parcel.readValue(Int::class.java.classLoader) as? Int)
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeValue(Id)
+        parcel.writeValue(TopicId)
+        parcel.writeString(RequestTime)
+        parcel.writeString(CreateTime)
+        parcel.writeString(StartTime)
+        parcel.writeString(EndTime)
+        parcel.writeInt(StatusId)
+        parcel.writeString(Duration)
+        parcel.writeString(TeacherId)
+        parcel.writeString(LearnerId)
+        parcel.writeString(SubjectName)
+        parcel.writeString(TopicTitle)
+        parcel.writeString(Learner)
+        parcel.writeString(Teacher)
+        parcel.writeByte(if (TeacherReady) 1 else 0)
+        parcel.writeByte(if (LearnerReady) 1 else 0)
+        parcel.writeValue(ClassNumber)
+    }
+
+    override fun describeContents(): Int = 0
+
+    companion object {
+        @JvmField @Suppress("unused")
+        val CREATOR = createParcel { ChatInformation(it) }
+    }
+}
 

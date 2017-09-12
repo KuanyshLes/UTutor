@@ -268,6 +268,7 @@ class ChatActivity : AppCompatActivity(),
                 .subscribe(
                         { message ->
                             if(requestErrorHandler(message.code(),message.message())){
+                                Realm.getDefaultInstance().deleteAll()
                                 startActivity(Intent(this@ChatActivity, MainActivity::class.java))
                                 finish()
                             }else{
