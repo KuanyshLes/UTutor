@@ -1,7 +1,6 @@
 package com.support.robigroup.ututor.api
 
 import com.support.robigroup.ututor.Constants
-import com.support.robigroup.ututor.commons.RedditNewsResponse
 import com.support.robigroup.ututor.model.content.*
 import com.support.robigroup.ututor.screen.chat.model.CustomMessage
 import com.support.robigroup.ututor.singleton.SingletonSharedPref
@@ -12,10 +11,6 @@ import retrofit2.Response
 import retrofit2.http.*
 
 interface APIInterface {
-    @GET("/top.json")
-    fun getTop(@Query("after") after: String,
-               @Query("limit") limit: String): Call<RedditNewsResponse>
-
 
     @FormUrlEncoded
     @POST("token")

@@ -20,12 +20,17 @@ import android.widget.Toast
 import com.squareup.picasso.Picasso
 import com.support.robigroup.ututor.Constants
 import com.support.robigroup.ututor.R
+import java.time.Duration
 
 fun logd(message: String,tag: String = "myLogs"){
     Log.d(tag,message)
 }
 
 var progressDialog: ProgressDialog? = null
+
+fun Context.snack(message: String,duration: Int = Snackbar.LENGTH_SHORT){
+
+}
 
 fun Context.builtMessageWait(title: String = getString(R.string.sending), message: String = getString(R.string.wait)) {
     if(progressDialog==null){

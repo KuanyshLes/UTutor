@@ -53,6 +53,7 @@ object Functions {
     fun getChatInformation(chatLesson: ChatLesson): ChatInformation =  ChatInformation(
             chatLesson.Id,
             chatLesson.TopicId,
+            null,
             chatLesson.CreateTime,
             chatLesson.StartTime,
             chatLesson.EndTime,
@@ -68,6 +69,32 @@ object Functions {
             chatLesson.LearnerReady,
             chatLesson.Class
     )
+
+    fun getUnmanagedChatInfo(chatInformation: ChatInformation): ChatInformation {
+        if(chatInformation.isManaged)
+            return ChatInformation(
+                    chatInformation.Id,
+                    chatInformation.TopicId,
+                    chatInformation.RequestTime,
+                    chatInformation.CreateTime,
+                    chatInformation.StartTime,
+                    chatInformation.EndTime,
+                    chatInformation.StatusId,
+                    chatInformation.Duration,
+                    chatInformation.TeacherId,
+                    chatInformation.LearnerId,
+                    chatInformation.SubjectName,
+                    chatInformation.TopicTitle,
+                    chatInformation.Learner,
+                    chatInformation.Teacher,
+                    chatInformation.TeacherReady,
+                    chatInformation.LearnerReady,
+                    chatInformation.ClassNumber
+            )
+        else{
+            return chatInformation
+        }
+    }
 
     fun builtMessageWait(context: Context) {
         progressDialog = ProgressDialog(context)

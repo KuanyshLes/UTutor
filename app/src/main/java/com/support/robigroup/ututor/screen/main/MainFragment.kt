@@ -52,7 +52,7 @@ class MainFragment : RxBaseFragment() {
         }
         initAdapters()
 //        requestRecentTopics(5)
-        mListener?.checkChatState()
+//        mListener?.checkChatState()
     }
 
     private fun initAdapters() {

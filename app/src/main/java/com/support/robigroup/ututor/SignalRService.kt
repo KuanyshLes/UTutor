@@ -5,7 +5,9 @@ import android.content.Intent
 import android.os.IBinder
 import android.util.Log
 import com.google.gson.Gson
+import com.support.robigroup.ututor.commons.Functions
 import com.support.robigroup.ututor.commons.logd
+import com.support.robigroup.ututor.model.content.ChatInformation
 import com.support.robigroup.ututor.model.content.RequestListen
 import com.support.robigroup.ututor.screen.chat.model.CustomMessage
 import com.support.robigroup.ututor.screen.chat.model.MyMessage
@@ -79,7 +81,8 @@ class SignalRService : Service() {
 
         mHubConnection!!.closed {
             logd("closed",TAG_SIGNALR)
-            startSignalR()
+            if(Functions.isOnline(baseContext))
+                startSignalR()
         }
         connectSignalR()
     }
@@ -124,25 +127,26 @@ class SignalRService : Service() {
 
     private fun notifyChatCompleted() {
         val realm = Realm.getDefaultInstance()
-        val request = realm.where(RequestListen::class.java).findFirst()
+        val request = realm.where(ChatInformation::class.java).findFirst()
         realm.executeTransaction {
-            request?.status = Constants.STATUS_COMPLETED
+            request?.StatusId = Constants.STATUS_COMPLETED
         }
     }
 
     private fun notifyTeacherAccepted(message: String){
         val realm = Realm.getDefaultInstance()
-        val request = realm.where(RequestListen::class.java).findFirst()
+        val request = realm.where(ChatInformation::class.java).findFirst()
         realm.executeTransaction {
-            request?.status = Constants.STATUS_ACCEPTED
+            request?.StatusId = Constants.STATUS_ACCEPTED_TEACHER
+            request?.Id = Integer.parseInt(message)
         }
     }
 
     private fun notifyesChatReadyFromTeacher(){
         val realm = Realm.getDefaultInstance()
-        val request = realm.where(RequestListen::class.java).findFirst()
+        val request = realm.where(ChatInformation::class.java).findFirst()
         realm.executeTransaction {
-            request?.status = Constants.STATUS_TEACHER_CONFIRMED
+            request?.TeacherReady = true
         }
     }
 

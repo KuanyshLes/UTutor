@@ -10,6 +10,7 @@ import android.text.TextUtils
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.AdapterView
+import com.support.robigroup.ututor.Constants
 import com.support.robigroup.ututor.R
 import com.support.robigroup.ututor.SignalRService
 import com.support.robigroup.ututor.commons.OnMainActivityInteractionListener
@@ -93,7 +94,7 @@ class MainActivity : AppCompatActivity(), OnMainActivityInteractionListener {
 
     override fun checkChatState() {
         val chatInformation: ChatInformation? = Realm.getDefaultInstance().where(ChatInformation::class.java).findFirst()
-        if(chatInformation != null){
+        if(chatInformation != null&&chatInformation.StatusId!=Constants.STATUS_REQUESTED_WAIT){
             TopicActivity.open(this,TopicItem())
         }
     }

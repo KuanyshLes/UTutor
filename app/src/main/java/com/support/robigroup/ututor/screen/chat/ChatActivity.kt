@@ -24,10 +24,7 @@ import com.support.robigroup.ututor.Constants
 import com.support.robigroup.ututor.R
 import com.support.robigroup.ututor.SignalRService
 import com.support.robigroup.ututor.api.MainManager
-import com.support.robigroup.ututor.commons.AppUtils
-import com.support.robigroup.ututor.commons.Functions
-import com.support.robigroup.ututor.commons.logd
-import com.support.robigroup.ututor.commons.requestErrorHandler
+import com.support.robigroup.ututor.commons.*
 import com.support.robigroup.ututor.model.content.ChatInformation
 import com.support.robigroup.ututor.model.content.RequestListen
 import com.support.robigroup.ututor.model.content.Teacher
@@ -124,25 +121,19 @@ class ChatActivity : AppCompatActivity(),
             if(message.File!=null&&message.FileThumbnail!=null){
                 val myMessage = CustomMessage(message.Id,message.Time,Constants.BASE_URL+message.FileThumbnail,
                         Constants.BASE_URL+message.File,message.Message)
-                logd(Gson().toJson(myMessage,CustomMessage::class.java),"mymessage2")
                 messagesAdapter?.addToStart(MyMessage(myMessage,teacher),true)
             }else{
                 val myMessage = CustomMessage(message.Id,message.Time,Message = message.Message)
-                logd(Gson().toJson(myMessage,CustomMessage::class.java),"mymessage2")
                 messagesAdapter?.addToStart(MyMessage(myMessage,teacher),true)
             }
         }
         result?.addChangeListener(realmChangeListener)
 
-        var closeListener = realm.where(RequestListen::class.java).findFirst()
-        if(closeListener==null)
-            realm.executeTransaction{
-                closeListener = realm.createObject(RequestListen::class.java,0)
-            }
+        val closeListener = realm.where(ChatInformation::class.java).findFirst()
         closeListener?.addChangeListener(
-                RealmChangeListener<RequestListen>{
+                RealmChangeListener<ChatInformation>{
                     rs ->
-                    if(rs?.status==Constants.STATUS_COMPLETED) {
+                    if(rs?.StatusId==Constants.STATUS_COMPLETED) {
                         closeChat()
                     }
                 })
@@ -213,7 +204,7 @@ class ChatActivity : AppCompatActivity(),
             R.id.action_delete -> messagesAdapter!!.deleteSelectedMessages()
             R.id.action_copy -> {
                 messagesAdapter!!.copySelectedMessagesText(this, messageStringFormatter, true)
-                AppUtils.showToast(this, R.string.copied_message, true)
+                toast(getString(R.string.copied_message))
             }
         }
         return true

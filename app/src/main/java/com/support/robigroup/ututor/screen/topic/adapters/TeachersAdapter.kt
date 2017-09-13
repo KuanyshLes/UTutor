@@ -3,6 +3,7 @@ package com.support.robigroup.ututor.screen.topic.adapters
 import android.os.CountDownTimer
 import android.support.v7.widget.RecyclerView
 import android.view.ViewGroup
+import android.widget.Button
 import com.support.robigroup.ututor.Constants
 import com.support.robigroup.ututor.R
 import com.support.robigroup.ututor.commons.OnTopicActivityInteractionListener
@@ -12,7 +13,10 @@ import com.support.robigroup.ututor.commons.logd
 import com.support.robigroup.ututor.model.content.ChatInformation
 import com.support.robigroup.ututor.model.content.Teacher
 import com.support.robigroup.ututor.model.content.Teachers
+import io.realm.Realm
 import kotlinx.android.synthetic.main.item_teacher.view.*
+import java.util.*
+import java.util.concurrent.TimeUnit
 
 class TeachersAdapter(private val interactionListener: OnTopicActivityInteractionListener) : RecyclerView.Adapter<TeachersAdapter.TeachersViewHolder>() {
 
@@ -54,25 +58,29 @@ class TeachersAdapter(private val interactionListener: OnTopicActivityInteractio
     }
 
     fun OnLearnerReady(){
-
+        if(items.size==1){
+            val pair = getRequestedTeacherAndPostition()!!
+            Realm.getDefaultInstance().executeTransaction {
+                pair.first.chatInformation?.LearnerReady = true
+            }
+            notifyItemChanged(pair.second)
+        }
     }
 
-    fun OnTeacherReady(){
-
+    fun OnTeacherReady(info: ChatInformation){
+        if(items.size==1){
+            val pair = getRequestedTeacherAndPostition()!!
+            pair.first.chatInformation = info
+            notifyItemChanged(pair.second)
+        }
     }
 
-    fun OnAcceptedState(){
-//        countDownCounter = object : CountDownTimer(90000, 1000) {
-//            override fun onTick(millisUntilFinished: Long) {
-//                if(currentTeacher!!.Status==Constants.STATUS_LEARNER_CONFIRMED){
-//                    currentButton?.text = getString(R.string.waiting)+getTimeWaitingInMinutes(millisUntilFinished)
-//                }
-//            }
-//            override fun onFinish() {
-//                currentTeacher!!.Status=Constants.STATUS_NOT_REQUESTED
-//                currentButton!!.text = getString(R.string.declined)
-//            }
-//        }.start()
+    fun OnAcceptedState(info: ChatInformation){
+        if(items.size==1){
+            val pair = getRequestedTeacherAndPostition()!!
+            pair.first.chatInformation = info
+            notifyItemChanged(pair.second)
+        }
     }
 
     fun OnRequestedState(chatInformation: ChatInformation){
@@ -81,12 +89,20 @@ class TeachersAdapter(private val interactionListener: OnTopicActivityInteractio
             if(current.Id.equals(chatInformation.TeacherId)){
                 current.chatInformation = chatInformation
                 clearOthers(i)
+                notifyItemChanged(0)
+                break
             }
         }
     }
 
     fun OnErrorButton(){
-
+        if(items.size==1){
+            val pair = getRequestedTeacherAndPostition()!!
+            Realm.getDefaultInstance().executeTransaction {
+                pair.first.chatInformation?.StatusId = Constants.STATUS_ERROR
+            }
+            notifyItemChanged(pair.second)
+        }
     }
 
     fun OnNotRequestedState(){
@@ -125,11 +141,50 @@ class TeachersAdapter(private val interactionListener: OnTopicActivityInteractio
             teacher_choose_button.setOnClickListener {
                 interactionListener.OnTeacherItemClicked(item,itemView)
             }
-            when(item.chatInformation?.StatusId){
-                Constants.STATUS_REQUESTED -> teacher_choose_button.text = itemView.context.getString(R.string.waiting)
-                Constants.STATUS_LEARNER_CONFIRMED -> teacher_choose_button.text = itemView.context.getString(R.string.waiting)
-                Constants.STATUS_TEACHER_CONFIRMED -> teacher_choose_button.text = itemView.context.getString(R.string.ready)
+            if(item.chatInformation==null){
+                teacher_choose_button.text =  itemView.context.getString(R.string.choose_teacher)
+            }else{
+                val info = item.chatInformation!!
+                if(info.StatusId==Constants.STATUS_NOT_REQUESTED){
+                    teacher_choose_button.text =  itemView.context.getString(R.string.choose_teacher)
+                }else if(info.StatusId==Constants.STATUS_REQUESTED_WAIT){
+                    teacher_choose_button.text =  itemView.context.getString(R.string.waiting)
+                }else if(info.StatusId==Constants.STATUS_ACCEPTED_TEACHER&&!info.LearnerReady){
+                    teacher_choose_button.text =  itemView.context.getString(R.string.ready)
+                }else if(info.StatusId==Constants.STATUS_ACCEPTED_TEACHER&&info.LearnerReady){
+                    MyDownTimer(info,teacher_choose_button).start()
+                }else if(info.StatusId==Constants.STATUS_DECLINED){
+                    teacher_choose_button.text =  itemView.context.getString(R.string.declined)
+                }else {
+                    teacher_choose_button.text =  itemView.context.getString(R.string.error)
+                }
             }
         }
+    }
+
+    private fun getTimeWaitingInMinutes(millis: Long): String
+            = String.format(" %dм. %dс.",
+            TimeUnit.MILLISECONDS.toMinutes(millis),
+            TimeUnit.MILLISECONDS.toSeconds(millis) -
+                    TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis))
+    )
+
+    inner class MyDownTimer(val info: ChatInformation,val button: Button?):CountDownTimer(90000,1000){
+
+        override fun onFinish() {
+//            val outputFormat = SimpleDateFormat(TIMEFORMAT)
+//            outputFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+//            val createTimeInMillis = outputFormat.parse(info.CreateTime).time
+            info.StatusId=Constants.STATUS_DECLINED
+            button?.text = button?.context?.getString(R.string.declined)
+        }
+
+        override fun onTick(p0: Long) {
+            if(!info.LearnerReady&&button!=null){
+                button.text = button.context.getString(R.string.waiting)+getTimeWaitingInMinutes(p0)
+            }
+
+        }
+
     }
 }

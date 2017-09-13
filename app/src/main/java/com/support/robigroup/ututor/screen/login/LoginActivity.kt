@@ -12,7 +12,6 @@ import com.support.robigroup.ututor.api.RestAPI
 import com.support.robigroup.ututor.commons.*
 import com.support.robigroup.ututor.model.content.ChatInformation
 import com.support.robigroup.ututor.model.content.ChatLesson
-//import com.support.robigroup.ututor.model.content.ChatLesson
 import com.support.robigroup.ututor.model.content.LoginResponse
 import com.support.robigroup.ututor.screen.chat.ChatActivity
 import com.support.robigroup.ututor.screen.loading.LoadingDialog
@@ -143,13 +142,17 @@ class LoginActivity : AppCompatActivity(), OnLoginActivityInteractionListener {
 
     private fun startMainOrChatActivity(chatLesson: ChatLesson?){
         logd(SingletonSharedPref.getInstance().getString(Constants.KEY_TOKEN))
-
-        if(chatLesson!=null&&chatLesson.StatusId!=4){
-            val realm = Realm.getDefaultInstance()
-            realm.executeTransaction {
-                realm.copyToRealmOrUpdate(Functions.getChatInformation(chatLesson))
-            }
+        val realm = Realm.getDefaultInstance()
+        realm.executeTransaction {
+            //                realm.copyToRealmOrUpdate(Functions.getChatInformation(chatLesson))
+            realm.where(ChatInformation::class.java).findAll().deleteAllFromRealm()
         }
+//        if(chatLesson!=null&&chatLesson.StatusId!=4){
+//            val realm = Realm.getDefaultInstance()
+//            realm.executeTransaction {
+//                realm.copyToRealmOrUpdate(Functions.getChatInformation(chatLesson))
+//            }
+//        }
 
         if(chatLesson!=null&&chatLesson.LearnerReady&&chatLesson.TeacherReady&&chatLesson.StatusId!=4){
             startActivity(Intent(baseContext,ChatActivity::class.java))
