@@ -13,22 +13,22 @@ class MainManager(
         private val TOKEN: String = SingletonSharedPref.getInstance().getString(KEY_TOKEN),
         private val api: RestAPI = RestAPI()) {
 
-    fun getLessons(classRoom: Int,lang: String): Flowable<Response<List<Subject>>>
-        = RestAPI.getApi().getSubjects(classRoom,lang)
+    fun getLessons(): Flowable<Response<List<Subject>>>
+        = RestAPI.getApi().getSubjects()
 
-    fun getTeachers(classRoom: Int = 10,language: String ="kk-KZ",subjectId: Int = 2,topicId: Int=2): Flowable<Response<List<Teacher>>>
-        = RestAPI.getApi().getTeachersByTopic(
+    fun getTeachers(classRoom: Int,language: String,subjectId: Int): Flowable<Response<List<Teacher>>>
+        = RestAPI.getApi().getTeachers(
                 classRoom,
                 language,
-                subjectId,
-                topicId
+                subjectId
         )
 
     fun getTopics(subjectId: Int): Flowable<Response<List<TopicItem>>>
         = RestAPI.getApi().getTopicsBySubject(subjectId)
 
-    fun postLessonRequest(teacherId: String, topicId: Int): Flowable<Response<LessonRequestForTeacher>>
-        = RestAPI.getApi().postLessonRequest(teacherId,topicId)
+    fun postLessonRequest(teacherId: String, subjectId: Int, language: String, classNumber: Int):
+            Flowable<Response<LessonRequestForTeacher>>
+        = RestAPI.getApi().postLessonRequest(teacherId, subjectId, language, classNumber)
 
     fun postLearnerReady(): Flowable<Response<ResponseBody>> = RestAPI.getApi().postChatReady()
 

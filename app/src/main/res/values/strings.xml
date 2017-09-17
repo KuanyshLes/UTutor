@@ -32,7 +32,7 @@
     <string name="all_lessons">Все предметы</string>
     <string name="main_topic_text">Ваши последние темы</string>
     <string name="main_text_see_all">Показать все</string>
-    <string name="search">Search</string>
+    <string name="search">Пойск</string>
     <string name="search_hint">Пойск по темам</string>
     <string name="ex_math">математика</string>
     <string name="ex_lesson_desc">We defined here a synchronous API that will receive the “after” and “limit” query string. The return type is “Call”, this Call class will allow us to execute the request and know if the request was successful or not, also to extract the response data with the given generic type, in this case, the new defined Kotlin class RedditNewsResponse.</string>
@@ -46,6 +46,7 @@
     <string name="choose_teacher">Выбрать</string>
     <string name="ex_topic_short">С понятием рациональных чисел вы уже наверняка знакомы. Аналогично рациональные функции – это функции,</string>
     <string name="teachers_accepted">Откликнулось</string>
+    <string name="teachers_found">Нашлось</string>
 
 
     //titles
@@ -57,7 +58,7 @@
     <string name="sending">sending</string>
     <string name="waiting">Ожидание</string>
     <string name="declined">Отказал</string>
-    <string name="ready">Готов</string>
+    <string name="action_ready">Готов</string>
     <string name="error">Ошибка</string>
 
 
@@ -71,6 +72,7 @@
     <string name="text_get_money">С вашего лицевого счета будет списано</string>
     <string name="ex_dollar">10.00$</string>
     <string name="ex_time_long">Длительность: 1ч 20 м</string>
+    <string name="ex_time_wait_ready">1м 30с</string>
     <string name="cost_lesson">Стоимость сеанса</string>
     <string name="open_chat">Открыть чат</string>
     <string name="durationLesson">Длительность урока</string>

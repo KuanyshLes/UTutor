@@ -6,13 +6,13 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.support.annotation.RequiresPermission
 import android.support.design.widget.Snackbar
 import android.support.v4.app.DialogFragment
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.Toast
 import com.squareup.picasso.Picasso
 import com.stfalcon.chatkit.commons.ImageLoader
 import com.stfalcon.chatkit.messages.MessageHolders
@@ -24,9 +24,7 @@ import com.support.robigroup.ututor.Constants
 import com.support.robigroup.ututor.NotificationService
 import com.support.robigroup.ututor.R
 import com.support.robigroup.ututor.api.MainManager
-import com.support.robigroup.ututor.commons.Functions
-import com.support.robigroup.ututor.commons.requestErrorHandler
-import com.support.robigroup.ututor.commons.toast
+import com.support.robigroup.ututor.commons.*
 import com.support.robigroup.ututor.model.content.ChatInformation
 import com.support.robigroup.ututor.screen.chat.custom.media.holders.CustomIncomingMessageViewHolder
 import com.support.robigroup.ututor.screen.chat.custom.media.holders.CustomOutcomingMessageViewHolder
@@ -49,7 +47,7 @@ class ChatActivity : AppCompatActivity(),
         MessageInput.AttachmentsListener,
         MessageHolders.ContentChecker<MyMessage>,
         DialogInterface.OnClickListener,
-        FinishDialog.NoticeDialogListener,
+        OnChatActivityDialogInteractionListener,
         MessagesListAdapter.SelectionListener,
         MessagesListAdapter.OnLoadMoreListener,
         ContentManager.PickContentListener{
@@ -57,6 +55,7 @@ class ChatActivity : AppCompatActivity(),
 
     private var messagesList: MessagesList? = null
     private var messagesAdapter: MessagesListAdapter<MyMessage>? = null
+    private var mReadyDialog: ReadyDialog by Delegates.notNull()
     private val subscriptions: CompositeDisposable by lazy {
         CompositeDisposable()
     }
@@ -64,24 +63,31 @@ class ChatActivity : AppCompatActivity(),
 
     private var user: User by Delegates.notNull()
     private var teacher: User by Delegates.notNull()
-    private var chatInformation: ChatInformation by Delegates.notNull()
+    private var mChatInformation: ChatInformation by Delegates.notNull()
     private var menu: Menu? = null
     private var selectionCount: Int = 0
     private var lastLoadedDate: Date? = null
     private var realm: Realm by Delegates.notNull()
     private var imageLoader: ImageLoader? = null
     private var mMessages: RealmResults<CustomMessage> by Delegates.notNull()
-    private var mChatInformation: ChatInformation by Delegates.notNull()
-    private val closeListener =  RealmChangeListener<ChatInformation>{
-        rs ->
-        if(rs?.StatusId==Constants.STATUS_COMPLETED) {
-            closeChat()
+
+    private var mChatChangeListener: RealmObjectChangeListener<ChatInformation> = RealmObjectChangeListener {
+        rs, changeset ->
+        logd(rs.toString()+changeset.toString())
+        if(changeset!=null&&!changeset.isDeleted){
+            if(rs.StatusId == Constants.STATUS_COMPLETED){
+                closeChat()
+            }else if(rs.TeacherReady&&rs.LearnerReady){
+                mReadyDialog.dismiss()
+            }}else if(rs.LearnerReady&&!rs.TeacherReady){
+            mReadyDialog.onLearnerReady()
         }
     }
-    private val mRealmChangeListener: OrderedRealmCollectionChangeListener<RealmResults<CustomMessage>>
+
+    private val mMessagesChangeListener: OrderedRealmCollectionChangeListener<RealmResults<CustomMessage>>
             = OrderedRealmCollectionChangeListener { messages, changeSet ->
         if (changeSet == null) {
-
+            notifyItemRangeInserted(0,messages.size-1)
         }else{
             // For deletions, the adapter has to be notified in reverse order.
             val deletions = changeSet.deletionRanges
@@ -100,15 +106,13 @@ class ChatActivity : AppCompatActivity(),
                 notifyItemRangeChanged(range.startIndex, range.length)
             }
         }
-
     }
 
     private fun notifyItemRangeChanged(startIndex: Int,rangeLength: Int){
         toast("notifyItemRangeChanged")
     }
     private fun notifyItemRangeInserted(startIndex: Int,rangeLength: Int){
-        toast("notifyItemRangeInserted")
-        for(i in startIndex .. startIndex+rangeLength){
+        for(i in startIndex until startIndex+rangeLength){
             messagesAdapter?.addToStart(
                     Functions.getMyMessage(mMessages[i],teacher),true
             )
@@ -127,11 +131,13 @@ class ChatActivity : AppCompatActivity(),
 
         realm = Realm.getDefaultInstance()
         mMessages = realm.where(CustomMessage::class.java).findAll()
-        mMessages.addChangeListener(mRealmChangeListener)
-        chatInformation = realm.where(ChatInformation::class.java).findFirst()!!
-        chatInformation.addChangeListener(closeListener)
-        teacher = User(chatInformation.TeacherId, chatInformation.Teacher,null,true)
-        user = User(chatInformation.LearnerId, chatInformation.Learner,null,true)
+        mMessages.addChangeListener(mMessagesChangeListener)
+
+        mChatInformation = realm.where(ChatInformation::class.java).findFirst()!!
+        mChatInformation.addChangeListener(mChatChangeListener)
+
+        teacher = User(mChatInformation.TeacherId, mChatInformation.Teacher,null,true)
+        user = User(mChatInformation.LearnerId, mChatInformation.Learner,null,true)
 
         setSupportActionBar(toolbar)
         teacher_name_title.text =this.teacher.name
@@ -150,12 +156,23 @@ class ChatActivity : AppCompatActivity(),
         val input = findViewById<MessageInput>(R.id.input)
         input.setInputListener(this)
         input.setAttachmentsListener(this)
+
+        mReadyDialog = ReadyDialog()
+        if(!mChatInformation.TeacherReady||!mChatInformation.LearnerReady){
+            mReadyDialog.isCancelable = false
+            mReadyDialog.startShow(supportFragmentManager,TAG_READY_DIALOG,mChatInformation.CreateTime)
+        }else if(mReadyDialog.isVisible){
+            mReadyDialog.dismiss()
+        }
     }
 
     override fun onDestroy() {
         super.onDestroy()
         subscriptions.clear()
+        if(mReadyDialog.isVisible)
+            mReadyDialog.dismiss()
         mMessages.removeAllChangeListeners()
+        mChatInformation.removeAllChangeListeners()
         realm.close()
 
     }
@@ -237,6 +254,31 @@ class ChatActivity : AppCompatActivity(),
         return true
     }
 
+    private fun postLearnerReady(){
+        val subscription = MainManager().postLearnerReady()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe (
+                        { teachers ->
+                            if(requestErrorHandler(teachers.code(),teachers.message())){
+                                val res = teachers.body()?.charStream()?.readText()
+                                realm.executeTransaction {
+                                    if(res != null && res.equals("ready")){
+                                        mChatInformation.LearnerReady = true
+                                        mChatInformation.TeacherReady = true
+                                    }else if(res != null){
+                                        mChatInformation.LearnerReady = true
+                                    }
+                                }
+                            }
+                        },
+                        { e ->
+                            Snackbar.make(findViewById(android.R.id.content), e.message ?: "", Snackbar.LENGTH_LONG).show()
+                        }
+                )
+        subscriptions.add(subscription)
+    }
+
     private fun sendMessage(input: CharSequence){
         val subscription = MainManager().sendMessage(messageText = input.toString())
                 .subscribeOn(Schedulers.io())
@@ -268,7 +310,9 @@ class ChatActivity : AppCompatActivity(),
                                 startActivity(Intent(this@ChatActivity, MainActivity::class.java))
                                 finish()
                             }else{
-                                //TODO handle http errors
+                                Realm.getDefaultInstance().deleteAll()
+                                startActivity(Intent(this@ChatActivity, MainActivity::class.java))
+                                finish()
                             }
                         },
                         { e ->
@@ -333,16 +377,17 @@ class ChatActivity : AppCompatActivity(),
     override fun onClick(dialogInterface: DialogInterface, i: Int) {
         when (i) {
             0 ->
-//                messagesAdapter!!.addToStart(MyMessage(CustomMessage(3218498,"00:35","https://vlast.kz/media/pages/mt/1481870380x9dmr_1000x768.jpg","","https://vlast.kz/media/pages/mt/1481870380x9dmr_1000x768.jpg"),user), true)
                 contentManager?.pickContent(ContentManager.Content.IMAGE)
-//            1 -> messagesAdapter!!.addToStart(MessagesFixtures.getVoiceMessage(), true)
         }
     }
 
-
-    override fun onDialogPositiveClick(dialog: DialogFragment) {
+    override fun onFinishDialogPositiveClick(dialog: DialogFragment) {
         dialog.dismiss()
         closeChat()
+    }
+
+    override fun onReadyDialogReadyClick(dialog: DialogFragment) {
+        postLearnerReady()
     }
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
@@ -392,6 +437,7 @@ class ChatActivity : AppCompatActivity(),
         private val CONTENT_TYPE_IMAGE_TEXT: Byte = 1
         private val KEY_TEACHER = "teacher"
         private val TOTAL_MESSAGES_COUNT = 100
+        private val TAG_READY_DIALOG = "readyDialog"
 
 
         fun open(context: Context) {

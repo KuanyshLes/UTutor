@@ -39,11 +39,16 @@ object Functions {
         alert.show()
     }
 
-    fun builtMessageNoInternet(context: Context) {
+    fun builtMessageNoInternet(context: Context,func:()-> Unit) {
         val builder = AlertDialog.Builder(context)
         builder.setMessage("Проверьте интернет соединение!")
                 .setCancelable(false)
-                .setPositiveButton("OK") { dialog, id -> dialog.cancel() }
+                .setPositiveButton("OK")
+                {
+                    dialog, id ->
+                    dialog.cancel()
+                    func()
+                }
         val alert = builder.create()
         alert.show()
     }
@@ -54,32 +59,31 @@ object Functions {
         return netInfo != null && netInfo.isConnectedOrConnecting
     }
 
-    fun getChatInformation(chatLesson: ChatLesson): ChatInformation =  ChatInformation(
-            chatLesson.Id,
-            chatLesson.TopicId,
-            null,
-            chatLesson.CreateTime,
-            chatLesson.StartTime,
-            chatLesson.EndTime,
-            chatLesson.StatusId,
-            chatLesson.Duration,
-            chatLesson.TeacherId,
-            chatLesson.LearnerId,
-            chatLesson.SubjectName,
-            chatLesson.TopicTitle,
-            chatLesson.Learner,
-            chatLesson.Teacher,
-            chatLesson.TeacherReady,
-            chatLesson.LearnerReady,
-            chatLesson.Class
+    fun getChatInformation(chatInformation: ChatLesson): ChatInformation =  ChatInformation(
+            chatInformation.Id,
+            chatInformation.CreateTime,
+            chatInformation.StartTime,
+            chatInformation.EndTime,
+            chatInformation.StatusId,
+            chatInformation.Duration,
+            chatInformation.TeacherId,
+            chatInformation.LearnerId,
+            chatInformation.SubjectName,
+            chatInformation.Class,
+            chatInformation.Learner,
+            chatInformation.Teacher,
+            chatInformation.TeacherReady,
+            chatInformation.LearnerReady,
+            chatInformation.LearnerRaiting,
+            chatInformation.TeacherRaiting,
+            chatInformation.SubjectId,
+            chatInformation.Language
     )
 
     fun getUnmanagedChatInfo(chatInformation: ChatInformation): ChatInformation {
         if(chatInformation.isManaged)
             return ChatInformation(
                     chatInformation.Id,
-                    chatInformation.TopicId,
-                    chatInformation.RequestTime,
                     chatInformation.CreateTime,
                     chatInformation.StartTime,
                     chatInformation.EndTime,
@@ -88,12 +92,15 @@ object Functions {
                     chatInformation.TeacherId,
                     chatInformation.LearnerId,
                     chatInformation.SubjectName,
-                    chatInformation.TopicTitle,
+                    chatInformation.ClassNumber,
                     chatInformation.Learner,
                     chatInformation.Teacher,
                     chatInformation.TeacherReady,
                     chatInformation.LearnerReady,
-                    chatInformation.ClassNumber
+                    chatInformation.LearnerRaiting,
+                    chatInformation.TeacherRaiting,
+                    chatInformation.SubjectId,
+                    chatInformation.Language
             )
         else{
             return chatInformation

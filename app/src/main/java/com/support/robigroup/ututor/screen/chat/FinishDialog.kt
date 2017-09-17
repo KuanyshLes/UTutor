@@ -7,22 +7,19 @@ import android.os.Bundle
 import android.support.v4.app.DialogFragment
 import android.widget.Button
 import com.support.robigroup.ututor.R
+import com.support.robigroup.ututor.commons.OnChatActivityDialogInteractionListener
 
 
 class FinishDialog : DialogFragment() {
 
-    var mListener: NoticeDialogListener? = null
-
-    interface NoticeDialogListener {
-        fun onDialogPositiveClick(dialog: DialogFragment)
-    }
+    var mListener: OnChatActivityDialogInteractionListener? = null
 
     override fun onAttach(activity: Context?) {
         super.onAttach(activity)
         // Verify that the host activity implements the callback interface
         try {
             // Instantiate the NoticeDialogListener so we can send events to the host
-            mListener = activity as NoticeDialogListener?
+            mListener = activity as OnChatActivityDialogInteractionListener?
         } catch (e: ClassCastException) {
             // The activity doesn't implement the interface, throw exception
             throw ClassCastException(activity!!.toString() + " must implement NoticeDialogListener")
@@ -37,7 +34,7 @@ class FinishDialog : DialogFragment() {
         val view = inflater.inflate(R.layout.dialog_finish,null)
         val buttonFinish = view.findViewById<Button>(R.id.button_finish) as Button
         buttonFinish.setOnClickListener {
-            mListener!!.onDialogPositiveClick(this)
+            mListener!!.onFinishDialogPositiveClick(this)
         }
         builder.setView(view)
         return builder.create()

@@ -28,7 +28,6 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
         </activity>
         <activity
             android:name=".screen.main.MainActivity"
@@ -40,19 +39,24 @@
         </activity>
         <activity
             android:name=".screen.chat.ChatActivity"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar">
         </activity>
-
-        <activity android:name=".screen.topic.TopicActivity"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:screenOrientation="portrait">
+        <activity
+            android:name=".screen.topic.TopicActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar">
         </activity>
 
         <service
             android:name=".NotificationService"
             android:enabled="true"
             android:exported="true" />
+
+        <activity android:name=".screen.topic.TeachersActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
     </application>
 
 </manifest>

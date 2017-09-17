@@ -11,23 +11,23 @@ import com.support.robigroup.ututor.api.MainManager
 import com.support.robigroup.ututor.commons.OnMainActivityInteractionListener
 import com.support.robigroup.ututor.commons.RxBaseFragment
 import com.support.robigroup.ututor.commons.requestErrorHandler
-import com.support.robigroup.ututor.model.content.ClassRoom
-import com.support.robigroup.ututor.screen.main.adapters.ClassAdapter
 import com.support.robigroup.ututor.screen.main.adapters.RecentTopicsAdapter
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_main.*
 import kotlinx.android.synthetic.main.topics.*
+import kotlin.properties.Delegates
 
 
 class MainFragment : RxBaseFragment() {
 
     companion object {
         private val KEY_RECENT_TOPICS = "recentTopics"
-        private val classes: List<ClassRoom> = List(12, {index ->  ClassRoom(index)})
+        private val COLORS = arrayListOf("","")
     }
 
     private var mListener: OnMainActivityInteractionListener? = null
+    private var mAdapter: MySubjectRecyclerViewAdapter by Delegates.notNull()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,6 +43,7 @@ class MainFragment : RxBaseFragment() {
         super.onActivityCreated(savedInstanceState)
         mListener?.setToolbarTitle(getString(R.string.main_title))
         mListener?.setDisplayHomeAsEnabled(false)
+        mAdapter = MySubjectRecyclerViewAdapter(ArrayList(),mListener)
 
 //        main_recycler_view_header.apply {
 //            setHasFixedSize(true)
@@ -53,6 +54,7 @@ class MainFragment : RxBaseFragment() {
         initAdapters()
 //        requestRecentTopics(5)
 //        mListener?.checkChatState()
+        requestSubjects()
     }
 
     private fun initAdapters() {
@@ -60,13 +62,15 @@ class MainFragment : RxBaseFragment() {
 //            main_recycler_view_header.adapter = RecentTopicsAdapter()
 //        }
         if (main_recycler_view_content.adapter == null) {
-            main_recycler_view_content.adapter = ClassAdapter(classes,mListener)
+            main_recycler_view_content.adapter = mAdapter
         }
     }
 
     override fun onResume() {
         super.onResume()
+
         mListener?.checkChatState()
+
     }
 
     private fun requestRecentTopics(subjectId: Int) {
@@ -77,8 +81,6 @@ class MainFragment : RxBaseFragment() {
                         { retrievedTopics ->
                             if(activity.requestErrorHandler(retrievedTopics.code(),retrievedTopics.message())){
                                 (main_recycler_view_header.adapter as RecentTopicsAdapter).clearAndAddRecentTopics(retrievedTopics.body())
-                            }else{
-                                //TODO handle errors
                             }
                         },
                         { e ->
@@ -101,6 +103,25 @@ class MainFragment : RxBaseFragment() {
     override fun onDetach() {
         super.onDetach()
         mListener = null
+    }
+
+    private fun requestSubjects(){
+        val subscription = MainManager().getLessons()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        { retrievedLessons ->
+                            if(activity.requestErrorHandler(retrievedLessons.code(),retrievedLessons.message())){
+                                mAdapter.clearAndAddSubjects(retrievedLessons.body())
+                            }else{
+                                //TODO handle http errors
+                            }
+                        },
+                        { e ->
+                            Snackbar.make(view!!, e.message ?: "", Snackbar.LENGTH_LONG).show()
+                        }
+                )
+        subscriptions.add(subscription)
     }
 
 

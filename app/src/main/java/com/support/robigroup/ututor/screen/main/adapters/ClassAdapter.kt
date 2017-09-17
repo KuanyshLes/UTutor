@@ -6,16 +6,19 @@ import com.support.robigroup.ututor.R
 import com.support.robigroup.ututor.commons.OnMainActivityInteractionListener
 import com.support.robigroup.ututor.commons.inflate
 import com.support.robigroup.ututor.model.content.ClassRoom
+import com.support.robigroup.ututor.model.content.Subject
 import kotlinx.android.synthetic.main.item_class.view.*
 
 
-class ClassAdapter(private val items:List<ClassRoom>,  private val mListener: OnMainActivityInteractionListener?) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class ClassAdapter(private val mListener: OnMainActivityInteractionListener?,private val mSubject: Subject) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+    private val items: List<ClassRoom> = List(12, {index ->  ClassRoom(index)})
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder?, position: Int) {
         holder as LessonsViewHolder
         holder.bind(items[position])
         holder.itemView.setOnClickListener {
-            mListener?.OnClassItemClicked(items[position])
+            mSubject.ClassNumber = items[position].number
+            mListener?.OnClassItemClicked(mSubject)
         }
     }
 

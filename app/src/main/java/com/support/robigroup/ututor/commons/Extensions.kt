@@ -82,35 +82,37 @@ fun Context.builtMessageNoInternet() {
 }
 
 
-fun Activity.requestErrorHandler(code: Int, message: String, parentView: View = window.decorView.rootView): Boolean {
+fun Activity.requestErrorHandler(code: Int, message: String?, parentView: View = window.decorView.rootView): Boolean {
 
     if (code in 200 until 300) {
         return true
     }
-    val snackbar = Snackbar.make(parentView, message, Snackbar.LENGTH_LONG)
-    when (code) {
-        Constants.BAD_REQUEST -> {
-            snackbar.setText("Client's data is already exist on server or is invalid")
-            snackbar.setActionTextColor(Color.RED)
+    if(message!=null){
+        val snackbar = Snackbar.make(parentView, message, Snackbar.LENGTH_LONG)
+        when (code) {
+            Constants.BAD_REQUEST -> {
+                snackbar.setText("Client's data is already exist on server or is invalid")
+                snackbar.setActionTextColor(Color.RED)
+            }
+            Constants.UNAUTHORIZED -> {
+                snackbar.setText("Client is not authorized")
+                snackbar.setActionTextColor(Color.RED)
+            }
+            Constants.FORBIDDEN -> {
+                snackbar.setText("Forbidden request")
+                snackbar.setActionTextColor(Color.RED)
+            }
+            Constants.NOT_FOUND -> {
+                snackbar.setText("API not found")
+                snackbar.setActionTextColor(Color.RED)
+            }
+            Constants.SERVER_ERROR -> {
+                snackbar.setText("Server is experiencing problems")
+                snackbar.setActionTextColor(Color.RED)
+            }
         }
-        Constants.UNAUTHORIZED -> {
-            snackbar.setText("Client is not authorized")
-            snackbar.setActionTextColor(Color.RED)
-        }
-        Constants.FORBIDDEN -> {
-            snackbar.setText("Forbidden request")
-            snackbar.setActionTextColor(Color.RED)
-        }
-        Constants.NOT_FOUND -> {
-            snackbar.setText("API not found")
-            snackbar.setActionTextColor(Color.RED)
-        }
-        Constants.SERVER_ERROR -> {
-            snackbar.setText("Server is experiencing problems")
-            snackbar.setActionTextColor(Color.RED)
-        }
+        snackbar.show()
     }
-    snackbar.show()
     return false
 }
 

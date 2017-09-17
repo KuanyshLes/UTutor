@@ -8,6 +8,7 @@ object Constants {
     val NOT_FOUND = 404 // не найден, not our problem
     val SERVER_ERROR = 500 //not our problem
 
+    val TIMEFORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX"
 
 
     val KEY_TOKEN = "TOKEN"

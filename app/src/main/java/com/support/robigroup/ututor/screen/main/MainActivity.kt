@@ -1,15 +1,10 @@
 package com.support.robigroup.ututor.screen.main
 
-import android.app.SearchManager
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.SearchView
-import android.text.TextUtils
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.AdapterView
 import com.support.robigroup.ututor.Constants
 import com.support.robigroup.ututor.NotificationService
 import com.support.robigroup.ututor.R
@@ -18,8 +13,7 @@ import com.support.robigroup.ututor.commons.*
 import com.support.robigroup.ututor.model.content.*
 import com.support.robigroup.ututor.model.content.Subject
 import com.support.robigroup.ututor.screen.chat.ChatActivity
-import com.support.robigroup.ututor.screen.main.adapters.ListViewAdapter
-import com.support.robigroup.ututor.screen.topic.TopicActivity
+import com.support.robigroup.ututor.screen.topic.TeachersActivity
 import com.support.robigroup.ututor.singleton.SingletonSharedPref
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -32,9 +26,10 @@ class MainActivity : AppCompatActivity(), OnMainActivityInteractionListener {
 
     private var stringArrayList:
             MutableList<TopicItem> = MutableList(40, { TopicItem(Id = 0, Text = "math is math is mismath exception") })
-//    private var adapter: ListViewAdapter? = null
+    //    private var adapter: ListViewAdapter? = null
     private val EX_LANG = "kk-KZ"
     val compositeDisposable: CompositeDisposable = CompositeDisposable()
+    private var isChatCheck = false
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -94,9 +89,7 @@ class MainActivity : AppCompatActivity(), OnMainActivityInteractionListener {
     }
 
     override fun checkChatState() {
-        val realm = Realm.getDefaultInstance();
-        var info = realm.where(ChatInformation::class.java).findFirst()
-        if(info!=null){
+        if(!isChatCheck)
             if(Functions.isOnline(this))
                 compositeDisposable.add(
                         MainManager()
@@ -105,7 +98,8 @@ class MainActivity : AppCompatActivity(), OnMainActivityInteractionListener {
                                 .subscribeOn(Schedulers.io())
                                 .subscribe({
                                     result ->
-                                    if(requestErrorHandler(result.code(),result.message())){
+                                    isChatCheck = true
+                                    if(requestErrorHandler(result.code(),null)){
                                         startTopicOrChatActivity(result.body())
                                     }else{
                                         startTopicOrChatActivity(null)
@@ -114,24 +108,24 @@ class MainActivity : AppCompatActivity(), OnMainActivityInteractionListener {
                                     error ->
                                     logd(error.toString())
                                     toast(error.message.toString())
-
+                                    isChatCheck = false
                                 }))
             else{
-                Functions.builtMessageNoInternet(this)
+                Functions.builtMessageNoInternet(this,{checkChatState()})
             }
-        }
+
 
     }
 
     private fun startTopicOrChatActivity(chatLesson: ChatLesson?){
         logd(SingletonSharedPref.getInstance().getString(Constants.KEY_TOKEN))
-        if(chatLesson==null||chatLesson.StatusId!=Constants.STATUS_COMPLETED){
+        if(chatLesson==null||chatLesson.StatusId==Constants.STATUS_COMPLETED){
             val realm = Realm.getDefaultInstance()
             realm.executeTransaction {
                 realm.where(ChatInformation::class.java).findAll().deleteAllFromRealm()
             }
             realm.close()
-        }else if(chatLesson.LearnerReady&&chatLesson.TeacherReady){
+        }else{
             val realm = Realm.getDefaultInstance()
             realm.executeTransaction {
                 realm.where(ChatInformation::class.java).findAll().deleteAllFromRealm()
@@ -140,28 +134,15 @@ class MainActivity : AppCompatActivity(), OnMainActivityInteractionListener {
             realm.close()
             startActivity(Intent(baseContext, ChatActivity::class.java))
             finish()
-        }else{
-            val realm = Realm.getDefaultInstance()
-            realm.executeTransaction {
-                realm.where(ChatInformation::class.java).findAll().deleteAllFromRealm()
-                realm.copyToRealm(Functions.getChatInformation(chatLesson))
-            }
-            realm.close()
-            startActivity(Intent(baseContext,TopicActivity::class.java))
         }
     }
 
-    override fun OnTopicItemClicked(item: TopicItem) {
-        TopicActivity.open(this,item)
-    }
-
-    override fun OnClassItemClicked(item: ClassRoom) {
-        supportFragmentManager.beginTransaction().replace(R.id.main_container, SubjectsFragment.newInstance(item.number,EX_LANG))
-                .addToBackStack(null).commit()
+    override fun OnClassItemClicked(item: Subject) {
+        TeachersActivity.open(this,item)
     }
 
     override fun OnSubjectItemClicked(item: Subject) {
-        supportFragmentManager.beginTransaction().replace(R.id.main_container, SearchFragment.newInstance(item))
+        supportFragmentManager.beginTransaction().replace(R.id.main_container, ClassesFragment.newInstance(item))
                 .addToBackStack(null).commit()
     }
 

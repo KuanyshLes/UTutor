@@ -27,24 +27,23 @@ interface APIInterface {
 
     @GET("api/sprs/subjects")
     fun getSubjects(
-            @Query("class") classRoom: Int,
-            @Query("lang")lang : String,
             @Header("Authorization") header: String = SingletonSharedPref.getInstance().getString(Constants.KEY_TOKEN)
     ): Flowable<Response<List<Subject>>>
 
     @POST("api/learner/search/teachers")
-    fun getTeachersByTopic(
-            @Query("class") classRoom: Int,
+    fun getTeachers(
+            @Query("Class") classRoom: Int,
             @Query("Language") language: String,
             @Query("SubjectId") subjectId: Int,
-            @Query("TopicId") topicId: Int,
             @Header("Authorization") header: String = SingletonSharedPref.getInstance().getString(Constants.KEY_TOKEN)
     ): Flowable<Response<List<Teacher>>>
 
     @POST("api/learner/lesson/request")
     fun postLessonRequest(
             @Query("TeacherId") teacherId: String,
-            @Query("TopicId") topicId: Int,
+            @Query("SubjectId") subject: Int,
+            @Query("Language") language: String,
+            @Query("Class") classNumber: Int,
             @Header("Authorization") header: String = SingletonSharedPref.getInstance().getString(Constants.KEY_TOKEN)
     ): Flowable<Response<LessonRequestForTeacher>>
 

@@ -111,19 +111,19 @@ public class NotificationService extends Service {
             mHubConnection.start(new LongPollingTransport(logger));
 
             mHubProxy.on("TeacherAccepted",
-                    new SubscriptionHandler1<String>() {
+                    new SubscriptionHandler1<ChatInformation>() {
                         @Override
-                        public void run(final String msg) {
+                        public void run(final ChatInformation chatInformation) {
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    Log.e("MyEvent","TeacherAccepted: "+msg);
-                                    notifyTeacherAccepted(Integer.parseInt(msg));
+                                    Log.e("MyEvent","TeacherAccepted: "+(new Gson()).toJson(chatInformation,ChatInformation.class));
+                                    notifyTeacherAccepted(chatInformation);
                                 }
                             });
                         }
                     }
-                    , String.class);
+                    , ChatInformation.class);
 
             mHubProxy.on("ChatReady",
                     new SubscriptionHandler() {
@@ -181,15 +181,12 @@ public class NotificationService extends Service {
         });
     }
 
-    private void notifyTeacherAccepted(final int message){
+    private void notifyTeacherAccepted(final ChatInformation chatInformation){
         realm.executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
-                ChatInformation request = realm.where(ChatInformation.class).findFirst();
-                if(request!=null){
-                    request.setStatusId(Constants.INSTANCE.getSTATUS_ACCEPTED_TEACHER());
-                    request.setId(message);
-                }
+                realm.where(ChatInformation.class).findAll().deleteAllFromRealm();
+                realm.copyToRealm(chatInformation);
             }
         });
     }

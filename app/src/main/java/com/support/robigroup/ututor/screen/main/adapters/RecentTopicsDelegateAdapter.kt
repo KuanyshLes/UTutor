@@ -27,7 +27,7 @@ class RecentTopicsDelegateAdapter : ViewTypeDelegateAdapter {
         holder as TopicsViewHolder
         holder.bind(item as TopicItem)
         holder.itemView.setOnClickListener {
-            (context as MainActivity).OnTopicItemClicked(item)
+//            (context as MainActivity).OnTopicItemClicked(item)
         }
     }
 

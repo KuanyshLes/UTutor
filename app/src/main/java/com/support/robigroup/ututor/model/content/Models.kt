@@ -6,10 +6,7 @@ import com.support.robigroup.ututor.Constants
 import com.support.robigroup.ututor.screen.main.adapters.AdapterConstants
 import com.support.robigroup.ututor.screen.main.adapters.ViewType
 import com.support.robigroup.ututor.commons.createParcel
-import com.support.robigroup.ututor.screen.chat.model.CustomMessage
-import io.realm.RealmList
 import io.realm.RealmObject
-import io.realm.annotations.Ignore
 import io.realm.annotations.PrimaryKey
 
 
@@ -32,10 +29,9 @@ data class ClassRoom(
 
 
 data class Subject(
-        var Id: Int? = null,
-        var Text: String? = null,
-        var classNumber: Int? = null,
-        var topics: List<TopicItem> = ArrayList()
+        var Id: Int,
+        var Text: String,
+        var ClassNumber: Int
 ): Parcelable {
 
     companion object {
@@ -46,21 +42,16 @@ data class Subject(
     protected constructor(parcelIn: Parcel) : this(
             parcelIn.readInt(),
             parcelIn.readString(),
-            parcelIn.readInt(),
-            mutableListOf<TopicItem>().apply {
-                parcelIn.readTypedList(this, TopicItem.CREATOR)
-            }
+            parcelIn.readInt()
     )
 
     override fun writeToParcel(dest: Parcel, flags: Int) {
         dest.writeInt(Id!!)
         dest.writeString(Text)
-        dest.writeInt(classNumber!!)
-        dest.writeTypedList(topics)
+        dest.writeInt(ClassNumber!!)
     }
 
     override fun describeContents() = 0
-
 }
 
 data class TopicItem(
@@ -95,14 +86,16 @@ data class Teacher(
         val Id: String,
         var Raiting: Float? = null,
         var Languages: String? = null,
-        var Classes: String? = null,
         var FirstName: String?= null,
         var LastName: String? = null,
         var MiddleName: String? = null,
         var Birthday: String? = null,
-        var Image: String? = null,
-        var chatInformation: ChatInformation? = null
-): Parcelable{
+        var Speciality: String? = null,
+        var Education: String? = null,
+        var LessonRequestId: String? = null,
+        var FullName: String? = null,
+        var ProfilePhoto: String? = null
+        ): Parcelable{
     companion object {
         @JvmField @Suppress("unused")
         val CREATOR = createParcel { Teacher(it) }
@@ -116,6 +109,9 @@ data class Teacher(
             parcelIn.readString(),
             parcelIn.readString(),
             parcelIn.readString(),
+            parcelIn.readString(),
+            parcelIn.readString(),
+            parcelIn.readString(),
             parcelIn.readString()
     )
 
@@ -123,12 +119,16 @@ data class Teacher(
         dest.writeString(Id)
         dest.writeFloat(Raiting ?: 0.0F)
         dest.writeString(Languages)
-        dest.writeString(Classes)
         dest.writeString(FirstName)
         dest.writeString(LastName)
         dest.writeString(MiddleName)
         dest.writeString(Birthday)
-        dest.writeString(Image)
+        dest.writeString(Speciality)
+        dest.writeString(Education)
+        dest.writeString(LessonRequestId)
+        dest.writeString(FullName)
+        dest.writeString(ProfilePhoto)
+
     }
 
     override fun describeContents() = 0
@@ -155,15 +155,14 @@ data class Teachers(
 }
 
 data class LessonRequestForTeacher(
-        val LearnerId: String,
-        val TeacherId: String,
-        var RequestTime: String,
-        val SubjectName: String,
-        val Class: Int,
-        val Learner: String,
-        val TopicId: Int,
-        val TopicTitle: String,
-        val Id: String
+        var LearnerId: String? = null,
+        var TeacherId: String? = null,
+        var RequestTime: String? = null,
+        var SubjectName: String? = null,
+        var Class: Int? = null,
+        var Learner: String? = null,
+        var Id: String? = null,
+        var SubjectId: Int? = null
 )
 
 data class LoginResponse(
@@ -171,36 +170,9 @@ data class LoginResponse(
         val expires_in: Int
 )
 
-open class RequestListen(
-        @PrimaryKey var Id: Int = 0,
-        var status: Int = 0
-): RealmObject()
-
-
 data class ChatLesson(
-        val Id: Int = 0,
-        var TopicId: Int = 0,
-        var CreateTime: String? = null,
-        var StartTime: String? = null,
-        var EndTime: String? = null,
-        var StatusId: Int = 0,
-        var Duration: String? = null,
-        var TeacherId: String = "",
-        var LearnerId: String = "",
-        var SubjectName: String = "",
-        var TopicTitle: String = "",
-        var Learner: String = "",
-        var Teacher: String = "",
-        var TeacherReady: Boolean = false,
-        var LearnerReady: Boolean = false,
-        var Class: Int = 0
-)
-
-open class ChatInformation(
         var Id: Int? = null,
-        var TopicId: Int? = null,
-        var RequestTime: String? = null,
-        var CreateTime: String? = null,
+        var CreateTime: String = "00:00",
         var StartTime: String? = null,
         var EndTime: String? = null,
         var StatusId: Int = Constants.STATUS_NOT_REQUESTED,
@@ -208,11 +180,35 @@ open class ChatInformation(
         var TeacherId: String = "",
         var LearnerId: String = "",
         var SubjectName: String = "",
-        var TopicTitle: String = "",
+        var Class: Int? = null,
         var Learner: String = "",
         var Teacher: String = "",
         var TeacherReady: Boolean = false,
         var LearnerReady: Boolean = false,
-        var ClassNumber: Int? = null
+        var LearnerRaiting: Float? = null,
+        var TeacherRaiting: Float? = null,
+        var SubjectId: Int? = null,
+        var Language: String? = null
+)
+
+open class ChatInformation(
+        var Id: Int? = null,
+        var CreateTime: String = "00:00", //notNull
+        var StartTime: String? = null,
+        var EndTime: String? = null,
+        var StatusId: Int = Constants.STATUS_NOT_REQUESTED,
+        var Duration: String? = null,
+        var TeacherId: String = "",
+        var LearnerId: String = "",
+        var SubjectName: String = "",
+        var ClassNumber: Int? = null,
+        var Learner: String = "",
+        var Teacher: String = "",
+        var TeacherReady: Boolean = false,
+        var LearnerReady: Boolean = false,
+        var LearnerRaiting: Float? = null,
+        var TeacherRaiting: Float? = null,
+        var SubjectId: Int? = null,
+        var Language: String? = null
 ): RealmObject()
 

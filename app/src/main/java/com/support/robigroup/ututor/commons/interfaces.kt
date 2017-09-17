@@ -1,5 +1,6 @@
 package com.support.robigroup.ututor.commons
 
+import android.support.v4.app.DialogFragment
 import android.view.View
 import com.support.robigroup.ututor.model.content.ClassRoom
 import com.support.robigroup.ututor.model.content.Subject
@@ -15,14 +16,18 @@ interface OnLoginActivityInteractionListener {
     fun OnUploadPhotoClicked ()
 }
 interface OnMainActivityInteractionListener {
-    fun OnTopicItemClicked(item: TopicItem)
     fun OnSubjectItemClicked(item: Subject)
-    fun OnClassItemClicked(item: ClassRoom)
+    fun OnClassItemClicked(item: Subject)
     fun setDisplayHomeAsEnabled(showHomeAsUp: Boolean)
     fun setToolbarTitle(title: String)
     fun checkChatState()
 }
 
-interface OnTopicActivityInteractionListener{
+interface OnTeachersActivityInteractionListener {
     fun OnTeacherItemClicked(item: Teacher,view: View)
+}
+
+interface OnChatActivityDialogInteractionListener {
+    fun onFinishDialogPositiveClick(dialog: DialogFragment)
+    fun onReadyDialogReadyClick(dialog: DialogFragment)
 }
