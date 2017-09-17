@@ -42,19 +42,17 @@
             android:name=".screen.chat.ChatActivity"
             android:theme="@style/AppTheme.NoActionBar"
             android:screenOrientation="portrait">
-
         </activity>
-
-        <service
-            android:name=".SignalRService"
-            android:enabled="true"
-            android:exported="true" />
 
         <activity android:name=".screen.topic.TopicActivity"
             android:theme="@style/AppTheme.NoActionBar"
             android:screenOrientation="portrait">
-
         </activity>
+
+        <service
+            android:name=".NotificationService"
+            android:enabled="true"
+            android:exported="true" />
     </application>
 
 </manifest>

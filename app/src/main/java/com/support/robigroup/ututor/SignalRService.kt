@@ -8,18 +8,16 @@ import com.google.gson.Gson
 import com.support.robigroup.ututor.commons.Functions
 import com.support.robigroup.ututor.commons.logd
 import com.support.robigroup.ututor.model.content.ChatInformation
-import com.support.robigroup.ututor.model.content.RequestListen
 import com.support.robigroup.ututor.screen.chat.model.CustomMessage
-import com.support.robigroup.ututor.screen.chat.model.MyMessage
 import com.support.robigroup.ututor.singleton.SingletonSharedPref
 import io.realm.Realm
+import microsoft.aspnet.signalr.client.Action
 import microsoft.aspnet.signalr.client.ConnectionState
 import microsoft.aspnet.signalr.client.Logger
 import microsoft.aspnet.signalr.client.Platform
 import microsoft.aspnet.signalr.client.http.android.AndroidPlatformComponent
 import microsoft.aspnet.signalr.client.hubs.HubConnection
 import microsoft.aspnet.signalr.client.hubs.HubProxy
-import microsoft.aspnet.signalr.client.transport.LongPollingTransport
 import java.util.concurrent.ExecutionException
 import kotlin.properties.Delegates
 
@@ -54,19 +52,9 @@ class SignalRService : Service() {
     }
 
     override fun onDestroy() {
-        mHubConnection?.stop()
+//        mHubConnection?.stop()
         realm.close()
         super.onDestroy()
-    }
-
-    fun sendMessage(message: String) {
-        val SERVER_METHOD_SEND = "Send"
-        mHubProxy!!.invoke(SERVER_METHOD_SEND, message)
-    }
-
-    fun sendMessage_To(receiverName: String, message: String) {
-        val SERVER_METHOD_SEND_TO = "SendChatMessage"
-        mHubProxy!!.invoke(SERVER_METHOD_SEND_TO, receiverName, message)
     }
 
     private fun startSignalR() {
@@ -79,50 +67,49 @@ class SignalRService : Service() {
 
         mHubProxy = mHubConnection!!.createHubProxy(SERVER_HUB_CHAT)
 
-        mHubConnection!!.closed {
-            logd("closed",TAG_SIGNALR)
-            if(Functions.isOnline(baseContext))
-                startSignalR()
-        }
-        connectSignalR()
-    }
-
-    fun connectSignalR(){
-
         mHubProxy!!.subscribe(object : Any() {
-            fun TeacherAccepted(message: String){
-                logd(message,"eventCome")
+            fun TeacherAccepted(message: Int){
+                Log.e("Event", "TeacherAccepted: "+message)
                 notifyTeacherAccepted(message)
             }
             fun ChatReady(){
-                logd("chat ready","eventCome")
+                Log.e("Event", "ChatReady")
                 notifyesChatReadyFromTeacher()
             }
             fun lessonChatReceived(message: CustomMessage){
-                logd("chat event kelip resultat shygardy ","eventCome")
+                Log.e("Event","lessonChatReceived: "+Gson().toJson(message,CustomMessage::class.java))
                 notifyMessageReceived(message)
             }
             fun ChatCompleted(){
+                Log.e("Event","ChatCompleted")
                 notifyChatCompleted()
             }
         })
 
-        val awaitConnection = mHubConnection!!.start(LongPollingTransport(mHubConnection!!.logger))
+        mHubConnection!!.closed {
+            Log.e("Event","Connection Closed")
+            if(Functions.isOnline(baseContext))
+                startSignalR()
+        }
+        connectSignalR()
+
+//        mHubConnection?.reconnecting {
+//            mHubConnection?.stop()
+//        }
+    }
+
+    fun connectSignalR(){
+
+        val awaitConnection = mHubConnection!!.start()
         try {
-            awaitConnection.get()
+            awaitConnection.done{
+                Log.e("Event","Done")
+            }
         } catch (e: InterruptedException) {
-            Log.e("onErrorOccured",e.toString())
+            Log.e("EventError",e.toString())
         } catch (e: ExecutionException) {
-            Log.e("onErrorOccured",e.toString())
+            Log.e("EventError",e.toString())
         }
-
-        mHubConnection!!.reconnecting {
-            mHubConnection!!.stop()
-        }
-
-        mHubConnection!!.received( { json ->
-            Log.e("onMessageReceived ", json.toString())
-        })
     }
 
     private fun notifyChatCompleted() {
@@ -131,15 +118,18 @@ class SignalRService : Service() {
         realm.executeTransaction {
             request?.StatusId = Constants.STATUS_COMPLETED
         }
+        realm.close()
     }
 
-    private fun notifyTeacherAccepted(message: String){
+    private fun notifyTeacherAccepted(message: Int){
         val realm = Realm.getDefaultInstance()
         val request = realm.where(ChatInformation::class.java).findFirst()
         realm.executeTransaction {
             request?.StatusId = Constants.STATUS_ACCEPTED_TEACHER
-            request?.Id = Integer.parseInt(message)
+            request?.Id = message
         }
+        realm.close()
+
     }
 
     private fun notifyesChatReadyFromTeacher(){

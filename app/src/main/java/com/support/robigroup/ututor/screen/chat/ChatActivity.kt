@@ -12,7 +12,7 @@ import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import com.google.gson.Gson
+import android.widget.Toast
 import com.squareup.picasso.Picasso
 import com.stfalcon.chatkit.commons.ImageLoader
 import com.stfalcon.chatkit.messages.MessageHolders
@@ -21,13 +21,13 @@ import com.stfalcon.chatkit.messages.MessagesList
 import com.stfalcon.chatkit.messages.MessagesListAdapter
 import com.stfalcon.contentmanager.ContentManager
 import com.support.robigroup.ututor.Constants
+import com.support.robigroup.ututor.NotificationService
 import com.support.robigroup.ututor.R
-import com.support.robigroup.ututor.SignalRService
 import com.support.robigroup.ututor.api.MainManager
-import com.support.robigroup.ututor.commons.*
+import com.support.robigroup.ututor.commons.Functions
+import com.support.robigroup.ututor.commons.requestErrorHandler
+import com.support.robigroup.ututor.commons.toast
 import com.support.robigroup.ututor.model.content.ChatInformation
-import com.support.robigroup.ututor.model.content.RequestListen
-import com.support.robigroup.ututor.model.content.Teacher
 import com.support.robigroup.ututor.screen.chat.custom.media.holders.CustomIncomingMessageViewHolder
 import com.support.robigroup.ututor.screen.chat.custom.media.holders.CustomOutcomingMessageViewHolder
 import com.support.robigroup.ututor.screen.chat.model.CustomMessage
@@ -37,8 +37,7 @@ import com.support.robigroup.ututor.screen.main.MainActivity
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
-import io.realm.Realm
-import io.realm.RealmChangeListener
+import io.realm.*
 import kotlinx.android.synthetic.main.activity_chat.*
 import java.text.SimpleDateFormat
 import java.util.*
@@ -65,24 +64,74 @@ class ChatActivity : AppCompatActivity(),
 
     private var user: User by Delegates.notNull()
     private var teacher: User by Delegates.notNull()
-    private var chatLesson: ChatInformation by Delegates.notNull()
+    private var chatInformation: ChatInformation by Delegates.notNull()
     private var menu: Menu? = null
     private var selectionCount: Int = 0
     private var lastLoadedDate: Date? = null
     private var realm: Realm by Delegates.notNull()
-    private var realmChangeListener: RealmChangeListener<CustomMessage> by Delegates.notNull()
     private var imageLoader: ImageLoader? = null
+    private var mMessages: RealmResults<CustomMessage> by Delegates.notNull()
+    private var mChatInformation: ChatInformation by Delegates.notNull()
+    private val closeListener =  RealmChangeListener<ChatInformation>{
+        rs ->
+        if(rs?.StatusId==Constants.STATUS_COMPLETED) {
+            closeChat()
+        }
+    }
+    private val mRealmChangeListener: OrderedRealmCollectionChangeListener<RealmResults<CustomMessage>>
+            = OrderedRealmCollectionChangeListener { messages, changeSet ->
+        if (changeSet == null) {
+
+        }else{
+            // For deletions, the adapter has to be notified in reverse order.
+            val deletions = changeSet.deletionRanges
+            for (i in deletions.size-1 downTo 0) {
+                val range = deletions[i]
+                notifyItemRangeRemoved(range.startIndex, range.length)
+            }
+
+            val insertions = changeSet.insertionRanges
+            for (range in insertions) {
+                notifyItemRangeInserted(range.startIndex, range.length)
+            }
+
+            val modifications = changeSet.changeRanges
+            for (range in modifications) {
+                notifyItemRangeChanged(range.startIndex, range.length)
+            }
+        }
+
+    }
+
+    private fun notifyItemRangeChanged(startIndex: Int,rangeLength: Int){
+        toast("notifyItemRangeChanged")
+    }
+    private fun notifyItemRangeInserted(startIndex: Int,rangeLength: Int){
+        toast("notifyItemRangeInserted")
+        for(i in startIndex .. startIndex+rangeLength){
+            messagesAdapter?.addToStart(
+                    Functions.getMyMessage(mMessages[i],teacher),true
+            )
+        }
+    }
+    private fun notifyItemRangeRemoved(startIndex: Int,rangeLength: Int){
+        toast("notifyItemRangeRemoved")
+    }
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_chat)
-
         contentManager = ContentManager(this,this)
 
-        chatLesson = Realm.getDefaultInstance().where(ChatInformation::class.java).findFirst()!!
-        teacher = User(chatLesson.TeacherId,chatLesson.Teacher,null,true)
-        user = User(chatLesson.LearnerId,chatLesson.Learner,null,true)
+        realm = Realm.getDefaultInstance()
+        mMessages = realm.where(CustomMessage::class.java).findAll()
+        mMessages.addChangeListener(mRealmChangeListener)
+        chatInformation = realm.where(ChatInformation::class.java).findFirst()!!
+        chatInformation.addChangeListener(closeListener)
+        teacher = User(chatInformation.TeacherId, chatInformation.Teacher,null,true)
+        user = User(chatInformation.LearnerId, chatInformation.Learner,null,true)
 
         setSupportActionBar(toolbar)
         teacher_name_title.text =this.teacher.name
@@ -90,7 +139,7 @@ class ChatActivity : AppCompatActivity(),
         findViewById<View>(R.id.text_finish).setOnClickListener { showFinishDialog() }
 
         val intent = Intent()
-        intent.setClass(this, SignalRService::class.java)
+        intent.setClass(this, NotificationService::class.java)
         startService(intent)
 
         imageLoader = ImageLoader { imageView, url -> Picasso.with(baseContext).load(url).into(imageView) }
@@ -103,56 +152,12 @@ class ChatActivity : AppCompatActivity(),
         input.setAttachmentsListener(this)
     }
 
-    override fun onRestart() {
-        super.onRestart()
-        setOnRealmChangeListeners()
-    }
-
-    private fun setOnRealmChangeListeners(){
-        realm = Realm.getDefaultInstance()
-        var result = realm.where(CustomMessage::class.java).findFirst()
-        realm.executeTransaction {
-            if(result == null){
-                result = realm.createObject(CustomMessage::class.java)
-            }
-        }
-        realmChangeListener = RealmChangeListener {
-            message ->
-            if(message.File!=null&&message.FileThumbnail!=null){
-                val myMessage = CustomMessage(message.Id,message.Time,Constants.BASE_URL+message.FileThumbnail,
-                        Constants.BASE_URL+message.File,message.Message)
-                messagesAdapter?.addToStart(MyMessage(myMessage,teacher),true)
-            }else{
-                val myMessage = CustomMessage(message.Id,message.Time,Message = message.Message)
-                messagesAdapter?.addToStart(MyMessage(myMessage,teacher),true)
-            }
-        }
-        result?.addChangeListener(realmChangeListener)
-
-        val closeListener = realm.where(ChatInformation::class.java).findFirst()
-        closeListener?.addChangeListener(
-                RealmChangeListener<ChatInformation>{
-                    rs ->
-                    if(rs?.StatusId==Constants.STATUS_COMPLETED) {
-                        closeChat()
-                    }
-                })
-    }
-
-    override fun onStart() {
-        super.onStart()
-        setOnRealmChangeListeners()
-    }
-
-    override fun onStop() {
-        subscriptions.clear()
-        realm.where(CustomMessage::class.java).findFirst()?.removeChangeListener(realmChangeListener)
-        realm.close()
-        super.onStop()
-    }
-
     override fun onDestroy() {
         super.onDestroy()
+        subscriptions.clear()
+        mMessages.removeAllChangeListeners()
+        realm.close()
+
     }
 
     private fun initAdapter() {

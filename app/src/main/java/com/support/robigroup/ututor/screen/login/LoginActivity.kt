@@ -30,7 +30,6 @@ class LoginActivity : AppCompatActivity(), OnLoginActivityInteractionListener {
     val loginFragment: LoginFragment = LoginFragment()
     var loadingView: LoadingView = LoadingDialog.view(supportFragmentManager)
     val TAG_LOGIN_FRAGMENT: String = "loginFragment"
-
     val compositeDisposable: CompositeDisposable = CompositeDisposable()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,7 +40,8 @@ class LoginActivity : AppCompatActivity(), OnLoginActivityInteractionListener {
         logd("onCreateLoginActivity")
 
         if(isSignedIn()){
-            checkChatState()
+            startActivity(Intent(baseContext,MainActivity::class.java))
+            finish()
         }else if(supportFragmentManager.fragments.size==0){
             supportFragmentManager.beginTransaction().replace(R.id.container,loginFragment,TAG_LOGIN_FRAGMENT).commit()
         }
@@ -71,11 +71,9 @@ class LoginActivity : AppCompatActivity(), OnLoginActivityInteractionListener {
     override fun onSaveInstanceState(outState: Bundle?) {
         super.onSaveInstanceState(outState)
         logd("onSaveStateLoginActivity")
-
     }
 
     private fun isSignedIn(): Boolean{
-
         return !SingletonSharedPref.getInstance().getString(Constants.KEY_TOKEN,"").equals("")
     }
 
@@ -137,53 +135,8 @@ class LoginActivity : AppCompatActivity(), OnLoginActivityInteractionListener {
     private fun saveTokenAndFinish(stringResult: LoginResponse?){
         SingletonSharedPref.getInstance().put(Constants.KEY_TOKEN,Constants.KEY_BEARER.plus(stringResult!!.access_token))
         showProgress(false)
-        checkChatState()
-    }
-
-    private fun startMainOrChatActivity(chatLesson: ChatLesson?){
-        logd(SingletonSharedPref.getInstance().getString(Constants.KEY_TOKEN))
-        val realm = Realm.getDefaultInstance()
-        realm.executeTransaction {
-            //                realm.copyToRealmOrUpdate(Functions.getChatInformation(chatLesson))
-            realm.where(ChatInformation::class.java).findAll().deleteAllFromRealm()
-        }
-//        if(chatLesson!=null&&chatLesson.StatusId!=4){
-//            val realm = Realm.getDefaultInstance()
-//            realm.executeTransaction {
-//                realm.copyToRealmOrUpdate(Functions.getChatInformation(chatLesson))
-//            }
-//        }
-
-        if(chatLesson!=null&&chatLesson.LearnerReady&&chatLesson.TeacherReady&&chatLesson.StatusId!=4){
-            startActivity(Intent(baseContext,ChatActivity::class.java))
-            finish()
-        }else{
-            startActivity(Intent(baseContext,MainActivity::class.java))
-            finish()
-        }
-    }
-
-
-    private fun checkChatState(){
-        compositeDisposable.add(
-                MainManager()
-                        .getChatInformation()
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribeOn(Schedulers.io())
-                        .subscribe({
-                            result ->
-                            if(requestErrorHandler(result.code(),result.message())){
-                                startMainOrChatActivity(result.body())
-                            }else{
-                                startMainOrChatActivity(null)
-                            }
-                        },{
-                            error ->
-                            logd(error.toString())
-                            toast(error.message.toString())
-                            startMainOrChatActivity(null)
-
-                        }))
+        startActivity(Intent(baseContext,MainActivity::class.java))
+        finish()
     }
 
     override fun OnSignUpTextClicked() {

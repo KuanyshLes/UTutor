@@ -26,7 +26,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/ex_dollar"
-        android:textColor="@color/colorYellow"
+        android:textColor="@color/colorLightBlue"
         android:textSize="22sp" />
 
     <TextView
@@ -39,7 +39,7 @@
         android:id="@+id/button_finish"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorYellow"
+        android:background="@color/colorLightBlue"
         android:text="@string/action_finish"
         android:textColor="@color/colorWhite" />
 </LinearLayout>

@@ -6,6 +6,8 @@ import com.support.robigroup.ututor.Constants
 import com.support.robigroup.ututor.screen.main.adapters.AdapterConstants
 import com.support.robigroup.ututor.screen.main.adapters.ViewType
 import com.support.robigroup.ututor.commons.createParcel
+import com.support.robigroup.ututor.screen.chat.model.CustomMessage
+import io.realm.RealmList
 import io.realm.RealmObject
 import io.realm.annotations.Ignore
 import io.realm.annotations.PrimaryKey
@@ -195,7 +197,7 @@ data class ChatLesson(
 )
 
 open class ChatInformation(
-        var Id: Int? = -1,
+        var Id: Int? = null,
         var TopicId: Int? = null,
         var RequestTime: String? = null,
         var CreateTime: String? = null,

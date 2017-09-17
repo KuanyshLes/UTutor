@@ -38,6 +38,8 @@ class TopicActivity : AppCompatActivity(), OnTopicActivityInteractionListener {
     private var itemTopic: TopicItem? = null
     private var myAdapter: TeachersAdapter by Delegates.notNull()
     private var subscriptions: CompositeDisposable by Delegates.notNull()
+    private var realm: Realm by Delegates.notNull()
+    private var chatInformation: ChatInformation? = null
 
     private var changeListener: RealmObjectChangeListener<ChatInformation> = RealmObjectChangeListener {
         rs, changeset ->
@@ -66,6 +68,7 @@ class TopicActivity : AppCompatActivity(), OnTopicActivityInteractionListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_topic)
+        realm = Realm.getDefaultInstance()
 
         subscriptions = CompositeDisposable()
         myAdapter = TeachersAdapter(this)
@@ -76,16 +79,15 @@ class TopicActivity : AppCompatActivity(), OnTopicActivityInteractionListener {
         setSupportActionBar(toolbar)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
 
-        val realm = Realm.getDefaultInstance()
-        val chatInfo: ChatInformation? = realm.where(ChatInformation::class.java).findFirst()
-        if(chatInfo!=null&&chatInfo.StatusId!=Constants.STATUS_REQUESTED_WAIT){
-            supportActionBar!!.title = chatInfo.SubjectName
-            topic_desc.text = chatInfo.TopicTitle
-            class_text.text = "${chatInfo.ClassNumber} ${getString(R.string.group)}"
+        chatInformation = realm.where(ChatInformation::class.java).findFirst()
+        if(chatInformation!=null&&chatInformation!!.StatusId!=Constants.STATUS_REQUESTED_WAIT){
+            supportActionBar!!.title = chatInformation!!.SubjectName
+            topic_desc.text = chatInformation!!.TopicTitle
+            class_text.text = "${chatInformation!!.ClassNumber} ${getString(R.string.group)}"
             val teachers = Gson().fromJson(SingletonSharedPref.getInstance().getString(ARG_ADAPTER),Teachers::class.java).teachers
-            teachers[0].chatInformation = Functions.getUnmanagedChatInfo(chatInfo)
+            teachers[0].chatInformation = Functions.getUnmanagedChatInfo(chatInformation!!)
             myAdapter.clearAndAddTeachers(teachers)
-            chatInfo.addChangeListener(changeListener)
+            chatInformation!!.addChangeListener(changeListener)
             hideFindButton(myAdapter.itemCount)
         }else{
             itemTopic = intent.getParcelableExtra(ARG_TOPIC_ITEM)
@@ -93,8 +95,6 @@ class TopicActivity : AppCompatActivity(), OnTopicActivityInteractionListener {
             topic_desc.text = itemTopic?.Text
             class_text.text = "${itemTopic?.subject?.classNumber} ${getString(R.string.group)}"
         }
-        realm.close()
-
 
         find_teacher.setOnClickListener {
             requestTeacher()
@@ -120,6 +120,7 @@ class TopicActivity : AppCompatActivity(), OnTopicActivityInteractionListener {
         if(itemTopic!=null)
             SingletonSharedPref.getInstance().put(ARG_TOPIC_ITEM,Gson().toJson(itemTopic,TopicItem::class.java))
         SingletonSharedPref.getInstance().put(ARG_ADAPTER,Gson().toJson(myAdapter.getTeachers(),Teachers::class.java))
+        realm.close()
     }
 
     override fun onSaveInstanceState(outState: Bundle?, outPersistentState: PersistableBundle?) {
@@ -197,15 +198,13 @@ class TopicActivity : AppCompatActivity(), OnTopicActivityInteractionListener {
                 .subscribe (
                         { teachers ->
                             if(requestErrorHandler(teachers.code(),teachers.message())){
-                                val realm = Realm.getDefaultInstance()
                                 val res = teachers.body()?.charStream()?.readText()
                                 realm.executeTransaction {
-                                    val info = realm.where(ChatInformation::class.java).findFirst()
                                     if(res != null && res.equals("ready")){
-                                        info?.LearnerReady = true
-                                        info?.TeacherReady = true
+                                        chatInformation?.LearnerReady = true
+                                        chatInformation?.TeacherReady = true
                                     }else if(res != null){
-                                        info?.LearnerReady = true
+                                        chatInformation?.LearnerReady = true
                                     }
                                 }
                             }else{
@@ -262,8 +261,7 @@ class TopicActivity : AppCompatActivity(), OnTopicActivityInteractionListener {
     //Additional private methods
     private fun onSuccessRequestedState(requestForTeacher: LessonRequestForTeacher){
         number_of_teachers.visibility = View.GONE
-        val realm = Realm.getDefaultInstance()
-        val chatInformation = ChatInformation(
+        chatInformation = ChatInformation(
                 ClassNumber = requestForTeacher.Class,
                 TopicId = requestForTeacher.TopicId,
                 Learner = requestForTeacher.Learner,
@@ -274,14 +272,15 @@ class TopicActivity : AppCompatActivity(), OnTopicActivityInteractionListener {
                 LearnerId = requestForTeacher.LearnerId,
                 RequestTime = requestForTeacher.RequestTime
         )
-        myAdapter.OnRequestedState(Functions.getUnmanagedChatInfo(chatInformation))
-        var request: ChatInformation? = null
+        myAdapter.OnRequestedState(Functions.getUnmanagedChatInfo(chatInformation!!))
         realm.executeTransaction {
             realm.where(ChatInformation::class.java).findAll().deleteAllFromRealm()
-            request = realm.copyToRealm(chatInformation)
+            chatInformation = realm.copyToRealm(chatInformation)
         }
-        request?.addChangeListener(changeListener)
-        realm.close()
+        if(chatInformation!=null){
+            chatInformation?.addChangeListener(changeListener)
+            logd("Change Listener added")
+        }
     }
 
     private fun OnTeacherReady(rs: ChatInformation){

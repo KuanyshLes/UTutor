@@ -9,8 +9,12 @@ import android.net.ConnectivityManager
 import android.net.NetworkInfo
 import android.support.v7.app.AlertDialog
 import android.util.Base64
+import com.support.robigroup.ututor.Constants
 import com.support.robigroup.ututor.model.content.ChatInformation
 import com.support.robigroup.ututor.model.content.ChatLesson
+import com.support.robigroup.ututor.screen.chat.model.CustomMessage
+import com.support.robigroup.ututor.screen.chat.model.MyMessage
+import com.support.robigroup.ututor.screen.chat.model.User
 
 import java.io.ByteArrayOutputStream
 import java.io.File
@@ -38,7 +42,7 @@ object Functions {
     fun builtMessageNoInternet(context: Context) {
         val builder = AlertDialog.Builder(context)
         builder.setMessage("Проверьте интернет соединение!")
-                .setCancelable(true)
+                .setCancelable(false)
                 .setPositiveButton("OK") { dialog, id -> dialog.cancel() }
         val alert = builder.create()
         alert.show()
@@ -93,6 +97,17 @@ object Functions {
             )
         else{
             return chatInformation
+        }
+    }
+
+    fun getMyMessage(message: CustomMessage,user: User): MyMessage {
+        if(message.File!=null&&message.FileThumbnail!=null){
+            val myMessage = CustomMessage(message.Id,message.Time, Constants.BASE_URL+message.FileThumbnail,
+                    Constants.BASE_URL+message.File,message.Message)
+            return MyMessage(myMessage,user)
+        }else{
+            val myMessage = CustomMessage(message.Id,message.Time,Message = message.Message)
+            return MyMessage(myMessage,user)
         }
     }
 

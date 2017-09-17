@@ -11,91 +11,143 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.AdapterView
 import com.support.robigroup.ututor.Constants
+import com.support.robigroup.ututor.NotificationService
 import com.support.robigroup.ututor.R
-import com.support.robigroup.ututor.SignalRService
-import com.support.robigroup.ututor.commons.OnMainActivityInteractionListener
-import com.support.robigroup.ututor.commons.logd
-import com.support.robigroup.ututor.model.content.ChatInformation
-import com.support.robigroup.ututor.model.content.ClassRoom
+import com.support.robigroup.ututor.api.MainManager
+import com.support.robigroup.ututor.commons.*
+import com.support.robigroup.ututor.model.content.*
 import com.support.robigroup.ututor.model.content.Subject
-import com.support.robigroup.ututor.model.content.TopicItem
+import com.support.robigroup.ututor.screen.chat.ChatActivity
 import com.support.robigroup.ututor.screen.main.adapters.ListViewAdapter
 import com.support.robigroup.ututor.screen.topic.TopicActivity
+import com.support.robigroup.ututor.singleton.SingletonSharedPref
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.schedulers.Schedulers
 import io.realm.Realm
 import kotlinx.android.synthetic.main.activity_main.*
 
 
 class MainActivity : AppCompatActivity(), OnMainActivityInteractionListener {
-    companion object {
 
-        private val TAG_MAIN_FRAGMENT: String = "mainFragment"
-    }
     private var stringArrayList:
             MutableList<TopicItem> = MutableList(40, { TopicItem(Id = 0, Text = "math is math is mismath exception") })
-    private var adapter: ListViewAdapter? = null
+//    private var adapter: ListViewAdapter? = null
     private val EX_LANG = "kk-KZ"
+    val compositeDisposable: CompositeDisposable = CompositeDisposable()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
         setContentView(R.layout.activity_main)
 
         val intent = Intent()
-        intent.setClass(this, SignalRService::class.java)
+        intent.setClass(this, NotificationService::class.java)
         startService(intent)
 
         setSupportActionBar(toolbar)
 
-        adapter = ListViewAdapter(this, R.layout.item_search, searchList = stringArrayList)
-        listview_results!!.adapter = adapter
-
-        listview_results.onItemClickListener = AdapterView.OnItemClickListener { adapterView, _, i, _ ->
-            val clickedTopicItem = adapterView.getItemAtPosition(i) as TopicItem
-            OnTopicItemClicked(clickedTopicItem)
-        }
+//        adapter = ListViewAdapter(this, R.layout.item_search, searchList = stringArrayList)
+//        listview_results!!.adapter = adapter
+//
+//        listview_results.onItemClickListener = AdapterView.OnItemClickListener { adapterView, _, i, _ ->
+//            val clickedTopicItem = adapterView.getItemAtPosition(i) as TopicItem
+//            OnTopicItemClicked(clickedTopicItem)
+//        }
         super.onCreate(savedInstanceState)
     }
 
     override fun onResume() {
         super.onResume()
-        logd("onResume MainActivity")
         if(supportFragmentManager.fragments.size==0){
-            supportFragmentManager.beginTransaction().replace(R.id.main_container, MainFragment(),TAG_MAIN_FRAGMENT)
+            supportFragmentManager.beginTransaction().replace(R.id.main_container, MainFragment())
                     .addToBackStack(null).commit()
         }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.options_menu, menu)
-
-        val searchManager = getSystemService(Context.SEARCH_SERVICE) as SearchManager
-        val searchView = menu.findItem(R.id.search).actionView as? SearchView
-        searchView!!.setSearchableInfo(
-                searchManager.getSearchableInfo(componentName))
-
-        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String): Boolean {
-                logd("onQueryTextChange "+query)
-                return false
-            }
-
-            override fun onQueryTextChange(newText: String): Boolean {
-                logd("onQueryTextChange "+newText)
-                if (TextUtils.isEmpty(newText)) {
-                    adapter!!.filter("")
-                    listview_results.clearTextFilter()
-                } else {
-                    adapter!!.filter(newText)
-                }
-                return true
-            }
-        })
+//        menuInflater.inflate(R.menu.options_menu, menu)
+//
+//        val searchManager = getSystemService(Context.SEARCH_SERVICE) as SearchManager
+//        val searchView = menu.findItem(R.id.search).actionView as? SearchView
+//        searchView!!.setSearchableInfo(
+//                searchManager.getSearchableInfo(componentName))
+//
+//        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+//            override fun onQueryTextSubmit(query: String): Boolean {
+//                logd("onQueryTextChange "+query)
+//                return false
+//            }
+//
+//            override fun onQueryTextChange(newText: String): Boolean {
+//                logd("onQueryTextChange "+newText)
+//                if (TextUtils.isEmpty(newText)) {
+//                    adapter!!.filter("")
+//                    listview_results.clearTextFilter()
+//                } else {
+//                    adapter!!.filter(newText)
+//                }
+//                return true
+//            }
+//        })
         return super.onCreateOptionsMenu(menu)
     }
 
     override fun checkChatState() {
-        val chatInformation: ChatInformation? = Realm.getDefaultInstance().where(ChatInformation::class.java).findFirst()
-        if(chatInformation != null&&chatInformation.StatusId!=Constants.STATUS_REQUESTED_WAIT){
-            TopicActivity.open(this,TopicItem())
+        val realm = Realm.getDefaultInstance();
+        var info = realm.where(ChatInformation::class.java).findFirst()
+        if(info!=null){
+            if(Functions.isOnline(this))
+                compositeDisposable.add(
+                        MainManager()
+                                .getChatInformation()
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribeOn(Schedulers.io())
+                                .subscribe({
+                                    result ->
+                                    if(requestErrorHandler(result.code(),result.message())){
+                                        startTopicOrChatActivity(result.body())
+                                    }else{
+                                        startTopicOrChatActivity(null)
+                                    }
+                                },{
+                                    error ->
+                                    logd(error.toString())
+                                    toast(error.message.toString())
+
+                                }))
+            else{
+                Functions.builtMessageNoInternet(this)
+            }
+        }
+
+    }
+
+    private fun startTopicOrChatActivity(chatLesson: ChatLesson?){
+        logd(SingletonSharedPref.getInstance().getString(Constants.KEY_TOKEN))
+        if(chatLesson==null||chatLesson.StatusId!=Constants.STATUS_COMPLETED){
+            val realm = Realm.getDefaultInstance()
+            realm.executeTransaction {
+                realm.where(ChatInformation::class.java).findAll().deleteAllFromRealm()
+            }
+            realm.close()
+        }else if(chatLesson.LearnerReady&&chatLesson.TeacherReady){
+            val realm = Realm.getDefaultInstance()
+            realm.executeTransaction {
+                realm.where(ChatInformation::class.java).findAll().deleteAllFromRealm()
+                realm.copyToRealm(Functions.getChatInformation(chatLesson))
+            }
+            realm.close()
+            startActivity(Intent(baseContext, ChatActivity::class.java))
+            finish()
+        }else{
+            val realm = Realm.getDefaultInstance()
+            realm.executeTransaction {
+                realm.where(ChatInformation::class.java).findAll().deleteAllFromRealm()
+                realm.copyToRealm(Functions.getChatInformation(chatLesson))
+            }
+            realm.close()
+            startActivity(Intent(baseContext,TopicActivity::class.java))
         }
     }
 
@@ -143,6 +195,7 @@ class MainActivity : AppCompatActivity(), OnMainActivityInteractionListener {
 
     override fun onDestroy() {
         super.onDestroy()
+        compositeDisposable.clear()
     }
 
 }

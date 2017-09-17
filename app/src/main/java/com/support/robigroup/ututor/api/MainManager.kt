@@ -32,7 +32,7 @@ class MainManager(
 
     fun postLearnerReady(): Flowable<Response<ResponseBody>> = RestAPI.getApi().postChatReady()
 
-    fun postChatComplete(): Flowable<Response<ResponseBody>> = RestAPI.getApi().postChatComplete()
+    fun postChatComplete(): Flowable<Response<ChatLesson>> = RestAPI.getApi().postChatComplete()
 
     fun getChatInformation(): Flowable<Response<ChatLesson>> = RestAPI.getApi().getInformationAboutChat()
 

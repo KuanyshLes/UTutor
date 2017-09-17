@@ -64,6 +64,11 @@ class MainFragment : RxBaseFragment() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        mListener?.checkChatState()
+    }
+
     private fun requestRecentTopics(subjectId: Int) {
         val subscription = MainManager().getTopics(subjectId)
                 .subscribeOn(Schedulers.io())
