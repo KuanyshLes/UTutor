@@ -8,12 +8,9 @@ import android.os.CountDownTimer
 import android.support.v4.app.DialogFragment
 import android.support.v4.app.FragmentManager
 import android.widget.Button
-import com.support.robigroup.ututor.Constants
+import android.widget.TextView
 import com.support.robigroup.ututor.R
 import com.support.robigroup.ututor.commons.OnChatActivityDialogInteractionListener
-import com.support.robigroup.ututor.model.content.ChatInformation
-import java.text.SimpleDateFormat
-import java.util.*
 import java.util.concurrent.TimeUnit
 
 class ReadyDialog : DialogFragment() {
@@ -21,6 +18,7 @@ class ReadyDialog : DialogFragment() {
     var mListener: OnChatActivityDialogInteractionListener? = null
     var mAllTimeInMilli: Long? = null
     var mButtonReady: Button? = null
+    var mTextWait: TextView? = null
     var mTimer: CountDownTimer? = null
 
     override fun onAttach(activity: Context?) {
@@ -41,6 +39,7 @@ class ReadyDialog : DialogFragment() {
         val inflater = activity.layoutInflater
         val view = inflater.inflate(R.layout.dialog_ready,null)
         mButtonReady = view.findViewById<Button>(R.id.button_ready) as Button
+        mTextWait = view.findViewById<TextView>(R.id.text_ready_status) as TextView
         mButtonReady?.setOnClickListener {
             mListener!!.onReadyDialogReadyClick(this)
         }
@@ -55,8 +54,7 @@ class ReadyDialog : DialogFragment() {
     }
 
     fun onLearnerReady(){
-        val buttonReady = view?.findViewById<Button>(R.id.button_ready) as Button
-        buttonReady.text = context.getString(R.string.waiting)
+        mButtonReady?.text = context.getString(R.string.waiting)
     }
 
     override fun onDestroyView() {
@@ -65,8 +63,7 @@ class ReadyDialog : DialogFragment() {
     }
 
     private fun getTimeWaitingInMinutes(millis: Long): String
-            = String.format(" %dм. %dс.",
-            TimeUnit.MILLISECONDS.toMinutes(millis),
+            = String.format(" %dс.",
             TimeUnit.MILLISECONDS.toSeconds(millis) -
                     TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis))
     )
@@ -74,12 +71,12 @@ class ReadyDialog : DialogFragment() {
     inner class MyDownTimer(allTimeInMillis: Long): CountDownTimer(allTimeInMillis,1000){
 
         override fun onFinish() {
-            mListener?.onFinishCounter()
+            mListener?.onFinishCounterFromReadyDialog()
         }
 
         override fun onTick(p0: Long) {
-            if(mButtonReady!=null){
-                mButtonReady?.text = mButtonReady!!.context.getString(R.string.waiting)+getTimeWaitingInMinutes(p0)
+            if(mTextWait!=null){
+                mTextWait?.text = mTextWait!!.context.getString(R.string.waiting)+getTimeWaitingInMinutes(p0)
             }
         }
 

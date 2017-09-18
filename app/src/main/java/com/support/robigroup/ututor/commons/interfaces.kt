@@ -2,10 +2,9 @@ package com.support.robigroup.ututor.commons
 
 import android.support.v4.app.DialogFragment
 import android.view.View
-import com.support.robigroup.ututor.model.content.ClassRoom
+import com.support.robigroup.ututor.model.content.*
 import com.support.robigroup.ututor.model.content.Subject
 import com.support.robigroup.ututor.model.content.Teacher
-import com.support.robigroup.ututor.model.content.TopicItem
 import com.support.robigroup.ututor.screen.main.adapters.ListViewAdapter
 
 interface OnLoginActivityInteractionListener {
@@ -27,7 +26,8 @@ interface OnTeachersActivityInteractionListener {
 }
 
 interface OnChatActivityDialogInteractionListener {
-    fun onFinishDialogPositiveClick(dialog: DialogFragment)
+    fun onEvaluateDialogPositiveClick(dialog: DialogFragment)
     fun onReadyDialogReadyClick(dialog: DialogFragment)
-    fun onFinishCounter()
+    fun onFinishCounterFromReadyDialog()
+    fun onCancelEvalDialog()
 }

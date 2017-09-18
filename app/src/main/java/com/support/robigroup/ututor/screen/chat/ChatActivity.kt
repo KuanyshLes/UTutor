@@ -6,7 +6,6 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.support.annotation.RequiresPermission
 import android.support.design.widget.Snackbar
 import android.support.v4.app.DialogFragment
 import android.support.v7.app.AppCompatActivity
@@ -14,6 +13,7 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.RatingBar
 import com.squareup.picasso.Picasso
 import com.stfalcon.chatkit.commons.ImageLoader
 import com.stfalcon.chatkit.messages.MessageHolders
@@ -27,6 +27,7 @@ import com.support.robigroup.ututor.R
 import com.support.robigroup.ututor.api.MainManager
 import com.support.robigroup.ututor.commons.*
 import com.support.robigroup.ututor.model.content.ChatInformation
+import com.support.robigroup.ututor.model.content.ChatLesson
 import com.support.robigroup.ututor.screen.chat.custom.media.holders.CustomIncomingMessageViewHolder
 import com.support.robigroup.ututor.screen.chat.custom.media.holders.CustomOutcomingMessageViewHolder
 import com.support.robigroup.ututor.screen.chat.model.CustomMessage
@@ -77,7 +78,9 @@ class ChatActivity : AppCompatActivity(),
         logd(rs.toString()+changeset.toString())
         if(changeset!=null&&!changeset.isDeleted){
             if(rs.StatusId == Constants.STATUS_COMPLETED){
-                closeChat()
+                runOnUiThread {
+                    closeChat()
+                }
             }else if(rs.TeacherReady&&rs.LearnerReady){
                 mReadyDialog.dismiss()
             }}else if(rs.LearnerReady&&!rs.TeacherReady){
@@ -141,7 +144,7 @@ class ChatActivity : AppCompatActivity(),
         user = User(mChatInformation.LearnerId, mChatInformation.Learner,null,true)
 
         setSupportActionBar(toolbar)
-        teacher_name_title.text =this.teacher.name
+        teacher_name_title.text =this.teacher.name!!.split(" ")[0]
 
         findViewById<View>(R.id.text_finish).setOnClickListener { showFinishDialog() }
 
@@ -164,8 +167,10 @@ class ChatActivity : AppCompatActivity(),
             val dif = Functions.getDifferenceInMillis(mChatInformation.CreateTime)
             if(dif>1000&&dif<Constants.WAIT_TIME){
                 mReadyDialog.startShow(supportFragmentManager,TAG_READY_DIALOG,dif)
+
             }else{
-                onCloseChat()
+                startActivity(Intent(this@ChatActivity, MainActivity::class.java))
+                finish()
             }
         }else if(mReadyDialog.isVisible){
             mReadyDialog.dismiss()
@@ -251,8 +256,18 @@ class ChatActivity : AppCompatActivity(),
         }
 
     private fun showFinishDialog() {
-        val dialogFragment = FinishDialog()
-        dialogFragment.show(supportFragmentManager, "finishDialog")
+        val builder = android.support.v7.app.AlertDialog.Builder(this)
+        builder.setMessage(getString(R.string.prompt_are_you_sure))
+                .setCancelable(false)
+                .setPositiveButton("OK")
+                {
+                    dialog, id ->
+                    dialog.cancel()
+                    closeChat()
+                }
+        val alert = builder.create()
+        alert.setCancelable(true)
+        alert.show()
     }
 
     override fun onSubmit(input: CharSequence): Boolean {
@@ -312,25 +327,47 @@ class ChatActivity : AppCompatActivity(),
                 .subscribe(
                         { message ->
                             if(requestErrorHandler(message.code(),message.message())){
-                                onCloseChat()
+                                OnEvalChat(message.body()!!)
                             }else{
-                                onCloseChat()
+                                startActivity(Intent(this@ChatActivity, MainActivity::class.java))
+                                finish()
                             }
                         },
                         { e ->
-                            onCloseChat()
                             Log.e("Error",e.stackTrace.toString())
+                            startActivity(Intent(this@ChatActivity, MainActivity::class.java))
+                            finish()
                         }
                 )
         subscriptions.add(subscription)
     }
 
-    private fun onCloseChat(){
-        realm.executeTransaction {
-            realm.deleteAll()
-        }
-        startActivity(Intent(this@ChatActivity, MainActivity::class.java))
-        finish()
+    private fun evalChat(rating: Int,lessonId:Int){
+        val subscription = MainManager().evalChat(rating,lessonId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        { message ->
+                            if(requestErrorHandler(message.code(),message.message())){
+                                startActivity(Intent(this@ChatActivity, MainActivity::class.java))
+                                finish()
+                            }else{
+                                startActivity(Intent(this@ChatActivity, MainActivity::class.java))
+                                finish()
+                            }
+                        },
+                        { e ->
+                            Log.e("Error",e.stackTrace.toString())
+                            startActivity(Intent(this@ChatActivity, MainActivity::class.java))
+                            finish()
+                        }
+                )
+        subscriptions.add(subscription)
+    }
+
+    private fun OnEvalChat(chatLesson: ChatLesson){
+        val fin = FinishDialog()
+        fin.showMe(chatLesson,supportFragmentManager,"finishDial")
     }
 
     private fun sendFileMessage(imageUri: String){
@@ -385,11 +422,13 @@ class ChatActivity : AppCompatActivity(),
         return false
     }
 
-    override fun onFinishCounter() {
+    override fun onFinishCounterFromReadyDialog() {
         if(!mChatInformation.LearnerReady||!mChatInformation.TeacherReady){
-            onCloseChat()
+            startActivity(Intent(this@ChatActivity, MainActivity::class.java))
+            finish()
         }
     }
+
 
     override fun onClick(dialogInterface: DialogInterface, i: Int) {
         when (i) {
@@ -398,13 +437,20 @@ class ChatActivity : AppCompatActivity(),
         }
     }
 
-    override fun onFinishDialogPositiveClick(dialog: DialogFragment) {
+    override fun onEvaluateDialogPositiveClick(dialog: DialogFragment) {
+        val ratingBar = dialog.view!!.findViewById<RatingBar>(R.id.rating_bar)
+        evalChat((ratingBar.rating*20).toInt(),mChatInformation.Id!!)
         dialog.dismiss()
-        closeChat()
+
+    }
+    override fun onCancelEvalDialog() {
+        startActivity(Intent(this@ChatActivity, MainActivity::class.java))
+        finish()
     }
 
     override fun onReadyDialogReadyClick(dialog: DialogFragment) {
-        postLearnerReady()
+        if(!mChatInformation.LearnerReady)
+            postLearnerReady()
     }
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {

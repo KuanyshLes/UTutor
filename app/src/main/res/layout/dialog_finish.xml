@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:text="@string/is_finish_session"
+        android:text="@string/session_finished"
         android:textSize="18sp"
         android:textStyle="bold" />
 
@@ -35,8 +35,15 @@
         android:layout_height="wrap_content"
         android:text="@string/ex_time_long" />
 
+
+    <RatingBar
+        android:id="@+id/rating_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:numStars="5" />
+
     <Button
-        android:id="@+id/button_finish"
+        android:id="@+id/button_evaluate"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/colorLightBlue"

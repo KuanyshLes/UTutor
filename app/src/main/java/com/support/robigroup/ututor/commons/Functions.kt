@@ -90,7 +90,8 @@ object Functions {
             chatInformation.LearnerRaiting,
             chatInformation.TeacherRaiting,
             chatInformation.SubjectId,
-            chatInformation.Language
+            chatInformation.Language,
+            chatInformation.InvoiceSum
     )
 
     fun getUnmanagedChatInfo(chatInformation: ChatInformation): ChatInformation {
@@ -113,7 +114,8 @@ object Functions {
                     chatInformation.LearnerRaiting,
                     chatInformation.TeacherRaiting,
                     chatInformation.SubjectId,
-                    chatInformation.Language
+                    chatInformation.Language,
+                    chatInformation.InvoiceSum
             )
         else{
             return chatInformation

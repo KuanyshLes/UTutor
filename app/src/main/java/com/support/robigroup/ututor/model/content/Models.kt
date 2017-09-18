@@ -188,7 +188,8 @@ data class ChatLesson(
         var LearnerRaiting: Float? = null,
         var TeacherRaiting: Float? = null,
         var SubjectId: Int? = null,
-        var Language: String? = null
+        var Language: String? = null,
+        var InvoiceSum: String? = null
 )
 
 open class ChatInformation(
@@ -209,6 +210,7 @@ open class ChatInformation(
         var LearnerRaiting: Float? = null,
         var TeacherRaiting: Float? = null,
         var SubjectId: Int? = null,
-        var Language: String? = null
+        var Language: String? = null,
+        var InvoiceSum: String? = null
 ): RealmObject()
 
