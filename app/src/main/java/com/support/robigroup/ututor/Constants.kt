@@ -1,5 +1,7 @@
 package com.support.robigroup.ututor
 
+import java.util.*
+
 object Constants {
 
     val BAD_REQUEST = 400 // плохой плохой клиент каку написал
@@ -7,9 +9,6 @@ object Constants {
     val FORBIDDEN = 403 // запрещенный запрос
     val NOT_FOUND = 404 // не найден, not our problem
     val SERVER_ERROR = 500 //not our problem
-
-    val TIMEFORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX"
-
 
     val KEY_TOKEN = "TOKEN"
     val KEY_EMAIL = "username"
@@ -27,6 +26,11 @@ object Constants {
     val STATUS_DECLINED = 5
     val STATUS_ERROR = -4
     val STATUS_COMPLETED = 6
+
+    val UTC: TimeZone = TimeZone.getTimeZone("UTC")
+    val TIMEFORMAT: String = "yyyy-MM-dd'T'HH:mm:ss"
+    val WAIT_TIME = 30000
+    val UTC_TIME = 6*60*60*1000
 
 
 }

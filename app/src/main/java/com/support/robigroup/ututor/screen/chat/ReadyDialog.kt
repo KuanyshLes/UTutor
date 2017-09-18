@@ -13,13 +13,15 @@ import com.support.robigroup.ututor.R
 import com.support.robigroup.ututor.commons.OnChatActivityDialogInteractionListener
 import com.support.robigroup.ututor.model.content.ChatInformation
 import java.text.SimpleDateFormat
+import java.util.*
 import java.util.concurrent.TimeUnit
 
 class ReadyDialog : DialogFragment() {
 
     var mListener: OnChatActivityDialogInteractionListener? = null
-    var time: String? = null
+    var mAllTimeInMilli: Long? = null
     var mButtonReady: Button? = null
+    var mTimer: CountDownTimer? = null
 
     override fun onAttach(activity: Context?) {
         super.onAttach(activity)
@@ -46,14 +48,20 @@ class ReadyDialog : DialogFragment() {
         return builder.create()
     }
 
-    fun startShow(fragmentManager: FragmentManager, tag: String, startTime: String){
+    fun startShow(fragmentManager: FragmentManager, tag: String, dif: Long){
         show(fragmentManager,tag)
-        time = startTime
+        mTimer = MyDownTimer(dif)
+        mTimer?.start()
     }
 
     fun onLearnerReady(){
         val buttonReady = view?.findViewById<Button>(R.id.button_ready) as Button
         buttonReady.text = context.getString(R.string.waiting)
+    }
+
+    override fun onDestroyView() {
+        mTimer?.cancel()
+        super.onDestroyView()
     }
 
     private fun getTimeWaitingInMinutes(millis: Long): String
@@ -63,20 +71,16 @@ class ReadyDialog : DialogFragment() {
                     TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis))
     )
 
-    inner class MyDownTimer(val info: ChatInformation, val button: Button?): CountDownTimer(90000,1000){
+    inner class MyDownTimer(allTimeInMillis: Long): CountDownTimer(allTimeInMillis,1000){
 
         override fun onFinish() {
-            val outputFormat = SimpleDateFormat(Constants.TIMEFORMAT)
-            val createTimeInMillis = outputFormat.parse(info.CreateTime).time
-            info.StatusId= Constants.STATUS_DECLINED
-            button?.text = button?.context?.getString(R.string.declined)
+            mListener?.onFinishCounter()
         }
 
         override fun onTick(p0: Long) {
-            if(!info.LearnerReady&&button!=null){
-                button.text = button.context.getString(R.string.waiting)+getTimeWaitingInMinutes(p0)
+            if(mButtonReady!=null){
+                mButtonReady?.text = mButtonReady!!.context.getString(R.string.waiting)+getTimeWaitingInMinutes(p0)
             }
-
         }
 
     }

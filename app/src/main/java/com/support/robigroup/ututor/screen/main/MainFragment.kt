@@ -1,19 +1,24 @@
 package com.support.robigroup.ututor.screen.main
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.support.robigroup.ututor.Constants
 import com.support.robigroup.ututor.R
 import com.support.robigroup.ututor.api.MainManager
-import com.support.robigroup.ututor.commons.OnMainActivityInteractionListener
-import com.support.robigroup.ututor.commons.RxBaseFragment
-import com.support.robigroup.ututor.commons.requestErrorHandler
+import com.support.robigroup.ututor.commons.*
+import com.support.robigroup.ututor.model.content.ChatInformation
+import com.support.robigroup.ututor.model.content.ChatLesson
+import com.support.robigroup.ututor.screen.chat.ChatActivity
 import com.support.robigroup.ututor.screen.main.adapters.RecentTopicsAdapter
+import com.support.robigroup.ututor.singleton.SingletonSharedPref
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import io.realm.Realm
 import kotlinx.android.synthetic.main.fragment_main.*
 import kotlinx.android.synthetic.main.topics.*
 import kotlin.properties.Delegates
@@ -28,6 +33,8 @@ class MainFragment : RxBaseFragment() {
 
     private var mListener: OnMainActivityInteractionListener? = null
     private var mAdapter: MySubjectRecyclerViewAdapter by Delegates.notNull()
+    private var isChatCheck = false
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,7 +61,6 @@ class MainFragment : RxBaseFragment() {
         initAdapters()
 //        requestRecentTopics(5)
 //        mListener?.checkChatState()
-        requestSubjects()
     }
 
     private fun initAdapters() {
@@ -68,9 +74,57 @@ class MainFragment : RxBaseFragment() {
 
     override fun onResume() {
         super.onResume()
+        checkChatState()
+    }
 
-        mListener?.checkChatState()
+    fun checkChatState() {
+        if(!isChatCheck)
+            if(Functions.isOnline(activity))
+                subscriptions.add(
+                        MainManager()
+                                .getChatInformation()
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribeOn(Schedulers.io())
+                                .subscribe({
+                                    result ->
+                                    isChatCheck = true
+                                    if(activity.requestErrorHandler(result.code(),null)){
+                                        startTopicOrChatActivity(result.body())
+                                    }else{
+                                        startTopicOrChatActivity(null)
+                                    }
+                                },{
+                                    error ->
+                                    logd(error.toString())
+                                    activity.toast(error.message.toString())
+                                    isChatCheck = false
+                                }))
+            else{
+                Functions.builtMessageNoInternet(activity,{checkChatState()})
+            }
 
+
+    }
+
+    private fun startTopicOrChatActivity(chatLesson: ChatLesson?){
+        logd(SingletonSharedPref.getInstance().getString(Constants.KEY_TOKEN))
+        if(chatLesson==null||chatLesson.StatusId== Constants.STATUS_COMPLETED){
+            val realm = Realm.getDefaultInstance()
+            realm.executeTransaction {
+                realm.where(ChatInformation::class.java).findAll().deleteAllFromRealm()
+            }
+            realm.close()
+            requestSubjects()
+        }else{
+            val realm = Realm.getDefaultInstance()
+            realm.executeTransaction {
+                realm.where(ChatInformation::class.java).findAll().deleteAllFromRealm()
+                realm.copyToRealm(Functions.getChatInformation(chatLesson))
+            }
+            realm.close()
+            startActivity(Intent(context, ChatActivity::class.java))
+            activity.finish()
+        }
     }
 
     private fun requestRecentTopics(subjectId: Int) {

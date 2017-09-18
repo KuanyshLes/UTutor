@@ -20,7 +20,6 @@ interface OnMainActivityInteractionListener {
     fun OnClassItemClicked(item: Subject)
     fun setDisplayHomeAsEnabled(showHomeAsUp: Boolean)
     fun setToolbarTitle(title: String)
-    fun checkChatState()
 }
 
 interface OnTeachersActivityInteractionListener {
@@ -30,4 +29,5 @@ interface OnTeachersActivityInteractionListener {
 interface OnChatActivityDialogInteractionListener {
     fun onFinishDialogPositiveClick(dialog: DialogFragment)
     fun onReadyDialogReadyClick(dialog: DialogFragment)
+    fun onFinishCounter()
 }

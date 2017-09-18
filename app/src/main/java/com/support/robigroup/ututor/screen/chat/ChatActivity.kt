@@ -10,6 +10,7 @@ import android.support.annotation.RequiresPermission
 import android.support.design.widget.Snackbar
 import android.support.v4.app.DialogFragment
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -160,7 +161,12 @@ class ChatActivity : AppCompatActivity(),
         mReadyDialog = ReadyDialog()
         if(!mChatInformation.TeacherReady||!mChatInformation.LearnerReady){
             mReadyDialog.isCancelable = false
-            mReadyDialog.startShow(supportFragmentManager,TAG_READY_DIALOG,mChatInformation.CreateTime)
+            val dif = Functions.getDifferenceInMillis(mChatInformation.CreateTime)
+            if(dif>1000&&dif<Constants.WAIT_TIME){
+                mReadyDialog.startShow(supportFragmentManager,TAG_READY_DIALOG,dif)
+            }else{
+                onCloseChat()
+            }
         }else if(mReadyDialog.isVisible){
             mReadyDialog.dismiss()
         }
@@ -306,20 +312,25 @@ class ChatActivity : AppCompatActivity(),
                 .subscribe(
                         { message ->
                             if(requestErrorHandler(message.code(),message.message())){
-                                Realm.getDefaultInstance().deleteAll()
-                                startActivity(Intent(this@ChatActivity, MainActivity::class.java))
-                                finish()
+                                onCloseChat()
                             }else{
-                                Realm.getDefaultInstance().deleteAll()
-                                startActivity(Intent(this@ChatActivity, MainActivity::class.java))
-                                finish()
+                                onCloseChat()
                             }
                         },
                         { e ->
-                            Snackbar.make(findViewById(android.R.id.content), e.message ?: "", Snackbar.LENGTH_LONG).show()
+                            onCloseChat()
+                            Log.e("Error",e.stackTrace.toString())
                         }
                 )
         subscriptions.add(subscription)
+    }
+
+    private fun onCloseChat(){
+        realm.executeTransaction {
+            realm.deleteAll()
+        }
+        startActivity(Intent(this@ChatActivity, MainActivity::class.java))
+        finish()
     }
 
     private fun sendFileMessage(imageUri: String){
@@ -372,6 +383,12 @@ class ChatActivity : AppCompatActivity(),
                     && message.text != null
         }
         return false
+    }
+
+    override fun onFinishCounter() {
+        if(!mChatInformation.LearnerReady||!mChatInformation.TeacherReady){
+            onCloseChat()
+        }
     }
 
     override fun onClick(dialogInterface: DialogInterface, i: Int) {

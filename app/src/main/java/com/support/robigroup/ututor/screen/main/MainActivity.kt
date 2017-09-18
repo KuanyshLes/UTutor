@@ -29,7 +29,6 @@ class MainActivity : AppCompatActivity(), OnMainActivityInteractionListener {
     //    private var adapter: ListViewAdapter? = null
     private val EX_LANG = "kk-KZ"
     val compositeDisposable: CompositeDisposable = CompositeDisposable()
-    private var isChatCheck = false
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -86,55 +85,6 @@ class MainActivity : AppCompatActivity(), OnMainActivityInteractionListener {
 //            }
 //        })
         return super.onCreateOptionsMenu(menu)
-    }
-
-    override fun checkChatState() {
-        if(!isChatCheck)
-            if(Functions.isOnline(this))
-                compositeDisposable.add(
-                        MainManager()
-                                .getChatInformation()
-                                .observeOn(AndroidSchedulers.mainThread())
-                                .subscribeOn(Schedulers.io())
-                                .subscribe({
-                                    result ->
-                                    isChatCheck = true
-                                    if(requestErrorHandler(result.code(),null)){
-                                        startTopicOrChatActivity(result.body())
-                                    }else{
-                                        startTopicOrChatActivity(null)
-                                    }
-                                },{
-                                    error ->
-                                    logd(error.toString())
-                                    toast(error.message.toString())
-                                    isChatCheck = false
-                                }))
-            else{
-                Functions.builtMessageNoInternet(this,{checkChatState()})
-            }
-
-
-    }
-
-    private fun startTopicOrChatActivity(chatLesson: ChatLesson?){
-        logd(SingletonSharedPref.getInstance().getString(Constants.KEY_TOKEN))
-        if(chatLesson==null||chatLesson.StatusId==Constants.STATUS_COMPLETED){
-            val realm = Realm.getDefaultInstance()
-            realm.executeTransaction {
-                realm.where(ChatInformation::class.java).findAll().deleteAllFromRealm()
-            }
-            realm.close()
-        }else{
-            val realm = Realm.getDefaultInstance()
-            realm.executeTransaction {
-                realm.where(ChatInformation::class.java).findAll().deleteAllFromRealm()
-                realm.copyToRealm(Functions.getChatInformation(chatLesson))
-            }
-            realm.close()
-            startActivity(Intent(baseContext, ChatActivity::class.java))
-            finish()
-        }
     }
 
     override fun OnClassItemClicked(item: Subject) {

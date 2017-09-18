@@ -9,6 +9,7 @@ import android.net.ConnectivityManager
 import android.net.NetworkInfo
 import android.support.v7.app.AlertDialog
 import android.util.Base64
+import android.util.Log
 import com.support.robigroup.ututor.Constants
 import com.support.robigroup.ututor.model.content.ChatInformation
 import com.support.robigroup.ututor.model.content.ChatLesson
@@ -22,12 +23,15 @@ import java.io.FileInputStream
 import java.io.FileNotFoundException
 import java.io.IOException
 import java.io.InputStream
+import java.text.SimpleDateFormat
+import java.util.*
 
 
 object Functions {
 
     private var progressDialog: ProgressDialog? = null
     val GPS_PROVIDER_REQUEST = 10
+
 
 
     fun builtAlertMessageWithText(message: String, context: Context) {
@@ -51,6 +55,15 @@ object Functions {
                 }
         val alert = builder.create()
         alert.show()
+    }
+
+    fun getDifferenceInMillis(dateString: String): Long{
+        val currentTime = Calendar.getInstance().time
+        val sdf = SimpleDateFormat(Constants.TIMEFORMAT)
+
+        val dif = sdf.parse(dateString+"Z").time-currentTime.time+Constants.WAIT_TIME+Constants.UTC_TIME
+        Log.e("Difference","created: "+dateString+"Z"+ " now: "+sdf.format(currentTime.time)+" dif: "+dif.toString())
+        return dif
     }
 
     fun isOnline(context: Context): Boolean {
