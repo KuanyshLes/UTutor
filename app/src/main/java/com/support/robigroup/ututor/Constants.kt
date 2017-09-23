@@ -11,6 +11,7 @@ object Constants {
     val SERVER_ERROR = 500 //not our problem
 
     val KEY_TOKEN = "TOKEN"
+    val KEY_FULL_NAME = "full_name"
     val KEY_EMAIL = "username"
     val KEY_PASSWORD = "password"
     val KEY_RES_TOKEN = "access_token"

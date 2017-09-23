@@ -42,16 +42,6 @@ class MainActivity :
         nav_view.setNavigationItemSelectedListener(this)
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        when(item!!.itemId){
-            android.R.id.home -> {
-                onBackPressed()
-                return true
-            }
-            else -> return super.onOptionsItemSelected(item)
-        }
-    }
-
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         // Handle navigation view item clicks here.
         when (item.itemId) {
@@ -67,6 +57,7 @@ class MainActivity :
             R.id.nav_logout -> {
                 compositeDisposable.clear()
                 SingletonSharedPref.getInstance().clear()
+                stopService(Intent(this, NotificationService::class.java))
                 finish()
                 startActivity(Intent(this, LoginActivity::class.java))
             }
@@ -84,13 +75,8 @@ class MainActivity :
         }
     }
 
-    override fun OnClassItemClicked(item: Subject) {
-        TeachersActivity.open(this,item)
-    }
-
     override fun OnSubjectItemClicked(item: Subject) {
-        supportFragmentManager.beginTransaction().replace(R.id.main_container, ClassesFragment.newInstance(item))
-                .addToBackStack(null).commit()
+        startActivity(Intent(this,ClassesActivity::class.java).putExtra(ClassesActivity.ARG_SUBJECT,item))
     }
 
     override fun setDisplayHomeAsEnabled(showHomeAsUp: Boolean) {

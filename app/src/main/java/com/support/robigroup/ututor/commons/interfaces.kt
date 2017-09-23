@@ -16,9 +16,13 @@ interface OnLoginActivityInteractionListener {
 }
 interface OnMainActivityInteractionListener {
     fun OnSubjectItemClicked(item: Subject)
-    fun OnClassItemClicked(item: Subject)
     fun setDisplayHomeAsEnabled(showHomeAsUp: Boolean)
     fun setToolbarTitle(title: String)
+}
+
+interface ClassesActivityListener{
+    fun OnClassItemClicked(item: Subject)
+
 }
 
 interface OnTeachersActivityInteractionListener {

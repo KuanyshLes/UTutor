@@ -3,15 +3,17 @@ package com.support.robigroup.ututor.screen.main.adapters
 import android.support.v7.widget.RecyclerView
 import android.view.ViewGroup
 import com.support.robigroup.ututor.R
+import com.support.robigroup.ututor.commons.ClassesActivityListener
 import com.support.robigroup.ututor.commons.OnMainActivityInteractionListener
 import com.support.robigroup.ututor.commons.inflate
 import com.support.robigroup.ututor.model.content.ClassRoom
 import com.support.robigroup.ututor.model.content.Subject
+import com.support.robigroup.ututor.screen.main.ClassesActivity
 import kotlinx.android.synthetic.main.item_class.view.*
 
 
-class ClassAdapter(private val mListener: OnMainActivityInteractionListener?,private val mSubject: Subject) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-    private val items: List<ClassRoom> = List(12, {index ->  ClassRoom(index)})
+class ClassAdapter(private val mListener: ClassesActivityListener?, private val mSubject: Subject) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+    private val items: List<ClassRoom> = List(12, {index ->  ClassRoom(index+1)})
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder?, position: Int) {
         holder as LessonsViewHolder

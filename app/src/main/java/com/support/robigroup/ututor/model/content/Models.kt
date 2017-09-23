@@ -167,7 +167,8 @@ data class LessonRequestForTeacher(
 
 data class LoginResponse(
         val access_token: String,
-        val expires_in: Int
+        val expires_in: Int,
+        val FullName: String
 )
 
 data class ChatLesson(
