@@ -56,9 +56,10 @@ class ClassesFragment : RxBaseFragment() {
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        mListener!!.setDisplayHomeAsEnabled(true)
-        mListener!!.setToolbarTitle(mSubject.Text)
+        mListener?.setDisplayHomeAsEnabled(true)
+        mListener?.setToolbarTitle(mSubject.Text)
     }
+
 
     override fun onSaveInstanceState(outState: Bundle?) {
         super.onSaveInstanceState(outState)

@@ -2,53 +2,78 @@ package com.support.robigroup.ututor.screen.main
 
 import android.content.Intent
 import android.os.Bundle
+import android.support.design.widget.NavigationView
+import android.support.v4.view.GravityCompat
+import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
-import android.view.Menu
 import android.view.MenuItem
-import com.support.robigroup.ututor.Constants
 import com.support.robigroup.ututor.NotificationService
 import com.support.robigroup.ututor.R
-import com.support.robigroup.ututor.api.MainManager
-import com.support.robigroup.ututor.commons.*
-import com.support.robigroup.ututor.model.content.*
+import com.support.robigroup.ututor.commons.OnMainActivityInteractionListener
 import com.support.robigroup.ututor.model.content.Subject
-import com.support.robigroup.ututor.screen.chat.ChatActivity
+import com.support.robigroup.ututor.screen.login.LoginActivity
 import com.support.robigroup.ututor.screen.topic.TeachersActivity
 import com.support.robigroup.ututor.singleton.SingletonSharedPref
-import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.schedulers.Schedulers
-import io.realm.Realm
-import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.activity_main_nav.*
+import kotlinx.android.synthetic.main.app_bar_main_nav.*
 
+class MainActivity :
+        AppCompatActivity(),
+        OnMainActivityInteractionListener,
+        NavigationView.OnNavigationItemSelectedListener {
 
-class MainActivity : AppCompatActivity(), OnMainActivityInteractionListener {
-
-    private var stringArrayList:
-            MutableList<TopicItem> = MutableList(40, { TopicItem(Id = 0, Text = "math is math is mismath exception") })
-    //    private var adapter: ListViewAdapter? = null
-    private val EX_LANG = "kk-KZ"
-    val compositeDisposable: CompositeDisposable = CompositeDisposable()
-
+    private val compositeDisposable: CompositeDisposable = CompositeDisposable()
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
 
-        setContentView(R.layout.activity_main)
-
+        setContentView(R.layout.activity_main_nav)
+        setSupportActionBar(toolbar)
         val intent = Intent()
         intent.setClass(this, NotificationService::class.java)
         startService(intent)
 
-        setSupportActionBar(toolbar)
+        val toggle = ActionBarDrawerToggle(
+                this, drawer_layout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
+        drawer_layout.addDrawerListener(toggle)
+        toggle.syncState()
 
-//        adapter = ListViewAdapter(this, R.layout.item_search, searchList = stringArrayList)
-//        listview_results!!.adapter = adapter
-//
-//        listview_results.onItemClickListener = AdapterView.OnItemClickListener { adapterView, _, i, _ ->
-//            val clickedTopicItem = adapterView.getItemAtPosition(i) as TopicItem
-//            OnTopicItemClicked(clickedTopicItem)
-//        }
-        super.onCreate(savedInstanceState)
+        nav_view.setNavigationItemSelectedListener(this)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        when(item!!.itemId){
+            android.R.id.home -> {
+                onBackPressed()
+                return true
+            }
+            else -> return super.onOptionsItemSelected(item)
+        }
+    }
+
+    override fun onNavigationItemSelected(item: MenuItem): Boolean {
+        // Handle navigation view item clicks here.
+        when (item.itemId) {
+            R.id.nav_payment -> {
+
+            }
+            R.id.nav_settings -> {
+
+            }
+            R.id.nav_help -> {
+
+            }
+            R.id.nav_logout -> {
+                compositeDisposable.clear()
+                SingletonSharedPref.getInstance().clear()
+                finish()
+                startActivity(Intent(this, LoginActivity::class.java))
+            }
+        }
+
+        drawer_layout.closeDrawer(GravityCompat.START)
+        return true
     }
 
     override fun onResume() {
@@ -57,34 +82,6 @@ class MainActivity : AppCompatActivity(), OnMainActivityInteractionListener {
             supportFragmentManager.beginTransaction().replace(R.id.main_container, MainFragment())
                     .addToBackStack(null).commit()
         }
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-//        menuInflater.inflate(R.menu.options_menu, menu)
-//
-//        val searchManager = getSystemService(Context.SEARCH_SERVICE) as SearchManager
-//        val searchView = menu.findItem(R.id.search).actionView as? SearchView
-//        searchView!!.setSearchableInfo(
-//                searchManager.getSearchableInfo(componentName))
-//
-//        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-//            override fun onQueryTextSubmit(query: String): Boolean {
-//                logd("onQueryTextChange "+query)
-//                return false
-//            }
-//
-//            override fun onQueryTextChange(newText: String): Boolean {
-//                logd("onQueryTextChange "+newText)
-//                if (TextUtils.isEmpty(newText)) {
-//                    adapter!!.filter("")
-//                    listview_results.clearTextFilter()
-//                } else {
-//                    adapter!!.filter(newText)
-//                }
-//                return true
-//            }
-//        })
-        return super.onCreateOptionsMenu(menu)
     }
 
     override fun OnClassItemClicked(item: Subject) {
@@ -104,19 +101,10 @@ class MainActivity : AppCompatActivity(), OnMainActivityInteractionListener {
         supportActionBar!!.title = title
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        when(item!!.itemId){
-            android.R.id.home -> {
-                onBackPressed()
-                return true
-            }
-            else -> return super.onOptionsItemSelected(item)
-        }
-    }
-
     override fun onBackPressed() {
-        logd("onBackPressed MainActivity" )
-        if(supportFragmentManager.backStackEntryCount==1){
+        if (drawer_layout.isDrawerOpen(GravityCompat.START)) {
+            drawer_layout.closeDrawer(GravityCompat.START)
+        }else if(supportFragmentManager.backStackEntryCount==1){
             supportFragmentManager.popBackStack()
             finish()
         }else{
@@ -128,5 +116,4 @@ class MainActivity : AppCompatActivity(), OnMainActivityInteractionListener {
         super.onDestroy()
         compositeDisposable.clear()
     }
-
 }

@@ -58,6 +58,10 @@ dependencies {
 
     compile 'com.google.code.gson:gson:2.8.0'
 
+    compile('com.mikepenz:materialdrawer:5.9.5@aar') {
+        transitive = true
+    }
+
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
 }
@@ -72,6 +76,7 @@ configurations.all {
         }
     }
 }
+
 
 
 

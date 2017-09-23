@@ -7,13 +7,13 @@
 
 
     <ImageView
-        android:id="@+id/main_imageview_right"
+        android:id="@+id/main_image_right"
         android:layout_width="100dp"
         android:layout_height="130dp"
         android:layout_marginBottom="8dp"
         android:layout_marginTop="8dp"
         android:contentDescription="@string/desc_logo"
-        android:src="@drawable/logo"
+        android:src="@drawable/logo_blue"
         app:layout_constraintBottom_toTopOf="@+id/linearLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"

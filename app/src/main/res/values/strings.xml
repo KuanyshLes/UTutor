@@ -24,6 +24,10 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="topic">Тема:</string>
+    <string name="drawer_item_logout">Выйти</string>
+    <string name="drawer_item_settings">Настройки</string>
+    <string name="drawer_item_payment">Оплата</string>
+    <string name="drawer_item_help">Помощь</string>
     <string name="same_topic">Похожие темы</string>
     <string name="loading">Loading…</string>
     <string name="action_next">Next</string>
@@ -97,5 +101,11 @@
         <item name="image">From gallery</item>
         <!--<item name="voice">Voice message (custom)</item>-->
     </string-array>
+    <string name="title_activity_main_nav">MainNavActivity</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
 
 </resources>

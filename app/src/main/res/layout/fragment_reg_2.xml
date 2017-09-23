@@ -60,7 +60,7 @@
         app:layout_constraintGuide_percent="0.92" />
 
     <ImageView
-        android:id="@+id/main_imageview_right"
+        android:id="@+id/main_image_right"
         android:layout_width="100dp"
         android:layout_height="110dp"
         android:layout_marginTop="8dp"
