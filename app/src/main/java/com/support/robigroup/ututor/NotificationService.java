@@ -14,6 +14,8 @@ import com.support.robigroup.ututor.model.content.ChatLesson;
 import com.support.robigroup.ututor.screen.chat.model.CustomMessage;
 import com.support.robigroup.ututor.singleton.SingletonSharedPref;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import io.realm.Realm;
@@ -158,7 +160,7 @@ public class NotificationService extends Service {
             mHubProxy.subscribe(
                     new CallbacksFromServer(){
                         @Override
-                        public void ChatCompleted(final List<ChatLesson> lessons) {
+                        public void ChatCompleted(final ArrayList<ChatLesson> lessons) {
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
@@ -229,7 +231,12 @@ public class NotificationService extends Service {
     }
 
     private interface CallbacksFromServer{
-        void ChatCompleted(List<ChatLesson> lessons);
+        void ChatCompleted(ArrayList<ChatLesson> lessons);
+    }
+
+    public static <T> List<T> stringToArray(String s, Class<T[]> clazz) {
+        T[] arr = new Gson().fromJson(s, clazz);
+        return Arrays.asList(arr); //or return Arrays.asList(new Gson().fromJson(s, clazz)); for a one-liner
     }
 
 }
