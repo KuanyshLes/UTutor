@@ -42,7 +42,7 @@ class TeachersActivity : AppCompatActivity(), OnTeachersActivityInteractionListe
 
         val ARG_SUBJECT = "topicItem"
         val ARG_ADAPTER = "adapter"
-        val EX_LANG = "kk-KZ"
+        val EX_LANG = "kk"
         fun open(context: Context, item: Subject){
             context.startActivity(Intent(context, TeachersActivity::class.java).putExtra(ARG_SUBJECT,item))
         }

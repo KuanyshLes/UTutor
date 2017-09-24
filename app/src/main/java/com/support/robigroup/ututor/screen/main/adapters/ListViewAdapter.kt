@@ -35,25 +35,25 @@ class ListViewAdapter(
     }
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-        var convertView = convertView
+        var convertView1 = convertView
         val holder: ViewHolder
         val inflater = activity.getSystemService(Activity.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         // If holder not exist then locate all view from UI file.
-        if (convertView == null) {
+        if (convertView1 == null) {
             // inflate UI from XML file
-            convertView = inflater.inflate(R.layout.item_search, parent, false)
+            convertView1 = inflater.inflate(R.layout.item_search, parent, false)
             // get all UI view
-            holder = ViewHolder(convertView)
+            holder = ViewHolder(convertView1)
             // set tag for holder
-            convertView!!.tag = holder
+            convertView1!!.tag = holder
         } else {
             // if holder created, get tag from view
-            holder = convertView.tag as ViewHolder
+            holder = convertView1.tag as ViewHolder
         }
         holder.lessonName.text = getItem(position)!!.Text
         holder.lessonDesc.text = getItem(position)!!.Text
 
-        return convertView
+        return convertView1
     }
 
     // Filter method

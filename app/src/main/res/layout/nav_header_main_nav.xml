@@ -1,29 +1,88 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/nav_header_height"
-    android:background="@color/colorLightBlue"
-    android:gravity="center"
+    android:layout_height="230dp"
     android:orientation="vertical"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin">
+    tools:layout_editor_absoluteX="0dp"
+    tools:layout_editor_absoluteY="81dp">
 
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingTop="@dimen/nav_header_vertical_spacing"
-        app:srcCompat="@mipmap/ic_launcher_round" />
+    <LinearLayout
+        android:id="@+id/linearLayout2"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/nav_header_height"
+        android:layout_marginEnd="0dp"
+        android:layout_marginStart="0dp"
+        android:layout_marginTop="0dp"
+        android:background="@color/colorLightBlue"
+        android:gravity="center"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/user_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingTop="@dimen/nav_header_vertical_spacing"
+            app:srcCompat="@mipmap/ic_launcher_round" />
+
+        <TextView
+            android:id="@+id/user_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingTop="@dimen/nav_header_vertical_spacing"
+            android:text="@string/ex_name"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            android:textColor="@color/white" />
+    </LinearLayout>
 
     <TextView
+        android:id="@+id/my_balance_up_h"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingTop="@dimen/nav_header_vertical_spacing"
-        android:text="@string/ex_name"
-        android:textColor="@color/white"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+        android:text="@string/prof_top_up_balance"
+        android:textColor="@color/colorLightBlue"
+        app:layout_constraintStart_toStartOf="@+id/my_balance_h"
+        app:layout_constraintTop_toBottomOf="@+id/my_balance_h" />
 
-</LinearLayout>
+    <TextView
+        android:id="@+id/my_balance_h"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="24dp"
+        android:text="@string/prof_my_cost_h"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.07"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout2" />
+
+    <TextView
+        android:id="@+id/my_balance"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/ex_dollar"
+        android:textColor="@color/colorLightBlue"
+        app:layout_constraintBottom_toBottomOf="@+id/my_balance_up_h"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.9"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/my_balance_h" />
+
+    <TextView
+        android:id="@+id/line_break"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:background="@color/gray"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+</android.support.constraint.ConstraintLayout>

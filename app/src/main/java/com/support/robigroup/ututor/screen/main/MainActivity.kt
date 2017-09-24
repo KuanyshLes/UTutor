@@ -1,8 +1,10 @@
 package com.support.robigroup.ututor.screen.main
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.NavigationView
+import android.support.design.widget.Snackbar
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
@@ -16,6 +18,15 @@ import com.support.robigroup.ututor.singleton.SingletonSharedPref
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.activity_main_nav.*
 import kotlinx.android.synthetic.main.app_bar_main_nav.*
+import android.widget.TextView
+import com.support.robigroup.ututor.Constants
+import com.support.robigroup.ututor.api.MainManager
+import com.support.robigroup.ututor.commons.requestErrorHandler
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
+import kotlinx.android.synthetic.main.nav_header_main_nav.*
+import kotlin.properties.Delegates
+
 
 class MainActivity :
         AppCompatActivity(),
@@ -23,15 +34,16 @@ class MainActivity :
         NavigationView.OnNavigationItemSelectedListener {
 
     private val compositeDisposable: CompositeDisposable = CompositeDisposable()
+    private var mTextMyBalance: TextView by Delegates.notNull()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setContentView(R.layout.activity_main_nav)
         setSupportActionBar(toolbar)
-//        val intent = Intent()
-//        intent.setClass(this, NotificationService::class.java)
-//        startService(intent)
+        val intent = Intent()
+        intent.setClass(this, NotificationService::class.java)
+        startService(intent)
 
         val toggle = ActionBarDrawerToggle(
                 this, drawer_layout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
@@ -39,6 +51,11 @@ class MainActivity :
         toggle.syncState()
 
         nav_view.setNavigationItemSelectedListener(this)
+        val hView = nav_view.getHeaderView(0)
+        val nav_user = hView.findViewById<TextView>(R.id.user_name)
+        nav_user.text = SingletonSharedPref.getInstance().getString(Constants.KEY_FULL_NAME)
+        mTextMyBalance = hView.findViewById(R.id.my_balance)
+        requestBalance()
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
@@ -100,5 +117,28 @@ class MainActivity :
     override fun onDestroy() {
         super.onDestroy()
         compositeDisposable.clear()
+    }
+
+    private fun requestBalance(){
+        val subscription = MainManager().getBalance()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        { retrievedLessons ->
+                            if(requestErrorHandler(retrievedLessons.code(),retrievedLessons.message())){
+                                if(retrievedLessons.body()!=null){
+                                    val myBal = retrievedLessons.body()!!.Balance
+                                    SingletonSharedPref.getInstance().put(Constants.KEY_BALANCE,myBal ?: 0.0)
+                                    mTextMyBalance.text = String.format("%.2f",myBal ?: 0.0)
+                                }
+                            }else{
+                                //TODO handle http errors
+                            }
+                        },
+                        { e ->
+                            Snackbar.make(findViewById(android.R.id.content), e.message ?: "", Snackbar.LENGTH_LONG).show()
+                        }
+                )
+        compositeDisposable.add(subscription)
     }
 }

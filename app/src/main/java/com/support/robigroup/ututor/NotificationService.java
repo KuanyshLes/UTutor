@@ -14,6 +14,8 @@ import com.support.robigroup.ututor.model.content.ChatLesson;
 import com.support.robigroup.ututor.screen.chat.model.CustomMessage;
 import com.support.robigroup.ututor.singleton.SingletonSharedPref;
 
+import java.util.List;
+
 import io.realm.Realm;
 import microsoft.aspnet.signalr.client.ConnectionState;
 import microsoft.aspnet.signalr.client.LogLevel;
@@ -153,19 +155,33 @@ public class NotificationService extends Service {
                         }
                     }
                     , CustomMessage.class);
-            mHubProxy.on("ChatCompleted",
-                    new SubscriptionHandler1<ChatLesson>() {
+            mHubProxy.subscribe(
+                    new CallbacksFromServer(){
                         @Override
-                        public void run(final ChatLesson msg) {
+                        public void ChatCompleted(final List<ChatLesson> lessons) {
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
                                     Log.e("MyEvent","ChatCompleted");
-                                    notifyChatCompleted(msg);
+                                    notifyChatCompleted(lessons.get(0));
                                 }
                             });
                         }
-                    },ChatLesson.class);
+                    }
+            );
+//            mHubProxy.on("ChatCompleted",
+//                    new SubscriptionHandler1<ChatLesson>() {
+//                        @Override
+//                        public void run(final ChatLesson msg) {
+//                            runOnUiThread(new Runnable() {
+//                                @Override
+//                                public void run() {
+//                                    Log.e("MyEvent","ChatCompleted");
+//                                    notifyChatCompleted(msg);
+//                                }
+//                            });
+//                        }
+//                    }, ChatLesson.class);
         }
     }
 
@@ -210,6 +226,10 @@ public class NotificationService extends Service {
                 realm.copyToRealm(message);
             }
         });
+    }
+
+    private interface CallbacksFromServer{
+        void ChatCompleted(List<ChatLesson> lessons);
     }
 
 }

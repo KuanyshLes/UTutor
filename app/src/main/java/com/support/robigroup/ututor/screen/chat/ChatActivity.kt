@@ -179,7 +179,6 @@ class ChatActivity : AppCompatActivity(),
             val dif = Functions.getDifferenceInMillis(mChatInformation.CreateTime)
             if(dif>1000&&dif<Constants.WAIT_TIME){
                 mReadyDialog.startShow(supportFragmentManager,TAG_READY_DIALOG,dif)
-
             }else{
                 startActivity(Intent(this@ChatActivity, MainActivity::class.java))
                 finish()

@@ -77,7 +77,7 @@ class MainFragment : RxBaseFragment() {
         checkChatState()
     }
 
-    fun checkChatState() {
+    private fun checkChatState() {
         if(!isChatCheck)
             if(Functions.isOnline(activity))
                 subscriptions.add(

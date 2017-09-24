@@ -211,3 +211,7 @@ open class ChatInformation(
         var InvoiceSum: String? = null
 ): RealmObject()
 
+data class Balance(
+        var Balance: Double? = null
+)
+

@@ -144,7 +144,7 @@
         app:layout_constraintRight_toRightOf="parent" />
 
     <ImageView
-        android:id="@+id/imageView"
+        android:id="@+id/user_image"
         android:layout_width="@dimen/icon_time_height_width"
         android:layout_height="@dimen/icon_time_height_width"
         android:layout_marginBottom="16dp"
@@ -160,7 +160,7 @@
         android:layout_marginBottom="16dp"
         android:layout_marginStart="8dp"
         app:srcCompat="@drawable/ic_time"
-        app:layout_constraintBottom_toTopOf="@+id/imageView"
+        app:layout_constraintBottom_toTopOf="@+id/user_image"
         app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
@@ -169,8 +169,8 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:text="@string/ex_dollar"
-        app:layout_constraintBottom_toBottomOf="@+id/imageView"
-        app:layout_constraintStart_toEndOf="@+id/imageView" />
+        app:layout_constraintBottom_toBottomOf="@+id/user_image"
+        app:layout_constraintStart_toEndOf="@+id/user_image" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -180,7 +180,7 @@
         android:textColor="@color/black"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/cost_lesson"
-        app:layout_constraintStart_toEndOf="@+id/imageView" />
+        app:layout_constraintStart_toEndOf="@+id/user_image" />
 
     <TextView
         android:id="@+id/duration_lesson"
