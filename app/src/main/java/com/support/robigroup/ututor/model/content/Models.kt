@@ -4,10 +4,8 @@ import android.os.Parcel
 import android.os.Parcelable
 import com.support.robigroup.ututor.Constants
 import com.support.robigroup.ututor.screen.main.adapters.AdapterConstants
-import com.support.robigroup.ututor.screen.main.adapters.ViewType
 import com.support.robigroup.ututor.commons.createParcel
 import io.realm.RealmObject
-import io.realm.annotations.PrimaryKey
 
 
 data class ClassRoom(
@@ -46,9 +44,9 @@ data class Subject(
     )
 
     override fun writeToParcel(dest: Parcel, flags: Int) {
-        dest.writeInt(Id!!)
+        dest.writeInt(Id)
         dest.writeString(Text)
-        dest.writeInt(ClassNumber!!)
+        dest.writeInt(ClassNumber)
     }
 
     override fun describeContents() = 0
@@ -58,7 +56,7 @@ data class TopicItem(
         val Id: Int = 0,
         var Text: String? = null,
         var subject: Subject? = null
-) : ViewType, Parcelable {
+) : Parcelable {
 
     companion object {
         @JvmField @Suppress("unused")
@@ -72,14 +70,12 @@ data class TopicItem(
     )
 
     override fun writeToParcel(dest: Parcel, flags: Int) {
-        dest.writeInt(Id ?: 0)
+        dest.writeInt(Id)
         dest.writeString(Text ?: "error")
         dest.writeParcelable(subject,flags)
     }
 
     override fun describeContents() = 0
-
-    override fun getViewType() = AdapterConstants.TOPICS
 }
 
 data class Teacher(

@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context="com.support.robigroup.ututor.screen.topic.TeachersActivity">
+    tools:context="com.support.robigroup.ututor.screen.teachers.TeachersActivity">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
@@ -50,11 +50,11 @@
             android:textColor="@color/colorLightBlue" />
 
         <TextView
-            android:id="@+id/number_of_teachers"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
-            android:text="@string/teachers_found"/>
+            android:text="@string/teachers_found"
+            android:id="@+id/number_of_teachers"/>
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/list_teachers"
@@ -65,12 +65,5 @@
             tools:listitem="@layout/item_teacher"
             />
     </LinearLayout>
-
-    <include layout="@layout/topics"
-        android:id="@+id/topics_bottom"
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent"
-        android:layout_gravity="bottom"
-        android:visibility="gone"/>
 
 </android.support.design.widget.CoordinatorLayout>

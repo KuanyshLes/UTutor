@@ -16,7 +16,7 @@ public class NetworkStateReceiver extends BroadcastReceiver {
     private boolean mConnected;
 
     public NetworkStateReceiver(Context context) {
-        mListeners = new ArrayList<NetworkStateReceiverListener>();
+        mListeners = new ArrayList<>();
         mManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         checkStateChanged();
     }
@@ -58,8 +58,8 @@ public class NetworkStateReceiver extends BroadcastReceiver {
     }
 
     public interface NetworkStateReceiverListener {
-        public void onNetworkAvailable();
+        void onNetworkAvailable();
 
-        public void onNetworkUnavailable();
+        void onNetworkUnavailable();
     }
 }

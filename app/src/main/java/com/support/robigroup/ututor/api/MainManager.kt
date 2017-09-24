@@ -34,6 +34,8 @@ class MainManager(
 
     fun postChatComplete(): Flowable<Response<ChatLesson>> = RestAPI.getApi().postChatComplete()
 
+    fun postRequestCancel(id: String): Flowable<Response<ResponseBody>> = RestAPI.getApi().postCancelRequest(id)
+
     fun evalChat(rating: Int,lessonId: Int): Flowable<Response<ResponseBody>> = RestAPI.getApi().evalChat(rating,lessonId)
 
     fun getChatInformation(): Flowable<Response<ChatLesson>> = RestAPI.getApi().getInformationAboutChat()

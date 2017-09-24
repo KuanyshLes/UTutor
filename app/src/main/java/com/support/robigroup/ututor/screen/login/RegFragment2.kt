@@ -35,7 +35,7 @@ class RegFragment2 : Fragment() {
         super.onActivityCreated(savedInstanceState)
         logd("onActivityCreated Reg2")
         done_button.setOnClickListener {
-            mListener!!.OnDoneButtonClicked(firstName.text.toString(),lastName.text.toString())
+            mListener!!.onDoneButtonClicked(first_name.text.toString(),last_name.text.toString())
         }
     }
 

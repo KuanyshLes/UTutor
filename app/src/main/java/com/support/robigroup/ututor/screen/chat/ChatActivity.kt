@@ -51,7 +51,6 @@ class ChatActivity : AppCompatActivity(),
         DialogInterface.OnClickListener,
         OnChatActivityDialogInteractionListener,
         MessagesListAdapter.SelectionListener,
-        MessagesListAdapter.OnLoadMoreListener,
         ContentManager.PickContentListener{
 
 
@@ -109,6 +108,19 @@ class ChatActivity : AppCompatActivity(),
             for (range in modifications) {
                 notifyItemRangeChanged(range.startIndex, range.length)
             }
+        }
+    }
+
+    companion object {
+
+        private val CONTENT_TYPE_IMAGE_TEXT: Byte = 1
+        private val KEY_TEACHER = "teacher"
+        private val TOTAL_MESSAGES_COUNT = 100
+        private val TAG_READY_DIALOG = "readyDialog"
+
+
+        fun open(context: Context) {
+            context.startActivity(Intent(context, ChatActivity::class.java))
         }
     }
 
@@ -198,49 +210,9 @@ class ChatActivity : AppCompatActivity(),
                         R.layout.item_outcoming_text_image_message,
                         this)
 
-
-        messagesAdapter = MessagesListAdapter(user.id, holders,imageLoader)
+        messagesAdapter = MessagesListAdapter(user.id, holders, imageLoader)
         messagesAdapter!!.enableSelectionMode(this)
-//        messagesAdapter!!.setLoadMoreListener(this)
         messagesList!!.setAdapter(messagesAdapter)
-    }
-
-    override fun onBackPressed() {
-        if (selectionCount == 0) {
-            super.onBackPressed()
-        } else {
-            messagesAdapter!!.unselectAllItems()
-        }
-    }
-
-    override fun onLoadMore(page: Int, totalItemsCount: Int) {
-//        if (totalItemsCount < TOTAL_MESSAGES_COUNT) {
-//            loadMessages()
-//        }
-    }
-
-    override fun onSelectionChanged(count: Int) {
-        selectionCount = count
-        menu!!.findItem(R.id.action_delete).isVisible = count > 0
-        menu!!.findItem(R.id.action_copy).isVisible = count > 0
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.chat_actions_menu, menu)
-        this.menu = menu
-        onSelectionChanged(0)
-        return true
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.action_delete -> messagesAdapter!!.deleteSelectedMessages()
-            R.id.action_copy -> {
-                messagesAdapter!!.copySelectedMessagesText(this, messageStringFormatter, true)
-                toast(getString(R.string.copied_message))
-            }
-        }
-        return true
     }
 
     private val messageStringFormatter: MessagesListAdapter.Formatter<MyMessage>
@@ -268,11 +240,6 @@ class ChatActivity : AppCompatActivity(),
         val alert = builder.create()
         alert.setCancelable(true)
         alert.show()
-    }
-
-    override fun onSubmit(input: CharSequence): Boolean {
-        sendMessage(input)
-        return true
     }
 
     private fun postLearnerReady(){
@@ -342,6 +309,15 @@ class ChatActivity : AppCompatActivity(),
         subscriptions.add(subscription)
     }
 
+    //    protected fun loadMessages() {
+//        Handler().postDelayed(//imitation of internet connection
+//        {
+//            val messages = MessagesFixtures.getMessages(lastLoadedDate)
+//            lastLoadedDate = messages[messages.size - 1].createdAt
+//            messagesAdapter!!.addToEnd(messages, false)
+//        }, 1000)
+
+
     private fun evalChat(rating: Int,lessonId:Int){
         val subscription = MainManager().evalChat(rating,lessonId)
                 .subscribeOn(Schedulers.io())
@@ -399,41 +375,12 @@ class ChatActivity : AppCompatActivity(),
         subscriptions.add(subscription)
     }
 
-//    protected fun loadMessages() {
-//        Handler().postDelayed(//imitation of internet connection
-//        {
-//            val messages = MessagesFixtures.getMessages(lastLoadedDate)
-//            lastLoadedDate = messages[messages.size - 1].createdAt
-//            messagesAdapter!!.addToEnd(messages, false)
-//        }, 1000)
 //    }
-
-    override fun onAddAttachments() {
-        AlertDialog.Builder(this)
-                .setItems(R.array.view_types_dialog, this)
-                .show()
-    }
-
-    override fun hasContentFor(message: MyMessage, type: Byte): Boolean {
-        when (type) {
-            CONTENT_TYPE_IMAGE_TEXT -> return message.imageUrl != null
-                    && message.text != null
-        }
-        return false
-    }
 
     override fun onFinishCounterFromReadyDialog() {
         if(!mChatInformation.LearnerReady||!mChatInformation.TeacherReady){
             startActivity(Intent(this@ChatActivity, MainActivity::class.java))
             finish()
-        }
-    }
-
-
-    override fun onClick(dialogInterface: DialogInterface, i: Int) {
-        when (i) {
-            0 ->
-                contentManager?.pickContent(ContentManager.Content.IMAGE)
         }
     }
 
@@ -453,22 +400,8 @@ class ChatActivity : AppCompatActivity(),
             postLearnerReady()
     }
 
-    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
-        super.onRestoreInstanceState(savedInstanceState)
-        contentManager?.onRestoreInstanceState(savedInstanceState)
-    }
 
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        contentManager?.onSaveInstanceState(outState)
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
-        super.onActivityResult(requestCode, resultCode, data)
-        //Need for handle result
-        contentManager?.onActivityResult(requestCode, resultCode, data)
-    }
-
+    //interface methods for cutting and else
     override fun onStartContentLoading() {
 
     }
@@ -495,18 +428,80 @@ class ChatActivity : AppCompatActivity(),
         contentManager?.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
 
-    companion object {
-
-        private val CONTENT_TYPE_IMAGE_TEXT: Byte = 1
-        private val KEY_TEACHER = "teacher"
-        private val TOTAL_MESSAGES_COUNT = 100
-        private val TAG_READY_DIALOG = "readyDialog"
 
 
-        fun open(context: Context) {
-            context.startActivity(Intent(context, ChatActivity::class.java))
+    override fun onBackPressed() {
+        if (selectionCount == 0) {
+            super.onBackPressed()
+        } else {
+            messagesAdapter!!.unselectAllItems()
         }
     }
 
+    override fun onSelectionChanged(count: Int) {
+        selectionCount = count
+        menu!!.findItem(R.id.action_delete).isVisible = count > 0
+        menu!!.findItem(R.id.action_copy).isVisible = count > 0
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.chat_actions_menu, menu)
+        this.menu = menu
+        onSelectionChanged(0)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.action_delete -> messagesAdapter!!.deleteSelectedMessages()
+            R.id.action_copy -> {
+                messagesAdapter!!.copySelectedMessagesText(this, messageStringFormatter, true)
+                toast(getString(R.string.copied_message))
+            }
+        }
+        return true
+    }
+
+    override fun onAddAttachments() {
+        AlertDialog.Builder(this)
+                .setItems(R.array.view_types_dialog, this)
+                .show()
+    }
+
+    override fun hasContentFor(message: MyMessage, type: Byte): Boolean {
+        when (type) {
+            CONTENT_TYPE_IMAGE_TEXT -> return message.imageUrl != null
+                    && message.text != null
+        }
+        return false
+    }
+
+    override fun onSubmit(input: CharSequence): Boolean {
+        sendMessage(input)
+        return true
+    }
+
+    override fun onClick(dialogInterface: DialogInterface, i: Int) {
+        when (i) {
+            0 ->
+                contentManager?.pickContent(ContentManager.Content.IMAGE)
+        }
+    }
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        super.onRestoreInstanceState(savedInstanceState)
+        contentManager?.onRestoreInstanceState(savedInstanceState)
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        contentManager?.onSaveInstanceState(outState)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
+        super.onActivityResult(requestCode, resultCode, data)
+        //Need for handle result
+        contentManager?.onActivityResult(requestCode, resultCode, data)
+    }
 
 }

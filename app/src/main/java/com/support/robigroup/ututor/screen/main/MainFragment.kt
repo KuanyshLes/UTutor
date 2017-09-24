@@ -14,7 +14,7 @@ import com.support.robigroup.ututor.commons.*
 import com.support.robigroup.ututor.model.content.ChatInformation
 import com.support.robigroup.ututor.model.content.ChatLesson
 import com.support.robigroup.ututor.screen.chat.ChatActivity
-import com.support.robigroup.ututor.screen.main.adapters.RecentTopicsAdapter
+import com.support.robigroup.ututor.screen.main.adapters.MySubjectRecyclerViewAdapter
 import com.support.robigroup.ututor.singleton.SingletonSharedPref
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -50,7 +50,7 @@ class MainFragment : RxBaseFragment() {
         super.onActivityCreated(savedInstanceState)
         mListener?.setToolbarTitle(getString(R.string.main_title))
         mListener?.setDisplayHomeAsEnabled(false)
-        mAdapter = MySubjectRecyclerViewAdapter(ArrayList(),mListener)
+        mAdapter = MySubjectRecyclerViewAdapter(ArrayList(), mListener)
 
 //        main_recycler_view_header.apply {
 //            setHasFixedSize(true)
@@ -134,7 +134,7 @@ class MainFragment : RxBaseFragment() {
                 .subscribe (
                         { retrievedTopics ->
                             if(activity.requestErrorHandler(retrievedTopics.code(),retrievedTopics.message())){
-                                (main_recycler_view_header.adapter as RecentTopicsAdapter).clearAndAddRecentTopics(retrievedTopics.body())
+//                                (main_recycler_view_header.adapter as RecentTopicsAdapter).clearAndAddRecentTopics(retrievedTopics.body())
                             }
                         },
                         { e ->

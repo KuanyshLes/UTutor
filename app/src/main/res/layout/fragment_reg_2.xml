@@ -5,7 +5,6 @@
     android:layout_height="match_parent"
     tools:context="com.support.robigroup.ututor.screen.login.RegFragment2">
 
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -23,8 +22,8 @@
             android:layout_height="wrap_content">
 
             <android.support.design.widget.TextInputEditText
-                android:id="@+id/firstName"
                 style="@style/email_field"
+                android:id="@+id/first_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/prompt_first_name" />
@@ -36,7 +35,7 @@
             android:layout_marginBottom="@dimen/margin_12">
 
             <android.support.design.widget.TextInputEditText
-                android:id="@+id/lastName"
+                android:id="@+id/last_name"
                 style="@style/password_field"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

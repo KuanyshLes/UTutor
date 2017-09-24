@@ -17,7 +17,7 @@ import java.util.Locale
 class ListViewAdapter(
         private val activity: MainActivity,
         resource: Int,
-        private val friendList: MutableList<TopicItem> = ArrayList<TopicItem>(),
+        private val friendList: MutableList<TopicItem> = ArrayList(),
         private var searchList:  MutableList<TopicItem>,
         private val showEmptyResultsEnabled: Boolean = false)
     : ArrayAdapter<TopicItem>(activity, resource, friendList) {

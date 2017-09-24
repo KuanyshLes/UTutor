@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.support.robigroup.ututor.screen.topic.LastTopicFragment">
+    tools:context="com.support.robigroup.ututor.screen.teachers.LastTopicFragment">
 
     <TextView
         android:id="@+id/topic_desc_head"
@@ -79,7 +79,6 @@
         app:layout_constraintTop_toBottomOf="@+id/class_text">
 
         <ImageView
-            android:id="@+id/teacher_photo"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:contentDescription="@string/desc_logo"
@@ -150,7 +149,7 @@
         android:layout_height="@dimen/icon_time_height_width"
         android:layout_marginBottom="16dp"
         android:layout_marginStart="8dp"
-        android:src="@drawable/ic_time"
+        app:srcCompat="@drawable/ic_time"
         app:layout_constraintBottom_toTopOf="@+id/button_open_chat"
         app:layout_constraintStart_toStartOf="parent" />
 
@@ -160,7 +159,7 @@
         android:layout_height="@dimen/icon_time_height_width"
         android:layout_marginBottom="16dp"
         android:layout_marginStart="8dp"
-        android:src="@drawable/ic_time"
+        app:srcCompat="@drawable/ic_time"
         app:layout_constraintBottom_toTopOf="@+id/imageView"
         app:layout_constraintStart_toStartOf="parent" />
 
@@ -169,12 +168,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:text="10.00$"
+        android:text="@string/ex_dollar"
         app:layout_constraintBottom_toBottomOf="@+id/imageView"
         app:layout_constraintStart_toEndOf="@+id/imageView" />
 
     <TextView
-        android:id="@+id/cost_lesson_h"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -194,7 +192,6 @@
         app:layout_constraintStart_toEndOf="@+id/imageView2" />
 
     <TextView
-        android:id="@+id/duration_lesson_h"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"

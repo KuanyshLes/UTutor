@@ -11,12 +11,6 @@ public class SingletonSharedPref {
     private SharedPreferences.Editor mEditor;
     private boolean mBulkUpdate = false;
 
-    public static class Key {
-        public static final String CLASS = "teachers";
-        public static final String TOPICS = "topics";
-        public static final String USER = "User";
-    }
-
     private SingletonSharedPref(Context context) {
         mPref = context.getSharedPreferences(SETTINGS_NAME, Context.MODE_PRIVATE);
     }

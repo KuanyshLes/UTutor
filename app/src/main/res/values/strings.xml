@@ -8,33 +8,26 @@
     <string name="action_sign_up">Sign up</string>
     <string name="error_invalid_email">This email address is invalid</string>
     <string name="error_invalid_password">This password is too short</string>
-    <string name="error_incorrect_password">This password is incorrect</string>
     <string name="error_field_required">This field is required</string>
     <string name="error_request_exists">Запрос был создан</string>
-    <string name="error_request_already_confirmed">Запрос о готовности уже отправлен</string>
-    <string name="new_case_occur">Ошибка новый кейс</string>
     <string name="action_go_sign_up">Don\'t have an account?</string>
     <string name="desc_logo">Logo</string>
     <string name="desc_arrow_right">Open</string>
-    <string name="desc_teacher">Teacher</string>
 
     <string name="prompt_are_you_sure">Вы уверены закрыть диалог</string>
 
 
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="topic">Тема:</string>
     <string name="drawer_item_logout">Выйти</string>
     <string name="drawer_item_settings">Настройки</string>
     <string name="drawer_item_payment">Оплата</string>
     <string name="drawer_item_help">Помощь</string>
-    <string name="same_topic">Похожие темы</string>
     <string name="loading">Loading…</string>
     <string name="action_next">Next</string>
     <string name="prompt_phone">Phone</string>
     <string name="action_done">Done</string>
     <string name="action_finish">Завершить</string>
-    <string name="action_evaluate">Оценить</string>
     <string name="prompt_first_name">First name</string>
     <string name="prompt_last_name">Last name</string>
     <string name="all_lessons">Все предметы</string>
@@ -46,35 +39,31 @@
     <string name="ex_name">Земский Андрей</string>
     <string name="ex_lesson_desc">We defined here a synchronous API that will receive the “after” and “limit” query string. The return type is “Call”, this Call class will allow us to execute the request and know if the request was successful or not, also to extract the response data with the given generic type, in this case, the new defined Kotlin class RedditNewsResponse.</string>
     <string name="ex_class">9 класс</string>
-    <string name="find_teacher_text">Найти учителя</string>
-    <string name="group">класс</string>
     <string name="ex_teacher_full_name">Валентина Петровна</string>
     <string name="ex_lessons">Алгебра, Геометрия, Физика</string>
     <string name="ex_rating">9.5</string>
     <string name="ex_name_teacher">Валентина</string>
     <string name="choose_teacher">Выбрать</string>
     <string name="ex_topic_short">С понятием рациональных чисел вы уже наверняка знакомы. Аналогично рациональные функции – это функции,</string>
-    <string name="teachers_accepted">Откликнулось</string>
     <string name="teachers_found">Нашлось</string>
 
 
     //titles
     <string name="main_title">Главная</string>
-    <string name="profile_title">Профиль</string>
     <string name="ex_time">9 д. 16 ч.</string>
-    <string name="lang">kk-KZ</string>
     <string name="wait">wait</string>
     <string name="sending">sending</string>
     <string name="waiting">Ожидание</string>
     <string name="declined">Отказал</string>
     <string name="action_ready">Готов</string>
-    <string name="chat_is_completed">Время ожидания чата истекло</string>
-    <string name="error">Ошибка</string>
+    <string name="action_cancel">Отмена</string>
+    <string name="action_hide">Скрыть</string>
+
+
 
 
     // for chat
     <string name="hint_enter_a_message">Type a message…</string>
-    <string name="on_log_click_message">Your custom long click handler</string>
     <string name="action_delete">Delete</string>
     <string name="action_copy">Copy</string>
     <string name="copied_message">Message copied!</string>
@@ -93,8 +82,6 @@
     <string name="prof_top_up_balance">Пополнить баланс</string>
     <string name="ex_prof_balance">10.00$</string>
     <string name="prof_rating_by_lessons">Рейтинг по предметам</string>
-    <string name="teacher_hide_button_text">Скрыть</string>
-    <string name="topic_hide_teacher">Скрыть</string>
     <string name="class_name">класс</string>
     <string name="ex_class_name">10 класс</string>
 
@@ -102,12 +89,8 @@
         <item name="image">From gallery</item>
         <!--<item name="voice">Voice message (custom)</item>-->
     </string-array>
-    <string name="title_activity_main_nav">MainNavActivity</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-
-    <string name="action_settings">Settings</string>
-    <string name="my_balance">Мой счет:</string>
 
 </resources>

@@ -22,7 +22,6 @@ import com.support.robigroup.ututor.R
 import com.support.robigroup.ututor.commons.OnLoginActivityInteractionListener
 import com.support.robigroup.ututor.commons.inflate
 import com.support.robigroup.ututor.commons.logd
-import org.w3c.dom.Text
 
 
 /**
@@ -77,7 +76,7 @@ class LoginFragment : Fragment() {
         val ss = SpannableString(accountCheck)
         val clickableSpan = object : ClickableSpan() {
             override fun onClick(textView: View) {
-                mListener!!.OnSignUpTextClicked()
+                mListener!!.onSignUpTextClicked()
             }
 
             override fun updateDrawState(ds: TextPaint) {
@@ -116,7 +115,7 @@ class LoginFragment : Fragment() {
     private fun attemptLogin() {
         val emailStr = emailContainer!!.text.toString()
         val passwordStr = passwordContainer!!.text.toString()
-        mListener!!.OnSignInButtonClicked(emailStr,passwordStr)
+        mListener!!.onSignInButtonClicked(emailStr,passwordStr)
 
 
     }

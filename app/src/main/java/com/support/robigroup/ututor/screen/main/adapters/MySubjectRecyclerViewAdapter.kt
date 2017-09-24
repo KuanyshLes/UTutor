@@ -1,5 +1,6 @@
-package com.support.robigroup.ututor.screen.main
+package com.support.robigroup.ututor.screen.main.adapters
 
+import android.graphics.Color
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -12,6 +13,10 @@ import com.support.robigroup.ututor.model.content.Subject
 
 class MySubjectRecyclerViewAdapter(private val mValues: ArrayList<Subject>, private val mListener: OnMainActivityInteractionListener?) : RecyclerView.Adapter<MySubjectRecyclerViewAdapter.ViewHolder>() {
 
+    companion object {
+        private val colors: Array<String> = arrayOf("#8A4FC6","#A2DE49","#EC102B","#FFB80D","#4A90E2","#43C1A5")
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
                 .inflate(R.layout.item_subject, parent, false)
@@ -22,8 +27,10 @@ class MySubjectRecyclerViewAdapter(private val mValues: ArrayList<Subject>, priv
         holder.mItem = mValues[position]
         holder.mContentView.text = mValues[position].Text
         holder.mView.setOnClickListener {
-            mListener?.OnSubjectItemClicked(holder.mItem!!)
+            mListener?.onSubjectItemClicked(holder.mItem!!)
         }
+        holder.mLeftSquare.setBackgroundColor(Color.parseColor(colors[position%colors.size]))
+
     }
 
     override fun getItemCount(): Int {
@@ -32,6 +39,7 @@ class MySubjectRecyclerViewAdapter(private val mValues: ArrayList<Subject>, priv
 
     inner class ViewHolder(val mView: View) : RecyclerView.ViewHolder(mView) {
         val mContentView: TextView = mView.findViewById<TextView>(R.id.main_lesson_title_textview) as TextView
+        val mLeftSquare: TextView = mView.findViewById<TextView>(R.id.main_lesson_title_textview) as TextView
         var mItem: Subject? = null
     }
 

@@ -29,7 +29,7 @@ class RegistrationFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         next_button.setOnClickListener {
-            mListener!!.OnNextButtonClicked(email.text.toString(),password.text.toString(),phone.text.toString())
+            mListener!!.onNextButtonClicked(email.text.toString(),password.text.toString(),phone.text.toString())
         }
     }
 

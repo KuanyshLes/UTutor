@@ -1,4 +1,4 @@
-package com.support.robigroup.ututor.screen.topic
+package com.support.robigroup.ututor.screen.teachers
 
 import android.content.Context
 import android.content.Intent
@@ -7,17 +7,14 @@ import android.os.PersistableBundle
 import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
-import android.view.View
 import com.google.gson.Gson
 import com.support.robigroup.ututor.R
 import com.support.robigroup.ututor.api.MainManager
 import com.support.robigroup.ututor.commons.OnTeachersActivityInteractionListener
-import com.support.robigroup.ututor.commons.logd
 import com.support.robigroup.ututor.commons.requestErrorHandler
-import com.support.robigroup.ututor.commons.snack
 import com.support.robigroup.ututor.model.content.*
 import com.support.robigroup.ututor.screen.chat.ChatActivity
-import com.support.robigroup.ututor.screen.topic.adapters.TeachersAdapter
+import com.support.robigroup.ututor.screen.teachers.adapters.TeachersAdapter
 import com.support.robigroup.ututor.singleton.SingletonSharedPref
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -26,13 +23,12 @@ import io.realm.OrderedRealmCollectionChangeListener
 import io.realm.Realm
 import io.realm.RealmResults
 import kotlinx.android.synthetic.main.activity_teachers.*
-import java.util.concurrent.TimeUnit
 import kotlin.properties.Delegates
 
 class TeachersActivity : AppCompatActivity(), OnTeachersActivityInteractionListener {
     private var mSubject: Subject by Delegates.notNull()
     private var myAdapter: TeachersAdapter by Delegates.notNull()
-    private var subscriptions: CompositeDisposable by Delegates.notNull()
+    private var compositeDisposable: CompositeDisposable by Delegates.notNull()
     private var realm: Realm by Delegates.notNull()
     private var chatInfos: RealmResults<ChatInformation> by Delegates.notNull()
 
@@ -59,7 +55,7 @@ class TeachersActivity : AppCompatActivity(), OnTeachersActivityInteractionListe
         chatInfos = realm.where(ChatInformation::class.java).findAll()
         chatInfos.addChangeListener(mRealmChangeListener)
 
-        subscriptions = CompositeDisposable()
+        compositeDisposable = CompositeDisposable()
         myAdapter = TeachersAdapter(this)
         if(list_teachers.adapter == null){
             list_teachers.adapter = myAdapter
@@ -81,7 +77,7 @@ class TeachersActivity : AppCompatActivity(), OnTeachersActivityInteractionListe
 
     override fun onDestroy() {
         super.onDestroy()
-        subscriptions.clear()
+        compositeDisposable.clear()
         SingletonSharedPref.getInstance().put(ARG_ADAPTER,Gson().toJson(myAdapter.getTeachers(),Teachers::class.java))
         chatInfos.removeChangeListener(mRealmChangeListener)
         realm.close()
@@ -104,28 +100,34 @@ class TeachersActivity : AppCompatActivity(), OnTeachersActivityInteractionListe
     }
 
     //Events
-    override fun OnTeacherItemClicked(item: Teacher,view: View){
+    override fun onTeacherItemClicked(item: Teacher){
         if(item.LessonRequestId!=null){
             Snackbar.make(findViewById(android.R.id.content),getString(R.string.error_request_exists),Snackbar.LENGTH_SHORT)
         }else{
             requestLessonToTeacher(item.Id,mSubject.Id, EX_LANG,mSubject.ClassNumber)
         }
-//        if(info==null){
-//        }else if(info.StatusId==Constants.STATUS_REQUESTED_WAIT){
-//            snack(getString(R.string.error_request_exists))
-//        }else if(info.StatusId==Constants.STATUS_ACCEPTED_TEACHER&&!info.TeacherReady&&!info.LearnerReady){
-//            postLearnerReady()
-//        }else if(info.TeacherReady&&!info.LearnerReady){
-//            postLearnerReady()
-//        }else if(!info.TeacherReady&&info.LearnerReady){
-//            snack(getString(R.string.error_request_already_confirmed))
-//        }else {
-//            snack(getString(R.string.new_case_occur))
-//        }
     }
 
+    override fun onCancelRequest(item: Teacher) {
+        val subscription = MainManager().postRequestCancel(item.LessonRequestId!!)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe (
+                        { teachers ->
+                            if(requestErrorHandler(teachers.code(),teachers.message())){
+                                item.LessonRequestId = null
+                                myAdapter.notifyDataSetChanged()
+                            }
+                        },
+                        { e ->
+                            Snackbar.make(findViewById(android.R.id.content), e.message ?: "", Snackbar.LENGTH_LONG).show()
+                            e.printStackTrace()
+                        }
+                )
+        compositeDisposable.add(subscription)
+    }
 
-    private fun requestTeacher(classNumber: Int,language: String,subjectId: Int) {
+    private fun requestTeacher(classNumber: Int, language: String, subjectId: Int) {
         val subscription = MainManager().getTeachers(classNumber,language,subjectId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -133,7 +135,7 @@ class TeachersActivity : AppCompatActivity(), OnTeachersActivityInteractionListe
                         { teachers ->
                             if(requestErrorHandler(teachers.code(),teachers.message())){
                                 myAdapter.clearAndAddTeachers(teachers.body()!!)
-                                logd(Gson().toJson(teachers.body()!![0],Teacher::class.java))
+                                updateTeachersCount(teachers.body()!!.size)
                             }else{
                                 //TODO handle server errors
                             }
@@ -143,10 +145,8 @@ class TeachersActivity : AppCompatActivity(), OnTeachersActivityInteractionListe
                             e.printStackTrace()
                         }
                 )
-        subscriptions.add(subscription)
+        compositeDisposable.add(subscription)
     }
-
-
 
     private fun requestLessonToTeacher(teacherId: String, subjectId: Int, language: String, classNumber: Int){
         val subscription = MainManager().postLessonRequest(teacherId, subjectId, language, classNumber)
@@ -164,7 +164,11 @@ class TeachersActivity : AppCompatActivity(), OnTeachersActivityInteractionListe
                             Snackbar.make(findViewById(android.R.id.content), e.message ?: "", Snackbar.LENGTH_LONG).show()
                         }
                 )
-        subscriptions.add(subscription)
+        compositeDisposable.add(subscription)
+    }
+
+    private fun updateTeachersCount(count: Int){
+        number_of_teachers.text = String.format("%s %d",getString(R.string.teachers_found),count)
     }
 
     //Additional private methods
@@ -175,14 +179,5 @@ class TeachersActivity : AppCompatActivity(), OnTeachersActivityInteractionListe
     private fun OnTeacherAccepted(info: ChatInformation){
         ChatActivity.open(this)
     }
-
-    private fun getTimeWaitingInMinutes(millis: Long): String
-            = String.format(" %dм. %dс.",
-            TimeUnit.MILLISECONDS.toMinutes(millis),
-            TimeUnit.MILLISECONDS.toSeconds(millis) -
-                    TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis))
-    )
-
-
 
 }

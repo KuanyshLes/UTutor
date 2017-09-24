@@ -77,7 +77,7 @@ class LoginActivity : AppCompatActivity(), OnLoginActivityInteractionListener {
         return !SingletonSharedPref.getInstance().getString(Constants.KEY_TOKEN,"").equals("")
     }
 
-    override fun OnSignInButtonClicked(email: String, password: String) {
+    override fun onSignInButtonClicked(email: String, password: String) {
 
         val loginFragment: LoginFragment = supportFragmentManager.findFragmentByTag(TAG_LOGIN_FRAGMENT) as LoginFragment
         logd(loginFragment.equals(this.loginFragment).toString())
@@ -140,20 +140,20 @@ class LoginActivity : AppCompatActivity(), OnLoginActivityInteractionListener {
         finish()
     }
 
-    override fun OnSignUpTextClicked() {
+    override fun onSignUpTextClicked() {
         supportFragmentManager.beginTransaction().replace(R.id.container,regFragment).addToBackStack(null).commit()
     }
 
-    override fun OnNextButtonClicked(email: String, password: String, phone: String) {
+    override fun onNextButtonClicked(email: String, password: String, phone: String) {
         supportFragmentManager.beginTransaction().replace(R.id.container,reg2Fragment).addToBackStack(null).commit()
     }
 
-    override fun OnDoneButtonClicked(firstName: String, lastName: String) {
+    override fun onDoneButtonClicked(firstName: String, lastName: String) {
         startActivity(Intent(this,MainActivity::class.java))
         finish()
     }
 
-    override fun OnUploadPhotoClicked() {
+    override fun onUploadPhotoClicked() {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 

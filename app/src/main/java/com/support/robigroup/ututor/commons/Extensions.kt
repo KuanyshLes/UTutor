@@ -28,10 +28,6 @@ fun logd(message: String,tag: String = "myLogs"){
 
 var progressDialog: ProgressDialog? = null
 
-fun Context.snack(message: String,duration: Int = Snackbar.LENGTH_SHORT){
-
-}
-
 fun Context.builtMessageWait(title: String = getString(R.string.sending), message: String = getString(R.string.wait)) {
     if(progressDialog==null){
         progressDialog = ProgressDialog(applicationContext)

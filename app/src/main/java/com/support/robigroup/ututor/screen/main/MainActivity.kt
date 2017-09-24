@@ -12,7 +12,6 @@ import com.support.robigroup.ututor.R
 import com.support.robigroup.ututor.commons.OnMainActivityInteractionListener
 import com.support.robigroup.ututor.model.content.Subject
 import com.support.robigroup.ututor.screen.login.LoginActivity
-import com.support.robigroup.ututor.screen.topic.TeachersActivity
 import com.support.robigroup.ututor.singleton.SingletonSharedPref
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.activity_main_nav.*
@@ -30,9 +29,9 @@ class MainActivity :
 
         setContentView(R.layout.activity_main_nav)
         setSupportActionBar(toolbar)
-        val intent = Intent()
-        intent.setClass(this, NotificationService::class.java)
-        startService(intent)
+//        val intent = Intent()
+//        intent.setClass(this, NotificationService::class.java)
+//        startService(intent)
 
         val toggle = ActionBarDrawerToggle(
                 this, drawer_layout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
@@ -75,7 +74,7 @@ class MainActivity :
         }
     }
 
-    override fun OnSubjectItemClicked(item: Subject) {
+    override fun onSubjectItemClicked(item: Subject) {
         startActivity(Intent(this,ClassesActivity::class.java).putExtra(ClassesActivity.ARG_SUBJECT,item))
     }
 

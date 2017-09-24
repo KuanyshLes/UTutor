@@ -8,25 +8,26 @@ import com.support.robigroup.ututor.model.content.Teacher
 import com.support.robigroup.ututor.screen.main.adapters.ListViewAdapter
 
 interface OnLoginActivityInteractionListener {
-    fun OnSignInButtonClicked (email: String,password: String)
-    fun OnSignUpTextClicked ()
-    fun OnNextButtonClicked (email: String,password: String,phone: String)
-    fun OnDoneButtonClicked (firstName: String,lastName: String)
-    fun OnUploadPhotoClicked ()
+    fun onSignInButtonClicked(email: String, password: String)
+    fun onSignUpTextClicked()
+    fun onNextButtonClicked(email: String, password: String, phone: String)
+    fun onDoneButtonClicked(firstName: String, lastName: String)
+    fun onUploadPhotoClicked()
 }
 interface OnMainActivityInteractionListener {
-    fun OnSubjectItemClicked(item: Subject)
+    fun onSubjectItemClicked(item: Subject)
     fun setDisplayHomeAsEnabled(showHomeAsUp: Boolean)
     fun setToolbarTitle(title: String)
 }
 
 interface ClassesActivityListener{
-    fun OnClassItemClicked(item: Subject)
+    fun onClassItemClicked(item: Subject)
 
 }
 
 interface OnTeachersActivityInteractionListener {
-    fun OnTeacherItemClicked(item: Teacher,view: View)
+    fun onTeacherItemClicked(item: Teacher)
+    fun onCancelRequest(item: Teacher)
 }
 
 interface OnChatActivityDialogInteractionListener {

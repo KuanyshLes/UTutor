@@ -1,16 +1,15 @@
 package com.support.robigroup.ututor.screen.main
 
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.MenuItem
 import com.support.robigroup.ututor.R
 import com.support.robigroup.ututor.commons.ClassesActivityListener
 import com.support.robigroup.ututor.model.content.Subject
-import com.support.robigroup.ututor.model.content.Teachers
 import com.support.robigroup.ututor.screen.main.adapters.ClassAdapter
-import com.support.robigroup.ututor.screen.topic.TeachersActivity
+import com.support.robigroup.ututor.screen.teachers.TeachersActivity
 import kotlinx.android.synthetic.main.activity_classes.*
 import kotlin.properties.Delegates
 
@@ -45,7 +44,7 @@ class ClassesActivity : AppCompatActivity(), ClassesActivityListener {
         super.onBackPressed()
     }
 
-    override fun OnClassItemClicked(item: Subject) {
+    override fun onClassItemClicked(item: Subject) {
         TeachersActivity.open(this,item)
     }
 
@@ -61,6 +60,6 @@ class ClassesActivity : AppCompatActivity(), ClassesActivityListener {
 
 
     companion object {
-        public val ARG_SUBJECT = "subject"
+        val ARG_SUBJECT = "subject"
     }
 }

@@ -1,4 +1,4 @@
-package com.support.robigroup.ututor.screen.topic
+package com.support.robigroup.ututor.screen.teachers
 
 import android.content.Context
 import android.os.Bundle

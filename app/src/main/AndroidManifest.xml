@@ -47,12 +47,13 @@
             android:exported="true" />
 
         <activity
-            android:name=".screen.topic.TeachersActivity"
+            android:name=".screen.teachers.TeachersActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"/>
         <activity android:name=".screen.main.ClassesActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"/>
+        <activity android:name=".screen.draw.CanvasActivity" />
     </application>
 
 </manifest>

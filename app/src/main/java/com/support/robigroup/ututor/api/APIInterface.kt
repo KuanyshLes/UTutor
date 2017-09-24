@@ -47,6 +47,12 @@ interface APIInterface {
             @Header("Authorization") header: String = SingletonSharedPref.getInstance().getString(Constants.KEY_TOKEN)
     ): Flowable<Response<LessonRequestForTeacher>>
 
+    @POST("api/learner/lesson/request/cancel")
+    fun postCancelRequest(
+            @Query("id") requestId: String,
+            @Header("Authorization") header: String = SingletonSharedPref.getInstance().getString(Constants.KEY_TOKEN)
+    ): Flowable<Response<ResponseBody>>
+
     @GET("api/lesson/chat")
     fun getInformationAboutChat(
             @Header("Authorization") header: String = SingletonSharedPref.getInstance().getString(Constants.KEY_TOKEN)
