@@ -38,8 +38,8 @@ class MySubjectRecyclerViewAdapter(private val mValues: ArrayList<Subject>, priv
     }
 
     inner class ViewHolder(val mView: View) : RecyclerView.ViewHolder(mView) {
-        val mContentView: TextView = mView.findViewById<TextView>(R.id.main_lesson_title_textview) as TextView
-        val mLeftSquare: TextView = mView.findViewById<TextView>(R.id.main_lesson_title_textview) as TextView
+        val mContentView: TextView = mView.findViewById<TextView>(R.id.main_lesson_title_text) as TextView
+        val mLeftSquare: TextView = mView.findViewById<TextView>(R.id.leftSquare) as TextView
         var mItem: Subject? = null
     }
 
