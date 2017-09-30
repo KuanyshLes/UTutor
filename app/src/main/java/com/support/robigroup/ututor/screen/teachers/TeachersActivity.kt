@@ -67,8 +67,8 @@ class TeachersActivity : AppCompatActivity(), OnTeachersActivityInteractionListe
 
         supportActionBar!!.title = getString(R.string.search)
         number_of_teachers.text = getString(R.string.teachers_found)
-        class_text.text = String.format("%d %s",mSubject.ClassNumber,getString(R.string.class_name))
-        subject_name.text = mSubject.Text
+        history_class_text.text = String.format("%d %s",mSubject.ClassNumber,getString(R.string.class_name))
+        subject_name.text = mSubject.Name
 
         requestTeacher(mSubject.ClassNumber, EX_LANG,mSubject.Id)
     }

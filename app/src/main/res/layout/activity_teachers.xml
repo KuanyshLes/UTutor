@@ -41,7 +41,7 @@
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/class_text"
+            android:id="@+id/history_class_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/margin_10"

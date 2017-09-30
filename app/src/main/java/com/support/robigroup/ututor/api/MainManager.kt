@@ -13,7 +13,7 @@ class MainManager(
         private val TOKEN: String = SingletonSharedPref.getInstance().getString(KEY_TOKEN),
         private val api: RestAPI = RestAPI()) {
 
-    fun getLessons(): Flowable<Response<List<Subject>>>
+    fun getSubjects(): Flowable<Response<List<Subject>>>
         = RestAPI.getApi().getSubjects()
 
     fun getTeachers(classRoom: Int,language: String,subjectId: Int): Flowable<Response<List<Teacher>>>
@@ -42,6 +42,8 @@ class MainManager(
     fun evalChat(rating: Int,lessonId: Int): Flowable<Response<ResponseBody>> = RestAPI.getApi().evalChat(rating,lessonId)
 
     fun getChatInformation(): Flowable<Response<ChatLesson>> = RestAPI.getApi().getInformationAboutChat()
+
+    fun getHistory(): Flowable<Response<List<ChatHistory>>> = RestAPI.getApi().getHistory()
 
     fun sendMessage(messageText: String? = null, file64base: String? = null): Flowable<Response<CustomMessage>> =
             if(file64base != null&&messageText!=null) RestAPI.getApi().postTextMessageWithPhoto(messageText,file64base)

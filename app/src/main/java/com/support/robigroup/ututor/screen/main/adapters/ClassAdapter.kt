@@ -11,7 +11,8 @@ import kotlinx.android.synthetic.main.item_class.view.*
 
 
 class ClassAdapter(private val mListener: ClassesActivityListener?, private val mSubject: Subject) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-    private val items: List<ClassRoom> = List(11, {index ->  ClassRoom(index+1)})
+    private var items: MutableList<ClassRoom> =
+            mSubject.Classes.split(",").map { ClassRoom(it.toInt()) }.toMutableList()
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder?, position: Int) {
         holder as LessonsViewHolder

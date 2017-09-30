@@ -3,7 +3,6 @@ package com.support.robigroup.ututor.model.content
 import android.os.Parcel
 import android.os.Parcelable
 import com.support.robigroup.ututor.Constants
-import com.support.robigroup.ututor.screen.main.adapters.AdapterConstants
 import com.support.robigroup.ututor.commons.createParcel
 import io.realm.RealmObject
 
@@ -28,8 +27,9 @@ data class ClassRoom(
 
 data class Subject(
         var Id: Int,
-        var Text: String,
-        var ClassNumber: Int
+        var Name: String,
+        var ClassNumber: Int,
+        var Classes: String
 ): Parcelable {
 
     companion object {
@@ -40,13 +40,15 @@ data class Subject(
     protected constructor(parcelIn: Parcel) : this(
             parcelIn.readInt(),
             parcelIn.readString(),
-            parcelIn.readInt()
-    )
+            parcelIn.readInt(),
+            parcelIn.readString()
+            )
 
     override fun writeToParcel(dest: Parcel, flags: Int) {
         dest.writeInt(Id)
-        dest.writeString(Text)
+        dest.writeString(Name)
         dest.writeInt(ClassNumber)
+        dest.writeString(Classes)
     }
 
     override fun describeContents() = 0
@@ -90,7 +92,11 @@ data class Teacher(
         var Education: String? = null,
         var LessonRequestId: String? = null,
         var FullName: String? = null,
-        var ProfilePhoto: String? = null
+        var ProfilePhoto: String? = null,
+        var LessonRequestClass: Int? = null,
+        var LessonRequestSubjectId: Int? = null,
+        var LessonRequestSubjectName: String? = null,
+        var LessonRequestLanguage: String? = null
         ): Parcelable{
     companion object {
         @JvmField @Suppress("unused")
@@ -186,12 +192,78 @@ data class ChatLesson(
         var TeacherRaiting: Float? = null,
         var SubjectId: Int? = null,
         var Language: String? = null,
-        var InvoiceSum: String? = null
+        var InvoiceSum: String? = null,
+        var InvoiceTariff: String? = null
 )
+
+data class ChatHistory(
+        var Id: Int? = null,
+        var CreateTime: String? = null,
+        var StartTime: String? = null,
+        var EndTime: String? = null,
+        var Class: Int? = null,
+        var Duration: String? = null,
+        var LearnerRaiting: Float? = null,
+        var TeacherRaiting: Float? = null,
+        var Language: String? = null,
+        var SubjectName: String = "",
+        var ChatUserName: String? = null,
+        var ChatUserProfilePhoto: String? = null,
+        var InvoiceSum: Int? = null,
+        var InvoiceTariff: Int? = null
+) : Parcelable {
+    constructor(parcel: Parcel) : this(
+            parcel.readValue(Int::class.java.classLoader) as? Int,
+            parcel.readString(),
+            parcel.readString(),
+            parcel.readString(),
+            parcel.readValue(Int::class.java.classLoader) as? Int,
+            parcel.readString(),
+            parcel.readValue(Float::class.java.classLoader) as? Float,
+            parcel.readValue(Float::class.java.classLoader) as? Float,
+            parcel.readString(),
+            parcel.readString(),
+            parcel.readString(),
+            parcel.readString(),
+            parcel.readValue(Int::class.java.classLoader) as? Int,
+            parcel.readValue(Int::class.java.classLoader) as? Int) {
+    }
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeValue(Id)
+        parcel.writeString(CreateTime)
+        parcel.writeString(StartTime)
+        parcel.writeString(EndTime)
+        parcel.writeValue(Class)
+        parcel.writeString(Duration)
+        parcel.writeValue(LearnerRaiting)
+        parcel.writeValue(TeacherRaiting)
+        parcel.writeString(Language)
+        parcel.writeString(SubjectName)
+        parcel.writeString(ChatUserName)
+        parcel.writeString(ChatUserProfilePhoto)
+        parcel.writeValue(InvoiceSum)
+        parcel.writeValue(InvoiceTariff)
+    }
+
+    override fun describeContents(): Int {
+        return 0
+    }
+
+    companion object CREATOR : Parcelable.Creator<ChatHistory> {
+        override fun createFromParcel(parcel: Parcel): ChatHistory {
+            return ChatHistory(parcel)
+        }
+
+        override fun newArray(size: Int): Array<ChatHistory?> {
+            return arrayOfNulls(size)
+        }
+    }
+}
 
 open class ChatInformation(
         var Id: Int? = null,
-        var CreateTime: String = "00:00", //notNull
+        var CreateTime: String = "00:00",
         var StartTime: String? = null,
         var EndTime: String? = null,
         var StatusId: Int = Constants.STATUS_NOT_REQUESTED,

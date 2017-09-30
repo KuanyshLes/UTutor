@@ -1,5 +1,7 @@
 package com.support.robigroup.ututor.screen.main
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
@@ -35,13 +37,9 @@ class ClassesActivity : AppCompatActivity(), ClassesActivityListener {
         recyclerView.adapter = adapter
 
         setSupportActionBar(toolbar)
-        supportActionBar?.title = mSubject.Text
+        supportActionBar?.title = mSubject.Name
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-    }
-
-    override fun onBackPressed() {
-        super.onBackPressed()
     }
 
     override fun onClassItemClicked(item: Subject) {
@@ -58,8 +56,10 @@ class ClassesActivity : AppCompatActivity(), ClassesActivityListener {
         }
     }
 
-
     companion object {
         val ARG_SUBJECT = "subject"
+        fun open(c: Context, item: Subject){
+            c.startActivity(Intent(c,ClassesActivity::class.java).putExtra(ClassesActivity.ARG_SUBJECT,item))
+        }
     }
 }

@@ -1,6 +1,5 @@
 package com.support.robigroup.ututor.screen.main
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.NavigationView
@@ -9,22 +8,28 @@ import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
-import com.support.robigroup.ututor.NotificationService
-import com.support.robigroup.ututor.R
-import com.support.robigroup.ututor.commons.OnMainActivityInteractionListener
-import com.support.robigroup.ututor.model.content.Subject
-import com.support.robigroup.ututor.screen.login.LoginActivity
-import com.support.robigroup.ututor.singleton.SingletonSharedPref
-import io.reactivex.disposables.CompositeDisposable
-import kotlinx.android.synthetic.main.activity_main_nav.*
-import kotlinx.android.synthetic.main.app_bar_main_nav.*
 import android.widget.TextView
 import com.support.robigroup.ututor.Constants
+import com.support.robigroup.ututor.NotificationService
+import com.support.robigroup.ututor.R
 import com.support.robigroup.ututor.api.MainManager
-import com.support.robigroup.ututor.commons.requestErrorHandler
+import com.support.robigroup.ututor.commons.*
+import com.support.robigroup.ututor.model.content.ChatHistory
+import com.support.robigroup.ututor.model.content.ChatInformation
+import com.support.robigroup.ututor.model.content.ChatLesson
+import com.support.robigroup.ututor.model.content.Subject
+import com.support.robigroup.ututor.screen.chat.ChatActivity
+import com.support.robigroup.ututor.screen.login.LoginActivity
+import com.support.robigroup.ututor.screen.main.adapters.HistoryAdapter
+import com.support.robigroup.ututor.screen.main.adapters.SubjectsAdapter
+import com.support.robigroup.ututor.singleton.SingletonSharedPref
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.nav_header_main_nav.*
+import io.realm.Realm
+import kotlinx.android.synthetic.main.activity_main_nav.*
+import kotlinx.android.synthetic.main.app_bar_main_nav.*
+import kotlinx.android.synthetic.main.history_chat.*
 import kotlin.properties.Delegates
 
 
@@ -35,6 +40,9 @@ class MainActivity :
 
     private val compositeDisposable: CompositeDisposable = CompositeDisposable()
     private var mTextMyBalance: TextView by Delegates.notNull()
+    private var mSubjectsAdapter: SubjectsAdapter? = null
+    private var mHistoryAdapter: HistoryAdapter? = null
+    private var isChatCheck = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,6 +52,9 @@ class MainActivity :
         val intent = Intent()
         intent.setClass(this, NotificationService::class.java)
         startService(intent)
+
+        supportActionBar!!.setDisplayHomeAsUpEnabled(false)
+        supportActionBar!!.title = title
 
         val toggle = ActionBarDrawerToggle(
                 this, drawer_layout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
@@ -55,7 +66,32 @@ class MainActivity :
         val nav_user = hView.findViewById<TextView>(R.id.user_name)
         nav_user.text = SingletonSharedPref.getInstance().getString(Constants.KEY_FULL_NAME)
         mTextMyBalance = hView.findViewById(R.id.my_balance)
+
+        initAdapters()
+        sendQueries()
+    }
+
+    private fun initAdapters() {
+        mSubjectsAdapter = SubjectsAdapter(ArrayList(), this)
+        mHistoryAdapter = HistoryAdapter(ArrayList(), this)
+        list_subjects.apply {
+            setHasFixedSize(true)
+            if(adapter == null){
+                adapter = mSubjectsAdapter
+            }
+        }
+        list_history.apply {
+            setHasFixedSize(true)
+            if(adapter == null){
+                adapter = mHistoryAdapter
+            }
+        }
+    }
+
+    private fun sendQueries(){
+        checkChatState()
         requestBalance()
+        requestHistory()
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
@@ -83,24 +119,12 @@ class MainActivity :
         return true
     }
 
-    override fun onResume() {
-        super.onResume()
-        if(supportFragmentManager.fragments.size==0){
-            supportFragmentManager.beginTransaction().replace(R.id.main_container, MainFragment())
-                    .addToBackStack(null).commit()
-        }
-    }
-
     override fun onSubjectItemClicked(item: Subject) {
-        startActivity(Intent(this,ClassesActivity::class.java).putExtra(ClassesActivity.ARG_SUBJECT,item))
+        ClassesActivity.open(this,item)
     }
 
-    override fun setDisplayHomeAsEnabled(showHomeAsUp: Boolean) {
-        supportActionBar!!.setDisplayHomeAsUpEnabled(showHomeAsUp)
-    }
-
-    override fun setToolbarTitle(title: String) {
-        supportActionBar!!.title = title
+    override fun onHistoryItemClicked(item: ChatHistory) {
+        logd(item.toString())
     }
 
     override fun onBackPressed() {
@@ -141,4 +165,89 @@ class MainActivity :
                 )
         compositeDisposable.add(subscription)
     }
+
+    private fun checkChatState() {
+        if(!isChatCheck)
+            if(Functions.isOnline(this))
+                compositeDisposable.add(
+                        MainManager()
+                                .getChatInformation()
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribeOn(Schedulers.io())
+                                .subscribe({
+                                    result ->
+                                    isChatCheck = true
+                                    if(requestErrorHandler(result.code(),null)){
+                                        startTopicOrChatActivity(result.body())
+                                    }else{
+                                        startTopicOrChatActivity(null)
+                                    }
+                                },{
+                                    error ->
+                                    logd(error.toString())
+                                    toast(error.message.toString())
+                                    isChatCheck = false
+                                }))
+            else{
+                Functions.builtMessageNoInternet(this,{checkChatState()})
+            }
+
+
+    }
+
+    private fun startTopicOrChatActivity(chatLesson: ChatLesson?){
+        logd(SingletonSharedPref.getInstance().getString(Constants.KEY_TOKEN))
+        if(chatLesson==null||chatLesson.StatusId== Constants.STATUS_COMPLETED){
+            val realm = Realm.getDefaultInstance()
+            realm.executeTransaction {
+                realm.where(ChatInformation::class.java).findAll().deleteAllFromRealm()
+            }
+            realm.close()
+            requestSubjects()
+        }else{
+            val realm = Realm.getDefaultInstance()
+            realm.executeTransaction {
+                realm.where(ChatInformation::class.java).findAll().deleteAllFromRealm()
+                realm.copyToRealm(Functions.getChatInformation(chatLesson))
+            }
+            realm.close()
+            startActivity(Intent(this, ChatActivity::class.java))
+            finish()
+        }
+    }
+
+    private fun requestHistory() {
+        val subscription = MainManager().getHistory()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe (
+                        { retrievedTopics ->
+                            if(requestErrorHandler(retrievedTopics.code(),retrievedTopics.message())){
+                                mHistoryAdapter?.updateHistory(retrievedTopics.body())
+                            }
+                        },
+                        { e ->
+                            Snackbar.make(findViewById(android.R.id.content), e.message ?: "", Snackbar.LENGTH_LONG).show()
+                        }
+                )
+        compositeDisposable.add(subscription)
+    }
+
+    private fun requestSubjects(){
+        val subscription = MainManager().getSubjects()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        { retrievedLessons ->
+                            if(requestErrorHandler(retrievedLessons.code(),retrievedLessons.message())){
+                                mSubjectsAdapter?.updateSubjects(retrievedLessons.body())
+                            }
+                        },
+                        { e ->
+                            Snackbar.make(findViewById(android.R.id.content), e.message ?: "", Snackbar.LENGTH_LONG).show()
+                        }
+                )
+        compositeDisposable.add(subscription)
+    }
+
 }

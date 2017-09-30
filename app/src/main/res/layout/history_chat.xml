@@ -26,7 +26,7 @@
         android:text="@string/main_topic_text" />
 
     <TextView
-        android:id="@+id/main_text_see_all"
+        android:id="@+id/browse_history"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
@@ -37,15 +37,15 @@
         android:textStyle="bold" />
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/main_recycler_view_header"
+        android:id="@+id/list_history"
         android:layout_width="match_parent"
         android:layout_height="127dp"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-        android:layout_below="@+id/main_text_see_all"
+        android:layout_below="@+id/browse_history"
         android:orientation="horizontal"
         app:layoutManager="android.support.v7.widget.LinearLayoutManager"
-        tools:listitem="@layout/item_topic">
+        tools:listitem="@layout/item_history_chat">
 
     </android.support.v7.widget.RecyclerView>
 </RelativeLayout>

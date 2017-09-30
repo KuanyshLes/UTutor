@@ -11,7 +11,7 @@ import com.support.robigroup.ututor.commons.OnMainActivityInteractionListener
 import com.support.robigroup.ututor.model.content.Subject
 
 
-class MySubjectRecyclerViewAdapter(private val mValues: ArrayList<Subject>, private val mListener: OnMainActivityInteractionListener?) : RecyclerView.Adapter<MySubjectRecyclerViewAdapter.ViewHolder>() {
+class SubjectsAdapter(private val mValues: ArrayList<Subject>, private val mListener: OnMainActivityInteractionListener?) : RecyclerView.Adapter<SubjectsAdapter.ViewHolder>() {
 
     companion object {
         private val colors: Array<String> = arrayOf("#8A4FC6","#A2DE49","#EC102B","#FFB80D","#4A90E2","#43C1A5")
@@ -25,7 +25,7 @@ class MySubjectRecyclerViewAdapter(private val mValues: ArrayList<Subject>, priv
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.mItem = mValues[position]
-        holder.mContentView.text = mValues[position].Text
+        holder.mContentView.text = mValues[position].Name
         holder.mView.setOnClickListener {
             mListener?.onSubjectItemClicked(holder.mItem!!)
         }
@@ -43,7 +43,7 @@ class MySubjectRecyclerViewAdapter(private val mValues: ArrayList<Subject>, priv
         var mItem: Subject? = null
     }
 
-    fun clearAndAddSubjects(subjects: List<Subject>?) {
+    fun updateSubjects(subjects: List<Subject>?) {
         mValues.clear()
         mValues.addAll(subjects!!)
         notifyDataSetChanged()

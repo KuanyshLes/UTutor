@@ -16,8 +16,7 @@ interface OnLoginActivityInteractionListener {
 }
 interface OnMainActivityInteractionListener {
     fun onSubjectItemClicked(item: Subject)
-    fun setDisplayHomeAsEnabled(showHomeAsUp: Boolean)
-    fun setToolbarTitle(title: String)
+    fun onHistoryItemClicked(item: ChatHistory)
 }
 
 interface ClassesActivityListener{

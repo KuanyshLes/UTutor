@@ -39,7 +39,7 @@
         <activity
             android:name=".screen.chat.ChatActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/AppTheme.NoActionBar" />
 
         <service
             android:name=".NotificationService"
@@ -49,11 +49,13 @@
         <activity
             android:name=".screen.teachers.TeachersActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar"/>
-        <activity android:name=".screen.main.ClassesActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".screen.main.ClassesActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".screen.draw.CanvasActivity" />
+        <activity android:name=".screen.history.HistoryActivity"></activity>
     </application>
 
 </manifest>
