@@ -1,4 +1,4 @@
-package com.support.robigroup.ututor.screen.main.adapters
+package com.support.robigroup.ututor.screen.history.adapter
 
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -27,8 +27,8 @@ class HistoryAdapter(
             mListener?.onHistoryItemClicked(holder.mItem)
         }
         holder.mClassNumber.text = String.format("%s", holder.mItem.SubjectName)
-        holder.mClassNumber.text = String.format("%d %s", holder.mItem.Class, holder.mView.context.getString(R.string.class_name))
-        holder.mCostLesson.text = String.format("%.2f%s", holder.mItem.InvoiceSum,  holder.mView.context.getString(R.string.currency))
+        holder.mClassNumber.text = String.format("%s %s", holder.mItem.Class, holder.mView.context.getString(R.string.class_name))
+        holder.mCostLesson.text = String.format("%s %s", holder.mItem.InvoiceSum,  holder.mView.context.getString(R.string.currency))
     }
 
     override fun getItemCount(): Int {

@@ -209,8 +209,8 @@ data class ChatHistory(
         var SubjectName: String = "",
         var ChatUserName: String? = null,
         var ChatUserProfilePhoto: String? = null,
-        var InvoiceSum: Int? = null,
-        var InvoiceTariff: Int? = null
+        var InvoiceSum: String? = null,
+        var InvoiceTariff: String? = null
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
             parcel.readValue(Int::class.java.classLoader) as? Int,
@@ -225,8 +225,8 @@ data class ChatHistory(
             parcel.readString(),
             parcel.readString(),
             parcel.readString(),
-            parcel.readValue(Int::class.java.classLoader) as? Int,
-            parcel.readValue(Int::class.java.classLoader) as? Int) {
+            parcel.readString(),
+            parcel.readString()) {
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
@@ -242,8 +242,8 @@ data class ChatHistory(
         parcel.writeString(SubjectName)
         parcel.writeString(ChatUserName)
         parcel.writeString(ChatUserProfilePhoto)
-        parcel.writeValue(InvoiceSum)
-        parcel.writeValue(InvoiceTariff)
+        parcel.writeString(InvoiceSum)
+        parcel.writeString(InvoiceTariff)
     }
 
     override fun describeContents(): Int {
@@ -280,7 +280,8 @@ open class ChatInformation(
         var TeacherRaiting: Float? = null,
         var SubjectId: Int? = null,
         var Language: String? = null,
-        var InvoiceSum: String? = null
+        var InvoiceSum: String? = null,
+        var InvoiceTariff: String? = null
 ): RealmObject()
 
 data class Balance(

@@ -78,7 +78,7 @@ class ChatActivity : AppCompatActivity(),
         if(changeset!=null&&!changeset.isDeleted){
             if(rs.StatusId == Constants.STATUS_COMPLETED){
                 runOnUiThread {
-                    closeChat()
+                    OnEvalChat(Functions.getUnmanagedChatInfo(rs))
                 }
             }else if(rs.TeacherReady&&rs.LearnerReady){
                 mReadyDialog.dismiss()
@@ -111,19 +111,6 @@ class ChatActivity : AppCompatActivity(),
         }
     }
 
-    companion object {
-
-        private val CONTENT_TYPE_IMAGE_TEXT: Byte = 1
-        private val KEY_TEACHER = "teacher"
-        private val TOTAL_MESSAGES_COUNT = 100
-        private val TAG_READY_DIALOG = "readyDialog"
-
-
-        fun open(context: Context) {
-            context.startActivity(Intent(context, ChatActivity::class.java))
-        }
-    }
-
     private fun notifyItemRangeChanged(startIndex: Int,rangeLength: Int){
         toast("notifyItemRangeChanged")
     }
@@ -137,8 +124,6 @@ class ChatActivity : AppCompatActivity(),
     private fun notifyItemRangeRemoved(startIndex: Int,rangeLength: Int){
         toast("notifyItemRangeRemoved")
     }
-
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -193,8 +178,10 @@ class ChatActivity : AppCompatActivity(),
         subscriptions.clear()
         if(mReadyDialog.isVisible)
             mReadyDialog.dismiss()
-        mMessages.removeAllChangeListeners()
-        mChatInformation.removeAllChangeListeners()
+        if(mMessages.isValid)
+            mMessages.removeAllChangeListeners()
+        if(mChatInformation.isValid)
+            mChatInformation.removeAllChangeListeners()
         realm.close()
 
     }
@@ -235,6 +222,11 @@ class ChatActivity : AppCompatActivity(),
                     dialog, id ->
                     dialog.cancel()
                     closeChat()
+                }
+                .setNegativeButton("Cancel")
+                {
+                    dialog, id ->
+                    dialog.cancel()
                 }
         val alert = builder.create()
         alert.setCancelable(true)
@@ -293,14 +285,14 @@ class ChatActivity : AppCompatActivity(),
                 .subscribe(
                         { message ->
                             if(requestErrorHandler(message.code(),message.message())){
-                                OnEvalChat(message.body()!!)
+                                OnEvalChat(Functions.getChatInformation(message.body()!!))
                             }else{
                                 startActivity(Intent(this@ChatActivity, MainActivity::class.java))
                                 finish()
                             }
                         },
                         { e ->
-                            Log.e("Error",e.stackTrace.toString())
+                            Log.e("Error",e.message)
                             startActivity(Intent(this@ChatActivity, MainActivity::class.java))
                             finish()
                         }
@@ -340,7 +332,7 @@ class ChatActivity : AppCompatActivity(),
         subscriptions.add(subscription)
     }
 
-    private fun OnEvalChat(chatLesson: ChatLesson){
+    private fun OnEvalChat(chatLesson: ChatInformation){
         val fin = FinishDialog()
         fin.showMe(chatLesson,supportFragmentManager,"finishDial")
     }
@@ -374,8 +366,6 @@ class ChatActivity : AppCompatActivity(),
         subscriptions.add(subscription)
     }
 
-//    }
-
     override fun onFinishCounterFromReadyDialog() {
         if(!mChatInformation.LearnerReady||!mChatInformation.TeacherReady){
             startActivity(Intent(this@ChatActivity, MainActivity::class.java))
@@ -383,10 +373,8 @@ class ChatActivity : AppCompatActivity(),
         }
     }
 
-    override fun onEvaluateDialogPositiveClick(dialog: DialogFragment) {
-        val ratingBar = dialog.view!!.findViewById<RatingBar>(R.id.rating_bar)
-        evalChat((ratingBar.rating*20).toInt(),mChatInformation.Id!!)
-        dialog.dismiss()
+    override fun onEvaluateDialogPositiveClick(rating: Float) {
+        evalChat((rating*20).toInt(),mChatInformation.Id!!)
 
     }
     override fun onCancelEvalDialog() {
@@ -470,7 +458,7 @@ class ChatActivity : AppCompatActivity(),
     override fun hasContentFor(message: MyMessage, type: Byte): Boolean {
         when (type) {
             CONTENT_TYPE_IMAGE_TEXT -> return message.imageUrl != null
-                    && message.text != null
+                    && message.text != ""
         }
         return false
     }
@@ -501,6 +489,21 @@ class ChatActivity : AppCompatActivity(),
         super.onActivityResult(requestCode, resultCode, data)
         //Need for handle result
         contentManager?.onActivityResult(requestCode, resultCode, data)
+    }
+
+    companion object {
+
+        val CONTENT_TYPE_IMAGE_TEXT: Byte = 1
+        private val KEY_TEACHER = "teacher"
+        private val TOTAL_MESSAGES_COUNT = 100
+        private val TAG_READY_DIALOG = "readyDialog"
+
+
+        fun open(context: Context) {
+            val intent = Intent(context, ChatActivity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+            context.startActivity(intent)
+        }
     }
 
 }

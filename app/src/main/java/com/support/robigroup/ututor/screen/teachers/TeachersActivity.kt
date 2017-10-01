@@ -71,7 +71,13 @@ class TeachersActivity : AppCompatActivity(), OnTeachersActivityInteractionListe
         subject_name.text = mSubject.Name
 
         requestTeacher(mSubject.ClassNumber, EX_LANG,mSubject.Id)
+
+        swipeRefreshLayout.setOnRefreshListener {
+            requestTeacher(mSubject.ClassNumber, EX_LANG,mSubject.Id)
+        }
     }
+
+
 
 
 
@@ -136,6 +142,8 @@ class TeachersActivity : AppCompatActivity(), OnTeachersActivityInteractionListe
                             if(requestErrorHandler(teachers.code(),teachers.message())){
                                 myAdapter.clearAndAddTeachers(teachers.body()!!)
                                 updateTeachersCount(teachers.body()!!.size)
+                                if(swipeRefreshLayout.isRefreshing)
+                                    swipeRefreshLayout.isRefreshing = false
                             }else{
                                 //TODO handle server errors
                             }

@@ -13,9 +13,7 @@ import android.util.Log
 import com.support.robigroup.ututor.Constants
 import com.support.robigroup.ututor.model.content.ChatInformation
 import com.support.robigroup.ututor.model.content.ChatLesson
-import com.support.robigroup.ututor.screen.chat.model.CustomMessage
-import com.support.robigroup.ututor.screen.chat.model.MyMessage
-import com.support.robigroup.ututor.screen.chat.model.User
+import com.support.robigroup.ututor.screen.chat.model.*
 
 import java.io.ByteArrayOutputStream
 import java.io.File
@@ -91,7 +89,8 @@ object Functions {
             chatInformation.TeacherRaiting,
             chatInformation.SubjectId,
             chatInformation.Language,
-            chatInformation.InvoiceSum
+            chatInformation.InvoiceSum,
+            chatInformation.InvoiceTariff
     )
 
     fun getUnmanagedChatInfo(chatInformation: ChatInformation): ChatInformation {
@@ -115,7 +114,8 @@ object Functions {
                     chatInformation.TeacherRaiting,
                     chatInformation.SubjectId,
                     chatInformation.Language,
-                    chatInformation.InvoiceSum
+                    chatInformation.InvoiceSum,
+                    chatInformation.InvoiceTariff
             )
         else{
             return chatInformation
@@ -130,6 +130,16 @@ object Functions {
         }else{
             val myMessage = CustomMessage(message.Id,message.Time,Message = message.Message)
             return MyMessage(myMessage,user)
+        }
+    }
+
+    fun getMyMessageHistory(message: CustomMessageHistory): MyHistoryMessage {
+        if(message.FilePath!=null||message.FileOpenIcon!=null){
+            val myMessage = CustomMessageHistory(message.Id,message.Time, Constants.BASE_URL+message.FileOpenIcon,
+                    Constants.BASE_URL+message.FilePath,message.Owner,message.Text)
+            return MyHistoryMessage(myMessage)
+        }else{
+            return MyHistoryMessage(message)
         }
     }
 

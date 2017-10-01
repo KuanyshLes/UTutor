@@ -157,19 +157,20 @@ public class NotificationService extends Service {
                         }
                     }
                     , CustomMessage.class);
-            mHubProxy.subscribe(
-                    new CallbacksFromServer(){
+            mHubProxy.on("ChatCompleted",
+                    new SubscriptionHandler1<ChatLesson>(){
                         @Override
-                        public void ChatCompleted(final ArrayList<ChatLesson> lessons) {
+                        public void run(final ChatLesson lesson) {
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
                                     Log.e("MyEvent","ChatCompleted");
-                                    notifyChatCompleted(lessons.get(0));
+                                    notifyChatCompleted(lesson);
                                 }
                             });
                         }
                     }
+                    , ChatLesson.class
             );
 //            mHubProxy.on("ChatCompleted",
 //                    new SubscriptionHandler1<ChatLesson>() {
@@ -187,13 +188,17 @@ public class NotificationService extends Service {
         }
     }
 
-    private void notifyChatCompleted(ChatLesson chatLesson) {
+    private void notifyChatCompleted(final ChatLesson chatLesson) {
         realm.executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
                 ChatInformation request = realm.where(ChatInformation.class).findFirst();
                 if(request!=null){
                     request.setStatusId(Constants.INSTANCE.getSTATUS_COMPLETED());
+                    request.setInvoiceSum(chatLesson.getInvoiceSum());
+                    request.setEndTime(chatLesson.getEndTime());
+                    request.setDuration(chatLesson.getDuration());
+                    request.setInvoiceTariff(chatLesson.getInvoiceTariff());
                 }
             }
         });

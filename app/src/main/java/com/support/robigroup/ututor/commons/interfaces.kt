@@ -30,7 +30,7 @@ interface OnTeachersActivityInteractionListener {
 }
 
 interface OnChatActivityDialogInteractionListener {
-    fun onEvaluateDialogPositiveClick(dialog: DialogFragment)
+    fun onEvaluateDialogPositiveClick(rating: Float)
     fun onReadyDialogReadyClick(dialog: DialogFragment)
     fun onFinishCounterFromReadyDialog()
     fun onCancelEvalDialog()

@@ -3,6 +3,7 @@ package com.support.robigroup.ututor.api
 import com.support.robigroup.ututor.Constants.KEY_TOKEN
 import com.support.robigroup.ututor.model.content.*
 import com.support.robigroup.ututor.screen.chat.model.CustomMessage
+import com.support.robigroup.ututor.screen.chat.model.CustomMessageHistory
 import com.support.robigroup.ututor.singleton.SingletonSharedPref
 import io.reactivex.Flowable
 import okhttp3.ResponseBody
@@ -44,6 +45,8 @@ class MainManager(
     fun getChatInformation(): Flowable<Response<ChatLesson>> = RestAPI.getApi().getInformationAboutChat()
 
     fun getHistory(): Flowable<Response<List<ChatHistory>>> = RestAPI.getApi().getHistory()
+
+    fun getHistoryMessages(chatId: Int): Flowable<Response<List<CustomMessageHistory>>> = RestAPI.getApi().getHistoryMessages(chatId)
 
     fun sendMessage(messageText: String? = null, file64base: String? = null): Flowable<Response<CustomMessage>> =
             if(file64base != null&&messageText!=null) RestAPI.getApi().postTextMessageWithPhoto(messageText,file64base)

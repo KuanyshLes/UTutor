@@ -57,6 +57,7 @@
     <string name="declined">Отказал</string>
     <string name="action_ready">Готов</string>
     <string name="action_cancel">Отмена</string>
+    <string name="action_eval">Оценить</string>
     <string name="action_hide">Скрыть</string>
 
 

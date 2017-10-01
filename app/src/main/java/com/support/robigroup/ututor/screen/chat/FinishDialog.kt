@@ -8,21 +8,18 @@ import android.os.Bundle
 import android.support.v4.app.DialogFragment
 import android.support.v4.app.FragmentManager
 import android.widget.Button
+import android.widget.RatingBar
+import android.widget.TextView
 import com.support.robigroup.ututor.R
 import com.support.robigroup.ututor.commons.OnChatActivityDialogInteractionListener
 import com.support.robigroup.ututor.model.content.ChatInformation
-import com.support.robigroup.ututor.model.content.ChatLesson
 
 
 class FinishDialog : DialogFragment() {
 
     var mListener: OnChatActivityDialogInteractionListener? = null
-    var chatLesson: ChatLesson? = null
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-    }
+    var chatInformation: ChatInformation? = null
+    var ratingBar: RatingBar? = null
 
     override fun onAttach(activity: Context?) {
         super.onAttach(activity)
@@ -45,14 +42,20 @@ class FinishDialog : DialogFragment() {
         val view = inflater.inflate(R.layout.dialog_finish,null)
         val buttonEvaluate = view.findViewById<Button>(R.id.button_evaluate) as Button
         buttonEvaluate.setOnClickListener {
-            mListener!!.onEvaluateDialogPositiveClick(this)
+            mListener!!.onEvaluateDialogPositiveClick(ratingBar!!.rating)
+            dismiss()
         }
+        val textSum = view.findViewById<TextView>(R.id.sum_text) as TextView
+        val textDuration = view.findViewById<TextView>(R.id.duration_text) as TextView
+        ratingBar = view.findViewById<RatingBar>(R.id.rating_bar) as RatingBar
+        textSum.text = chatInformation?.InvoiceSum
+        textDuration.text = chatInformation?.Duration
         builder.setView(view)
         return builder.create()
     }
 
-    fun showMe(chatLesson: ChatLesson,fragmentManager: FragmentManager,t: String){
-        this.chatLesson = chatLesson
+    fun showMe(chatLesson: ChatInformation,fragmentManager: FragmentManager,t: String){
+        this.chatInformation = chatLesson
         show(fragmentManager,t)
     }
 

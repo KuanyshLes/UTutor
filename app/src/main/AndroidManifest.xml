@@ -55,7 +55,12 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".screen.draw.CanvasActivity" />
-        <activity android:name=".screen.history.HistoryActivity"></activity>
+        <activity android:name=".screen.history.HistoryActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".screen.history.HistoryList"
+            android:theme="@style/AppTheme.NoActionBar" >
+
+        </activity>
     </application>
 
 </manifest>

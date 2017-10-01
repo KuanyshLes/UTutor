@@ -20,6 +20,7 @@ class HistoryActivity : AppCompatActivity() {
         setContentView(R.layout.activity_history)
 
         mChatHistory = intent.getParcelableExtra(ARG_CHAT_HISTORY)
+        setSupportActionBar(toolbar)
         supportActionBar?.title = getString(R.string.recent)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
@@ -28,6 +29,9 @@ class HistoryActivity : AppCompatActivity() {
         teacher_name.text = mChatHistory.ChatUserName
         lesson_cost.text = mChatHistory.InvoiceSum.toString()
         lesson_duration.text = mChatHistory.Duration
+        button_open_chat.setOnClickListener {
+            HistoryList.open(this,mChatHistory)
+        }
         Picasso.with(this).load(BASE_URL+mChatHistory.ChatUserProfilePhoto).into(image_photo)
     }
 

@@ -3,6 +3,7 @@ package com.support.robigroup.ututor.api
 import com.support.robigroup.ututor.Constants
 import com.support.robigroup.ututor.model.content.*
 import com.support.robigroup.ututor.screen.chat.model.CustomMessage
+import com.support.robigroup.ututor.screen.chat.model.CustomMessageHistory
 import com.support.robigroup.ututor.singleton.SingletonSharedPref
 import io.reactivex.Flowable
 import okhttp3.ResponseBody
@@ -67,6 +68,12 @@ interface APIInterface {
     fun getHistory(
             @Header("Authorization") header: String = SingletonSharedPref.getInstance().getString(Constants.KEY_TOKEN)
     ): Flowable<Response<List<ChatHistory>>>
+
+    @GET("api/lesson/chat/messages/{id}")
+    fun getHistoryMessages(
+            @Path("id") chatId: Int,
+            @Header("Authorization") header: String = SingletonSharedPref.getInstance().getString(Constants.KEY_TOKEN)
+    ): Flowable<Response<List<CustomMessageHistory>>>
 
     @GET("api/lesson/chat/messages")
     fun getChatMeassages(

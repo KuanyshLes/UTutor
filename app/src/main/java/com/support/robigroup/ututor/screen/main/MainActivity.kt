@@ -19,8 +19,9 @@ import com.support.robigroup.ututor.model.content.ChatInformation
 import com.support.robigroup.ututor.model.content.ChatLesson
 import com.support.robigroup.ututor.model.content.Subject
 import com.support.robigroup.ututor.screen.chat.ChatActivity
+import com.support.robigroup.ututor.screen.history.HistoryActivity
 import com.support.robigroup.ututor.screen.login.LoginActivity
-import com.support.robigroup.ututor.screen.main.adapters.HistoryAdapter
+import com.support.robigroup.ututor.screen.history.adapter.HistoryAdapter
 import com.support.robigroup.ututor.screen.main.adapters.SubjectsAdapter
 import com.support.robigroup.ututor.singleton.SingletonSharedPref
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -68,6 +69,9 @@ class MainActivity :
         mTextMyBalance = hView.findViewById(R.id.my_balance)
 
         initAdapters()
+        swipe_container.setOnRefreshListener {
+            requestSubjects()
+        }
         sendQueries()
     }
 
@@ -92,6 +96,7 @@ class MainActivity :
         checkChatState()
         requestBalance()
         requestHistory()
+        requestSubjects()
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
@@ -124,7 +129,7 @@ class MainActivity :
     }
 
     override fun onHistoryItemClicked(item: ChatHistory) {
-        logd(item.toString())
+        HistoryActivity.open(this,item)
     }
 
     override fun onBackPressed() {
@@ -196,14 +201,14 @@ class MainActivity :
     }
 
     private fun startTopicOrChatActivity(chatLesson: ChatLesson?){
-        logd(SingletonSharedPref.getInstance().getString(Constants.KEY_TOKEN))
         if(chatLesson==null||chatLesson.StatusId== Constants.STATUS_COMPLETED){
             val realm = Realm.getDefaultInstance()
+            val res = realm.where(ChatInformation::class.java).findAll()
+            if(res!=null)
             realm.executeTransaction {
-                realm.where(ChatInformation::class.java).findAll().deleteAllFromRealm()
+                res.deleteAllFromRealm()
             }
             realm.close()
-            requestSubjects()
         }else{
             val realm = Realm.getDefaultInstance()
             realm.executeTransaction {
@@ -211,7 +216,7 @@ class MainActivity :
                 realm.copyToRealm(Functions.getChatInformation(chatLesson))
             }
             realm.close()
-            startActivity(Intent(this, ChatActivity::class.java))
+            ChatActivity.open(this)
             finish()
         }
     }
@@ -242,6 +247,8 @@ class MainActivity :
                             if(requestErrorHandler(retrievedLessons.code(),retrievedLessons.message())){
                                 mSubjectsAdapter?.updateSubjects(retrievedLessons.body())
                             }
+                            if(swipe_container.isRefreshing)
+                                swipe_container.isRefreshing = false
                         },
                         { e ->
                             Snackbar.make(findViewById(android.R.id.content), e.message ?: "", Snackbar.LENGTH_LONG).show()
