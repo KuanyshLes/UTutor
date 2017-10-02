@@ -134,6 +134,7 @@ class ChatActivity : AppCompatActivity(),
         mMessages = realm.where(CustomMessage::class.java).findAll()
         mMessages.addChangeListener(mMessagesChangeListener)
 
+
         mChatInformation = realm.where(ChatInformation::class.java).findFirst()!!
         mChatInformation.addChangeListener(mChatChangeListener)
 
@@ -300,14 +301,13 @@ class ChatActivity : AppCompatActivity(),
         subscriptions.add(subscription)
     }
 
-    //    protected fun loadMessages() {
-//        Handler().postDelayed(//imitation of internet connection
-//        {
-//            val messages = MessagesFixtures.getMessages(lastLoadedDate)
-//            lastLoadedDate = messages[messages.size - 1].createdAt
-//            messagesAdapter!!.addToEnd(messages, false)
-//        }, 1000)
-
+//    private fun reloadMessages() {
+//        messagesAdapter!!.addToEnd(mMessages, false)
+//        messagesAdapter?.addToEnd(
+//                mMessages.map { it }
+//                Functions.getMyMessage(mMessages[i],teacher),true
+//        )
+//    }
 
     private fun evalChat(rating: Int,lessonId:Int){
         val subscription = MainManager().evalChat(rating,lessonId)
@@ -456,9 +456,10 @@ class ChatActivity : AppCompatActivity(),
     }
 
     override fun hasContentFor(message: MyMessage, type: Byte): Boolean {
+        logd("hasContentfor" + type)
         when (type) {
-            CONTENT_TYPE_IMAGE_TEXT -> return message.imageUrl != null
-                    && message.text != ""
+            CONTENT_TYPE_IMAGE_TEXT ->
+                return message.imageUrl != null && message.text != ""
         }
         return false
     }
@@ -493,7 +494,7 @@ class ChatActivity : AppCompatActivity(),
 
     companion object {
 
-        val CONTENT_TYPE_IMAGE_TEXT: Byte = 1
+        val CONTENT_TYPE_IMAGE_TEXT: Byte = 100
         private val KEY_TEACHER = "teacher"
         private val TOTAL_MESSAGES_COUNT = 100
         private val TAG_READY_DIALOG = "readyDialog"

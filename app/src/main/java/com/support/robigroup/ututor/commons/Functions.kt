@@ -59,7 +59,7 @@ object Functions {
         val currentTime = Calendar.getInstance().time
         val sdf = SimpleDateFormat(Constants.TIMEFORMAT)
 
-        val dif = sdf.parse(dateString+"Z").time-currentTime.time+Constants.WAIT_TIME+Constants.UTC_TIME
+        val dif = sdf.parse(dateString+"Z").time-currentTime.time+Constants.WAIT_TIME
         Log.e("Difference","created: "+dateString+"Z"+ " now: "+sdf.format(currentTime.time)+" dif: "+dif.toString())
         return dif
     }
