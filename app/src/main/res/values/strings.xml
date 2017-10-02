@@ -22,6 +22,7 @@
     <string name="drawer_item_logout">Выйти</string>
     <string name="drawer_item_settings">Настройки</string>
     <string name="drawer_item_payment">Оплата</string>
+    <string name="drawer_item_home_work">Домашнее задание</string>
     <string name="drawer_item_help">Помощь</string>
     <string name="loading">Loading…</string>
     <string name="action_next">Next</string>
@@ -33,7 +34,7 @@
     <string name="all_lessons">Все предметы</string>
     <string name="main_topic_text">Ваши последние уроки</string>
     <string name="main_text_see_all">Показать все</string>
-    <string name="search">Пойск</string>
+    <string name="search">Поиск</string>
     <string name="search_hint">Пойск по темам</string>
     <string name="ex_math">Математика</string>
     <string name="ex_name">Земский Андрей</string>
@@ -43,9 +44,11 @@
     <string name="ex_lessons">Алгебра, Геометрия, Физика</string>
     <string name="ex_rating">9.5</string>
     <string name="ex_name_teacher">Валентина</string>
+    <string name="ex_language">Язык: Русский</string>
+    <string name="language">Язык</string>
     <string name="choose_teacher">Выбрать</string>
     <string name="ex_topic_short">С понятием рациональных чисел вы уже наверняка знакомы. Аналогично рациональные функции – это функции,</string>
-    <string name="teachers_found">Нашлось</string>
+    <string name="teachers_found">Найдено</string>
 
 
     //titles

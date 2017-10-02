@@ -71,7 +71,7 @@ class TeachersAdapter(private val interactionListener: OnTeachersActivityInterac
 
         fun bind(item: Teacher) = with(itemView) {
             teacher_name.text = item.FirstName
-            teacher_lessons.text = item.Speciality ?: "Әлі істелмеген"
+            teacher_lessons.text = item.Speciality ?: item.Languages
             teacher_rating.text = item.Raiting.toString()
             teacher_photo.loadImg()
             teacher_button_hide.setOnClickListener {

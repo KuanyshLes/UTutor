@@ -71,6 +71,11 @@ class MainActivity :
         sendQueries()
     }
 
+    override fun onStart() {
+        super.onStart()
+        nav_view.isSelected = false
+    }
+
     private fun initAdapters() {
         mSubjectsAdapter = SubjectsAdapter(ArrayList(), this)
         list_subjects.apply {

@@ -1,17 +1,20 @@
 package com.support.robigroup.ututor.screen.history.adapter
 
 import android.support.v7.widget.RecyclerView
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.RatingBar
 import android.widget.TextView
-import com.squareup.picasso.Picasso
 import com.support.robigroup.ututor.Constants
 import com.support.robigroup.ututor.R
 import com.support.robigroup.ututor.commons.OnHistoryListInteractionListener
 import com.support.robigroup.ututor.model.content.ChatHistory
+import java.text.SimpleDateFormat
+import java.util.*
+import java.util.concurrent.TimeUnit
 
 
 class HistoryAdapter(
@@ -30,15 +33,22 @@ class HistoryAdapter(
         holder.mView.setOnClickListener {
             mListener?.onHistoryItemClicked(holder.mItem)
         }
+
         holder.mSubjectName.text = String.format(
-                "%s | %s | %s",
-                holder.mItem.InvoiceSum,
-                holder.mItem.EndTime,
-                holder.mItem.Duration
+                "%s",
+                holder.mItem.SubjectName
+        )
+        var date: Date = SimpleDateFormat(Constants.TIMEFORMAT).parse(holder.mItem.EndTime+"Z")
+        val myFormat = "yyyy-MM-dd HH:mm"
+        holder.mSubjectTime.text = String.format(
+                "%s | %s",
+                SimpleDateFormat(myFormat).format(date),
+                getTimeWaitingInMinutes((holder.mItem.Duration)!!.toInt()*1000L)
         )
         holder.mCostLesson.text = String.format("%s %s", holder.mItem.InvoiceSum,  holder.mView.context.getString(R.string.currency))
         holder.mTeacher.text = String.format("%s", holder.mItem.ChatUserName)
 //        Picasso.with(holder.mView.context).load(Constants.BASE_URL+holder.mItem.ChatUserProfilePhoto).into(holder.mTeacherImage )
+        Log.e("image",holder.mItem.ChatUserProfilePhoto)
         if(holder.mItem.LearnerRaiting!=null)
             holder.mRating.rating = holder.mItem.LearnerRaiting!!
     }
@@ -48,7 +58,8 @@ class HistoryAdapter(
     }
 
     inner class ViewHolder(val mView: View) : RecyclerView.ViewHolder(mView) {
-        var mSubjectName: TextView = mView.findViewById<TextView>(R.id.his_desc) as TextView
+        var mSubjectName: TextView = mView.findViewById<TextView>(R.id.his_subject_name) as TextView
+        var mSubjectTime: TextView = mView.findViewById<TextView>(R.id.his_des) as TextView
         var mTeacher: TextView = mView.findViewById<TextView>(R.id.his_teacher_name) as TextView
         var mTeacherImage: ImageView = mView.findViewById<ImageView>(R.id.his_teacher_image) as ImageView
         var mCostLesson: TextView = mView.findViewById<TextView>(R.id.his_cost) as TextView
@@ -61,6 +72,13 @@ class HistoryAdapter(
         mValues.addAll(subjects!!)
         notifyDataSetChanged()
     }
+
+    private fun getTimeWaitingInMinutes(millis: Long): String
+            = String.format(" %02d:%02d",
+            TimeUnit.MILLISECONDS.toMinutes(millis),
+            TimeUnit.MILLISECONDS.toSeconds(millis) -
+                    TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis))
+    )
 
 
 }
