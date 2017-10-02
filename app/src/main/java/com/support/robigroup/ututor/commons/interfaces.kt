@@ -16,6 +16,9 @@ interface OnLoginActivityInteractionListener {
 }
 interface OnMainActivityInteractionListener {
     fun onSubjectItemClicked(item: Subject)
+}
+
+interface OnHistoryListInteractionListener {
     fun onHistoryItemClicked(item: ChatHistory)
 }
 

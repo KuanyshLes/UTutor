@@ -30,7 +30,7 @@ class HistoryActivity : AppCompatActivity() {
         lesson_cost.text = mChatHistory.InvoiceSum.toString()
         lesson_duration.text = mChatHistory.Duration
         button_open_chat.setOnClickListener {
-            HistoryList.open(this,mChatHistory)
+            HistoryMessages.open(this,mChatHistory)
         }
         Picasso.with(this).load(BASE_URL+mChatHistory.ChatUserProfilePhoto).into(image_photo)
     }

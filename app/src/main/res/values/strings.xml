@@ -81,6 +81,7 @@
     <string name="prof_top_up_balance">Пополнить баланс</string>
     <string name="prof_rating_by_lessons">Рейтинг по предметам</string>
     <string name="class_name">класс</string>
+    <string name="history">История</string>
     <string name="currency">тенге</string>
     <string name="recent">Недавнее</string>
     <string name="ex_class_name">10 класс</string>
@@ -92,5 +93,6 @@
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="ex_his_math">Математика | Сегодня в 6:08 | 00:01</string>
 
 </resources>

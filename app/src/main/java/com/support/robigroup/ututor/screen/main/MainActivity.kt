@@ -14,14 +14,12 @@ import com.support.robigroup.ututor.NotificationService
 import com.support.robigroup.ututor.R
 import com.support.robigroup.ututor.api.MainManager
 import com.support.robigroup.ututor.commons.*
-import com.support.robigroup.ututor.model.content.ChatHistory
 import com.support.robigroup.ututor.model.content.ChatInformation
 import com.support.robigroup.ututor.model.content.ChatLesson
 import com.support.robigroup.ututor.model.content.Subject
 import com.support.robigroup.ututor.screen.chat.ChatActivity
-import com.support.robigroup.ututor.screen.history.HistoryActivity
+import com.support.robigroup.ututor.screen.history.HistoryList
 import com.support.robigroup.ututor.screen.login.LoginActivity
-import com.support.robigroup.ututor.screen.history.adapter.HistoryAdapter
 import com.support.robigroup.ututor.screen.main.adapters.SubjectsAdapter
 import com.support.robigroup.ututor.singleton.SingletonSharedPref
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -30,7 +28,6 @@ import io.reactivex.schedulers.Schedulers
 import io.realm.Realm
 import kotlinx.android.synthetic.main.activity_main_nav.*
 import kotlinx.android.synthetic.main.app_bar_main_nav.*
-import kotlinx.android.synthetic.main.history_chat.*
 import kotlin.properties.Delegates
 
 
@@ -42,7 +39,6 @@ class MainActivity :
     private val compositeDisposable: CompositeDisposable = CompositeDisposable()
     private var mTextMyBalance: TextView by Delegates.notNull()
     private var mSubjectsAdapter: SubjectsAdapter? = null
-    private var mHistoryAdapter: HistoryAdapter? = null
     private var isChatCheck = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -77,17 +73,10 @@ class MainActivity :
 
     private fun initAdapters() {
         mSubjectsAdapter = SubjectsAdapter(ArrayList(), this)
-        mHistoryAdapter = HistoryAdapter(ArrayList(), this)
         list_subjects.apply {
             setHasFixedSize(true)
             if(adapter == null){
                 adapter = mSubjectsAdapter
-            }
-        }
-        list_history.apply {
-            setHasFixedSize(true)
-            if(adapter == null){
-                adapter = mHistoryAdapter
             }
         }
     }
@@ -95,13 +84,15 @@ class MainActivity :
     private fun sendQueries(){
         checkChatState()
         requestBalance()
-        requestHistory()
         requestSubjects()
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         // Handle navigation view item clicks here.
         when (item.itemId) {
+            R.id.nav_history -> {
+                HistoryList.open(this)
+            }
             R.id.nav_payment -> {
 
             }
@@ -126,10 +117,6 @@ class MainActivity :
 
     override fun onSubjectItemClicked(item: Subject) {
         ClassesActivity.open(this,item)
-    }
-
-    override fun onHistoryItemClicked(item: ChatHistory) {
-        HistoryActivity.open(this,item)
     }
 
     override fun onBackPressed() {
@@ -219,23 +206,6 @@ class MainActivity :
             ChatActivity.open(this)
             finish()
         }
-    }
-
-    private fun requestHistory() {
-        val subscription = MainManager().getHistory()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe (
-                        { retrievedTopics ->
-                            if(requestErrorHandler(retrievedTopics.code(),retrievedTopics.message())){
-                                mHistoryAdapter?.updateHistory(retrievedTopics.body())
-                            }
-                        },
-                        { e ->
-                            Snackbar.make(findViewById(android.R.id.content), e.message ?: "", Snackbar.LENGTH_LONG).show()
-                        }
-                )
-        compositeDisposable.add(subscription)
     }
 
     private fun requestSubjects(){
