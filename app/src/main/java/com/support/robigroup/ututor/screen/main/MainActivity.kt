@@ -197,9 +197,9 @@ class MainActivity :
             val realm = Realm.getDefaultInstance()
             val res = realm.where(ChatInformation::class.java).findAll()
             if(res!=null)
-            realm.executeTransaction {
-                res.deleteAllFromRealm()
-            }
+                realm.executeTransaction {
+                    res.deleteAllFromRealm()
+                }
             realm.close()
         }else{
             val realm = Realm.getDefaultInstance()

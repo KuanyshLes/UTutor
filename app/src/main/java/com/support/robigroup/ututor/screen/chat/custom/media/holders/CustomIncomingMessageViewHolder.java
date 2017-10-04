@@ -27,7 +27,7 @@ public class CustomIncomingMessageViewHolder extends MessageHolders.IncomingText
             ((RoundedImageView) image).setCorners(
                     com.stfalcon.chatkit.R.dimen.message_bubble_corners_radius,
                     com.stfalcon.chatkit.R.dimen.message_bubble_corners_radius,
-                    0,
+                    com.stfalcon.chatkit.R.dimen.message_bubble_corners_radius,
                     com.stfalcon.chatkit.R.dimen.message_bubble_corners_radius
             );
         }
@@ -38,7 +38,7 @@ public class CustomIncomingMessageViewHolder extends MessageHolders.IncomingText
         super.onBind(message);
         tvTime.setText(DateFormatter.format(message.getCreatedAt(), DateFormatter.Template.TIME));
         if (image != null && getImageLoader() != null) {
-            getImageLoader().loadImage(image, message.getImageUrl());
+            getImageLoader().loadImage(image, message.getImageIconUrl());
         }
     }
 }

@@ -50,7 +50,7 @@ public class NotificationService extends Service {
     private final Logger logger = new Logger() {
         @Override
         public void log(String s, LogLevel logLevel) {
-            Log.d("MyLogger",s);
+//            Log.d("MyLogger",s);
         }
     };
 

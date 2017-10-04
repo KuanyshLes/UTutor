@@ -14,6 +14,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.RatingBar
+import com.google.gson.Gson
 import com.squareup.picasso.Picasso
 import com.stfalcon.chatkit.commons.ImageLoader
 import com.stfalcon.chatkit.messages.MessageHolders
@@ -163,7 +164,9 @@ class ChatActivity : AppCompatActivity(),
         if(!mChatInformation.TeacherReady||!mChatInformation.LearnerReady){
             mReadyDialog.isCancelable = false
             val dif = Functions.getDifferenceInMillis(mChatInformation.CreateTime)
-            if(dif>1000&&dif<Constants.WAIT_TIME){
+            val utc = dif - 6*60*60*1000
+            logd(utc.toString())
+            if((dif>1000&&dif<Constants.WAIT_TIME)||(utc>1000&&utc<Constants.WAIT_TIME)){
                 mReadyDialog.startShow(supportFragmentManager,TAG_READY_DIALOG,dif)
             }else{
                 startActivity(Intent(this@ChatActivity, MainActivity::class.java))
@@ -458,8 +461,12 @@ class ChatActivity : AppCompatActivity(),
     override fun hasContentFor(message: MyMessage, type: Byte): Boolean {
         logd("hasContentfor" + type)
         when (type) {
-            CONTENT_TYPE_IMAGE_TEXT ->
-                return message.imageUrl != null && message.text != ""
+            CONTENT_TYPE_IMAGE_TEXT -> {
+                val mylog = Gson().toJson(message,MyMessage::class.java)
+                val bol1: Boolean = (message.getImageUrl() != null)
+                val bol2: Boolean = (message.text != null)
+                return message.getImageUrl() != null
+            }
         }
         return false
     }

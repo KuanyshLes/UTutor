@@ -11,8 +11,10 @@ import java.util.*
 data class MyMessage(
         private val customMessage: CustomMessage,
         var User: User?
-) : IMessage, MessageContentType.Image, MessageContentType{
-    override fun getImageUrl(): String? = customMessage.File
+) : IMessage, MessageContentType{
+    fun getImageUrl(): String? = customMessage.File
+
+    fun getImageIconUrl(): String? = customMessage.File
 
     override fun getId(): String = customMessage.Id.toString()
 
@@ -27,10 +29,12 @@ data class MyMessage(
 
 data class MyHistoryMessage(
         private val customMessage: CustomMessageHistory
-) : IMessage, MessageContentType.Image, MessageContentType{
+) : IMessage, MessageContentType{
     private val user = User(customMessage.Owner!!,customMessage.Owner,null,true)
 
-    override fun getImageUrl(): String? = customMessage.FilePath
+    fun getImageUrl(): String? = customMessage.FilePath
+
+    fun getImageIconUrl(): String? = customMessage.FileOpenIcon
 
     override fun getId(): String = customMessage.Id.toString()
 

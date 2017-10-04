@@ -25,7 +25,7 @@ public class CustomOutcomingMessageViewHolder
                     com.stfalcon.chatkit.R.dimen.message_bubble_corners_radius,
                     com.stfalcon.chatkit.R.dimen.message_bubble_corners_radius,
                     com.stfalcon.chatkit.R.dimen.message_bubble_corners_radius,
-                    0
+                    com.stfalcon.chatkit.R.dimen.message_bubble_corners_radius
             );
         }
     }
@@ -33,9 +33,10 @@ public class CustomOutcomingMessageViewHolder
     @Override
     public void onBind(MyMessage message) {
         super.onBind(message);
+        text.setVisibility( message.getText()==null ? View.GONE : View.VISIBLE);
         tvTime.setText(DateFormatter.format(message.getCreatedAt(), DateFormatter.Template.TIME));
         if (image != null && getImageLoader() != null) {
-            getImageLoader().loadImage(image, message.getImageUrl());
+            getImageLoader().loadImage(image, message.getImageIconUrl());
         }
     }
 

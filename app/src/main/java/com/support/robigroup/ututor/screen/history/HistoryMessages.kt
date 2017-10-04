@@ -86,7 +86,7 @@ class HistoryMessages : AppCompatActivity(),
 
     override fun hasContentFor(message: MyMessage, type: Byte): Boolean {
         when (type) {
-            ChatActivity.CONTENT_TYPE_IMAGE_TEXT -> return message.imageUrl != null
+            ChatActivity.CONTENT_TYPE_IMAGE_TEXT -> return message.getImageUrl() != null
                     && message.text != null
         }
         return false
