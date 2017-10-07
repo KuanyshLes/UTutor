@@ -97,5 +97,8 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="ex_his_math">Математика | Сегодня в 6:08 | 00:01</string>
+    <string name="start_session">Начать сеанс?</string>
+    <string name="close_chat_desc">Если вы передумали, подождите 30 с. и вас переправить на предыдущую страницу</string>
+    <string name="action_start">Начать</string>
 
 </resources>

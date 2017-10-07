@@ -2,25 +2,18 @@ package com.support.robigroup.ututor.commons
 
 import android.app.ProgressDialog
 import android.content.Context
-import android.content.DialogInterface
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.net.ConnectivityManager
-import android.net.NetworkInfo
 import android.support.v7.app.AlertDialog
 import android.util.Base64
 import android.util.Log
 import com.support.robigroup.ututor.Constants
 import com.support.robigroup.ututor.model.content.ChatInformation
 import com.support.robigroup.ututor.model.content.ChatLesson
-import com.support.robigroup.ututor.screen.chat.model.*
+import com.support.robigroup.ututor.features.chat.model.*
 
 import java.io.ByteArrayOutputStream
-import java.io.File
 import java.io.FileInputStream
-import java.io.FileNotFoundException
 import java.io.IOException
-import java.io.InputStream
 import java.text.SimpleDateFormat
 import java.util.*
 

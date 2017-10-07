@@ -2,12 +2,11 @@ package com.support.robigroup.ututor.api
 
 import com.support.robigroup.ututor.Constants
 import com.support.robigroup.ututor.model.content.*
-import com.support.robigroup.ututor.screen.chat.model.CustomMessage
-import com.support.robigroup.ututor.screen.chat.model.CustomMessageHistory
+import com.support.robigroup.ututor.features.chat.model.CustomMessage
+import com.support.robigroup.ututor.features.chat.model.CustomMessageHistory
 import com.support.robigroup.ututor.singleton.SingletonSharedPref
 import io.reactivex.Flowable
 import okhttp3.ResponseBody
-import retrofit2.Call
 import retrofit2.Response
 import retrofit2.http.*
 
@@ -90,22 +89,15 @@ interface APIInterface {
             @Header("Authorization") header: String = SingletonSharedPref.getInstance().getString(Constants.KEY_TOKEN)
     ): Flowable<Response<ChatLesson>>
 
-    @POST("api/lesson/chat/message")
-    fun postTextMessageWithPhoto(
-            @Query("message") messageText: String,
-            @Query("file") file64base: String,
+    @POST("api/lesson/chat/message/file")
+    fun postMessagePhoto(
+            @Body hashMap: HashMap<String,String>,
             @Header("Authorization") header: String = SingletonSharedPref.getInstance().getString(Constants.KEY_TOKEN)
     ): Flowable<Response<CustomMessage>>
 
     @POST("api/lesson/chat/message")
     fun postTextMessage(
             @Query("message") messageText: String,
-            @Header("Authorization") header: String = SingletonSharedPref.getInstance().getString(Constants.KEY_TOKEN)
-    ): Flowable<Response<CustomMessage>>
-
-    @POST("api/lesson/chat/message")
-    fun postPhotoMessage(
-            @Query("file") file: String,
             @Header("Authorization") header: String = SingletonSharedPref.getInstance().getString(Constants.KEY_TOKEN)
     ): Flowable<Response<CustomMessage>>
 

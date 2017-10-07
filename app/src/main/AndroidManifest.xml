@@ -17,7 +17,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".screen.login.LoginActivity"
+            android:name=".features.login.LoginActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
@@ -29,7 +29,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".screen.main.MainActivity"
+            android:name=".features.main.MainActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
@@ -37,7 +37,7 @@
                 android:resource="@xml/searchable" />
         </activity>
         <activity
-            android:name=".screen.chat.ChatActivity"
+            android:name=".features.chat.ChatActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
 
@@ -47,21 +47,21 @@
             android:exported="true" />
 
         <activity
-            android:name=".screen.teachers.TeachersActivity"
+            android:name=".features.teachers.TeachersActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".screen.main.ClassesActivity"
+            android:name=".features.main.ClassesActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".screen.draw.CanvasActivity" />
+        <activity android:name=".features.draw.CanvasActivity" />
         <activity
-            android:name=".screen.history.HistoryActivity"
+            android:name=".features.history.HistoryActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".screen.history.HistoryMessages"
+            android:name=".features.history.HistoryMessages"
             android:theme="@style/AppTheme.NoActionBar"/>
-        <activity android:name=".screen.history.HistoryList"
+        <activity android:name=".features.history.HistoryList"
             android:theme="@style/AppTheme.NoActionBar"/>
     </application>
 

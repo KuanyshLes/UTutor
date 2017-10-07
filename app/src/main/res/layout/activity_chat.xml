@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.support.robigroup.ututor.screen.chat.ChatActivity">
+    tools:context="com.support.robigroup.ututor.features.chat.ChatActivity">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
@@ -55,7 +55,10 @@
             android:id="@+id/messagesList"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_above="@+id/input"/>
+            android:layout_above="@+id/input"
+            app:outcomingDefaultBubbleColor="@color/colorLightBlue"
+
+            />
 
         <View
             android:layout_width="match_parent"

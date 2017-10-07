@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context="com.support.robigroup.ututor.screen.teachers.TeachersActivity">
+    tools:context="com.support.robigroup.ututor.features.teachers.TeachersActivity">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"

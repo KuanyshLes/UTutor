@@ -1,13 +1,23 @@
 package com.support.robigroup.ututor.api
 
+import com.google.gson.Gson
+import com.support.robigroup.ututor.Constants
 import com.support.robigroup.ututor.Constants.KEY_TOKEN
 import com.support.robigroup.ututor.model.content.*
-import com.support.robigroup.ututor.screen.chat.model.CustomMessage
-import com.support.robigroup.ututor.screen.chat.model.CustomMessageHistory
+import com.support.robigroup.ututor.features.chat.model.CustomMessage
+import com.support.robigroup.ututor.features.chat.model.CustomMessageHistory
 import com.support.robigroup.ututor.singleton.SingletonSharedPref
+import io.reactivex.BackpressureStrategy
 import io.reactivex.Flowable
 import okhttp3.ResponseBody
+import org.json.JSONObject
 import retrofit2.Response
+import java.io.BufferedReader
+import java.io.BufferedWriter
+import java.io.InputStreamReader
+import java.io.OutputStreamWriter
+import java.net.HttpURLConnection
+import java.net.URL
 
 
 class MainManager(
@@ -49,44 +59,55 @@ class MainManager(
     fun getHistoryMessages(chatId: Int): Flowable<Response<List<CustomMessageHistory>>> = RestAPI.getApi().getHistoryMessages(chatId)
 
     fun sendMessage(messageText: String? = null, file64base: String? = null): Flowable<Response<CustomMessage>> =
-            if(file64base != null&&messageText!=null) RestAPI.getApi().postTextMessageWithPhoto(messageText,file64base)
-            else if(file64base!=null) RestAPI.getApi().postPhotoMessage(file64base)
-            else if(messageText!=null) RestAPI.getApi().postTextMessage(messageText)
+            if(file64base != null&&messageText!=null){
+                val res: HashMap<String,String> = HashMap()
+                res.put("File",file64base)
+                res.put("Message",messageText)
+                RestAPI.getApi().postMessagePhoto(res)
+            } else if(file64base!=null) {
+                val res: HashMap<String,String> = HashMap()
+                res.put("File",file64base)
+                RestAPI.getApi().postMessagePhoto(res)
+            }else if(messageText!=null) RestAPI.getApi().postTextMessage(messageText)
             else Flowable.empty()
 
-//    fun sendFileMessage(encodedString:String): Flowable<Response<CustomMessage>>{
-//        return Flowable.create( {
-//            subscriber ->
-//            val connection: HttpURLConnection? = null
-//            try {
-//                val url = URL(Constants.BASE_URL+"api/lesson/chat/message/file")
-//                val con = url.openConnection() as HttpURLConnection
-//                val data = JSONObject()
-//                data.put("File",encodedString)
-//                con.requestMethod = "POST"
-//                con.useCaches = false
-//                con.doInput = true
-//                con.doOutput = true
-//                con.setRequestProperty("Connection", "Keep-Alive")
-//                con.doOutput = true
-//
-//                val os = con.getOutputStream()
-//                val writer = BufferedWriter(OutputStreamWriter(os, "UTF-8"))
-//
-//                //make request
-//                writer.write(data)
-//                writer.flush()
-//                writer.close()
-//                reader = BufferedReader(InputStreamReader(con.getInputStream()))
-//                val sb = StringBuilder()
-//                var line: String? = null
-//                while ((line = reader.readLine()) != null) {
-//                    sb.append(line)
-//                }
-//                return Flowable.
-//            } catch (ex: Exception) {
-//                subscriber.onError(ex)
-//            }
-//        },BackpressureStrategy.LATEST)
-//    }
+    fun sendFileMessage(encodedString:String): Flowable<Response<CustomMessage>>{
+        return Flowable.create( {
+            subscriber ->
+            val connection: HttpURLConnection? = null
+            try {
+                val url = URL(Constants.BASE_URL+"api/lesson/chat/message/file")
+                val con = url.openConnection() as HttpURLConnection
+                val data = JSONObject()
+                data.put("File",encodedString)
+                con.requestMethod = "POST"
+                con.useCaches = false
+                con.doInput = true
+                con.doOutput = true
+                con.setRequestProperty("Connection", "Keep-Alive")
+                con.doOutput = true
+
+                val os = con.outputStream
+                val writer = BufferedWriter(OutputStreamWriter(os, "UTF-8"))
+
+                //make request
+                writer.write(data.toString())
+                writer.flush()
+                writer.close()
+                val reader = BufferedReader(InputStreamReader(con.getInputStream()))
+                val sb = StringBuilder()
+                var line: String? = null
+                line = reader.readLine()
+                while (line != null) {
+                    sb.append(line)
+                    line = reader.readLine()
+                }
+                val res: String= sb.toString()
+                subscriber.onNext(Response.success(Gson().fromJson(res,CustomMessage::class.java)))
+                subscriber.onComplete()
+            } catch (ex: Exception) {
+                subscriber.onError(ex)
+            }
+        }, BackpressureStrategy.LATEST)
+    }
 }
