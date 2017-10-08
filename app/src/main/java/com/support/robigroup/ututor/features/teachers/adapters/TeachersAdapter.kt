@@ -80,7 +80,6 @@ class TeachersAdapter(private val interactionListener: OnTeachersActivityInterac
                 }else{
                     interactionListener.onCancelRequest(item)
                 }
-
             }
             teacher_choose_button.setOnClickListener {
                 interactionListener.onTeacherItemClicked(item)

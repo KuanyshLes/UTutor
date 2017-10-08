@@ -34,8 +34,6 @@ public class CustomOutcomingMessageViewHolder
     @Override
     public void onBind(MyMessage message) {
         super.onBind(message);
-        text.setVisibility( message.getText()==null ? View.GONE : View.VISIBLE);
-        Log.d("myLogs",message.getText());
         String myText = DateFormatter.format(message.getCreatedAt(), DateFormatter.Template.TIME);
         tvTime.setText(myText);
         if (image != null && getImageLoader() != null) {

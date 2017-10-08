@@ -1,5 +1,6 @@
 package com.support.robigroup.ututor.api
 
+import android.support.annotation.MainThread
 import com.google.gson.Gson
 import com.support.robigroup.ututor.Constants
 import com.support.robigroup.ututor.Constants.KEY_TOKEN
@@ -9,6 +10,8 @@ import com.support.robigroup.ututor.features.chat.model.CustomMessageHistory
 import com.support.robigroup.ututor.singleton.SingletonSharedPref
 import io.reactivex.BackpressureStrategy
 import io.reactivex.Flowable
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import okhttp3.ResponseBody
 import org.json.JSONObject
 import retrofit2.Response
@@ -34,9 +37,6 @@ class MainManager(
                 subjectId
         )
 
-    fun getTopics(subjectId: Int): Flowable<Response<List<TopicItem>>>
-        = RestAPI.getApi().getTopicsBySubject(subjectId)
-
     fun getBalance(): Flowable<Response<Balance>>
             = RestAPI.getApi().getBalance()
 
@@ -58,6 +58,10 @@ class MainManager(
 
     fun getHistoryMessages(chatId: Int): Flowable<Response<List<CustomMessageHistory>>> = RestAPI.getApi().getHistoryMessages(chatId)
 
+    fun resetPassword(oldPassword: String, confirmPassword: String, newPassword: String) :Flowable<Response<ResponseBody>>{
+        return RestAPI.getApi().resetPassword(oldPassword,confirmPassword,newPassword).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+    }
+
     fun sendMessage(messageText: String? = null, file64base: String? = null): Flowable<Response<CustomMessage>> =
             if(file64base != null&&messageText!=null){
                 val res: HashMap<String,String> = HashMap()
@@ -71,43 +75,43 @@ class MainManager(
             }else if(messageText!=null) RestAPI.getApi().postTextMessage(messageText)
             else Flowable.empty()
 
-    fun sendFileMessage(encodedString:String): Flowable<Response<CustomMessage>>{
-        return Flowable.create( {
-            subscriber ->
-            val connection: HttpURLConnection? = null
-            try {
-                val url = URL(Constants.BASE_URL+"api/lesson/chat/message/file")
-                val con = url.openConnection() as HttpURLConnection
-                val data = JSONObject()
-                data.put("File",encodedString)
-                con.requestMethod = "POST"
-                con.useCaches = false
-                con.doInput = true
-                con.doOutput = true
-                con.setRequestProperty("Connection", "Keep-Alive")
-                con.doOutput = true
-
-                val os = con.outputStream
-                val writer = BufferedWriter(OutputStreamWriter(os, "UTF-8"))
-
-                //make request
-                writer.write(data.toString())
-                writer.flush()
-                writer.close()
-                val reader = BufferedReader(InputStreamReader(con.getInputStream()))
-                val sb = StringBuilder()
-                var line: String? = null
-                line = reader.readLine()
-                while (line != null) {
-                    sb.append(line)
-                    line = reader.readLine()
-                }
-                val res: String= sb.toString()
-                subscriber.onNext(Response.success(Gson().fromJson(res,CustomMessage::class.java)))
-                subscriber.onComplete()
-            } catch (ex: Exception) {
-                subscriber.onError(ex)
-            }
-        }, BackpressureStrategy.LATEST)
-    }
+//    fun sendFileMessage(encodedString:String): Flowable<Response<CustomMessage>>{
+//        return Flowable.create( {
+//            subscriber ->
+//            val connection: HttpURLConnection? = null
+//            try {
+//                val url = URL(Constants.BASE_URL+"api/lesson/chat/message/file")
+//                val con = url.openConnection() as HttpURLConnection
+//                val data = JSONObject()
+//                data.put("File",encodedString)
+//                con.requestMethod = "POST"
+//                con.useCaches = false
+//                con.doInput = true
+//                con.doOutput = true
+//                con.setRequestProperty("Connection", "Keep-Alive")
+//                con.doOutput = true
+//
+//                val os = con.outputStream
+//                val writer = BufferedWriter(OutputStreamWriter(os, "UTF-8"))
+//
+//                //make request
+//                writer.write(data.toString())
+//                writer.flush()
+//                writer.close()
+//                val reader = BufferedReader(InputStreamReader(con.getInputStream()))
+//                val sb = StringBuilder()
+//                var line: String? = null
+//                line = reader.readLine()
+//                while (line != null) {
+//                    sb.append(line)
+//                    line = reader.readLine()
+//                }
+//                val res: String= sb.toString()
+//                subscriber.onNext(Response.success(Gson().fromJson(res,CustomMessage::class.java)))
+//                subscriber.onComplete()
+//            } catch (ex: Exception) {
+//                subscriber.onError(ex)
+//            }
+//        }, BackpressureStrategy.LATEST)
+//    }
 }

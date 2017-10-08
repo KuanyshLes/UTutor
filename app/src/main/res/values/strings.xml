@@ -2,13 +2,16 @@
     <string name="app_name">UTutor</string>
 
     <!-- Strings related to login -->
-    <string name="prompt_email">Email</string>
-    <string name="prompt_password">Password</string>
-    <string name="action_sign_in">Sign in</string>
+    <string name="prompt_email">E-mail</string>
+    <string name="prompt_password">Пароль</string>
+    <string name="action_sign_in">Логин</string>
     <string name="action_sign_up">Sign up</string>
     <string name="error_invalid_email">This email address is invalid</string>
     <string name="error_invalid_password">This password is too short</string>
     <string name="error_field_required">This field is required</string>
+    <string name="error_password">Неправильный пароль</string>
+    <string name="error_not_same_password">Пароли не соответствует</string>
+    <string name="error_same_password">Одинаковый пароль</string>
     <string name="error_request_exists">Запрос был создан</string>
     <string name="action_go_sign_up">Don\'t have an account?</string>
     <string name="desc_logo">Logo</string>
@@ -89,6 +92,18 @@
     <string name="recent">Недавнее</string>
     <string name="ex_class_name">10 класс</string>
 
+    //account
+    <string name="change_fio">Изменить Ф.И.О</string>
+    <string name="change_email">Изменить E-mail</string>
+    <string name="change_password">Изменить пароль</string>
+    <string name="change_language">Изменить язык</string>
+    <string name="old_password">Старый пароль</string>
+    <string name="new_password">Новый пароль</string>
+    <string name="confirm_password">Подвердите пароль</string>
+    <string name="desc_password">Пароль должен содержать цифры, прописные, и строчные буквы и состоять хотя бы из 8 символов</string>
+    <string name="success_password">Пароли изменены</string>
+    <string name="un_success_password">Пароли не был изменен</string>
+
     <string-array name="view_types_dialog">
         <item name="image">From gallery</item>
         <!--<item name="voice">Voice message (custom)</item>-->
@@ -100,5 +115,78 @@
     <string name="start_session">Начать сеанс?</string>
     <string name="close_chat_desc">Если вы передумали, подождите 30 с. и вас переправить на предыдущую страницу</string>
     <string name="action_start">Начать</string>
+    <string name="title_activity_settings">Settings</string>
+
+    <!-- Strings related to Settings -->
+
+    <!-- Example General settings -->
+    <string name="pref_header_general">General</string>
+
+    <string name="pref_title_social_recommendations">Enable social recommendations</string>
+    <string name="pref_description_social_recommendations">Recommendations for people to contact
+        based on your message history
+    </string>
+
+    <string name="pref_title_display_name">Display name</string>
+    <string name="pref_default_display_name">John Smith</string>
+
+    <string name="pref_title_add_friends_to_messages">Add friends to messages</string>
+    <string-array name="pref_example_list_titles">
+        <item>Always</item>
+        <item>When possible</item>
+        <item>Never</item>
+    </string-array>
+    <string-array name="pref_example_list_values">
+        <item>1</item>
+        <item>0</item>
+        <item>-1</item>
+    </string-array>
+
+    <!-- Example settings for Data & Sync -->
+    <string name="pref_header_data_sync">Data &amp; sync</string>
+
+    <string name="pref_title_sync_frequency">Sync frequency</string>
+    <string-array name="pref_sync_frequency_titles">
+        <item>15 minutes</item>
+        <item>30 minutes</item>
+        <item>1 hour</item>
+        <item>3 hours</item>
+        <item>6 hours</item>
+        <item>Never</item>
+    </string-array>
+    <string-array name="pref_sync_frequency_values">
+        <item>15</item>
+        <item>30</item>
+        <item>60</item>
+        <item>180</item>
+        <item>360</item>
+        <item>-1</item>
+    </string-array>
+
+    <string-array name="list_preference_entries">
+        <item>Entry 1</item>
+        <item>Entry 2</item>
+        <item>Entry 3</item>
+    </string-array>
+
+    <string-array name="list_preference_entry_values">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+    </string-array>
+
+    <string-array name="multi_select_list_preference_default_value" />
+
+    <string name="pref_title_system_sync_settings">System sync settings</string>
+
+    <!-- Example settings for Notifications -->
+    <string name="pref_header_notifications">Notifications</string>
+
+    <string name="pref_title_new_message_notifications">New message notifications</string>
+
+    <string name="pref_title_ringtone">Ringtone</string>
+    <string name="pref_ringtone_silent">Silent</string>
+
+    <string name="pref_title_vibrate">Vibrate</string>
 
 </resources>

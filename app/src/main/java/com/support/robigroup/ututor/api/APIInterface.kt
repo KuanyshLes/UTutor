@@ -107,4 +107,12 @@ interface APIInterface {
             @Query("Raiting") lessonId: Int,
             @Header("Authorization") header: String = SingletonSharedPref.getInstance().getString(Constants.KEY_TOKEN)
     ): Flowable<Response<ResponseBody>>
+
+    @POST("api/account/password/change")
+    fun resetPassword(
+            @Query("OldPassword") oldPassword: String,
+            @Query("NewPassword") newPassword: String,
+            @Query("ConfirmPassword") confirmPassword: String,
+            @Header("Authorization") header: String = SingletonSharedPref.getInstance().getString(Constants.KEY_TOKEN)
+    ): Flowable<Response<ResponseBody>>
 }

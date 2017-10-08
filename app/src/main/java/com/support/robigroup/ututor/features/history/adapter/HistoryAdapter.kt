@@ -48,7 +48,7 @@ class HistoryAdapter(
         holder.mCostLesson.text = String.format("%s %s", holder.mItem.InvoiceSum,  holder.mView.context.getString(R.string.currency))
         holder.mTeacher.text = String.format("%s", holder.mItem.ChatUserName)
 //        Picasso.with(holder.mView.context).load(Constants.BASE_URL+holder.mItem.ChatUserProfilePhoto).into(holder.mTeacherImage )
-        Log.e("image",holder.mItem.ChatUserProfilePhoto)
+
         if(holder.mItem.LearnerRaiting!=null)
             holder.mRating.rating = holder.mItem.LearnerRaiting!!
     }

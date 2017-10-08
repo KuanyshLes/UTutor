@@ -14,6 +14,7 @@ import com.support.robigroup.ututor.NotificationService
 import com.support.robigroup.ututor.R
 import com.support.robigroup.ututor.api.MainManager
 import com.support.robigroup.ututor.commons.*
+import com.support.robigroup.ututor.features.account.AccountActivity
 import com.support.robigroup.ututor.model.content.ChatInformation
 import com.support.robigroup.ututor.model.content.ChatLesson
 import com.support.robigroup.ututor.model.content.Subject
@@ -99,7 +100,7 @@ class MainActivity :
                 HistoryList.open(this)
             }
             R.id.nav_settings -> {
-
+                AccountActivity.open(this)
             }
             R.id.nav_help -> {
 
