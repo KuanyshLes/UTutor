@@ -28,7 +28,7 @@ class AccountActivity : AppCompatActivity() {
                 ChangePasswordActivity.open(this)
             }
             R.id.change_language ->{
-
+                ChangeLanguageActivity.open(this)
             }
         }
     }

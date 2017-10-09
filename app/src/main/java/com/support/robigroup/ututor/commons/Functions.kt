@@ -10,6 +10,8 @@ import com.support.robigroup.ututor.Constants
 import com.support.robigroup.ututor.model.content.ChatInformation
 import com.support.robigroup.ututor.model.content.ChatLesson
 import com.support.robigroup.ututor.features.chat.model.*
+import com.support.robigroup.ututor.model.content.Language
+import com.support.robigroup.ututor.singleton.SingletonSharedPref
 
 import java.io.ByteArrayOutputStream
 import java.io.FileInputStream
@@ -23,7 +25,17 @@ object Functions {
     private var progressDialog: ProgressDialog? = null
     val GPS_PROVIDER_REQUEST = 10
 
+    fun getLanguages(): MutableList<Language>{
+        val l = SingletonSharedPref.getInstance().getString(Constants.KEY_LANGUAGE)
+        return Constants.FLAGS
+                .map {
+                    if(it.request.equals(l)){
+                        it.status = true
+                    }
+                    it
+                }.toMutableList()
 
+    }
 
     fun builtAlertMessageWithText(message: String, context: Context) {
         val builder = AlertDialog.Builder(context)

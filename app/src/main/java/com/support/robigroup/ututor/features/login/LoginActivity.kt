@@ -130,6 +130,7 @@ class LoginActivity : AppCompatActivity(), OnLoginActivityInteractionListener {
     private fun saveTokenAndFinish(stringResult: LoginResponse?){
         SingletonSharedPref.getInstance().put(Constants.KEY_TOKEN,Constants.KEY_BEARER.plus(stringResult!!.access_token))
         SingletonSharedPref.getInstance().put(Constants.KEY_FULL_NAME,stringResult.FullName)
+        SingletonSharedPref.getInstance().put(Constants.KEY_LANGUAGE,"kk")
         showProgress(false)
         startActivity(Intent(baseContext,MainActivity::class.java))
         finish()

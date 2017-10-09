@@ -102,9 +102,9 @@ class MainActivity :
             R.id.nav_settings -> {
                 AccountActivity.open(this)
             }
-            R.id.nav_help -> {
-
-            }
+//            R.id.nav_help -> {
+//
+//            }
             R.id.nav_logout -> {
                 compositeDisposable.clear()
                 SingletonSharedPref.getInstance().clear()

@@ -288,3 +288,37 @@ data class Balance(
         var Balance: Double? = null
 )
 
+data class Language(
+        var flagIcon: Int,
+        var text: String,
+        var request: String,
+        var status: Boolean = false
+) : Parcelable {
+    constructor(parcel: Parcel) : this(
+            parcel.readInt(),
+            parcel.readString(),
+            parcel.readString(),
+            parcel.readByte() != 0.toByte())
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeInt(flagIcon)
+        parcel.writeString(text)
+        parcel.writeString(request)
+        parcel.writeByte(if (status) 1 else 0)
+    }
+
+    override fun describeContents(): Int {
+        return 0
+    }
+
+    companion object CREATOR : Parcelable.Creator<Language> {
+        override fun createFromParcel(parcel: Parcel): Language {
+            return Language(parcel)
+        }
+
+        override fun newArray(size: Int): Array<Language?> {
+            return arrayOfNulls(size)
+        }
+    }
+}
+
