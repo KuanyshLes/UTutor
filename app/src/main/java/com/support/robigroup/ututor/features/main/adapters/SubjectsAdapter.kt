@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import com.support.robigroup.ututor.R
 import com.support.robigroup.ututor.commons.OnMainActivityInteractionListener
-import com.support.robigroup.ututor.model.content.Subject
+import com.support.robigroup.ututor.commons.Subject
 
 
 class SubjectsAdapter(private val mValues: ArrayList<Subject>, private val mListener: OnMainActivityInteractionListener?) : RecyclerView.Adapter<SubjectsAdapter.ViewHolder>() {

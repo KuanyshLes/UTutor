@@ -9,13 +9,14 @@
 
     <ImageView
         android:id="@+id/flag_image"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/flag_width"
+        android:layout_height="@dimen/flag_height"
+        android:scaleType="fitXY"
         android:layout_marginLeft="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/bubble_circle" />
+        app:srcCompat="@drawable/flag_ru" />
 
     <ImageView
         android:id="@+id/check_flag"
@@ -35,7 +36,8 @@
         android:text="@string/ex_language"
         app:layout_constraintBottom_toBottomOf="@+id/flag_image"
         app:layout_constraintStart_toEndOf="@+id/flag_image"
-        app:layout_constraintTop_toTopOf="@+id/flag_image" />
+        app:layout_constraintTop_toTopOf="@+id/flag_image"
+        android:layout_marginLeft="16dp" />
 
     <TextView
         android:id="@+id/divider"

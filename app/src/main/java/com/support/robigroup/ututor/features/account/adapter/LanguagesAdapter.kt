@@ -9,7 +9,7 @@ import com.support.robigroup.ututor.Constants
 import com.support.robigroup.ututor.R
 import com.support.robigroup.ututor.commons.Functions.getLanguages
 import com.support.robigroup.ututor.commons.inflate
-import com.support.robigroup.ututor.model.content.Language
+import com.support.robigroup.ututor.commons.Language
 import com.support.robigroup.ututor.singleton.SingletonSharedPref
 
 class LanguagesAdapter() : RecyclerView.Adapter<RecyclerView.ViewHolder>() {

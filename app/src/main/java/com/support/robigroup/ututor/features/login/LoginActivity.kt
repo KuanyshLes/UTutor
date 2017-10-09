@@ -9,7 +9,7 @@ import com.support.robigroup.ututor.Constants
 import com.support.robigroup.ututor.R
 import com.support.robigroup.ututor.api.RestAPI
 import com.support.robigroup.ututor.commons.*
-import com.support.robigroup.ututor.model.content.LoginResponse
+import com.support.robigroup.ututor.commons.LoginResponse
 import com.support.robigroup.ututor.features.loading.LoadingDialog
 import com.support.robigroup.ututor.features.loading.LoadingView
 import com.support.robigroup.ututor.features.main.MainActivity

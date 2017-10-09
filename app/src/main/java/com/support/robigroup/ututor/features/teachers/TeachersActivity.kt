@@ -10,9 +10,7 @@ import android.view.MenuItem
 import com.google.gson.Gson
 import com.support.robigroup.ututor.R
 import com.support.robigroup.ututor.api.MainManager
-import com.support.robigroup.ututor.commons.OnTeachersActivityInteractionListener
-import com.support.robigroup.ututor.commons.requestErrorHandler
-import com.support.robigroup.ututor.model.content.*
+import com.support.robigroup.ututor.commons.*
 import com.support.robigroup.ututor.features.chat.ChatActivity
 import com.support.robigroup.ututor.features.teachers.adapters.TeachersAdapter
 import com.support.robigroup.ututor.singleton.SingletonSharedPref
@@ -84,7 +82,7 @@ class TeachersActivity : AppCompatActivity(), OnTeachersActivityInteractionListe
     override fun onDestroy() {
         super.onDestroy()
         compositeDisposable.clear()
-        SingletonSharedPref.getInstance().put(ARG_ADAPTER,Gson().toJson(myAdapter.getTeachers(),Teachers::class.java))
+        SingletonSharedPref.getInstance().put(ARG_ADAPTER,Gson().toJson(myAdapter.getTeachers(), Teachers::class.java))
         chatInfos.removeChangeListener(mRealmChangeListener)
         realm.close()
     }
@@ -92,7 +90,7 @@ class TeachersActivity : AppCompatActivity(), OnTeachersActivityInteractionListe
     override fun onSaveInstanceState(outState: Bundle?, outPersistentState: PersistableBundle?) {
         super.onSaveInstanceState(outState, outPersistentState)
 
-        SingletonSharedPref.getInstance().put(ARG_ADAPTER,Gson().toJson(myAdapter.getTeachers(),Teachers::class.java))
+        SingletonSharedPref.getInstance().put(ARG_ADAPTER,Gson().toJson(myAdapter.getTeachers(), Teachers::class.java))
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {

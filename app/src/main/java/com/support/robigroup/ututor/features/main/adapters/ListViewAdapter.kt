@@ -8,7 +8,7 @@ import android.widget.ArrayAdapter
 import android.widget.TextView
 
 import com.support.robigroup.ututor.R
-import com.support.robigroup.ututor.model.content.TopicItem
+import com.support.robigroup.ututor.commons.TopicItem
 import com.support.robigroup.ututor.features.main.MainActivity
 
 import java.util.ArrayList

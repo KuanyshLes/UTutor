@@ -9,8 +9,8 @@ import android.util.Log;
 
 import com.google.gson.Gson;
 import com.support.robigroup.ututor.commons.Functions;
-import com.support.robigroup.ututor.model.content.ChatInformation;
-import com.support.robigroup.ututor.model.content.ChatLesson;
+import com.support.robigroup.ututor.commons.ChatInformation;
+import com.support.robigroup.ututor.commons.ChatLesson;
 import com.support.robigroup.ututor.features.chat.model.CustomMessage;
 import com.support.robigroup.ututor.singleton.SingletonSharedPref;
 

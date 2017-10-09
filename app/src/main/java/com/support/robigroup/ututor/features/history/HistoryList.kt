@@ -11,7 +11,7 @@ import com.support.robigroup.ututor.R
 import com.support.robigroup.ututor.api.MainManager
 import com.support.robigroup.ututor.commons.OnHistoryListInteractionListener
 import com.support.robigroup.ututor.commons.requestErrorHandler
-import com.support.robigroup.ututor.model.content.ChatHistory
+import com.support.robigroup.ututor.commons.ChatHistory
 import com.support.robigroup.ututor.features.history.adapter.HistoryAdapter
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable

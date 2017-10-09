@@ -1,26 +1,15 @@
 package com.support.robigroup.ututor.api
 
-import android.support.annotation.MainThread
-import com.google.gson.Gson
-import com.support.robigroup.ututor.Constants
 import com.support.robigroup.ututor.Constants.KEY_TOKEN
-import com.support.robigroup.ututor.model.content.*
+import com.support.robigroup.ututor.commons.*
 import com.support.robigroup.ututor.features.chat.model.CustomMessage
 import com.support.robigroup.ututor.features.chat.model.CustomMessageHistory
 import com.support.robigroup.ututor.singleton.SingletonSharedPref
-import io.reactivex.BackpressureStrategy
 import io.reactivex.Flowable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import okhttp3.ResponseBody
-import org.json.JSONObject
 import retrofit2.Response
-import java.io.BufferedReader
-import java.io.BufferedWriter
-import java.io.InputStreamReader
-import java.io.OutputStreamWriter
-import java.net.HttpURLConnection
-import java.net.URL
 
 
 class MainManager(

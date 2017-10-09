@@ -1,9 +1,8 @@
-package com.support.robigroup.ututor.model.content
+package com.support.robigroup.ututor.commons
 
 import android.os.Parcel
 import android.os.Parcelable
 import com.support.robigroup.ututor.Constants
-import com.support.robigroup.ututor.commons.createParcel
 import io.realm.RealmObject
 
 

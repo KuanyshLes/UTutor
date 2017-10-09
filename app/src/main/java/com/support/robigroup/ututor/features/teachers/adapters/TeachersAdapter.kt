@@ -6,9 +6,9 @@ import com.support.robigroup.ututor.R
 import com.support.robigroup.ututor.commons.OnTeachersActivityInteractionListener
 import com.support.robigroup.ututor.commons.inflate
 import com.support.robigroup.ututor.commons.loadImg
-import com.support.robigroup.ututor.model.content.LessonRequestForTeacher
-import com.support.robigroup.ututor.model.content.Teacher
-import com.support.robigroup.ututor.model.content.Teachers
+import com.support.robigroup.ututor.commons.LessonRequestForTeacher
+import com.support.robigroup.ututor.commons.Teacher
+import com.support.robigroup.ututor.commons.Teachers
 import kotlinx.android.synthetic.main.item_teacher.view.*
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -21,7 +21,7 @@ class TeachersAdapter(private val interactionListener: OnTeachersActivityInterac
         holder.bind(items[position])
     }
 
-    fun getTeachers(): Teachers{
+    fun getTeachers(): Teachers {
         val res = Teachers()
         (res.teachers as ArrayList).addAll(items)
         return res

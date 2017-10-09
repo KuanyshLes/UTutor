@@ -9,7 +9,7 @@ import android.support.v7.widget.RecyclerView
 import android.view.MenuItem
 import com.support.robigroup.ututor.R
 import com.support.robigroup.ututor.commons.ClassesActivityListener
-import com.support.robigroup.ututor.model.content.Subject
+import com.support.robigroup.ututor.commons.Subject
 import com.support.robigroup.ututor.features.main.adapters.ClassAdapter
 import com.support.robigroup.ututor.features.teachers.TeachersActivity
 import kotlinx.android.synthetic.main.activity_classes.*

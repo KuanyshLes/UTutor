@@ -1,6 +1,6 @@
 package com.support.robigroup.ututor
 
-import com.support.robigroup.ututor.model.content.Language
+import com.support.robigroup.ututor.commons.Language
 import java.util.*
 
 object Constants {
@@ -39,9 +39,9 @@ object Constants {
     val PASSWORD_PATTERN = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,}$"
     val EMAIL_PATTERN = "^[a-zA-Z0-9#_~!$&'()*+,;=:.\"(),:;<>@\\[\\]\\\\]+@[a-zA-Z0-9-]+(\\.[a-zA-Z0-9-]+)*$"
     val FLAGS = arrayOf(
-            Language(R.drawable.flag_kz,"Қазақ","kk",false),
-            Language(R.drawable.flag_ru,"Русский","ru",false),
-            Language(R.drawable.flag_us,"English","en",false)
+            Language(R.drawable.flag_kz, "Қазақ", "kk", false),
+            Language(R.drawable.flag_ru, "Русский", "ru", false),
+            Language(R.drawable.flag_us, "English", "en", false)
     )
 
 

@@ -1,7 +1,7 @@
 package com.support.robigroup.ututor.api
 
 import com.support.robigroup.ututor.Constants
-import com.support.robigroup.ututor.model.content.*
+import com.support.robigroup.ututor.commons.*
 import com.support.robigroup.ututor.features.chat.model.CustomMessage
 import com.support.robigroup.ututor.features.chat.model.CustomMessageHistory
 import com.support.robigroup.ututor.singleton.SingletonSharedPref

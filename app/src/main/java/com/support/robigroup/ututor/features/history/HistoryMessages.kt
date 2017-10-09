@@ -22,7 +22,7 @@ import com.support.robigroup.ututor.api.MainManager
 import com.support.robigroup.ututor.commons.Functions
 import com.support.robigroup.ututor.commons.requestErrorHandler
 import com.support.robigroup.ututor.commons.toast
-import com.support.robigroup.ututor.model.content.ChatHistory
+import com.support.robigroup.ututor.commons.ChatHistory
 import com.support.robigroup.ututor.features.chat.model.MyHistoryMessage
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers

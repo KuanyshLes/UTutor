@@ -5,8 +5,8 @@ import android.view.ViewGroup
 import com.support.robigroup.ututor.R
 import com.support.robigroup.ututor.commons.ClassesActivityListener
 import com.support.robigroup.ututor.commons.inflate
-import com.support.robigroup.ututor.model.content.ClassRoom
-import com.support.robigroup.ututor.model.content.Subject
+import com.support.robigroup.ututor.commons.ClassRoom
+import com.support.robigroup.ututor.commons.Subject
 import kotlinx.android.synthetic.main.item_class.view.*
 
 

@@ -8,7 +8,7 @@ import android.view.MenuItem
 import com.squareup.picasso.Picasso
 import com.support.robigroup.ututor.Constants.BASE_URL
 import com.support.robigroup.ututor.R
-import com.support.robigroup.ututor.model.content.ChatHistory
+import com.support.robigroup.ututor.commons.ChatHistory
 import kotlinx.android.synthetic.main.activity_history.*
 
 class HistoryActivity : AppCompatActivity() {

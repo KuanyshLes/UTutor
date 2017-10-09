@@ -8,6 +8,7 @@ import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
+import android.widget.ImageView
 import android.widget.TextView
 import com.support.robigroup.ututor.Constants
 import com.support.robigroup.ututor.NotificationService
@@ -15,9 +16,9 @@ import com.support.robigroup.ututor.R
 import com.support.robigroup.ututor.api.MainManager
 import com.support.robigroup.ututor.commons.*
 import com.support.robigroup.ututor.features.account.AccountActivity
-import com.support.robigroup.ututor.model.content.ChatInformation
-import com.support.robigroup.ututor.model.content.ChatLesson
-import com.support.robigroup.ututor.model.content.Subject
+import com.support.robigroup.ututor.commons.ChatInformation
+import com.support.robigroup.ututor.commons.ChatLesson
+import com.support.robigroup.ututor.commons.Subject
 import com.support.robigroup.ututor.features.chat.ChatActivity
 import com.support.robigroup.ututor.features.history.HistoryList
 import com.support.robigroup.ututor.features.login.LoginActivity
@@ -39,6 +40,8 @@ class MainActivity :
 
     private val compositeDisposable: CompositeDisposable = CompositeDisposable()
     private var mTextMyBalance: TextView by Delegates.notNull()
+    private var mLanguage: TextView by Delegates.notNull()
+    private var mFlag: ImageView by Delegates.notNull()
     private var mSubjectsAdapter: SubjectsAdapter? = null
     private var isChatCheck = false
 
@@ -64,7 +67,11 @@ class MainActivity :
         val nav_user = hView.findViewById<TextView>(R.id.user_name)
         nav_user.text = SingletonSharedPref.getInstance().getString(Constants.KEY_FULL_NAME)
         mTextMyBalance = hView.findViewById(R.id.my_balance)
-
+        mLanguage = hView.findViewById(R.id.user_language)
+        mFlag = hView.findViewById(R.id.flag_image)
+        val language = Functions.getLanguage(SingletonSharedPref.getInstance().getString(Constants.KEY_LANGUAGE))
+        mFlag.setImageResource(language.flagIcon)
+        mLanguage.text = language.text
         initAdapters()
         swipe_container.setOnRefreshListener {
             requestSubjects()

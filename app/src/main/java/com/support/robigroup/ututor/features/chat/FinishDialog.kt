@@ -12,7 +12,7 @@ import android.widget.RatingBar
 import android.widget.TextView
 import com.support.robigroup.ututor.R
 import com.support.robigroup.ututor.commons.OnChatActivityDialogInteractionListener
-import com.support.robigroup.ututor.model.content.ChatInformation
+import com.support.robigroup.ututor.commons.ChatInformation
 
 
 class FinishDialog : DialogFragment() {
@@ -54,7 +54,7 @@ class FinishDialog : DialogFragment() {
         return builder.create()
     }
 
-    fun showMe(chatLesson: ChatInformation,fragmentManager: FragmentManager,t: String){
+    fun showMe(chatLesson: ChatInformation, fragmentManager: FragmentManager, t: String){
         this.chatInformation = chatLesson
         show(fragmentManager,t)
     }

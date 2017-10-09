@@ -27,7 +27,7 @@ import com.support.robigroup.ututor.NotificationService
 import com.support.robigroup.ututor.R
 import com.support.robigroup.ututor.api.MainManager
 import com.support.robigroup.ututor.commons.*
-import com.support.robigroup.ututor.model.content.ChatInformation
+import com.support.robigroup.ututor.commons.ChatInformation
 import com.support.robigroup.ututor.features.chat.custom.media.holders.CustomIncomingMessageViewHolder
 import com.support.robigroup.ututor.features.chat.custom.media.holders.CustomOutcomingMessageViewHolder
 import com.support.robigroup.ututor.features.chat.model.CustomMessage

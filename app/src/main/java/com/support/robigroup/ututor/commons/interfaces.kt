@@ -1,9 +1,6 @@
 package com.support.robigroup.ututor.commons
 
 import android.support.v4.app.DialogFragment
-import com.support.robigroup.ututor.model.content.*
-import com.support.robigroup.ututor.model.content.Subject
-import com.support.robigroup.ututor.model.content.Teacher
 
 interface OnLoginActivityInteractionListener {
     fun onSignInButtonClicked(email: String, password: String)

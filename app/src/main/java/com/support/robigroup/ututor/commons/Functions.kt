@@ -7,10 +7,7 @@ import android.support.v7.app.AlertDialog
 import android.util.Base64
 import android.util.Log
 import com.support.robigroup.ututor.Constants
-import com.support.robigroup.ututor.model.content.ChatInformation
-import com.support.robigroup.ututor.model.content.ChatLesson
 import com.support.robigroup.ututor.features.chat.model.*
-import com.support.robigroup.ututor.model.content.Language
 import com.support.robigroup.ututor.singleton.SingletonSharedPref
 
 import java.io.ByteArrayOutputStream
@@ -35,6 +32,13 @@ object Functions {
                     it
                 }.toMutableList()
 
+    }
+    fun getLanguage(request: String): Language {
+        var lan = Constants.FLAGS.find { it.request.equals(request) }
+        if(lan==null){
+            lan = Constants.FLAGS.get(0)
+        }
+        return lan
     }
 
     fun builtAlertMessageWithText(message: String, context: Context) {
@@ -75,7 +79,7 @@ object Functions {
         return netInfo != null && netInfo.isConnectedOrConnecting
     }
 
-    fun getChatInformation(chatInformation: ChatLesson): ChatInformation =  ChatInformation(
+    fun getChatInformation(chatInformation: ChatLesson): ChatInformation = ChatInformation(
             chatInformation.Id,
             chatInformation.CreateTime,
             chatInformation.StartTime,
