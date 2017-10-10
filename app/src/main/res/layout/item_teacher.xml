@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="8dp"
-    app:cardCornerRadius="10dp"
+    android:layout_margin="6dp"
+    app:cardCornerRadius="7dp"
     app:cardElevation="5dp">
 
     <android.support.constraint.ConstraintLayout
@@ -28,54 +28,45 @@
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintHorizontal_chainStyle="spread"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/teacher_lessons"/>
+            app:layout_constraintTop_toBottomOf="@+id/teacher_lessons" />
 
-        <android.support.v7.widget.CardView
-            android:id="@+id/cardView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+
+        <ImageView
+            android:id="@+id/teacher_photo"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:contentDescription="@string/desc_logo"
+            android:scaleType="centerCrop"
+            app:srcCompat="@drawable/ic_user"
             android:layout_marginLeft="8dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
-            app:cardCornerRadius="5dp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toTopOf="parent"/>
 
-            <ImageView
-                android:id="@+id/teacher_photo"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:contentDescription="@string/desc_logo"
-                android:scaleType="centerCrop"
-                app:srcCompat="@drawable/ex_image_teacher" />
-        </android.support.v7.widget.CardView>
 
         <TextView
             android:id="@+id/teacher_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="16dp"
             android:lines="1"
             android:text="@string/ex_teacher_full_name"
-            app:layout_constraintEnd_toStartOf="@+id/teacher_image"
-            app:layout_constraintStart_toEndOf="@+id/cardView"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:layout_editor_absoluteY="16dp" />
+            app:layout_constraintStart_toEndOf="@+id/teacher_photo"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/teacher_lessons"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
-            android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:lines="1"
             android:text="@string/ex_lessons"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/cardView"
+            app:layout_constraintStart_toStartOf="@+id/teacher_name"
             app:layout_constraintTop_toBottomOf="@+id/teacher_name" />
 
         <TextView
@@ -97,13 +88,10 @@
             android:layout_width="20dp"
             android:layout_height="20dp"
             android:layout_marginEnd="8dp"
-            android:layout_marginRight="8dp"
-            android:background="@color/colorLightBlue"
             app:layout_constraintBottom_toBottomOf="@+id/teacher_name"
             app:layout_constraintEnd_toStartOf="@+id/teacher_rating"
             app:layout_constraintTop_toTopOf="@+id/teacher_name"
-            app:srcCompat="@android:drawable/btn_star"
-            tools:layout_editor_absoluteY="15dp" />
+            app:srcCompat="@drawable/ic_star_full_blue" />
 
         <Button
             android:id="@+id/teacher_choose_button"

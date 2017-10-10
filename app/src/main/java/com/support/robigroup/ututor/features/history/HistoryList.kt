@@ -3,44 +3,63 @@ package com.support.robigroup.ututor.features.history
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.support.design.widget.NavigationView
 import android.support.design.widget.Snackbar
+import android.support.v4.view.GravityCompat
+import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.view.MenuItem
+import android.widget.ImageView
+import android.widget.TextView
+import com.support.robigroup.ututor.Constants
+import com.support.robigroup.ututor.NotificationService
 import com.support.robigroup.ututor.R
 import com.support.robigroup.ututor.api.MainManager
 import com.support.robigroup.ututor.commons.OnHistoryListInteractionListener
 import com.support.robigroup.ututor.commons.requestErrorHandler
 import com.support.robigroup.ututor.commons.ChatHistory
+import com.support.robigroup.ututor.commons.Functions
+import com.support.robigroup.ututor.features.MenuesActivity
+import com.support.robigroup.ututor.features.account.AccountActivity
 import com.support.robigroup.ututor.features.history.adapter.HistoryAdapter
+import com.support.robigroup.ututor.features.login.LoginActivity
+import com.support.robigroup.ututor.features.main.MainActivity
+import com.support.robigroup.ututor.singleton.SingletonSharedPref
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_history_list.*
+import kotlin.properties.Delegates
+import android.support.v7.widget.DividerItemDecoration
 
-class HistoryList : AppCompatActivity(), OnHistoryListInteractionListener {
+
+
+class HistoryList : MenuesActivity(), OnHistoryListInteractionListener {
 
     private var mHistoryAdapter: HistoryAdapter? = null
     private val compositeDisposable: CompositeDisposable = CompositeDisposable()
 
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_history_list)
-        setSupportActionBar(toolbar)
+
+        initNav(this)
         supportActionBar?.title = getString(R.string.history)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         mHistoryAdapter = HistoryAdapter(ArrayList(), this)
 
         list_history.apply {
             setHasFixedSize(true)
-            layoutManager = LinearLayoutManager(this@HistoryList)
+            layoutManager = LinearLayoutManager(this@HistoryList, LinearLayoutManager.VERTICAL,false)
             if(adapter == null){
                 adapter = mHistoryAdapter
             }
         }
+
+        val dividerItemDecoration = DividerItemDecoration(this,
+                LinearLayoutManager.VERTICAL)
+        list_history.addItemDecoration(dividerItemDecoration)
 
         swipeRefreshLayout.setOnRefreshListener {
             requestHistory()
@@ -57,12 +76,12 @@ class HistoryList : AppCompatActivity(), OnHistoryListInteractionListener {
         val subscription = MainManager().getHistory()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe (
+                .subscribe(
                         { retrievedTopics ->
-                            if(requestErrorHandler(retrievedTopics.code(),retrievedTopics.message())){
+                            if (requestErrorHandler(retrievedTopics.code(), retrievedTopics.message())) {
                                 mHistoryAdapter?.updateHistory(retrievedTopics.body())
                             }
-                            if(swipeRefreshLayout.isRefreshing)
+                            if (swipeRefreshLayout.isRefreshing)
                                 swipeRefreshLayout.isRefreshing = false
                         },
                         { e ->
@@ -70,16 +89,6 @@ class HistoryList : AppCompatActivity(), OnHistoryListInteractionListener {
                         }
                 )
         compositeDisposable.add(subscription)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        when(item!!.itemId){
-            android.R.id.home -> {
-                onBackPressed()
-                return true
-            }
-            else -> return super.onOptionsItemSelected(item)
-        }
     }
 
     companion object {

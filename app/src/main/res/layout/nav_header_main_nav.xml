@@ -8,83 +8,74 @@
     tools:layout_editor_absoluteX="0dp"
     tools:layout_editor_absoluteY="81dp">
 
-    <RelativeLayout
+    <android.support.constraint.ConstraintLayout
         android:id="@+id/header_parent"
         android:layout_width="match_parent"
         android:layout_height="@dimen/nav_header_height"
-        android:layout_marginEnd="0dp"
-        android:layout_marginStart="0dp"
-        android:layout_marginTop="0dp"
         android:background="@color/colorLightBlue"
         android:gravity="center"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <com.facebook.drawee.view.SimpleDraweeView
+        <ImageView
             android:id="@+id/user_image"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="11dp"
             android:paddingTop="@dimen/nav_header_vertical_spacing"
-            android:layout_centerHorizontal="true"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentLeft="true"
-            app:srcCompat="@drawable/ex_image_teacher"
-            app:roundAsCircle="true"
-            app:placeholderImage="@drawable/ex_image_teacher"/>
+            app:srcCompat="@drawable/ic_user"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/user_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
             android:paddingTop="@dimen/nav_header_vertical_spacing"
             android:text="@string/ex_name"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
             android:textColor="@color/white"
-            android:layout_toRightOf="@+id/user_image"
             android:textSize="16sp"
-            android:layout_toEndOf="@+id/user_image"
-            android:layout_alignTop="@+id/user_image"
-            android:layout_marginLeft="10dp"
-            android:layout_marginStart="10dp" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/user_image" />
 
         <TextView
             android:id="@+id/user_language"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/user_name"
 
-            android:layout_marginLeft="10dp"
             android:text="@string/ex_language"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
             android:textColor="@color/white"
             android:textSize="12sp"
-            android:layout_toRightOf="@+id/flag_image"
-            android:layout_toEndOf="@+id/flag_image"
-            android:layout_alignTop="@+id/flag_image"
-            android:layout_marginStart="10dp" />
+            app:layout_constraintBottom_toBottomOf="@+id/flag_image"
+            app:layout_constraintEnd_toEndOf="@+id/user_name"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/flag_image"
+            app:layout_constraintTop_toTopOf="@+id/flag_image" />
+
         <ImageView
             android:id="@+id/flag_image"
-            android:layout_marginTop="10dp"
             android:layout_width="@dimen/flag_width"
             android:layout_height="@dimen/flag_height"
-            android:layout_below="@+id/user_name"
-            android:layout_toRightOf="@+id/user_image"
-            android:layout_toEndOf="@+id/user_image"
-            app:srcCompat="@drawable/flag_ru"
+            android:layout_marginBottom="16dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginTop="8dp"
             android:scaleType="fitXY"
-            android:layout_marginLeft="10dp"
-            android:layout_marginStart="10dp" />
-    </RelativeLayout>
-
-    <TextView
-        android:id="@+id/my_balance_up_h"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/prof_top_up_balance"
-        android:textColor="@color/colorLightBlue"
-        app:layout_constraintStart_toStartOf="@+id/my_balance_h"
-        app:layout_constraintTop_toBottomOf="@+id/my_balance_h" />
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/user_language"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toStartOf="@+id/user_name"
+            app:layout_constraintTop_toBottomOf="@+id/user_name"
+            app:srcCompat="@drawable/flag_ru" />
+    </android.support.constraint.ConstraintLayout>
 
     <TextView
         android:id="@+id/my_balance_h"
@@ -92,10 +83,10 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginLeft="16dp"
-        android:layout_marginTop="24dp"
         android:text="@string/prof_my_cost_h"
         android:textColor="@color/black"
         android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.07"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -108,7 +99,7 @@
         android:layout_height="wrap_content"
         android:text="@string/ex_dollar"
         android:textColor="@color/colorLightBlue"
-        app:layout_constraintBottom_toBottomOf="@+id/my_balance_up_h"
+        app:layout_constraintBottom_toBottomOf="@+id/my_balance_h"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.9"
         app:layout_constraintStart_toStartOf="parent"

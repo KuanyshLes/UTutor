@@ -2,18 +2,20 @@ package com.support.robigroup.ututor.features.account
 
 import android.content.Context
 import android.content.Intent
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import android.view.MenuItem
 import android.view.View
 import com.support.robigroup.ututor.R
+import com.support.robigroup.ututor.features.MenuesActivity
 
-class AccountActivity : AppCompatActivity() {
+class AccountActivity : MenuesActivity(){
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_account)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
+        initNav(this)
+        supportActionBar?.title = getString(R.string.drawer_item_settings)
+
     }
 
     fun onClickChanges(v: View){
@@ -32,17 +34,6 @@ class AccountActivity : AppCompatActivity() {
             }
         }
     }
-
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        when(item!!.itemId){
-            android.R.id.home -> {
-                onBackPressed()
-                return true
-            }
-            else -> return super.onOptionsItemSelected(item)
-        }
-    }
-
 
     companion object {
         fun open(c: Context){

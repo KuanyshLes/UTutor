@@ -47,9 +47,6 @@ class HistoryAdapter(
         holder.mCostLesson.text = String.format("%s %s", holder.mItem.InvoiceSum,  holder.mView.context.getString(R.string.currency))
         holder.mTeacher.text = String.format("%s", holder.mItem.ChatUserName)
 //        Picasso.with(holder.mView.context).load(Constants.BASE_URL+holder.mItem.ChatUserProfilePhoto).into(holder.mTeacherImage )
-
-        if(holder.mItem.LearnerRaiting!=null)
-            holder.mRating.rating = holder.mItem.LearnerRaiting!!
     }
 
     override fun getItemCount(): Int {
@@ -62,7 +59,6 @@ class HistoryAdapter(
         var mTeacher: TextView = mView.findViewById<TextView>(R.id.his_teacher_name) as TextView
         var mTeacherImage: ImageView = mView.findViewById<ImageView>(R.id.his_teacher_image) as ImageView
         var mCostLesson: TextView = mView.findViewById<TextView>(R.id.his_cost) as TextView
-        var mRating: RatingBar = mView.findViewById<RatingBar>(R.id.his_rating) as RatingBar
         lateinit var mItem: ChatHistory
     }
 

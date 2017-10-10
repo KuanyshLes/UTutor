@@ -6,7 +6,7 @@
     <group android:checkableBehavior="none">
         <item
             android:id="@+id/nav_home_work"
-            android:icon="@drawable/ic_homework"
+            android:icon="@drawable/ic_book_home"
             android:title="@string/drawer_item_home_work" />
         <item
             android:id="@+id/nav_history"

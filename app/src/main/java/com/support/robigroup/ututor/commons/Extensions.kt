@@ -7,6 +7,7 @@ import android.content.Context
 import android.content.DialogInterface
 import android.graphics.Color
 import android.net.ConnectivityManager
+import android.net.Uri
 import android.os.Parcel
 import android.os.Parcelable
 import android.support.design.widget.Snackbar
@@ -17,6 +18,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.Toast
+import com.facebook.drawee.view.SimpleDraweeView
 import com.squareup.picasso.Picasso
 import com.support.robigroup.ututor.Constants
 import com.support.robigroup.ututor.R
@@ -53,6 +55,14 @@ fun Context.toast(message: CharSequence,length: Int = Toast.LENGTH_SHORT) =
 
 fun ImageView.loadImg(path: String = "https://www.tes.com/sites/default/files/stress_1.jpg"){
     Picasso.with(context).load(path).into(this)
+}
+
+fun SimpleDraweeView.loadSimpleImg(path: String?){
+    if(path==null){
+
+    }else{
+        setImageURI(path)
+    }
 }
 
 inline fun <reified T : Parcelable> createParcel(

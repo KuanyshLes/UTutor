@@ -51,7 +51,7 @@
     <string name="language">Язык</string>
     <string name="choose_teacher">Выбрать</string>
     <string name="ex_topic_short">С понятием рациональных чисел вы уже наверняка знакомы. Аналогично рациональные функции – это функции,</string>
-    <string name="teachers_found">Найдено</string>
+    <string name="teachers_found">Найдено: </string>
 
 
     //titles

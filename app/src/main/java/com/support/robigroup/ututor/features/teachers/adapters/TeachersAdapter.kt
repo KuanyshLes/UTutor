@@ -3,12 +3,7 @@ package com.support.robigroup.ututor.features.teachers.adapters
 import android.support.v7.widget.RecyclerView
 import android.view.ViewGroup
 import com.support.robigroup.ututor.R
-import com.support.robigroup.ututor.commons.OnTeachersActivityInteractionListener
-import com.support.robigroup.ututor.commons.inflate
-import com.support.robigroup.ututor.commons.loadImg
-import com.support.robigroup.ututor.commons.LessonRequestForTeacher
-import com.support.robigroup.ututor.commons.Teacher
-import com.support.robigroup.ututor.commons.Teachers
+import com.support.robigroup.ututor.commons.*
 import kotlinx.android.synthetic.main.item_teacher.view.*
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -73,7 +68,7 @@ class TeachersAdapter(private val interactionListener: OnTeachersActivityInterac
             teacher_name.text = item.FirstName
             teacher_lessons.text = item.Speciality ?: ""
             teacher_rating.text = item.Raiting.toString()
-            teacher_photo.loadImg()
+//            teacher_photo.loadSimpleImg()
             teacher_button_hide.setOnClickListener {
                 if(item.LessonRequestId==null){
                     removeAt(layoutPosition)

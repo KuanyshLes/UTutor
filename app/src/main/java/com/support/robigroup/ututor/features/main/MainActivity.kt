@@ -1,5 +1,6 @@
 package com.support.robigroup.ututor.features.main
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.NavigationView
@@ -10,6 +11,7 @@ import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
 import android.widget.ImageView
 import android.widget.TextView
+import com.facebook.drawee.view.SimpleDraweeView
 import com.support.robigroup.ututor.Constants
 import com.support.robigroup.ututor.NotificationService
 import com.support.robigroup.ututor.R
@@ -19,6 +21,7 @@ import com.support.robigroup.ututor.features.account.AccountActivity
 import com.support.robigroup.ututor.commons.ChatInformation
 import com.support.robigroup.ututor.commons.ChatLesson
 import com.support.robigroup.ututor.commons.Subject
+import com.support.robigroup.ututor.features.MenuesActivity
 import com.support.robigroup.ututor.features.chat.ChatActivity
 import com.support.robigroup.ututor.features.history.HistoryList
 import com.support.robigroup.ututor.features.login.LoginActivity
@@ -34,14 +37,11 @@ import kotlin.properties.Delegates
 
 
 class MainActivity :
-        AppCompatActivity(),
+        MenuesActivity(),
         OnMainActivityInteractionListener,
         NavigationView.OnNavigationItemSelectedListener {
 
     private val compositeDisposable: CompositeDisposable = CompositeDisposable()
-    private var mTextMyBalance: TextView by Delegates.notNull()
-    private var mLanguage: TextView by Delegates.notNull()
-    private var mFlag: ImageView by Delegates.notNull()
     private var mSubjectsAdapter: SubjectsAdapter? = null
     private var isChatCheck = false
 
@@ -49,39 +49,17 @@ class MainActivity :
         super.onCreate(savedInstanceState)
 
         setContentView(R.layout.activity_main_nav)
-        setSupportActionBar(toolbar)
+        initNav(this)
+
         val intent = Intent()
         intent.setClass(this, NotificationService::class.java)
         startService(intent)
 
-        supportActionBar!!.setDisplayHomeAsUpEnabled(false)
-        supportActionBar!!.title = title
-
-        val toggle = ActionBarDrawerToggle(
-                this, drawer_layout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
-        drawer_layout.addDrawerListener(toggle)
-        toggle.syncState()
-
-        nav_view.setNavigationItemSelectedListener(this)
-        val hView = nav_view.getHeaderView(0)
-        val nav_user = hView.findViewById<TextView>(R.id.user_name)
-        nav_user.text = SingletonSharedPref.getInstance().getString(Constants.KEY_FULL_NAME)
-        mTextMyBalance = hView.findViewById(R.id.my_balance)
-        mLanguage = hView.findViewById(R.id.user_language)
-        mFlag = hView.findViewById(R.id.flag_image)
-        val language = Functions.getLanguage(SingletonSharedPref.getInstance().getString(Constants.KEY_LANGUAGE))
-        mFlag.setImageResource(language.flagIcon)
-        mLanguage.text = language.text
         initAdapters()
         swipe_container.setOnRefreshListener {
             requestSubjects()
         }
         sendQueries()
-    }
-
-    override fun onStart() {
-        super.onStart()
-        nav_view.isSelected = false
     }
 
     private fun initAdapters() {
@@ -100,44 +78,8 @@ class MainActivity :
         requestSubjects()
     }
 
-    override fun onNavigationItemSelected(item: MenuItem): Boolean {
-        // Handle navigation view item clicks here.
-        when (item.itemId) {
-            R.id.nav_history -> {
-                HistoryList.open(this)
-            }
-            R.id.nav_settings -> {
-                AccountActivity.open(this)
-            }
-//            R.id.nav_help -> {
-//
-//            }
-            R.id.nav_logout -> {
-                compositeDisposable.clear()
-                SingletonSharedPref.getInstance().clear()
-                stopService(Intent(this, NotificationService::class.java))
-                finish()
-                startActivity(Intent(this, LoginActivity::class.java))
-            }
-        }
-
-        drawer_layout.closeDrawer(GravityCompat.START)
-        return true
-    }
-
     override fun onSubjectItemClicked(item: Subject) {
         ClassesActivity.open(this,item)
-    }
-
-    override fun onBackPressed() {
-        if (drawer_layout.isDrawerOpen(GravityCompat.START)) {
-            drawer_layout.closeDrawer(GravityCompat.START)
-        }else if(supportFragmentManager.backStackEntryCount==1){
-            supportFragmentManager.popBackStack()
-            finish()
-        }else{
-            super.onBackPressed()
-        }
     }
 
     override fun onDestroy() {
@@ -239,6 +181,12 @@ class MainActivity :
                         }
                 )
         compositeDisposable.add(subscription)
+    }
+
+    companion object {
+        fun open(c: Context){
+            c.startActivity(Intent(c,MainActivity::class.java))
+        }
     }
 
 }
