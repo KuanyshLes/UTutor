@@ -172,19 +172,6 @@ public class NotificationService extends Service {
                     }
                     , ChatLesson.class
             );
-//            mHubProxy.on("ChatCompleted",
-//                    new SubscriptionHandler1<ChatLesson>() {
-//                        @Override
-//                        public void run(final ChatLesson msg) {
-//                            runOnUiThread(new Runnable() {
-//                                @Override
-//                                public void run() {
-//                                    Log.e("MyEvent","ChatCompleted");
-//                                    notifyChatCompleted(msg);
-//                                }
-//                            });
-//                        }
-//                    }, ChatLesson.class);
         }
     }
 
@@ -235,13 +222,6 @@ public class NotificationService extends Service {
         });
     }
 
-    private interface CallbacksFromServer{
-        void ChatCompleted(ArrayList<ChatLesson> lessons);
-    }
 
-    public static <T> List<T> stringToArray(String s, Class<T[]> clazz) {
-        T[] arr = new Gson().fromJson(s, clazz);
-        return Arrays.asList(arr); //or return Arrays.asList(new Gson().fromJson(s, clazz)); for a one-liner
-    }
 
 }
