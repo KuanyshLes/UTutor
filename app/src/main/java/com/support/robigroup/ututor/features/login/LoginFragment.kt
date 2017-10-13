@@ -23,10 +23,6 @@ import com.support.robigroup.ututor.commons.OnLoginActivityInteractionListener
 import com.support.robigroup.ututor.commons.inflate
 import com.support.robigroup.ututor.commons.logd
 
-
-/**
- * A simple [Fragment] subclass.
- */
 class LoginFragment : Fragment() {
 
     private var mListener: OnLoginActivityInteractionListener? = null
@@ -119,8 +115,6 @@ class LoginFragment : Fragment() {
 
 
     }
-
-
 
     override fun onAttach(context: Context?) {
         super.onAttach(context)

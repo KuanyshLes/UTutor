@@ -32,8 +32,6 @@ class LoginActivity : AppCompatActivity(), OnLoginActivityInteractionListener {
         //TODO move indide else if super.OnCreate method if signedIn
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
-        logd("onCreateLoginActivity")
-
         if(isSignedIn()){
             startActivity(Intent(baseContext,MainActivity::class.java))
             finish()
@@ -42,30 +40,13 @@ class LoginActivity : AppCompatActivity(), OnLoginActivityInteractionListener {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        logd("onResumeLoginActivity")
-    }
-
-    override fun onPause() {
-        super.onPause()
-        logd("onPauseLoginActivity")
-    }
-
-    override fun onStop() {
-        super.onStop()
-        logd("onStopLoginActivity")
-    }
-
     override fun onDestroy() {
-        logd("onDestroyLoginActivity")
         compositeDisposable.clear()
         super.onDestroy()
     }
 
     override fun onSaveInstanceState(outState: Bundle?) {
         super.onSaveInstanceState(outState)
-        logd("onSaveStateLoginActivity")
     }
 
     private fun isSignedIn(): Boolean{
@@ -95,7 +76,6 @@ class LoginActivity : AppCompatActivity(), OnLoginActivityInteractionListener {
         }
         if (!cancel)  {
             showProgress(true)
-            logd("before get token")
 
             compositeDisposable.add(
                     RestAPI.getApi().getToken(email,password)
