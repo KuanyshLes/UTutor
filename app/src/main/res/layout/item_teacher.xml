@@ -28,16 +28,17 @@
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintHorizontal_chainStyle="spread"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/teacher_lessons" />
+            app:layout_constraintTop_toBottomOf="@+id/teacher_photo" />
 
 
-        <ImageView
+        <com.facebook.drawee.view.SimpleDraweeView
             android:id="@+id/teacher_photo"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:contentDescription="@string/desc_logo"
             android:scaleType="centerCrop"
-            app:srcCompat="@drawable/ic_user"
+            app:placeholderImage="@drawable/ic_user_default"
+            app:roundAsCircle="true"
             android:layout_marginLeft="8dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
@@ -49,25 +50,14 @@
             android:id="@+id/teacher_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="16dp"
-            android:lines="1"
-            android:text="@string/ex_teacher_full_name"
-            app:layout_constraintStart_toEndOf="@+id/teacher_photo"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/teacher_lessons"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
             android:layout_marginTop="8dp"
             android:lines="1"
-            android:text="@string/ex_lessons"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/teacher_name"
-            app:layout_constraintTop_toBottomOf="@+id/teacher_name" />
+            android:text="@string/ex_teacher_full_name"
+            app:layout_constraintBottom_toBottomOf="@+id/teacher_photo"
+            app:layout_constraintStart_toEndOf="@+id/teacher_photo"
+            app:layout_constraintTop_toTopOf="@+id/teacher_photo" />
 
         <TextView
             android:id="@+id/teacher_rating"
@@ -101,13 +91,11 @@
             android:layout_marginBottom="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
             android:text="@string/choose_teacher"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/teacher_button_hide"
-            app:layout_constraintTop_toBottomOf="@+id/teacher_lessons" />
+            app:layout_constraintStart_toEndOf="@+id/teacher_button_hide" />
 
     </android.support.constraint.ConstraintLayout>
 

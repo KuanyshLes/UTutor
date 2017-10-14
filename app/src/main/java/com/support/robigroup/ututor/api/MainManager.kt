@@ -26,7 +26,7 @@ class MainManager(
                 subjectId
         )
 
-    fun getBalance(): Flowable<Response<Balance>>
+    fun getBalance(): Flowable<Response<Profile>>
             = RestAPI.getApi().getBalance()
 
     fun postLessonRequest(teacherId: String, subjectId: Int, language: String, classNumber: Int):
@@ -54,12 +54,12 @@ class MainManager(
     fun sendMessage(messageText: String? = null, file64base: String? = null): Flowable<Response<CustomMessage>> =
             if(file64base != null&&messageText!=null){
                 val res: HashMap<String,String> = HashMap()
-                res.put("File",file64base)
-                res.put("Message",messageText)
+                res.put("FilePath",file64base)
+                res.put("Text",messageText)
                 RestAPI.getApi().postMessagePhoto(res)
             } else if(file64base!=null) {
                 val res: HashMap<String,String> = HashMap()
-                res.put("File",file64base)
+                res.put("FilePath",file64base)
                 RestAPI.getApi().postMessagePhoto(res)
             }else if(messageText!=null) RestAPI.getApi().postTextMessage(messageText)
             else Flowable.empty()
@@ -72,7 +72,7 @@ class MainManager(
 //                val url = URL(Constants.BASE_URL+"api/lesson/chat/message/file")
 //                val con = url.openConnection() as HttpURLConnection
 //                val data = JSONObject()
-//                data.put("File",encodedString)
+//                data.put("FilePath",encodedString)
 //                con.requestMethod = "POST"
 //                con.useCaches = false
 //                con.doInput = true

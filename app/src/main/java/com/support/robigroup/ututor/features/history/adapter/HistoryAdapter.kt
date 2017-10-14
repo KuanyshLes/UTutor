@@ -1,5 +1,7 @@
 package com.support.robigroup.ututor.features.history.adapter
 
+import android.net.Uri
+import android.support.v4.content.ContextCompat
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -7,6 +9,8 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.RatingBar
 import android.widget.TextView
+import com.facebook.drawee.view.SimpleDraweeView
+import com.squareup.picasso.Picasso
 import com.support.robigroup.ututor.Constants
 import com.support.robigroup.ututor.R
 import com.support.robigroup.ututor.commons.OnHistoryListInteractionListener
@@ -34,8 +38,10 @@ class HistoryAdapter(
         }
 
         holder.mSubjectName.text = String.format(
-                "%s",
-                holder.mItem.SubjectName
+                "%s, %d %s",
+                holder.mItem.SubjectName,
+                holder.mItem.Class,
+                holder.itemView.context.resources.getString(R.string.class_name)
         )
         var date: Date = SimpleDateFormat(Constants.TIMEFORMAT).parse(holder.mItem.EndTime+"Z")
         val myFormat = "yyyy-MM-dd HH:mm"
@@ -44,9 +50,10 @@ class HistoryAdapter(
                 SimpleDateFormat(myFormat).format(date),
                 getTimeWaitingInMinutes((holder.mItem.Duration)!!.toInt()*1000L)
         )
-        holder.mCostLesson.text = String.format("%s %s", holder.mItem.InvoiceSum,  holder.mView.context.getString(R.string.currency))
+        holder.mCostLesson.text = String.format("%4s %s", holder.mItem.InvoiceSum,  holder.mView.context.getString(R.string.currency))
         holder.mTeacher.text = String.format("%s", holder.mItem.ChatUserName)
-//        Picasso.with(holder.mView.context).load(Constants.BASE_URL+holder.mItem.ChatUserProfilePhoto).into(holder.mTeacherImage )
+        holder.mTeacherImage.setImageURI(Uri.parse(Constants.BASE_URL+holder.mItem.ChatUserProfilePhoto))
+
     }
 
     override fun getItemCount(): Int {
@@ -57,7 +64,7 @@ class HistoryAdapter(
         var mSubjectName: TextView = mView.findViewById<TextView>(R.id.his_subject_name) as TextView
         var mSubjectTime: TextView = mView.findViewById<TextView>(R.id.his_des) as TextView
         var mTeacher: TextView = mView.findViewById<TextView>(R.id.his_teacher_name) as TextView
-        var mTeacherImage: ImageView = mView.findViewById<ImageView>(R.id.his_teacher_image) as ImageView
+        var mTeacherImage: ImageView = mView.findViewById<SimpleDraweeView>(R.id.his_teacher_image)
         var mCostLesson: TextView = mView.findViewById<TextView>(R.id.his_cost) as TextView
         lateinit var mItem: ChatHistory
     }

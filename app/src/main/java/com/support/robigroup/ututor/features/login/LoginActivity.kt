@@ -130,7 +130,7 @@ class LoginActivity : AppCompatActivity(), OnLoginActivityInteractionListener {
     }
 
     override fun onUploadPhotoClicked() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        TODO("not implemented") //To change body of created functions use FilePath | Settings | FilePath Templates.
     }
 
     private fun isEmailValid(email: String): Boolean {

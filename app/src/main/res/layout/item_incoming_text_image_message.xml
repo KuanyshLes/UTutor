@@ -60,13 +60,14 @@
 
     <TextView
         android:id="@+id/messageTime"
-        android:text="16:48"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignEnd="@id/bubble"
         android:layout_alignRight="@id/bubble"
         android:layout_below="@id/bubble"
         android:layout_marginLeft="16dp"
-        android:layout_marginStart="16dp"/>
+        android:layout_marginStart="16dp"
+        android:text="16:48"
+        android:textColor="@color/colorGrey" />
 
 </RelativeLayout>

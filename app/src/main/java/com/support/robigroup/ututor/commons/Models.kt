@@ -283,8 +283,19 @@ open class ChatInformation(
         var InvoiceTariff: String? = null
 ): RealmObject()
 
-data class Balance(
-        var Balance: Double? = null
+data class Profile(
+        var Balance: Double? = null,
+        var Language: String? = null,
+        var Education: String? = null,
+        var Class: String? = null,
+        var Email: String? = null,
+        var FirstName: String? = null,
+        var LastName: String? = null,
+        var MiddleName: String? = null,
+        var ProfilePhotoPath: String? = null,
+        var FullName: String? = null,
+        var Birthday: String? = null
+
 )
 
 data class Language(

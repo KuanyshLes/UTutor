@@ -30,10 +30,10 @@ interface APIInterface {
             @Header("Authorization") header: String = SingletonSharedPref.getInstance().getString(Constants.KEY_TOKEN)
     ): Flowable<Response<List<Subject>>>
 
-    @GET("api/learner/account")
+    @GET("api/account/profile/learner")
     fun getBalance(
             @Header("Authorization") header: String = SingletonSharedPref.getInstance().getString(Constants.KEY_TOKEN)
-    ): Flowable<Response<Balance>>
+    ): Flowable<Response<Profile>>
 
     @POST("api/learner/search/teachers")
     fun getTeachers(

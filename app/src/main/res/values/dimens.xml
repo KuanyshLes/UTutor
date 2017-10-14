@@ -7,6 +7,7 @@
     <dimen name="acc_changes_text_margin_top">15dp</dimen>
     <dimen name="old_password_margin_right">10dp</dimen>
     <dimen name="desc_margin_right">17dp</dimen>
+    <dimen name="choose_text_size">17sp</dimen>
 
     <dimen name="padding_12">12dp</dimen>
     <dimen name="padding_large">24dp</dimen>
@@ -21,6 +22,6 @@
     <dimen name="nav_header_height">150dp</dimen>
     <dimen name="image_corners_radius">5dp</dimen>
     <dimen name="bubble_corners_radius">5dp</dimen>
-    <dimen name="flag_width">30dp</dimen>
+    <dimen name="flag_width">40dp</dimen>
     <dimen name="flag_height">20dp</dimen>
 </resources>

@@ -14,6 +14,7 @@ class AccountActivity : MenuesActivity(){
         setContentView(R.layout.activity_account)
 
         initNav(this)
+        updateUI()
         supportActionBar?.title = getString(R.string.drawer_item_settings)
 
     }

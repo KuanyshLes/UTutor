@@ -8,28 +8,33 @@
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="110dp">
+        android:layout_height="100dp">
 
-        <ImageView
+        <com.facebook.drawee.view.SimpleDraweeView
             android:id="@+id/his_teacher_image"
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:layout_marginBottom="8dp"
             android:layout_marginLeft="16dp"
             android:layout_marginTop="8dp"
+            android:contentDescription="@string/desc_logo"
+            android:scaleType="centerCrop"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_user" />
+            app:placeholderImage="@drawable/ic_user_default"
+            app:placeholderImageScaleType="centerCrop"
+            app:roundAsCircle="true" />
 
         <TextView
             android:id="@+id/his_teacher_name"
             android:layout_width="wrap_content"
-            android:layout_height="22dp"
-            android:layout_marginTop="16dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
             android:text="@string/ex_name"
             android:textSize="16sp"
             android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@+id/his_subject_name"
             app:layout_constraintStart_toStartOf="@+id/his_subject_name"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -37,32 +42,34 @@
             android:id="@+id/his_subject_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
             android:text="@string/ex_math"
             android:textSize="14sp"
+            app:layout_constraintBottom_toBottomOf="@+id/his_teacher_image"
             app:layout_constraintStart_toEndOf="@+id/his_teacher_image"
-            app:layout_constraintTop_toBottomOf="@+id/his_teacher_name" />
+            app:layout_constraintTop_toTopOf="@+id/his_teacher_image" />
 
         <TextView
             android:id="@+id/his_cost"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
-            android:layout_marginRight="8dp"
-            android:layout_marginTop="8dp"
             android:text="@string/ex_dollar"
             android:textColor="@color/colorLightBlue"
-            app:layout_constraintBottom_toBottomOf="@+id/his_des"
+            app:layout_constraintBottom_toBottomOf="@+id/his_teacher_image"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/his_des" />
+            app:layout_constraintTop_toTopOf="@+id/his_teacher_image" />
 
         <TextView
             android:id="@+id/his_des"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
             android:layout_marginTop="8dp"
             android:text="@string/ex_time"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="@+id/his_subject_name"
             app:layout_constraintTop_toBottomOf="@+id/his_subject_name" />
 

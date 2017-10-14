@@ -47,7 +47,7 @@
                     android:layout_alignParentStart="true"
                     android:layout_alignParentTop="true"
                     android:layout_margin="@dimen/margin_10"
-                    app:placeholderImage="@drawable/logo_blue"
+                    app:placeholderImage="@drawable/ic_logo_blue"
                     app:roundAsCircle="true" />
 
                 <TextView
@@ -193,7 +193,6 @@
         android:layout_height="match_parent"
         android:layout_gravity="start"
         android:fitsSystemWindows="true"
-        android:visibility="gone"
         app:headerLayout="@layout/nav_header_main_nav"
         app:menu="@menu/activity_main_nav_drawer" />
 

@@ -157,10 +157,12 @@ class ChatActivity : AppCompatActivity(),
 
         messagesList = findViewById(R.id.messagesList)
         initAdapter()
+        notifyItemRangeInserted(0,mMessages.size)
 
         val input = findViewById<MessageInput>(R.id.input)
         input.setInputListener(this)
         input.setAttachmentsListener(this)
+
 
         mReadyDialog = ReadyDialog()
         if(!mChatInformation.TeacherReady||!mChatInformation.LearnerReady){
@@ -358,12 +360,12 @@ class ChatActivity : AppCompatActivity(),
                             { messageResponse ->
                                 if(requestErrorHandler(messageResponse.code(),messageResponse.message())){
                                     val message: CustomMessage = messageResponse.body()!!
-                                    if(message.File!=null&&message.FileThumbnail!=null){
-                                        val myMessage = CustomMessage(message.Id,message.Time,Constants.BASE_URL+message.FileThumbnail,
-                                                Constants.BASE_URL+message.File,message.Message)
+                                    if(message.FilePath !=null&&message.FileOpenIcon !=null){
+                                        val myMessage = CustomMessage(message.Id,message.Time,Constants.BASE_URL+message.FileOpenIcon,
+                                                Constants.BASE_URL+message.FilePath,message.Text)
                                         messagesAdapter?.addToStart(MyMessage(myMessage,user),true)
                                     }else{
-                                        val myMessage = CustomMessage(message.Id,message.Time,Message = message.Message)
+                                        val myMessage = CustomMessage(message.Id,message.Time, Text = message.Text)
                                         messagesAdapter?.addToStart(MyMessage(myMessage,user),true)
                                     }
                                 }else{
@@ -470,7 +472,6 @@ class ChatActivity : AppCompatActivity(),
     }
 
     override fun hasContentFor(message: MyMessage, type: Byte): Boolean {
-        logd("hasContentfor" + type)
         when (type) {
             CONTENT_TYPE_IMAGE_TEXT -> {
                 val mylog = Gson().toJson(message,MyMessage::class.java)

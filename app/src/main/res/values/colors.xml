@@ -3,9 +3,11 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#4fc4e2</color>
     <color name="colorAccent">#FF4081</color>
+    <color name="colorRedButton">#F66969</color>
     <color name="colorLightBlue">#4fc4e2</color>
+    <color name="colorBlueUp">#92ddf0</color>
     <color name="colorStatusBlue">#419cb5</color>
-    <color name="colorGrey">#989898</color>
+    <color name="colorGrey">#727272</color>
     <color name="colorBlack">#000000</color>
     <color name="colorWhite">#ffffff</color>
 

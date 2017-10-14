@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="230dp"
+    android:layout_height="220dp"
     android:orientation="vertical"
     tools:layout_editor_absoluteX="0dp"
     tools:layout_editor_absoluteY="81dp">
@@ -12,22 +12,22 @@
         android:id="@+id/header_parent"
         android:layout_width="match_parent"
         android:layout_height="@dimen/nav_header_height"
-        android:background="@color/colorLightBlue"
+        android:background="@drawable/nav_background"
         android:gravity="center"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <ImageView
+        <com.facebook.drawee.view.SimpleDraweeView
             android:id="@+id/user_image"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:layout_marginTop="11dp"
-            android:paddingTop="@dimen/nav_header_vertical_spacing"
-            app:srcCompat="@drawable/ic_user"
+            android:layout_marginTop="24dp"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:placeholderImage="@drawable/ic_user_default"
+            app:placeholderImageScaleType="centerCrop"/>
 
         <TextView
             android:id="@+id/user_name"
@@ -97,7 +97,7 @@
         android:id="@+id/my_balance"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/ex_dollar"
+        android:text="@string/loading_status"
         android:textColor="@color/colorLightBlue"
         app:layout_constraintBottom_toBottomOf="@+id/my_balance_h"
         app:layout_constraintEnd_toEndOf="parent"

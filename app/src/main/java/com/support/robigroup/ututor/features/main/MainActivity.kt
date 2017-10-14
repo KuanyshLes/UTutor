@@ -5,41 +5,30 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.NavigationView
 import android.support.design.widget.Snackbar
-import android.support.v4.view.GravityCompat
-import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
-import android.view.MenuItem
-import android.widget.ImageView
-import android.widget.TextView
-import com.facebook.drawee.view.SimpleDraweeView
+import com.google.gson.Gson
 import com.support.robigroup.ututor.Constants
 import com.support.robigroup.ututor.NotificationService
 import com.support.robigroup.ututor.R
 import com.support.robigroup.ututor.api.MainManager
 import com.support.robigroup.ututor.commons.*
-import com.support.robigroup.ututor.features.account.AccountActivity
 import com.support.robigroup.ututor.commons.ChatInformation
 import com.support.robigroup.ututor.commons.ChatLesson
 import com.support.robigroup.ututor.commons.Subject
 import com.support.robigroup.ututor.features.MenuesActivity
 import com.support.robigroup.ututor.features.chat.ChatActivity
-import com.support.robigroup.ututor.features.history.HistoryList
-import com.support.robigroup.ututor.features.login.LoginActivity
 import com.support.robigroup.ututor.features.main.adapters.SubjectsAdapter
 import com.support.robigroup.ututor.singleton.SingletonSharedPref
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import io.realm.Realm
-import kotlinx.android.synthetic.main.activity_main_nav.*
 import kotlinx.android.synthetic.main.app_bar_main_nav.*
-import kotlin.properties.Delegates
 
 
 class MainActivity :
-        MenuesActivity(),
-        OnMainActivityInteractionListener,
-        NavigationView.OnNavigationItemSelectedListener {
+        AppCompatActivity(),
+        OnMainActivityInteractionListener {
 
     private val compositeDisposable: CompositeDisposable = CompositeDisposable()
     private var mSubjectsAdapter: SubjectsAdapter? = null
@@ -49,7 +38,6 @@ class MainActivity :
         super.onCreate(savedInstanceState)
 
         setContentView(R.layout.activity_main_nav)
-        initNav(this)
 
         val intent = Intent()
         intent.setClass(this, NotificationService::class.java)
@@ -59,7 +47,13 @@ class MainActivity :
         swipe_container.setOnRefreshListener {
             requestSubjects()
         }
-        sendQueries()
+
+        if(Functions.isOnline(this)){
+            sendQueries()
+        }else{
+            Functions.builtMessageNoInternet(this,{sendQueries()})
+        }
+
     }
 
     private fun initAdapters() {
@@ -74,7 +68,6 @@ class MainActivity :
 
     private fun sendQueries(){
         checkChatState()
-        requestBalance()
         requestSubjects()
     }
 
@@ -87,54 +80,28 @@ class MainActivity :
         compositeDisposable.clear()
     }
 
-    private fun requestBalance(){
-        val subscription = MainManager().getBalance()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                        { retrievedLessons ->
-                            if(requestErrorHandler(retrievedLessons.code(),retrievedLessons.message())){
-                                if(retrievedLessons.body()!=null){
-                                    val myBal = retrievedLessons.body()!!.Balance
-                                    SingletonSharedPref.getInstance().put(Constants.KEY_BALANCE,myBal ?: 0.0)
-                                    mTextMyBalance.text = String.format("%.2f",myBal ?: 0.0)
-                                }
-                            }else{
-                                //TODO handle http errors
-                            }
-                        },
-                        { e ->
-                            Snackbar.make(findViewById(android.R.id.content), e.message ?: "", Snackbar.LENGTH_LONG).show()
-                        }
-                )
-        compositeDisposable.add(subscription)
-    }
-
     private fun checkChatState() {
         if(!isChatCheck)
-            if(Functions.isOnline(this))
-                compositeDisposable.add(
-                        MainManager()
-                                .getChatInformation()
-                                .observeOn(AndroidSchedulers.mainThread())
-                                .subscribeOn(Schedulers.io())
-                                .subscribe({
-                                    result ->
-                                    isChatCheck = true
-                                    if(requestErrorHandler(result.code(),null)){
-                                        startTopicOrChatActivity(result.body())
-                                    }else{
-                                        startTopicOrChatActivity(null)
-                                    }
-                                },{
-                                    error ->
-                                    logd(error.toString())
-                                    toast(error.message.toString())
-                                    isChatCheck = false
-                                }))
-            else{
-                Functions.builtMessageNoInternet(this,{checkChatState()})
-            }
+            compositeDisposable.add(
+                    MainManager()
+                            .getChatInformation()
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribeOn(Schedulers.io())
+                            .subscribe({
+                                result ->
+                                isChatCheck = true
+                                if(requestErrorHandler(result.code(),null)){
+                                    startTopicOrChatActivity(result.body())
+                                }else{
+                                    startTopicOrChatActivity(null)
+                                }
+                            },{
+                                error ->
+                                logd(error.toString())
+                                toast(error.message.toString())
+                                isChatCheck = false
+                            }))
+
 
 
     }

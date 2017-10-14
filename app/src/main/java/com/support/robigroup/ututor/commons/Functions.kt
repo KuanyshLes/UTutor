@@ -132,12 +132,12 @@ object Functions {
     }
 
     fun getMyMessage(message: CustomMessage,user: User): MyMessage {
-        if(message.File!=null&&message.FileThumbnail!=null){
-            val myMessage = CustomMessage(message.Id,message.Time, Constants.BASE_URL+message.FileThumbnail,
-                    Constants.BASE_URL+message.File,message.Message)
+        if(message.FilePath !=null&&message.FileOpenIcon !=null){
+            val myMessage = CustomMessage(message.Id,message.Time, Constants.BASE_URL+message.FileOpenIcon,
+                    Constants.BASE_URL+message.FilePath,message.Text)
             return MyMessage(myMessage,user)
         }else{
-            val myMessage = CustomMessage(message.Id,message.Time,Message = message.Message)
+            val myMessage = CustomMessage(message.Id,message.Time, Text = message.Text)
             return MyMessage(myMessage,user)
         }
     }

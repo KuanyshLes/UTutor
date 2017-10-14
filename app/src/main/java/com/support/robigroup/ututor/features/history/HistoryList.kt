@@ -45,6 +45,7 @@ class HistoryList : MenuesActivity(), OnHistoryListInteractionListener {
         setContentView(R.layout.activity_history_list)
 
         initNav(this)
+        updateUI()
         supportActionBar?.title = getString(R.string.history)
 
         mHistoryAdapter = HistoryAdapter(ArrayList(), this)
@@ -69,7 +70,7 @@ class HistoryList : MenuesActivity(), OnHistoryListInteractionListener {
     }
 
     override fun onHistoryItemClicked(item: ChatHistory) {
-        HistoryActivity.open(this,item)
+        HistoryMessages.open(this,item)
     }
 
     private fun requestHistory() {

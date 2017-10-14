@@ -15,6 +15,7 @@ object Constants {
     val KEY_FULL_NAME = "full_name"
     val KEY_LANGUAGE = "language"
     val KEY_BALANCE = "balance"
+    val KEY_PROFILE = "profile"
     val KEY_EMAIL = "username"
     val KEY_PASSWORD = "password"
     val KEY_RES_TOKEN = "access_token"
@@ -39,9 +40,9 @@ object Constants {
     val PASSWORD_PATTERN = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,}$"
     val EMAIL_PATTERN = "^[a-zA-Z0-9#_~!$&'()*+,;=:.\"(),:;<>@\\[\\]\\\\]+@[a-zA-Z0-9-]+(\\.[a-zA-Z0-9-]+)*$"
     val FLAGS = arrayOf(
-            Language(R.drawable.flag_kz, "Қазақ", "kk", false),
+            Language(R.drawable.flag_kz, "Казахский", "kk", false),
             Language(R.drawable.flag_ru, "Русский", "ru", false),
-            Language(R.drawable.flag_us, "English", "en", false)
+            Language(R.drawable.flag_us, "Английский", "en", false)
     )
 
 

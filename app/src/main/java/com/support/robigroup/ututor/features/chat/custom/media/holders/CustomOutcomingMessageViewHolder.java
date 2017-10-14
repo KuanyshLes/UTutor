@@ -36,6 +36,7 @@ public class CustomOutcomingMessageViewHolder
         super.onBind(message);
         String myText = DateFormatter.format(message.getCreatedAt(), DateFormatter.Template.TIME);
         tvTime.setText(myText);
+        tvTime.setTextColor(tvTime.getContext().getResources().getColor(R.color.colorGrey));
         if (image != null && getImageLoader() != null) {
             getImageLoader().loadImage(image, message.getImageIconUrl());
         }
