@@ -9,13 +9,13 @@ import android.widget.TextView
 
 import com.support.robigroup.ututor.R
 import com.support.robigroup.ututor.commons.TopicItem
-import com.support.robigroup.ututor.features.main.MainActivity
+import com.support.robigroup.ututor.features.main.MenuActivity
 
 import java.util.ArrayList
 import java.util.Locale
 
 class ListViewAdapter(
-        private val activity: MainActivity,
+        private val activity: MenuActivity,
         resource: Int,
         private val friendList: MutableList<TopicItem> = ArrayList(),
         private var searchList:  MutableList<TopicItem>,

@@ -12,7 +12,7 @@ import com.support.robigroup.ututor.commons.*
 import com.support.robigroup.ututor.commons.LoginResponse
 import com.support.robigroup.ututor.features.loading.LoadingDialog
 import com.support.robigroup.ututor.features.loading.LoadingView
-import com.support.robigroup.ututor.features.main.MainActivity
+import com.support.robigroup.ututor.features.main.MenuActivity
 import com.support.robigroup.ututor.singleton.SingletonSharedPref
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -33,7 +33,7 @@ class LoginActivity : AppCompatActivity(), OnLoginActivityInteractionListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
         if(isSignedIn()){
-            startActivity(Intent(baseContext,MainActivity::class.java))
+            startActivity(Intent(baseContext, MenuActivity::class.java))
             finish()
         }else if(supportFragmentManager.fragments.size==0){
             supportFragmentManager.beginTransaction().replace(R.id.container,loginFragment,TAG_LOGIN_FRAGMENT).commit()
@@ -112,7 +112,7 @@ class LoginActivity : AppCompatActivity(), OnLoginActivityInteractionListener {
         SingletonSharedPref.getInstance().put(Constants.KEY_FULL_NAME,stringResult.FullName)
         SingletonSharedPref.getInstance().put(Constants.KEY_LANGUAGE,"kk")
         showProgress(false)
-        startActivity(Intent(baseContext,MainActivity::class.java))
+        startActivity(Intent(baseContext, MenuActivity::class.java))
         finish()
     }
 
@@ -125,7 +125,7 @@ class LoginActivity : AppCompatActivity(), OnLoginActivityInteractionListener {
     }
 
     override fun onDoneButtonClicked(firstName: String, lastName: String) {
-        startActivity(Intent(this,MainActivity::class.java))
+        startActivity(Intent(this, MenuActivity::class.java))
         finish()
     }
 

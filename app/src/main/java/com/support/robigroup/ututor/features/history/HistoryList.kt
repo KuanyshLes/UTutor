@@ -3,34 +3,19 @@ package com.support.robigroup.ututor.features.history
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.support.design.widget.NavigationView
 import android.support.design.widget.Snackbar
-import android.support.v4.view.GravityCompat
-import android.support.v7.app.ActionBarDrawerToggle
-import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
-import android.view.MenuItem
-import android.widget.ImageView
-import android.widget.TextView
-import com.support.robigroup.ututor.Constants
-import com.support.robigroup.ututor.NotificationService
 import com.support.robigroup.ututor.R
 import com.support.robigroup.ututor.api.MainManager
 import com.support.robigroup.ututor.commons.OnHistoryListInteractionListener
 import com.support.robigroup.ututor.commons.requestErrorHandler
 import com.support.robigroup.ututor.commons.ChatHistory
-import com.support.robigroup.ututor.commons.Functions
 import com.support.robigroup.ututor.features.MenuesActivity
-import com.support.robigroup.ututor.features.account.AccountActivity
 import com.support.robigroup.ututor.features.history.adapter.HistoryAdapter
-import com.support.robigroup.ututor.features.login.LoginActivity
-import com.support.robigroup.ututor.features.main.MainActivity
-import com.support.robigroup.ututor.singleton.SingletonSharedPref
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_history_list.*
-import kotlin.properties.Delegates
 import android.support.v7.widget.DividerItemDecoration
 
 

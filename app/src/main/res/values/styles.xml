@@ -3,7 +3,7 @@
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="colorPrimary">@color/colorLightBlue</item>
-        <item name="colorPrimaryDark">@color/colorLightBlue </item>
+        <item name="colorPrimaryDark">@color/colorStatusBlue </item>
         <item name="colorAccent">@color/colorLightBlue</item>
     </style>
 
@@ -17,6 +17,7 @@
 
     <style name="AppTheme.NoActionBar" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="windowActionBar">false</item>
+        <item name="colorPrimaryDark">@color/colorStatusBlue</item>
         <item name="windowNoTitle">true</item>
     </style>
 
@@ -74,7 +75,7 @@
     <style name="acc_change_text">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:textColor">@color/black</item>
+        <item name="android:textColor">@color/colorGrey</item>
         <item name="android:layout_marginTop">@dimen/acc_changes_text_margin_top</item>
         <item name="android:layout_marginBottom">@dimen/acc_changes_text_margin_top</item>
     </style>

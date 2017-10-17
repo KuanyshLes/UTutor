@@ -46,11 +46,11 @@ class HistoryAdapter(
         var date: Date = SimpleDateFormat(Constants.TIMEFORMAT).parse(holder.mItem.EndTime+"Z")
         val myFormat = "yyyy-MM-dd HH:mm"
         holder.mSubjectTime.text = String.format(
-                "%s | %s",
-                SimpleDateFormat(myFormat).format(date),
+                "%s",
+//                SimpleDateFormat(myFormat).format(date),
                 getTimeWaitingInMinutes((holder.mItem.Duration)!!.toInt()*1000L)
         )
-        holder.mCostLesson.text = String.format("%4s %s", holder.mItem.InvoiceSum,  holder.mView.context.getString(R.string.currency))
+        holder.mCostLesson.text = String.format("%4s₸", holder.mItem.InvoiceSum)
         holder.mTeacher.text = String.format("%s", holder.mItem.ChatUserName)
         holder.mTeacherImage.setImageURI(Uri.parse(Constants.BASE_URL+holder.mItem.ChatUserProfilePhoto))
 
@@ -76,7 +76,7 @@ class HistoryAdapter(
     }
 
     private fun getTimeWaitingInMinutes(millis: Long): String
-            = String.format(" %02d:%02d",
+            = String.format(" Длит: %02dч. %02dм.",
             TimeUnit.MILLISECONDS.toMinutes(millis),
             TimeUnit.MILLISECONDS.toSeconds(millis) -
                     TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis))

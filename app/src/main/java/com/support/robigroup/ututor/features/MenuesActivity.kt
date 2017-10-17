@@ -1,10 +1,8 @@
 package com.support.robigroup.ututor.features
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.support.v7.app.AppCompatActivity
-import android.os.Bundle
 import android.support.design.widget.NavigationView
 import android.support.design.widget.Snackbar
 import android.support.v4.view.GravityCompat
@@ -29,7 +27,7 @@ import com.support.robigroup.ututor.features.account.AccountActivity
 import com.support.robigroup.ututor.features.feedback.FeedbackActivity
 import com.support.robigroup.ututor.features.history.HistoryList
 import com.support.robigroup.ututor.features.login.LoginActivity
-import com.support.robigroup.ututor.features.main.MainActivity
+import com.support.robigroup.ututor.features.main.MenuActivity
 import com.support.robigroup.ututor.singleton.SingletonSharedPref
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -57,7 +55,7 @@ open class MenuesActivity : AppCompatActivity(), NavigationView.OnNavigationItem
         setSupportActionBar(toolbar)
 
         val hView = navView.getHeaderView(0)
-        mUserName = hView.findViewById<TextView>(R.id.user_name)
+        mUserName = hView.findViewById(R.id.user_name)
         mUserName.text = SingletonSharedPref.getInstance().getString(Constants.KEY_FULL_NAME)
         mTextMyBalance = hView.findViewById(R.id.my_balance)
         mLanguage = hView.findViewById(R.id.user_language)
@@ -139,7 +137,7 @@ open class MenuesActivity : AppCompatActivity(), NavigationView.OnNavigationItem
                 AccountActivity.open(this)
             }
             R.id.nav_home_work ->{
-                MainActivity.open(this)
+                MenuActivity.open(this)
             }
 //            R.id.nav_help -> {
 //

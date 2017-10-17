@@ -33,7 +33,7 @@ import com.support.robigroup.ututor.features.chat.custom.media.holders.CustomOut
 import com.support.robigroup.ututor.features.chat.model.CustomMessage
 import com.support.robigroup.ututor.features.chat.model.MyMessage
 import com.support.robigroup.ututor.features.chat.model.User
-import com.support.robigroup.ututor.features.main.MainActivity
+import com.support.robigroup.ututor.features.main.MenuActivity
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -173,7 +173,7 @@ class ChatActivity : AppCompatActivity(),
             if((dif>1000&&dif<Constants.WAIT_TIME)||(utc>1000&&utc<Constants.WAIT_TIME)){
                 mReadyDialog.startShow(supportFragmentManager,TAG_READY_DIALOG,dif)
             }else{
-                startActivity(Intent(this@ChatActivity, MainActivity::class.java))
+                startActivity(Intent(this@ChatActivity, MenuActivity::class.java))
                 finish()
             }
         }else if(mReadyDialog.isVisible){
@@ -301,13 +301,13 @@ class ChatActivity : AppCompatActivity(),
                             if(requestErrorHandler(message.code(),message.message())){
                                 OnEvalChat(Functions.getChatInformation(message.body()!!))
                             }else{
-                                startActivity(Intent(this@ChatActivity, MainActivity::class.java))
+                                startActivity(Intent(this@ChatActivity, MenuActivity::class.java))
                                 finish()
                             }
                         },
                         { e ->
                             Log.e("Error",e.message)
-                            startActivity(Intent(this@ChatActivity, MainActivity::class.java))
+                            startActivity(Intent(this@ChatActivity, MenuActivity::class.java))
                             finish()
                         }
                 )
@@ -329,16 +329,16 @@ class ChatActivity : AppCompatActivity(),
                 .subscribe(
                         { message ->
                             if(requestErrorHandler(message.code(),message.message())){
-                                startActivity(Intent(this@ChatActivity, MainActivity::class.java))
+                                startActivity(Intent(this@ChatActivity, MenuActivity::class.java))
                                 finish()
                             }else{
-                                startActivity(Intent(this@ChatActivity, MainActivity::class.java))
+                                startActivity(Intent(this@ChatActivity, MenuActivity::class.java))
                                 finish()
                             }
                         },
                         { e ->
                             Log.e("Error",e.stackTrace.toString())
-                            startActivity(Intent(this@ChatActivity, MainActivity::class.java))
+                            startActivity(Intent(this@ChatActivity, MenuActivity::class.java))
                             finish()
                         }
                 )
@@ -383,7 +383,7 @@ class ChatActivity : AppCompatActivity(),
 
     override fun onFinishCounterFromReadyDialog() {
         if(!mChatInformation.LearnerReady||!mChatInformation.TeacherReady){
-            startActivity(Intent(this@ChatActivity, MainActivity::class.java))
+            startActivity(Intent(this@ChatActivity, MenuActivity::class.java))
             finish()
         }
     }
@@ -393,7 +393,7 @@ class ChatActivity : AppCompatActivity(),
 
     }
     override fun onCancelEvalDialog() {
-        startActivity(Intent(this@ChatActivity, MainActivity::class.java))
+        startActivity(Intent(this@ChatActivity, MenuActivity::class.java))
         finish()
     }
 

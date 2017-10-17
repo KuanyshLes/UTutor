@@ -13,7 +13,7 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context="com.support.robigroup.ututor.features.main.MainActivity">
+        tools:context="com.support.robigroup.ututor.features.main.MenuActivity">
 
         <android.support.design.widget.AppBarLayout
             android:layout_width="match_parent"
@@ -36,7 +36,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            android:weightSum="2">
+            android:weightSum="2"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
             <android.support.constraint.ConstraintLayout
                 android:id="@+id/choose_test"
@@ -71,7 +72,7 @@
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintVertical_chainStyle="packed"
-                    app:srcCompat="@drawable/flag_kz" />
+                    app:srcCompat="@drawable/ic_check_list" />
             </android.support.constraint.ConstraintLayout>
 
             <android.support.constraint.ConstraintLayout
@@ -107,20 +108,20 @@
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintVertical_chainStyle="packed"
-                    app:srcCompat="@drawable/flag_ru" />
+                    app:srcCompat="@drawable/ic_choose_homes" />
             </android.support.constraint.ConstraintLayout>
         </LinearLayout>
 
 
     </android.support.design.widget.CoordinatorLayout>
 
-    <!--<android.support.design.widget.NavigationView-->
-        <!--android:id="@+id/nav_view"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="match_parent"-->
-        <!--android:layout_gravity="start"-->
-        <!--android:fitsSystemWindows="true"-->
-        <!--app:headerLayout="@layout/nav_header_main_nav"-->
-        <!--app:menu="@menu/activity_main_nav_drawer" />-->
+    <android.support.design.widget.NavigationView
+        android:id="@+id/nav_view"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:fitsSystemWindows="true"
+        app:headerLayout="@layout/nav_header_main_nav"
+        app:menu="@menu/activity_main_nav_drawer" />
 
 </android.support.v4.widget.DrawerLayout>
