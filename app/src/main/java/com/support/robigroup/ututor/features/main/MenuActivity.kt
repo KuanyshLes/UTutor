@@ -41,6 +41,7 @@ class MenuActivity : MenuesActivity() {
 
     }
 
+
     private fun sendQueries(){
         checkChatState()
         requestProfile()
@@ -72,9 +73,6 @@ class MenuActivity : MenuesActivity() {
                                 toast(error.message.toString())
                                 isChatCheck = false
                             }))
-
-
-
     }
 
     private fun startTopicOrChatActivity(chatLesson: ChatLesson?){
@@ -102,16 +100,16 @@ class MenuActivity : MenuesActivity() {
         }
     }
 
-    companion object {
-        fun open(c: Context){
-            c.startActivity(Intent(c, MenuActivity::class.java))
+    fun onClickChoose(v: View){
+        when(v.id){
+            R.id.choose_test -> MainActivity.open(this,2)
+            R.id.choose_homework -> MainActivity.open(this,1)
         }
     }
 
-    fun onClickChoose(v: View){
-        when(v.id){
-            R.id.choose_test -> MainActivity.open(this)
-            R.id.choose_homework -> MainActivity.open(this)
+    companion object {
+        fun open(c: Context){
+            c.startActivity(Intent(c, MenuActivity::class.java))
         }
     }
 }

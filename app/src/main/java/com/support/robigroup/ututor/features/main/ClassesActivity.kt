@@ -20,12 +20,14 @@ class ClassesActivity : AppCompatActivity(), ClassesActivityListener {
 
     private var mSubject: Subject by Delegates.notNull()
     private var adapter: ClassAdapter by Delegates.notNull()
+    private var type = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_classes)
 
         if (intent != null) {
+            type = intent.getIntExtra(ARG_TYPE,0)
             mSubject = intent.getParcelableExtra(ARG_SUBJECT)
         }else if(savedInstanceState!=null){
             mSubject = savedInstanceState.getParcelable(ARG_SUBJECT)
@@ -43,7 +45,7 @@ class ClassesActivity : AppCompatActivity(), ClassesActivityListener {
     }
 
     override fun onClassItemClicked(item: Subject) {
-        TeachersActivity.open(this,item)
+        TeachersActivity.open(this,item,type)
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
@@ -58,8 +60,11 @@ class ClassesActivity : AppCompatActivity(), ClassesActivityListener {
 
     companion object {
         val ARG_SUBJECT = "subject"
-        fun open(c: Context, item: Subject){
-            c.startActivity(Intent(c,ClassesActivity::class.java).putExtra(ClassesActivity.ARG_SUBJECT,item))
+        val ARG_TYPE = "type"
+        fun open(c: Context, item: Subject, type: Int){
+            c.startActivity(Intent(c,ClassesActivity::class.java).
+                    putExtra(ARG_SUBJECT, item).
+                    putExtra(ARG_TYPE, type))
         }
     }
 }

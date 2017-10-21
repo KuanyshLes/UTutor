@@ -1,7 +1,0 @@
-ext {
-    okhttpVersion = '3.4.1'
-    retrofitVersion = '2.3.0'
-    rxandroidVersion = '2.0.1'
-    rxjavaVersion = '2.1.0'
-    picassoVersion = '2.5.2'
-}

@@ -45,10 +45,6 @@ class LoginActivity : AppCompatActivity(), OnLoginActivityInteractionListener {
         super.onDestroy()
     }
 
-    override fun onSaveInstanceState(outState: Bundle?) {
-        super.onSaveInstanceState(outState)
-    }
-
     private fun isSignedIn(): Boolean{
         return !SingletonSharedPref.getInstance().getString(Constants.KEY_TOKEN,"").equals("")
     }

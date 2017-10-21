@@ -9,8 +9,6 @@ import okhttp3.OkHttpClient
 import okhttp3.Response
 import java.io.IOException
 import com.google.gson.GsonBuilder
-import com.squareup.moshi.Moshi
-import retrofit2.converter.moshi.MoshiConverterFactory
 
 
 class RestAPI{

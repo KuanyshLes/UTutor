@@ -6,12 +6,15 @@ import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
+import com.google.gson.Gson
+import com.support.robigroup.ututor.Constants
 import com.support.robigroup.ututor.NotificationService
 import com.support.robigroup.ututor.R
 import com.support.robigroup.ututor.api.MainManager
 import com.support.robigroup.ututor.commons.*
 import com.support.robigroup.ututor.commons.Subject
 import com.support.robigroup.ututor.features.main.adapters.SubjectsAdapter
+import com.support.robigroup.ututor.singleton.SingletonSharedPref
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -24,6 +27,9 @@ class MainActivity :
 
     private val compositeDisposable: CompositeDisposable = CompositeDisposable()
     private var mSubjectsAdapter: SubjectsAdapter? = null
+    private var type = 0
+    private var classNumber = 0
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,7 +37,12 @@ class MainActivity :
         setContentView(R.layout.activity_main_nav)
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.title = getString(R.string.drawer_item_home_work)
+
+        type = intent.getIntExtra(KEY_TYPE,0)
+        supportActionBar?.title = Constants.TYPES.get(type-1).Name
+        classNumber = Integer.parseInt(
+                Gson().fromJson(SingletonSharedPref.getInstance().getString(Constants.KEY_PROFILE), Profile::class.java).Class)
+
 
         val intent = Intent()
         intent.setClass(this, NotificationService::class.java)
@@ -60,7 +71,7 @@ class MainActivity :
     }
 
     override fun onSubjectItemClicked(item: Subject) {
-        ClassesActivity.open(this,item)
+        ClassesActivity.open(this,item,type)
     }
 
     override fun onDestroy() {
@@ -69,7 +80,7 @@ class MainActivity :
     }
 
     private fun requestSubjects(){
-        val subscription = MainManager().getSubjects()
+        val subscription = MainManager().getSubjects(type, classNumber)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
@@ -97,8 +108,9 @@ class MainActivity :
         }
     }
     companion object {
-        fun open(c: Context){
-            c.startActivity(Intent(c, MainActivity::class.java))
+        private val KEY_TYPE = "type"
+        fun open(c: Context, type: Int){
+            c.startActivity(Intent(c, MainActivity::class.java).putExtra(KEY_TYPE,type))
         }
     }
 

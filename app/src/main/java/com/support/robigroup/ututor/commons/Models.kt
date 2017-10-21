@@ -23,6 +23,12 @@ data class ClassRoom(
     override fun describeContents() = 0
 }
 
+data class Type(
+        val Id: Int,
+        val Name: String,
+        var Resource: Int
+)
+
 
 data class Subject(
         var Id: Int,

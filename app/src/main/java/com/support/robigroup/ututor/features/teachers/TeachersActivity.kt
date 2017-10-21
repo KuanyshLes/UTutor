@@ -29,6 +29,7 @@ class TeachersActivity : AppCompatActivity(), OnTeachersActivityInteractionListe
     private var compositeDisposable: CompositeDisposable by Delegates.notNull()
     private var realm: Realm by Delegates.notNull()
     private var chatInfos: RealmResults<ChatInformation> by Delegates.notNull()
+    private var type = 0
 
     private val mRealmChangeListener: OrderedRealmCollectionChangeListener<RealmResults<ChatInformation>>
             = OrderedRealmCollectionChangeListener { chatInfo, changeSet ->
@@ -40,9 +41,12 @@ class TeachersActivity : AppCompatActivity(), OnTeachersActivityInteractionListe
 
         val ARG_SUBJECT = "topicItem"
         val ARG_ADAPTER = "adapter"
+        val ARG_TYPE = "type"
         val EX_LANG = "kk"
-        fun open(context: Context, item: Subject){
-            context.startActivity(Intent(context, TeachersActivity::class.java).putExtra(ARG_SUBJECT,item))
+        fun open(context: Context, item: Subject, type: Int){
+            context.startActivity(Intent(context, TeachersActivity::class.java)
+                    .putExtra(ARG_SUBJECT,item)
+                    .putExtra(ARG_TYPE,type))
         }
     }
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -62,6 +66,7 @@ class TeachersActivity : AppCompatActivity(), OnTeachersActivityInteractionListe
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
 
         mSubject = intent.getParcelableExtra(TeachersActivity.ARG_SUBJECT)
+        type = intent.getIntExtra(ARG_TYPE,0)
 
         supportActionBar!!.title = getString(R.string.search)
         number_of_teachers.text = getString(R.string.teachers_found)
@@ -132,7 +137,7 @@ class TeachersActivity : AppCompatActivity(), OnTeachersActivityInteractionListe
     }
 
     private fun requestTeacher(classNumber: Int, language: String, subjectId: Int) {
-        val subscription = MainManager().getTeachers(classNumber,language,subjectId)
+        val subscription = MainManager().getTeachers(classNumber,language,subjectId,type)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe (

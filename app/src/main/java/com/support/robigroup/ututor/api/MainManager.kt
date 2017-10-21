@@ -16,14 +16,15 @@ class MainManager(
         private val TOKEN: String = SingletonSharedPref.getInstance().getString(KEY_TOKEN),
         private val api: RestAPI = RestAPI()) {
 
-    fun getSubjects(): Flowable<Response<List<Subject>>>
-        = RestAPI.getApi().getSubjects()
+    fun getSubjects(type: Int, classNumber: Int): Flowable<Response<List<Subject>>>
+        = RestAPI.getApi().getSubjects(type, classNumber)
 
-    fun getTeachers(classRoom: Int,language: String,subjectId: Int): Flowable<Response<List<Teacher>>>
+    fun getTeachers(classRoom: Int,language: String,subjectId: Int, type: Int): Flowable<Response<List<Teacher>>>
         = RestAPI.getApi().getTeachers(
                 classRoom,
                 language,
-                subjectId
+                subjectId,
+                type
         )
 
     fun getBalance(): Flowable<Response<Profile>>

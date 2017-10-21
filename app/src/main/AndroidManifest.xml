@@ -82,12 +82,15 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".features.account.ChangeLanguageActivity" />
         <activity android:name=".features.MenuesActivity" />
-        <activity android:name=".features.feedback.FeedbackActivity"
+        <activity
+            android:name=".features.feedback.FeedbackActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".features.main.MenuActivity"
+        <activity
+            android:name=".features.main.MenuActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".features.login.LogActivity"></activity>
     </application>
 
 </manifest>

@@ -25,8 +25,16 @@ interface APIInterface {
             @Header("Authorization") header: String = SingletonSharedPref.getInstance().getString(Constants.KEY_TOKEN)
     ): Flowable<Response<List<TopicItem>>>
 
+    @GET("api/sprs/lesson/types")
+    fun getTypes(
+            @Header("Authorization") header: String = SingletonSharedPref.getInstance().getString(Constants.KEY_TOKEN)
+    ): Flowable<Response<List<Type>>>
+
+
     @GET("api/sprs/subjects")
     fun getSubjects(
+            @Query("type") type: Int,
+            @Query("class") classNumber: Int,
             @Header("Authorization") header: String = SingletonSharedPref.getInstance().getString(Constants.KEY_TOKEN)
     ): Flowable<Response<List<Subject>>>
 
@@ -40,6 +48,7 @@ interface APIInterface {
             @Query("Class") classRoom: Int,
             @Query("Language") language: String,
             @Query("SubjectId") subjectId: Int,
+            @Query("LessonTypeId") type: Int,
             @Header("Authorization") header: String = SingletonSharedPref.getInstance().getString(Constants.KEY_TOKEN)
     ): Flowable<Response<List<Teacher>>>
 

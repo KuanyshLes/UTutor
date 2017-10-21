@@ -195,6 +195,7 @@
     <string name="action_send">Отправить</string>
     <string name="enter_feedback">Оставьте отзыв</string>
     <string name="choose_test">Пройти \n тест</string>
+    <string name="choose_srez">Административный\n срез</string>
     <string name="choose_homework">Домашнее \n задание</string>
 
 </resources>

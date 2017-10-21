@@ -1,6 +1,7 @@
 package com.support.robigroup.ututor
 
 import com.support.robigroup.ututor.commons.Language
+import com.support.robigroup.ututor.commons.Type
 import java.util.*
 
 object Constants {
@@ -43,6 +44,12 @@ object Constants {
             Language(R.drawable.flag_kz, "Казахский", "kk", false),
             Language(R.drawable.flag_ru, "Русский", "ru", false),
             Language(R.drawable.flag_us, "Английский", "en", false)
+    )
+
+    val TYPES = arrayOf(
+            Type(1, "Домашнее задание", R.drawable.ic_choose_homes),
+            Type(2, "Административный срез", R.drawable.ic_choose_test),
+            Type( 3,"Подготовка к ЕНТ", R.drawable.ic_choose_test)
     )
 
 
