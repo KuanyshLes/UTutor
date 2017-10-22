@@ -8,6 +8,7 @@ import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
 import com.google.gson.Gson
+import com.support.robigroup.ututor.Constants
 import com.support.robigroup.ututor.R
 import com.support.robigroup.ututor.api.MainManager
 import com.support.robigroup.ututor.commons.*
@@ -30,6 +31,7 @@ class TeachersActivity : AppCompatActivity(), OnTeachersActivityInteractionListe
     private var realm: Realm by Delegates.notNull()
     private var chatInfos: RealmResults<ChatInformation> by Delegates.notNull()
     private var type = 0
+    private var language = "kk"
 
     private val mRealmChangeListener: OrderedRealmCollectionChangeListener<RealmResults<ChatInformation>>
             = OrderedRealmCollectionChangeListener { chatInfo, changeSet ->
@@ -42,7 +44,6 @@ class TeachersActivity : AppCompatActivity(), OnTeachersActivityInteractionListe
         val ARG_SUBJECT = "topicItem"
         val ARG_ADAPTER = "adapter"
         val ARG_TYPE = "type"
-        val EX_LANG = "kk"
         fun open(context: Context, item: Subject, type: Int){
             context.startActivity(Intent(context, TeachersActivity::class.java)
                     .putExtra(ARG_SUBJECT,item)
@@ -52,6 +53,8 @@ class TeachersActivity : AppCompatActivity(), OnTeachersActivityInteractionListe
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_teachers)
+
+        language = SingletonSharedPref.getInstance().getString(Constants.KEY_LANGUAGE)
 
         realm = Realm.getDefaultInstance()
         chatInfos = realm.where(ChatInformation::class.java).findAll()
@@ -73,10 +76,10 @@ class TeachersActivity : AppCompatActivity(), OnTeachersActivityInteractionListe
         history_class_text.text = String.format("%d %s",mSubject.ClassNumber,getString(R.string.class_name))
         subject_name.text = mSubject.Name
 
-        requestTeacher(mSubject.ClassNumber, EX_LANG,mSubject.Id)
+        requestTeacher(mSubject.ClassNumber, language,mSubject.Id)
 
         swipeRefreshLayout.setOnRefreshListener {
-            requestTeacher(mSubject.ClassNumber, EX_LANG,mSubject.Id)
+            requestTeacher(mSubject.ClassNumber, language,mSubject.Id)
         }
     }
 
@@ -110,10 +113,11 @@ class TeachersActivity : AppCompatActivity(), OnTeachersActivityInteractionListe
 
     //Events
     override fun onTeacherItemClicked(item: Teacher){
+
         if(item.LessonRequestId!=null){
             Snackbar.make(findViewById(android.R.id.content),getString(R.string.error_request_exists),Snackbar.LENGTH_SHORT)
         }else{
-            requestLessonToTeacher(item.Id,mSubject.Id, EX_LANG,mSubject.ClassNumber)
+            requestLessonToTeacher(item.Id,mSubject.Id, language,mSubject.ClassNumber)
         }
     }
 
@@ -165,7 +169,12 @@ class TeachersActivity : AppCompatActivity(), OnTeachersActivityInteractionListe
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe (
                         { chatInformation ->
-                            if(requestErrorHandler(chatInformation.code(),chatInformation.message())){
+                            if(chatInformation.code()==Constants.BAD_REQUEST){
+                                Snackbar.make(findViewById(android.R.id.content),
+                                        getString(R.string.error_no_balance),
+                                        Snackbar.LENGTH_LONG
+                                ).show()
+                            }else if(requestErrorHandler(chatInformation.code(),chatInformation.message())){
                                 if(chatInformation.body()!=null){
                                     onSuccessRequestedState(chatInformation.body()!!)
                                 }

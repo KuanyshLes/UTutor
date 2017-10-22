@@ -15,6 +15,7 @@ import com.support.robigroup.ututor.Constants
 import com.support.robigroup.ututor.R
 import com.support.robigroup.ututor.commons.OnHistoryListInteractionListener
 import com.support.robigroup.ututor.commons.ChatHistory
+import java.sql.Time
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -43,12 +44,10 @@ class HistoryAdapter(
                 holder.mItem.Class,
                 holder.itemView.context.resources.getString(R.string.class_name)
         )
-        var date: Date = SimpleDateFormat(Constants.TIMEFORMAT).parse(holder.mItem.EndTime+"Z")
-        val myFormat = "yyyy-MM-dd HH:mm"
         holder.mSubjectTime.text = String.format(
-                "%s",
-//                SimpleDateFormat(myFormat).format(date),
-                getTimeWaitingInMinutes((holder.mItem.Duration)!!.toInt()*1000L)
+                "%s %s",
+                holder.itemView.context.getString(R.string.duration_short),
+                getTimeWaitingInMinutes((holder.mItem.Duration)!!.toLong())
         )
         holder.mCostLesson.text = String.format("%4s₸", holder.mItem.InvoiceSum)
         holder.mTeacher.text = String.format("%s", holder.mItem.ChatUserName)
@@ -75,12 +74,13 @@ class HistoryAdapter(
         notifyDataSetChanged()
     }
 
-    private fun getTimeWaitingInMinutes(millis: Long): String
-            = String.format(" Длит: %02dч. %02dм.",
-            TimeUnit.MILLISECONDS.toMinutes(millis),
-            TimeUnit.MILLISECONDS.toSeconds(millis) -
-                    TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis))
-    )
+    private fun getTimeWaitingInMinutes(seconds: Long): String{
+        val hours = TimeUnit.SECONDS.toHours(seconds)
+        val minutes = TimeUnit.SECONDS.toMinutes(seconds) - TimeUnit.HOURS.toMinutes(hours)
+        if(hours == 0L)
+            return String.format("%2dм.", minutes)
+        return String.format("%2dч. %2dм.", hours, minutes)
+    }
 
 
 }

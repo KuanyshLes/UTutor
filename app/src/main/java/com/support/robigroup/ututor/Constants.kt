@@ -12,6 +12,9 @@ object Constants {
     val NOT_FOUND = 404 // не найден, not our problem
     val SERVER_ERROR = 500 //not our problem
 
+    val LEARNER_ID = "Learner"
+    val TEACHER_ID = "Teacher"
+
     val KEY_TOKEN = "TOKEN"
     val KEY_FULL_NAME = "full_name"
     val KEY_LANGUAGE = "language"

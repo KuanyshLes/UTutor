@@ -98,27 +98,27 @@ fun Activity.requestErrorHandler(code: Int, message: String?, parentView: View =
         val snackbar = Snackbar.make(parentView, message, Snackbar.LENGTH_LONG)
         when (code) {
             Constants.BAD_REQUEST -> {
-                snackbar.setText("Client's data is already exist on server or is invalid")
+                snackbar.setText("Произошло ошибка, сообщите нам ")
                 snackbar.setActionTextColor(Color.RED)
             }
             Constants.UNAUTHORIZED -> {
-                snackbar.setText("Client is not authorized")
+                snackbar.setText("Ошибка с авторизаций")
                 snackbar.setActionTextColor(Color.RED)
             }
             Constants.FORBIDDEN -> {
-                snackbar.setText("Forbidden request")
+                snackbar.setText("У вас нет прав для этого")
                 snackbar.setActionTextColor(Color.RED)
             }
             Constants.NOT_FOUND -> {
-                snackbar.setText("API not found")
+                snackbar.setText("Адрес не нашлось")
                 snackbar.setActionTextColor(Color.RED)
             }
             Constants.SERVER_ERROR -> {
-                snackbar.setText("Server is experiencing problems")
+                snackbar.setText("Проблемы в сервере повтарите позже")
                 snackbar.setActionTextColor(Color.RED)
             }
         }
-        snackbar.show()
+//        snackbar.show()
     }
     return false
 }

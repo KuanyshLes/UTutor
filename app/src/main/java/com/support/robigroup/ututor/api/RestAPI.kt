@@ -9,16 +9,21 @@ import okhttp3.OkHttpClient
 import okhttp3.Response
 import java.io.IOException
 import com.google.gson.GsonBuilder
+import java.util.concurrent.TimeUnit
 
 
 class RestAPI{
 
     companion object {
 
-        var client = OkHttpClient.Builder().addInterceptor(object : Interceptor {
+        var client = OkHttpClient.Builder()
+                .readTimeout(30, TimeUnit.SECONDS)
+                .connectTimeout(10, TimeUnit.SECONDS)
+                .addInterceptor(object : Interceptor {
             @Throws(IOException::class)
             override fun intercept(chain: Interceptor.Chain): Response {
                 val newRequest = chain.request().newBuilder()
+
                         .addHeader("Content-Type", "application/x-www-form-urlencoded")
                         .build()
                 return chain.proceed(newRequest)

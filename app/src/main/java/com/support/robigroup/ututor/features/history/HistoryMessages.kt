@@ -16,11 +16,16 @@ import io.reactivex.disposables.CompositeDisposable
 import com.support.robigroup.ututor.features.chat.ChatActivity
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
+import com.stfalcon.frescoimageviewer.ImageViewer
 import com.support.robigroup.ututor.Constants
 import com.support.robigroup.ututor.api.MainManager
 import com.support.robigroup.ututor.commons.requestErrorHandler
 import com.support.robigroup.ututor.commons.toast
 import com.support.robigroup.ututor.commons.ChatHistory
+import com.support.robigroup.ututor.features.chat.ChatActivity.Companion.CONTENT_TYPE_IMAGE_TEXT
+import com.support.robigroup.ututor.features.chat.custom.media.holders.CustomIncomingMessageViewHolder
+import com.support.robigroup.ututor.features.chat.custom.media.holders.CustomOutcomingMessageViewHolder
 import com.support.robigroup.ututor.features.chat.model.ChatMessage
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -56,8 +61,23 @@ class HistoryMessages : AppCompatActivity(),
         imageLoader = ImageLoader { imageView, url -> Picasso.with(baseContext).load(url).into(imageView) }
         messagesList = findViewById(R.id.messagesList)
 
-        mAdapter = MessagesListAdapter("Learner", imageLoader)
+        val holders = MessageHolders()
+                .registerContentType(
+                        CONTENT_TYPE_IMAGE_TEXT,
+                        CustomIncomingMessageViewHolder::class.java,
+                        R.layout.item_incoming_text_image_message,
+                        CustomOutcomingMessageViewHolder::class.java,
+                        R.layout.item_outcoming_text_image_message,
+                        this)
+
+        mAdapter = MessagesListAdapter(Constants.LEARNER_ID, holders, imageLoader)
         mAdapter!!.enableSelectionMode(this)
+        mAdapter!!.setOnMessageClickListener {
+            message: ChatMessage ->
+            ImageViewer.Builder(this, arrayOf(message.imageUrl))
+                    .setStartPosition(0)
+                    .show()
+        }
         messagesList!!.setAdapter(mAdapter)
 
         supportActionBar?.title = mChatHistory.ChatUserName
@@ -68,15 +88,24 @@ class HistoryMessages : AppCompatActivity(),
         val subscription = MainManager().getHistoryMessages(chatId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+                .doOnSubscribe {
+                    progressBar.visibility = View.VISIBLE
+                }
+                .doAfterTerminate {
+                    progressBar.visibility = View.GONE
+                }
                 .subscribe(
                         { message ->
                             if(requestErrorHandler(message.code(),message.message())){
                                 mAdapter?.addToEnd(message.body(),true)
-                            }
+                            }else{}
                         },
                         { e ->
                             Log.e("Error",e.stackTrace.toString())
-                            Snackbar.make(findViewById(android.R.id.content), e.message ?: "", Snackbar.LENGTH_LONG).show()
+                            Snackbar.make(findViewById(android.R.id.content), e.message ?: "", Snackbar.LENGTH_LONG)
+                                    .setAction(getString(R.string.prompt_retry)){
+                                        view -> requestMessages(mChatHistory.Id!!)
+                                    }.show()
                         }
                 )
         compositeDisposable.add(subscription)
@@ -84,7 +113,9 @@ class HistoryMessages : AppCompatActivity(),
 
     override fun hasContentFor(message: ChatMessage, type: Byte): Boolean {
         when (type) {
-            ChatActivity.CONTENT_TYPE_IMAGE_TEXT -> return message.filePath != null
+            CONTENT_TYPE_IMAGE_TEXT -> {
+                return message.filePath != null && message.fileIconPath !=null
+            }
         }
         return false
     }

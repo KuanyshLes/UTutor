@@ -137,6 +137,7 @@ class LoginActivity : AppCompatActivity(), OnLoginActivityInteractionListener {
     override fun onSetPasswordButtonClicked(token: String) {
         logd("token is "+ token)
         SingletonSharedPref.getInstance().put(Constants.KEY_TOKEN, token)
+        SingletonSharedPref.getInstance().put(Constants.KEY_LANGUAGE,"kk")
         MenuActivity.open(this)
     }
 

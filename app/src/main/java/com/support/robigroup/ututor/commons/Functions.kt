@@ -2,7 +2,10 @@ package com.support.robigroup.ututor.commons
 
 import android.app.ProgressDialog
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.net.ConnectivityManager
+import android.net.Uri
 import android.support.v7.app.AlertDialog
 import android.util.Base64
 import android.util.Log
@@ -12,8 +15,12 @@ import com.support.robigroup.ututor.singleton.SingletonSharedPref
 import java.io.ByteArrayOutputStream
 import java.io.FileInputStream
 import java.io.IOException
+import java.io.InputStream
 import java.text.SimpleDateFormat
 import java.util.*
+import android.R.attr.path
+import android.app.Activity
+import java.net.URI
 
 
 object Functions {
@@ -65,7 +72,7 @@ object Functions {
 
     fun getDifferenceInMillis(dateString: String): Long{
         val currentTime = Calendar.getInstance().time
-        val sdf = SimpleDateFormat(Constants.TIMEFORMAT)
+        val sdf = SimpleDateFormat(Constants.TIMEFORMAT, Locale.getDefault())
 
         val dif = sdf.parse(dateString+"Z").time-currentTime.time+Constants.WAIT_TIME
         Log.e("Difference","created: "+dateString+"Z"+ " now: "+sdf.format(currentTime.time)+" dif: "+dif.toString())
@@ -165,5 +172,63 @@ object Functions {
         }
 
         return encodedString
+    }
+
+    private fun getBitmap(uri: Uri, context: Context) :Bitmap?{
+
+        var input: InputStream? = null
+        try {
+            val IMAGE_MAX_SIZE = 1200000 // 1.2MP
+            val mContentResolver = context.contentResolver
+            input = mContentResolver.openInputStream(uri)
+
+            // Decode image size
+            val options = BitmapFactory.Options()
+            options.inJustDecodeBounds = true
+            BitmapFactory.decodeStream(input, null, options)
+            input.close()
+
+            var scale = 1
+            while (options.outWidth * options.outHeight * (1 / Math.pow(scale.toDouble(), 2.0)) > IMAGE_MAX_SIZE) {
+                scale++
+            }
+            Log.d("myLogs", "scale = " + scale + ", orig-width: " + options.outWidth + ",orig-height: " + options.outHeight)
+
+            var resultBitmap: Bitmap? = null
+            input = mContentResolver.openInputStream(uri)
+
+            if (scale > 1) {
+                scale--
+                // scale to max possible inSampleSize that still yields an image
+                // larger than target
+                val options = BitmapFactory.Options()
+                options.inSampleSize = scale
+                resultBitmap = BitmapFactory.decodeStream(input, null, options)
+
+                // resize to desired dimensions
+                val  height = resultBitmap.height
+                val width = resultBitmap.width
+                Log.d("myLogs", "1th scale operation dimenions - width: " + width + ",height: " + height)
+
+                val y = Math.sqrt(IMAGE_MAX_SIZE
+                        / (( width.toDouble()) / height))
+                val x = (y / height) * width
+
+                val scaledBitmap = Bitmap.createScaledBitmap(resultBitmap,  x.toInt(), y.toInt(), true)
+                resultBitmap.recycle()
+                resultBitmap = scaledBitmap
+
+                System.gc()
+            } else {
+                resultBitmap = BitmapFactory.decodeStream(input)
+            }
+            input.close()
+            Log.d("myLogs", "bitmap size - width: " +resultBitmap.width + ", height: " +resultBitmap.height)
+            return resultBitmap
+
+        } catch (e: IOException) {
+            Log.e("myLogs", e.message,e)
+            return null
+        }
     }
 }

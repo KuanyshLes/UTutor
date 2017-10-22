@@ -34,7 +34,7 @@ class MainActivity :
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        setContentView(R.layout.activity_main_nav)
+        setContentView(R.layout.app_bar_main_nav)
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
@@ -80,7 +80,7 @@ class MainActivity :
     }
 
     private fun requestSubjects(){
-        val subscription = MainManager().getSubjects(type, classNumber)
+        val subscription = MainManager().getSubjects(type)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(

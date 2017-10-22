@@ -14,7 +14,6 @@
     <string name="prompt_are_you_sure">Вы уверены закрыть диалог</string>
 
 
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="topic">Тема:</string>
     <string name="drawer_item_logout">Выйти</string>
     <string name="drawer_item_settings">Настройки</string>
@@ -44,8 +43,11 @@
     <string name="error_phone_number">Неправильный номер телефона</string>
     <string name="error_password">Неправильный пароль</string>
     <string name="error_not_same_password">Пароли не соответствует</string>
+    <string name="error_no_balance">У вас недостаточно средств</string>
     <string name="error_same_password">Одинаковый пароль</string>
     <string name="error_request_exists">Запрос был создан</string>
+    <string name="prompt_retry">Повторить</string>
+    <string name="duration_short">Длит:</string>
 
     <string name="all_lessons">Все предметы</string>
     <string name="main_topic_text">Ваши последние уроки</string>
@@ -117,6 +119,7 @@
     <string name="desc_password">Пароль должен содержать цифры, прописные, и строчные буквы и состоять хотя бы из 8 символов</string>
     <string name="success_password">Пароли изменены</string>
     <string name="un_success_password">Пароли не был изменен</string>
+    <string name="feedback_send">Отзыв отправлен</string>
 
     <string-array name="view_types_dialog">
         <item name="image">From gallery</item>

@@ -33,7 +33,7 @@ interface APIInterface {
     @GET("api/sprs/subjects")
     fun getSubjects(
             @Query("type") type: Int,
-            @Query("class") classNumber: Int,
+//            @Query("class") classNumber: Int,
             @Header("Authorization") header: String = SingletonSharedPref.getInstance().getString(Constants.KEY_TOKEN)
     ): Flowable<Response<List<Subject>>>
 
@@ -113,6 +113,14 @@ interface APIInterface {
     fun evalChat(
             @Query("LessonId") rating: Int,
             @Query("Raiting") lessonId: Int,
+            @Header("Authorization") header: String = SingletonSharedPref.getInstance().getString(Constants.KEY_TOKEN)
+    ): Flowable<Response<ResponseBody>>
+
+    @POST("api/account/review")
+    fun postFeedback(
+            @Query("Text") text: String,
+            @Query("AppVersion") appVersion: String,
+            @Query("Device") device: String,
             @Header("Authorization") header: String = SingletonSharedPref.getInstance().getString(Constants.KEY_TOKEN)
     ): Flowable<Response<ResponseBody>>
 

@@ -113,7 +113,6 @@ class ChatActivity : AppCompatActivity(),
     }
 
     private fun notifyItemRangeChanged(startIndex: Int,rangeLength: Int){
-        toast("notifyItemRangeChanged")
     }
     private fun notifyItemRangeInserted(startIndex: Int,rangeLength: Int){
         for(i in startIndex until startIndex+rangeLength){
@@ -121,7 +120,6 @@ class ChatActivity : AppCompatActivity(),
         }
     }
     private fun notifyItemRangeRemoved(startIndex: Int,rangeLength: Int){
-        toast("notifyItemRangeRemoved")
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -137,8 +135,8 @@ class ChatActivity : AppCompatActivity(),
         mChatInformation = realm.where(ChatInformation::class.java).findFirst()!!
         mChatInformation.addChangeListener(mChatChangeListener)
 
-        teacher = User("Teacher", mChatInformation.Teacher,null,true)
-        user = User("Learner", mChatInformation.Learner,null,true)
+        teacher = User(Constants.TEACHER_ID, mChatInformation.Teacher,null,true)
+        user = User(Constants.LEARNER_ID, mChatInformation.Learner,null,true)
 
         setSupportActionBar(toolbar)
         teacher_name_title.text =this.teacher.name!!.split(" ")[0]
@@ -153,7 +151,8 @@ class ChatActivity : AppCompatActivity(),
 
         messagesList = findViewById(R.id.messagesList)
         initAdapter()
-        notifyItemRangeInserted(0,mMessages.size)
+        if(messagesAdapter!!.isEmpty)
+            reloadMessages()
 
         val input = findViewById<MessageInput>(R.id.input)
         input.setInputListener(this)
@@ -169,8 +168,7 @@ class ChatActivity : AppCompatActivity(),
             if((dif>1000&&dif<Constants.WAIT_TIME)||(utc>1000&&utc<Constants.WAIT_TIME)){
                 mReadyDialog.startShow(supportFragmentManager,TAG_READY_DIALOG,dif)
             }else{
-                startActivity(Intent(this@ChatActivity, MenuActivity::class.java))
-                finish()
+                finishCorrectly()
             }
         }else if(mReadyDialog.isVisible){
             mReadyDialog.dismiss()
@@ -204,9 +202,10 @@ class ChatActivity : AppCompatActivity(),
         messagesAdapter!!.enableSelectionMode(this)
         messagesAdapter!!.setOnMessageClickListener {
             message: ChatMessage ->
-            ImageViewer.Builder(this, arrayOf(message.imageUrl))
-                    .setStartPosition(0)
-                    .show()
+            if(message.imageUrl!=null)
+                ImageViewer.Builder(this, arrayOf(message.imageUrl))
+                        .setStartPosition(0)
+                        .show()
         }
         messagesList!!.setAdapter(messagesAdapter)
     }
@@ -275,7 +274,9 @@ class ChatActivity : AppCompatActivity(),
                 .subscribe(
                         { message ->
                             if(requestErrorHandler(message.code(),message.message())){
-                                messagesAdapter!!.addToStart(message.body()!!, true)
+                                realm.executeTransaction {
+                                    realm.copyToRealm(message.body())
+                                }
                             }else{
                                 //TODO handle http errors
                             }
@@ -296,26 +297,21 @@ class ChatActivity : AppCompatActivity(),
                             if(requestErrorHandler(message.code(),message.message())){
                                 OnEvalChat(Functions.getChatInformation(message.body()!!))
                             }else{
-                                startActivity(Intent(this@ChatActivity, MenuActivity::class.java))
-                                finish()
+                                finishCorrectly()
                             }
                         },
                         { e ->
                             Log.e("Error",e.message)
-                            startActivity(Intent(this@ChatActivity, MenuActivity::class.java))
-                            finish()
+                            finishCorrectly()
                         }
                 )
         subscriptions.add(subscription)
     }
 
-//    private fun reloadMessages() {
-//        messagesAdapter!!.addToEnd(mMessages, false)
-//        messagesAdapter?.addToEnd(
-//                mMessages.map { it }
-//                Functions.getMyMessage(mMessages[i],teacher),true
-//        )
-//    }
+    private fun reloadMessages() {
+
+        messagesAdapter?.addToEnd(mMessages.toList(), true)
+    }
 
     private fun evalChat(rating: Int,lessonId:Int){
         val subscription = MainManager().evalChat(rating,lessonId)
@@ -324,17 +320,15 @@ class ChatActivity : AppCompatActivity(),
                 .subscribe(
                         { message ->
                             if(requestErrorHandler(message.code(),message.message())){
-                                startActivity(Intent(this@ChatActivity, MenuActivity::class.java))
-                                finish()
+                                finishCorrectly()
                             }else{
-                                startActivity(Intent(this@ChatActivity, MenuActivity::class.java))
-                                finish()
+                                finishCorrectly()
                             }
                         },
                         { e ->
                             Log.e("Error",e.stackTrace.toString())
-                            startActivity(Intent(this@ChatActivity, MenuActivity::class.java))
-                            finish()
+                            finishCorrectly()
+
                         }
                 )
         subscriptions.add(subscription)
@@ -353,9 +347,11 @@ class ChatActivity : AppCompatActivity(),
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(
                             { messageResponse ->
-                                if(requestErrorHandler(messageResponse.code(),messageResponse.message())){
-                                    val message: ChatMessage = messageResponse.body()!!
-                                    messagesAdapter?.addToStart(message,true)
+                                val message: ChatMessage? = messageResponse.body()
+                                if(requestErrorHandler(messageResponse.code(),messageResponse.message())&&message!=null){
+                                    realm.executeTransaction {
+                                        realm.copyToRealm(message)
+                                    }
                                 }else{
                                     //TODO handle http errors
                                 }
@@ -372,8 +368,8 @@ class ChatActivity : AppCompatActivity(),
 
     override fun onFinishCounterFromReadyDialog() {
         if(!mChatInformation.LearnerReady||!mChatInformation.TeacherReady){
-            startActivity(Intent(this@ChatActivity, MenuActivity::class.java))
-            finish()
+            finishCorrectly()
+
         }
     }
 
@@ -382,8 +378,8 @@ class ChatActivity : AppCompatActivity(),
 
     }
     override fun onCancelEvalDialog() {
-        startActivity(Intent(this@ChatActivity, MenuActivity::class.java))
-        finish()
+        finishCorrectly()
+
     }
 
     override fun onReadyDialogReadyClick(dialog: DialogFragment) {
@@ -429,6 +425,17 @@ class ChatActivity : AppCompatActivity(),
         }
     }
 
+    private fun finishCorrectly(){
+        realm.executeTransaction {
+            mMessages.deleteAllFromRealm()
+            if(mChatInformation.isValid){
+                mChatInformation.deleteFromRealm()
+            }
+        }
+        startActivity(Intent(this@ChatActivity, MenuActivity::class.java))
+        finish()
+    }
+
     override fun onSelectionChanged(count: Int) {
         selectionCount = count
         menu!!.findItem(R.id.action_delete).isVisible = count > 0
@@ -462,9 +469,6 @@ class ChatActivity : AppCompatActivity(),
     override fun hasContentFor(message: ChatMessage, type: Byte): Boolean {
         when (type) {
             CONTENT_TYPE_IMAGE_TEXT -> {
-                val mylog = Gson().toJson(message, ChatMessage::class.java)
-                val bol1: Boolean = (message.filePath != null)
-                val bol2: Boolean = (message.text != null)
                 return message.filePath != null && message.fileIconPath !=null
             }
         }
@@ -509,7 +513,8 @@ class ChatActivity : AppCompatActivity(),
 
         fun open(context: Context) {
             val intent = Intent(context, ChatActivity::class.java)
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             context.startActivity(intent)
         }
     }

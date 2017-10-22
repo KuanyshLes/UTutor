@@ -21,7 +21,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 android:background="@color/colorLightBlue"
-                app:theme="@style/ThemeOverlay.AppCompat"
+                android:theme="@style/ThemeOverlay.AppCompat"
                 app:titleTextColor="@color/colorWhite"
                 android:gravity="center"
                 app:popupTheme="@style/AppTheme.PopupOverlay" />
@@ -42,6 +42,7 @@
 
             </android.support.v7.widget.RecyclerView>
         </android.support.v4.widget.SwipeRefreshLayout>
+
     </android.support.design.widget.CoordinatorLayout>
 
     <android.support.design.widget.NavigationView
@@ -50,6 +51,7 @@
         android:layout_height="match_parent"
         android:layout_gravity="start"
         android:fitsSystemWindows="true"
+        android:visibility="visible"
         app:headerLayout="@layout/nav_header_main_nav"
         app:menu="@menu/activity_main_nav_drawer" />
 

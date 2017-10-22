@@ -15,8 +15,8 @@ class MainManager(
         private val TOKEN: String = SingletonSharedPref.getInstance().getString(KEY_TOKEN),
         private val api: RestAPI = RestAPI()) {
 
-    fun getSubjects(type: Int, classNumber: Int): Flowable<Response<List<Subject>>>
-        = RestAPI.getApi().getSubjects(type, classNumber)
+    fun getSubjects(type: Int): Flowable<Response<List<Subject>>>
+        = RestAPI.getApi().getSubjects(type)
 
     fun getTeachers(classRoom: Int,language: String,subjectId: Int, type: Int): Flowable<Response<List<Teacher>>>
         = RestAPI.getApi().getTeachers(

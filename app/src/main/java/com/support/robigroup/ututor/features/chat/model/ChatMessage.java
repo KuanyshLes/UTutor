@@ -13,6 +13,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 import io.realm.RealmObject;
 import io.realm.annotations.Ignore;
@@ -112,7 +113,7 @@ public class ChatMessage extends RealmObject implements IMessage, MessageContent
     public Date getCreatedAt() {
         Date currentTime = Calendar.getInstance().getTime();
         try{
-            currentTime = new SimpleDateFormat(Constants.INSTANCE.getTIMEFORMAT()).parse(getTime());
+            currentTime = new SimpleDateFormat(Constants.INSTANCE.getTIMEFORMAT(), Locale.getDefault()).parse(getTime());
         }catch (ParseException exception){
             Log.e("Error","error occured time parsing");
         }

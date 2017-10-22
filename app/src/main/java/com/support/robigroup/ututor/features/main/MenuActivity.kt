@@ -37,8 +37,6 @@ class MenuActivity : MenuesActivity() {
         }else{
             Functions.builtMessageNoInternet(this,{sendQueries()})
         }
-
-
     }
 
 
@@ -70,7 +68,6 @@ class MenuActivity : MenuesActivity() {
                             },{
                                 error ->
                                 logd(error.toString())
-                                toast(error.message.toString())
                                 isChatCheck = false
                             }))
     }
@@ -81,7 +78,8 @@ class MenuActivity : MenuesActivity() {
             val res = realm.where(ChatInformation::class.java).findAll()
             if(res!=null)
                 realm.executeTransaction {
-                    res.deleteAllFromRealm()
+                    if(res.isValid)
+                        res.deleteAllFromRealm()
                 }
             realm.close()
         }else{

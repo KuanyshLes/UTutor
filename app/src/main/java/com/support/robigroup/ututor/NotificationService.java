@@ -172,6 +172,8 @@ public class NotificationService extends Service {
     }
 
     private void notifyChatCompleted(final ChatLesson chatLesson) {
+        if(realm.isClosed())
+            realm = Realm.getDefaultInstance();
         realm.executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
@@ -188,6 +190,8 @@ public class NotificationService extends Service {
     }
 
     private void notifyTeacherAccepted(final ChatInformation chatInformation){
+        if(realm.isClosed())
+            realm = Realm.getDefaultInstance();
         realm.executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
@@ -198,6 +202,8 @@ public class NotificationService extends Service {
     }
 
     private void notifyChatReady(){
+        if(realm.isClosed())
+            realm = Realm.getDefaultInstance();
         realm.executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
@@ -210,10 +216,11 @@ public class NotificationService extends Service {
     }
 
     private void notifyMessageReceived(final ChatMessage message){
+        if(realm.isClosed())
+            realm = Realm.getDefaultInstance();
         realm.executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
-                Log.d("myLogs", "in notify "+(new Gson()).toJson(message, ChatMessage.class));
                 realm.copyToRealm(message);
             }
         });

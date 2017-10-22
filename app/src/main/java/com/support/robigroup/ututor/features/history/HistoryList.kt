@@ -17,7 +17,7 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_history_list.*
 import android.support.v7.widget.DividerItemDecoration
-
+import android.view.View
 
 
 class HistoryList : MenuesActivity(), OnHistoryListInteractionListener {
@@ -62,16 +62,24 @@ class HistoryList : MenuesActivity(), OnHistoryListInteractionListener {
         val subscription = MainManager().getHistory()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+                .doOnSubscribe {
+                    if(!swipeRefreshLayout.isRefreshing)
+                        swipeRefreshLayout.isRefreshing = true
+                }
+                .doAfterTerminate {
+                    swipeRefreshLayout.isRefreshing = false
+                }
                 .subscribe(
                         { retrievedTopics ->
                             if (requestErrorHandler(retrievedTopics.code(), retrievedTopics.message())) {
                                 mHistoryAdapter?.updateHistory(retrievedTopics.body())
                             }
-                            if (swipeRefreshLayout.isRefreshing)
-                                swipeRefreshLayout.isRefreshing = false
                         },
                         { e ->
-                            Snackbar.make(findViewById(android.R.id.content), e.message ?: "", Snackbar.LENGTH_LONG).show()
+                            Snackbar.make(findViewById(android.R.id.content), e.message ?: "", Snackbar.LENGTH_LONG)
+                                    .setAction(getString(R.string.prompt_retry)){
+                                        view -> requestHistory()
+                                    }.show()
                         }
                 )
         compositeDisposable.add(subscription)

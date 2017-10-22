@@ -19,6 +19,7 @@ import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_registration.*
 import android.widget.Toast
 import com.support.robigroup.ututor.Constants
+import com.support.robigroup.ututor.singleton.SingletonSharedPref
 import retrofit2.adapter.rxjava2.Result.response
 import org.json.JSONObject
 import org.json.JSONException
@@ -84,6 +85,7 @@ class RegistrationFragment : Fragment() {
                         if (response.isSuccessful) {
                             try {
                                 val body = JSONObject(response.body()?.string())
+                                SingletonSharedPref.getInstance().put(Constants.KEY_FULL_NAME, name+surname)
                                 val token = Constants.KEY_BEARER+body.getString(Constants.KEY_RES_TOKEN)
                                 mListener?.onNextButtonClicked(token)
                             } catch (e: Exception) {
