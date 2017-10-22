@@ -114,7 +114,7 @@ open class MenuesActivity : AppCompatActivity(), NavigationView.OnNavigationItem
 
     override fun onStart() {
         super.onStart()
-        val language = Functions.getLanguage(SingletonSharedPref.getInstance().getString(Constants.KEY_LANGUAGE))
+        val language = Functions.getLanguage(SingletonSharedPref.getInstance().getString(Constants.KEY_LANGUAGE,"kk"))
         mFlag.setImageResource(language.flagIcon)
         mLanguage.text = language.text
     }

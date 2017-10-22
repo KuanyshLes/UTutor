@@ -8,15 +8,11 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.google.gson.Gson;
-import com.support.robigroup.ututor.commons.Functions;
 import com.support.robigroup.ututor.commons.ChatInformation;
 import com.support.robigroup.ututor.commons.ChatLesson;
-import com.support.robigroup.ututor.features.chat.model.CustomMessage;
+import com.support.robigroup.ututor.commons.Functions;
+import com.support.robigroup.ututor.features.chat.model.ChatMessage;
 import com.support.robigroup.ututor.singleton.SingletonSharedPref;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 import io.realm.Realm;
 import microsoft.aspnet.signalr.client.ConnectionState;
@@ -144,19 +140,19 @@ public class NotificationService extends Service {
                     });
 
             mHubProxy.on("lessonChatReceived",
-                    new SubscriptionHandler1<CustomMessage>() {
+                    new SubscriptionHandler1<ChatMessage>() {
                         @Override
-                        public void run(final CustomMessage msg) {
+                        public void run(final ChatMessage msg) {
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    Log.e("MyEventMessage", (new Gson()).toJson(msg,CustomMessage.class));
+                                    Log.e("MyEventMessage", (new Gson()).toJson(msg,ChatMessage.class));
                                     notifyMessageReceived(msg);
                                 }
                             });
                         }
                     }
-                    , CustomMessage.class);
+                    , ChatMessage.class);
             mHubProxy.on("ChatCompleted",
                     new SubscriptionHandler1<ChatLesson>(){
                         @Override
@@ -213,10 +209,11 @@ public class NotificationService extends Service {
         });
     }
 
-    private void notifyMessageReceived(final CustomMessage message){
+    private void notifyMessageReceived(final ChatMessage message){
         realm.executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
+                Log.d("myLogs", "in notify "+(new Gson()).toJson(message, ChatMessage.class));
                 realm.copyToRealm(message);
             }
         });

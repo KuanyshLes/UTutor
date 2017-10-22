@@ -63,6 +63,12 @@
         <item name="android:singleLine">true</item>
     </style>
 
+    <style name="name_sur_field">
+        <item name="android:inputType">text</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:singleLine">true</item>
+    </style>
+
     <style name="finish_dialog_buttons">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>

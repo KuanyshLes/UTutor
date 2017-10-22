@@ -8,10 +8,10 @@ import com.stfalcon.chatkit.messages.MessageHolders;
 import com.stfalcon.chatkit.utils.DateFormatter;
 import com.stfalcon.chatkit.utils.RoundedImageView;
 import com.support.robigroup.ututor.R;
-import com.support.robigroup.ututor.features.chat.model.MyMessage;
+import com.support.robigroup.ututor.features.chat.model.ChatMessage;
 
 
-public class CustomIncomingMessageViewHolder extends MessageHolders.IncomingTextMessageViewHolder<MyMessage> {
+public class CustomIncomingMessageViewHolder extends MessageHolders.IncomingTextMessageViewHolder<ChatMessage> {
 
     private ImageView image;
     private TextView tvTime;
@@ -31,11 +31,11 @@ public class CustomIncomingMessageViewHolder extends MessageHolders.IncomingText
     }
 
     @Override
-    public void onBind(MyMessage message) {
+    public void onBind(ChatMessage message) {
         super.onBind(message);
         tvTime.setText(DateFormatter.format(message.getCreatedAt(), DateFormatter.Template.TIME));
         if (image != null && getImageLoader() != null) {
-            getImageLoader().loadImage(image, message.getImageIconUrl());
+            getImageLoader().loadImage(image, message.getIconUrl());
         }
     }
 }

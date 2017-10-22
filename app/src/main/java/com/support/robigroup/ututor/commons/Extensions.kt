@@ -11,6 +11,7 @@ import android.net.Uri
 import android.os.Parcel
 import android.os.Parcelable
 import android.support.design.widget.Snackbar
+import android.support.v4.app.Fragment
 import android.support.v7.app.AlertDialog
 import android.util.Log
 import android.view.LayoutInflater
@@ -22,6 +23,7 @@ import com.facebook.drawee.view.SimpleDraweeView
 import com.squareup.picasso.Picasso
 import com.support.robigroup.ututor.Constants
 import com.support.robigroup.ututor.R
+import okhttp3.ResponseBody
 import java.time.Duration
 
 fun logd(message: String,tag: String = "myLogs"){
@@ -86,7 +88,6 @@ fun Context.builtMessageNoInternet() {
     val alert = builder.create()
     alert.show()
 }
-
 
 fun Activity.requestErrorHandler(code: Int, message: String?, parentView: View = window.decorView.rootView): Boolean {
 

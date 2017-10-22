@@ -7,7 +7,6 @@ import android.support.v7.app.AlertDialog
 import android.util.Base64
 import android.util.Log
 import com.support.robigroup.ututor.Constants
-import com.support.robigroup.ututor.features.chat.model.*
 import com.support.robigroup.ututor.singleton.SingletonSharedPref
 
 import java.io.ByteArrayOutputStream
@@ -128,27 +127,6 @@ object Functions {
             )
         else{
             return chatInformation
-        }
-    }
-
-    fun getMyMessage(message: CustomMessage,user: User): MyMessage {
-        if(message.FilePath !=null&&message.FileOpenIcon !=null){
-            val myMessage = CustomMessage(message.Id,message.Time, Constants.BASE_URL+message.FileOpenIcon,
-                    Constants.BASE_URL+message.FilePath,message.Text)
-            return MyMessage(myMessage,user)
-        }else{
-            val myMessage = CustomMessage(message.Id,message.Time, Text = message.Text)
-            return MyMessage(myMessage,user)
-        }
-    }
-
-    fun getMyMessageHistory(message: CustomMessageHistory): MyHistoryMessage {
-        if(message.FilePath!=null||message.FileOpenIcon!=null){
-            val myMessage = CustomMessageHistory(message.Id,message.Time, Constants.BASE_URL+message.FileOpenIcon,
-                    Constants.BASE_URL+message.FilePath,message.Owner,message.Text)
-            return MyHistoryMessage(myMessage)
-        }else{
-            return MyHistoryMessage(message)
         }
     }
 

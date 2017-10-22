@@ -20,12 +20,17 @@ import io.reactivex.schedulers.Schedulers
 
 class LoginActivity : AppCompatActivity(), OnLoginActivityInteractionListener {
 
-    val regFragment: RegistrationFragment = RegistrationFragment()
-    val reg2Fragment: RegFragment2 = RegFragment2()
-    val loginFragment: LoginFragment = LoginFragment()
+    private val regFragment: RegistrationFragment = RegistrationFragment()
+    private val getCodeFragment: GetCodeFragment = GetCodeFragment()
+    private val setPasswordFragment: SetPasswordFragment = SetPasswordFragment()
+    private val verifyCodeFragment: VerifyCodeFragment = VerifyCodeFragment()
+    private val loginFragment: LoginFragment = LoginFragment()
     var loadingView: LoadingView = LoadingDialog.view(supportFragmentManager)
-    val TAG_LOGIN_FRAGMENT: String = "loginFragment"
-    val compositeDisposable: CompositeDisposable = CompositeDisposable()
+    private val TAG_LOGIN_FRAGMENT: String = "loginFragment"
+    private val compositeDisposable: CompositeDisposable = CompositeDisposable()
+    private var firstToken: String? = null
+    private var phoneNumber: String? = null
+    private var secondToken: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -89,8 +94,6 @@ class LoginActivity : AppCompatActivity(), OnLoginActivityInteractionListener {
                                         else -> this.requestErrorHandler(result.code(),result.message())
                                     }
                                 }
-
-
                             },{
                                 error ->
                                 showProgress(false)
@@ -116,13 +119,35 @@ class LoginActivity : AppCompatActivity(), OnLoginActivityInteractionListener {
         supportFragmentManager.beginTransaction().replace(R.id.container,regFragment).addToBackStack(null).commit()
     }
 
-    override fun onNextButtonClicked(email: String, password: String, phone: String) {
-        supportFragmentManager.beginTransaction().replace(R.id.container,reg2Fragment).addToBackStack(null).commit()
+    override fun onNextButtonClicked(token: String) {
+        firstToken = token
+        supportFragmentManager.beginTransaction().replace(R.id.container, getCodeFragment).addToBackStack(null).commit()
     }
 
-    override fun onDoneButtonClicked(firstName: String, lastName: String) {
-        startActivity(Intent(this, MenuActivity::class.java))
-        finish()
+    override fun onVerifyCodeButtonClicked(token: String) {
+        secondToken = token
+        supportFragmentManager.beginTransaction().replace(R.id.container, setPasswordFragment).addToBackStack(null).commit()
+    }
+
+    override fun onGetCodeButtonClicked(phone: String) {
+        this.phoneNumber = phone
+        supportFragmentManager.beginTransaction().replace(R.id.container, verifyCodeFragment).addToBackStack(null).commit()
+    }
+
+    override fun onSetPasswordButtonClicked(token: String) {
+        logd("token is "+ token)
+        SingletonSharedPref.getInstance().put(Constants.KEY_TOKEN, token)
+        MenuActivity.open(this)
+    }
+
+    override fun getFirstToken(): String{
+        return firstToken!!
+    }
+    override fun getSecondToken(): String {
+        return secondToken!!
+    }
+    override fun getPhoneNumber(): String {
+        return phoneNumber!!
     }
 
     override fun onUploadPhotoClicked() {
@@ -141,5 +166,7 @@ class LoginActivity : AppCompatActivity(), OnLoginActivityInteractionListener {
         if(show) loadingView.showLoadingIndicator()
         else loadingView.hideLoadingIndicator()
     }
+
+
 }
 

@@ -2,8 +2,7 @@ package com.support.robigroup.ututor.api
 
 import com.support.robigroup.ututor.Constants.KEY_TOKEN
 import com.support.robigroup.ututor.commons.*
-import com.support.robigroup.ututor.features.chat.model.CustomMessage
-import com.support.robigroup.ututor.features.chat.model.CustomMessageHistory
+import com.support.robigroup.ututor.features.chat.model.ChatMessage
 import com.support.robigroup.ututor.singleton.SingletonSharedPref
 import io.reactivex.Flowable
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -46,21 +45,21 @@ class MainManager(
 
     fun getHistory(): Flowable<Response<List<ChatHistory>>> = RestAPI.getApi().getHistory()
 
-    fun getHistoryMessages(chatId: Int): Flowable<Response<List<CustomMessageHistory>>> = RestAPI.getApi().getHistoryMessages(chatId)
+    fun getHistoryMessages(chatId: Int): Flowable<Response<List<ChatMessage>>> = RestAPI.getApi().getHistoryMessages(chatId)
 
     fun resetPassword(oldPassword: String, confirmPassword: String, newPassword: String) :Flowable<Response<ResponseBody>>{
         return RestAPI.getApi().resetPassword(oldPassword,confirmPassword,newPassword).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
     }
 
-    fun sendMessage(messageText: String? = null, file64base: String? = null): Flowable<Response<CustomMessage>> =
+    fun sendMessage(messageText: String? = null, file64base: String? = null): Flowable<Response<ChatMessage>> =
             if(file64base != null&&messageText!=null){
                 val res: HashMap<String,String> = HashMap()
-                res.put("FilePath",file64base)
-                res.put("Text",messageText)
+                res.put("File",file64base)
+                res.put("Message",messageText)
                 RestAPI.getApi().postMessagePhoto(res)
             } else if(file64base!=null) {
                 val res: HashMap<String,String> = HashMap()
-                res.put("FilePath",file64base)
+                res.put("File",file64base)
                 RestAPI.getApi().postMessagePhoto(res)
             }else if(messageText!=null) RestAPI.getApi().postTextMessage(messageText)
             else Flowable.empty()
@@ -104,4 +103,6 @@ class MainManager(
 //            }
 //        }, BackpressureStrategy.LATEST)
 //    }
+
+
 }

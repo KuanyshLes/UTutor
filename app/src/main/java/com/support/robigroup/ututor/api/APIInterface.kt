@@ -2,8 +2,7 @@ package com.support.robigroup.ututor.api
 
 import com.support.robigroup.ututor.Constants
 import com.support.robigroup.ututor.commons.*
-import com.support.robigroup.ututor.features.chat.model.CustomMessage
-import com.support.robigroup.ututor.features.chat.model.CustomMessageHistory
+import com.support.robigroup.ututor.features.chat.model.ChatMessage
 import com.support.robigroup.ututor.singleton.SingletonSharedPref
 import io.reactivex.Flowable
 import okhttp3.ResponseBody
@@ -81,7 +80,7 @@ interface APIInterface {
     fun getHistoryMessages(
             @Path("id") chatId: Int,
             @Header("Authorization") header: String = SingletonSharedPref.getInstance().getString(Constants.KEY_TOKEN)
-    ): Flowable<Response<List<CustomMessageHistory>>>
+    ): Flowable<Response<List<ChatMessage>>>
 
     @GET("api/lesson/chat/messages")
     fun getChatMeassages(
@@ -102,13 +101,13 @@ interface APIInterface {
     fun postMessagePhoto(
             @Body hashMap: HashMap<String,String>,
             @Header("Authorization") header: String = SingletonSharedPref.getInstance().getString(Constants.KEY_TOKEN)
-    ): Flowable<Response<CustomMessage>>
+    ): Flowable<Response<ChatMessage>>
 
     @POST("api/lesson/chat/message")
     fun postTextMessage(
             @Query("message") messageText: String,
             @Header("Authorization") header: String = SingletonSharedPref.getInstance().getString(Constants.KEY_TOKEN)
-    ): Flowable<Response<CustomMessage>>
+    ): Flowable<Response<ChatMessage>>
 
     @GET("api/lesson/rate")
     fun evalChat(
@@ -123,5 +122,34 @@ interface APIInterface {
             @Query("NewPassword") newPassword: String,
             @Query("ConfirmPassword") confirmPassword: String,
             @Header("Authorization") header: String = SingletonSharedPref.getInstance().getString(Constants.KEY_TOKEN)
+    ): Flowable<Response<ResponseBody>>
+
+
+    //REGISTER
+    @POST("api/account/register")
+    fun register(
+            @Query("FirstName") firstName: String,
+            @Query("LastName") lastName: String,
+            @Query("Email") email: String,
+            @Query("RoleId") roleId: String = "Learner"
+    ): Flowable<Response<ResponseBody>>
+
+    @GET("api/account/phone/verify")
+    fun getPhone(
+            @Query("PhoneNumber") phoneNumber: String,
+            @Header("Authorization") token: String
+    ): Flowable<Response<ResponseBody>>
+
+    @POST("api/account/phone/verify")
+    fun postPhone(
+            @Query("Code") code: String,
+            @Query("PhoneNumber") phoneNumber: String,
+            @Header("Authorization") token: String
+    ): Flowable<Response<ResponseBody>>
+
+    @POST("api/account/password")
+    fun password(
+            @Query("Password") password: String,
+            @Header("Authorization") token: String
     ): Flowable<Response<ResponseBody>>
 }

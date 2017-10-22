@@ -12,18 +12,16 @@ import com.stfalcon.chatkit.messages.MessageHolders
 import com.stfalcon.chatkit.messages.MessagesList
 import com.stfalcon.chatkit.messages.MessagesListAdapter
 import com.support.robigroup.ututor.R
-import com.support.robigroup.ututor.features.chat.model.MyMessage
 import io.reactivex.disposables.CompositeDisposable
 import com.support.robigroup.ututor.features.chat.ChatActivity
 import android.view.Menu
 import android.view.MenuItem
 import com.support.robigroup.ututor.Constants
 import com.support.robigroup.ututor.api.MainManager
-import com.support.robigroup.ututor.commons.Functions
 import com.support.robigroup.ututor.commons.requestErrorHandler
 import com.support.robigroup.ututor.commons.toast
 import com.support.robigroup.ututor.commons.ChatHistory
-import com.support.robigroup.ututor.features.chat.model.MyHistoryMessage
+import com.support.robigroup.ututor.features.chat.model.ChatMessage
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_history_messages.*
@@ -33,11 +31,11 @@ import java.util.*
 
 class HistoryMessages : AppCompatActivity(),
         MessagesListAdapter.SelectionListener,
-        MessageHolders.ContentChecker<MyMessage>{
+        MessageHolders.ContentChecker<ChatMessage>{
 
 
     private var messagesList: MessagesList? = null
-    private var mAdapter: MessagesListAdapter<MyHistoryMessage>? = null
+    private var mAdapter: MessagesListAdapter<ChatMessage>? = null
     private val compositeDisposable: CompositeDisposable by lazy {
         CompositeDisposable()
     }
@@ -73,7 +71,7 @@ class HistoryMessages : AppCompatActivity(),
                 .subscribe(
                         { message ->
                             if(requestErrorHandler(message.code(),message.message())){
-                                mAdapter?.addToEnd(message.body()?.map { Functions.getMyMessageHistory(it) },true)
+                                mAdapter?.addToEnd(message.body(),true)
                             }
                         },
                         { e ->
@@ -84,10 +82,9 @@ class HistoryMessages : AppCompatActivity(),
         compositeDisposable.add(subscription)
     }
 
-    override fun hasContentFor(message: MyMessage, type: Byte): Boolean {
+    override fun hasContentFor(message: ChatMessage, type: Byte): Boolean {
         when (type) {
-            ChatActivity.CONTENT_TYPE_IMAGE_TEXT -> return message.getImageUrl() != null
-                    && message.text != null
+            ChatActivity.CONTENT_TYPE_IMAGE_TEXT -> return message.filePath != null
         }
         return false
     }
@@ -128,7 +125,7 @@ class HistoryMessages : AppCompatActivity(),
         return true
     }
 
-    private val messageStringFormatter: MessagesListAdapter.Formatter<MyHistoryMessage>
+    private val messageStringFormatter: MessagesListAdapter.Formatter<ChatMessage>
         get() = MessagesListAdapter.Formatter { message ->
             val createdAt = SimpleDateFormat(Constants.TIMEFORMAT, Locale.getDefault())
                     .format(message.createdAt)

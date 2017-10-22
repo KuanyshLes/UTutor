@@ -1,6 +1,9 @@
 package com.support.robigroup.ututor.features.chat.model;
 
 import android.util.Log;
+
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 import com.stfalcon.chatkit.commons.models.IMessage;
 import com.stfalcon.chatkit.commons.models.IUser;
 import com.stfalcon.chatkit.commons.models.MessageContentType;
@@ -12,21 +15,33 @@ import java.util.Calendar;
 import java.util.Date;
 
 import io.realm.RealmObject;
+import io.realm.annotations.Ignore;
 
 public class ChatMessage extends RealmObject implements IMessage, MessageContentType{
-    private Integer Id;
+    @SerializedName("Id")
+    @Expose
+    private String Id;
+    @SerializedName("Time")
+    @Expose
     private String Time;
-    private String FilePathIcon;
+    @SerializedName("FileIconPath")
+    @Expose
+    private String FileIconPath;
+    @SerializedName("FilePath")
+    @Expose
     private String FilePath;
+    @SerializedName("Text")
+    @Expose
     private String Text;
+    @SerializedName("Owner")
+    @Expose
     private String Owner;
-    private Date created;
-    private ChatUser user;
+    @Ignore private ChatUser user;
 
-    public ChatMessage(Integer id, String time, String filePathIcon, String filePath, String text, String owner) {
+    public ChatMessage(String id, String time, String fileIconPath, String filePath, String text, String owner) {
         Id = id;
         Time = time;
-        FilePathIcon = filePathIcon;
+        FileIconPath = fileIconPath;
         FilePath = filePath;
         Text = text;
         Owner = owner;
@@ -39,10 +54,10 @@ public class ChatMessage extends RealmObject implements IMessage, MessageContent
 
     @Override
     public String getId() {
-        return "";
+        return Id.toString();
     }
 
-    public void setId(Integer id) {
+    public void setId(String id) {
         Id = id;
     }
 
@@ -54,12 +69,20 @@ public class ChatMessage extends RealmObject implements IMessage, MessageContent
         Time = time;
     }
 
-    public String getFilePathIcon() {
-        return FilePathIcon;
+    public String getFileIconPath() {
+        return FileIconPath;
     }
 
-    public void setFilePathIcon(String filePathIcon) {
-        FilePathIcon = filePathIcon;
+    public String getIconUrl(){
+        return Constants.INSTANCE.getBASE_URL()+ getFileIconPath();
+    }
+
+    public String getImageUrl(){
+        return Constants.INSTANCE.getBASE_URL()+getFilePath();
+    }
+
+    public void setFileIconPath(String fileIconPath) {
+        FileIconPath = fileIconPath;
     }
 
     public String getFilePath() {
@@ -76,7 +99,9 @@ public class ChatMessage extends RealmObject implements IMessage, MessageContent
 
     @Override
     public IUser getUser() {
-        return null;
+        if(user==null)
+            user = new ChatUser(getOwner(),getOwner(),null,true);
+        return user;
     }
 
     public void setUser(ChatUser user) {

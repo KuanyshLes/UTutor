@@ -27,11 +27,9 @@ import com.support.robigroup.ututor.NotificationService
 import com.support.robigroup.ututor.R
 import com.support.robigroup.ututor.api.MainManager
 import com.support.robigroup.ututor.commons.*
-import com.support.robigroup.ututor.commons.ChatInformation
 import com.support.robigroup.ututor.features.chat.custom.media.holders.CustomIncomingMessageViewHolder
 import com.support.robigroup.ututor.features.chat.custom.media.holders.CustomOutcomingMessageViewHolder
-import com.support.robigroup.ututor.features.chat.model.CustomMessage
-import com.support.robigroup.ututor.features.chat.model.MyMessage
+import com.support.robigroup.ututor.features.chat.model.ChatMessage
 import com.support.robigroup.ututor.features.chat.model.User
 import com.support.robigroup.ututor.features.main.MenuActivity
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -50,7 +48,7 @@ import kotlin.properties.Delegates
 class ChatActivity : AppCompatActivity(),
         MessageInput.InputListener,
         MessageInput.AttachmentsListener,
-        MessageHolders.ContentChecker<MyMessage>,
+        MessageHolders.ContentChecker<ChatMessage>,
         DialogInterface.OnClickListener,
         OnChatActivityDialogInteractionListener,
         MessagesListAdapter.SelectionListener,
@@ -58,7 +56,7 @@ class ChatActivity : AppCompatActivity(),
 
 
     private var messagesList: MessagesList? = null
-    private var messagesAdapter: MessagesListAdapter<MyMessage>? = null
+    private var messagesAdapter: MessagesListAdapter<ChatMessage>? = null
     private var mReadyDialog: ReadyDialog by Delegates.notNull()
     private val subscriptions: CompositeDisposable by lazy {
         CompositeDisposable()
@@ -73,7 +71,7 @@ class ChatActivity : AppCompatActivity(),
     private var lastLoadedDate: Date? = null
     private var realm: Realm by Delegates.notNull()
     private var imageLoader: ImageLoader? = null
-    private var mMessages: RealmResults<CustomMessage> by Delegates.notNull()
+    private var mMessages: RealmResults<ChatMessage> by Delegates.notNull()
 
     private var mChatChangeListener: RealmObjectChangeListener<ChatInformation> = RealmObjectChangeListener {
         rs, changeset ->
@@ -90,7 +88,7 @@ class ChatActivity : AppCompatActivity(),
         }
     }
 
-    private val mMessagesChangeListener: OrderedRealmCollectionChangeListener<RealmResults<CustomMessage>>
+    private val mMessagesChangeListener: OrderedRealmCollectionChangeListener<RealmResults<ChatMessage>>
             = OrderedRealmCollectionChangeListener { messages, changeSet ->
         if (changeSet == null) {
             notifyItemRangeInserted(0,messages.size-1)
@@ -119,9 +117,7 @@ class ChatActivity : AppCompatActivity(),
     }
     private fun notifyItemRangeInserted(startIndex: Int,rangeLength: Int){
         for(i in startIndex until startIndex+rangeLength){
-            messagesAdapter?.addToStart(
-                    Functions.getMyMessage(mMessages[i],teacher),true
-            )
+            messagesAdapter?.addToStart(mMessages[i],true)
         }
     }
     private fun notifyItemRangeRemoved(startIndex: Int,rangeLength: Int){
@@ -134,15 +130,15 @@ class ChatActivity : AppCompatActivity(),
         contentManager = ContentManager(this,this)
 
         realm = Realm.getDefaultInstance()
-        mMessages = realm.where(CustomMessage::class.java).findAll()
+        mMessages = realm.where(ChatMessage::class.java).findAll()
         mMessages.addChangeListener(mMessagesChangeListener)
 
 
         mChatInformation = realm.where(ChatInformation::class.java).findFirst()!!
         mChatInformation.addChangeListener(mChatChangeListener)
 
-        teacher = User(mChatInformation.TeacherId, mChatInformation.Teacher,null,true)
-        user = User(mChatInformation.LearnerId, mChatInformation.Learner,null,true)
+        teacher = User("Teacher", mChatInformation.Teacher,null,true)
+        user = User("Learner", mChatInformation.Learner,null,true)
 
         setSupportActionBar(toolbar)
         teacher_name_title.text =this.teacher.name!!.split(" ")[0]
@@ -207,15 +203,15 @@ class ChatActivity : AppCompatActivity(),
         messagesAdapter = MessagesListAdapter(user.id, holders, imageLoader)
         messagesAdapter!!.enableSelectionMode(this)
         messagesAdapter!!.setOnMessageClickListener {
-            message: MyMessage ->
-            ImageViewer.Builder(this, arrayOf(message.getImageUrl()))
+            message: ChatMessage ->
+            ImageViewer.Builder(this, arrayOf(message.imageUrl))
                     .setStartPosition(0)
                     .show()
         }
         messagesList!!.setAdapter(messagesAdapter)
     }
 
-    private val messageStringFormatter: MessagesListAdapter.Formatter<MyMessage>
+    private val messageStringFormatter: MessagesListAdapter.Formatter<ChatMessage>
         get() = MessagesListAdapter.Formatter { message ->
             val createdAt = SimpleDateFormat("MMM d, EEE 'at' h:mm a", Locale.getDefault())
                     .format(message.createdAt)
@@ -224,7 +220,7 @@ class ChatActivity : AppCompatActivity(),
             if (text == null) text = "[attachment]"
 
             String.format(Locale.getDefault(), "%s: %s (%s)",
-                    message.User!!.name, text, createdAt)
+                    message.user!!.name, text, createdAt)
         }
 
     private fun showFinishDialog() {
@@ -279,8 +275,7 @@ class ChatActivity : AppCompatActivity(),
                 .subscribe(
                         { message ->
                             if(requestErrorHandler(message.code(),message.message())){
-                                val myMessage: MyMessage? = MyMessage(message.body()!!,user)
-                                messagesAdapter!!.addToStart(myMessage, true)
+                                messagesAdapter!!.addToStart(message.body()!!, true)
                             }else{
                                 //TODO handle http errors
                             }
@@ -359,20 +354,14 @@ class ChatActivity : AppCompatActivity(),
                     .subscribe(
                             { messageResponse ->
                                 if(requestErrorHandler(messageResponse.code(),messageResponse.message())){
-                                    val message: CustomMessage = messageResponse.body()!!
-                                    if(message.FilePath !=null&&message.FileOpenIcon !=null){
-                                        val myMessage = CustomMessage(message.Id,message.Time,Constants.BASE_URL+message.FileOpenIcon,
-                                                Constants.BASE_URL+message.FilePath,message.Text)
-                                        messagesAdapter?.addToStart(MyMessage(myMessage,user),true)
-                                    }else{
-                                        val myMessage = CustomMessage(message.Id,message.Time, Text = message.Text)
-                                        messagesAdapter?.addToStart(MyMessage(myMessage,user),true)
-                                    }
+                                    val message: ChatMessage = messageResponse.body()!!
+                                    messagesAdapter?.addToStart(message,true)
                                 }else{
                                     //TODO handle http errors
                                 }
                             },
                             { e ->
+                                logd(e.message ?: "error")
                                 Snackbar.make(findViewById(android.R.id.content), e.message ?: "", Snackbar.LENGTH_LONG).show()
                             }
                     )
@@ -413,7 +402,6 @@ class ChatActivity : AppCompatActivity(),
             //You can use any library for display image Fresco, Picasso, ImageLoader
             //For sample:
             if(uri!=null){
-//                messagesAdapter!!.addToStart(MyMessage(CustomMessage(3218498,"00:35",uri.toString(),uri.toString(),"https://vlast.kz/media/pages/mt/1481870380x9dmr_1000x768.jpg"),user), true)
                 sendFileMessage(uri.path)
             }
         }
@@ -471,13 +459,13 @@ class ChatActivity : AppCompatActivity(),
                 .show()
     }
 
-    override fun hasContentFor(message: MyMessage, type: Byte): Boolean {
+    override fun hasContentFor(message: ChatMessage, type: Byte): Boolean {
         when (type) {
             CONTENT_TYPE_IMAGE_TEXT -> {
-                val mylog = Gson().toJson(message,MyMessage::class.java)
-                val bol1: Boolean = (message.getImageUrl() != null)
+                val mylog = Gson().toJson(message, ChatMessage::class.java)
+                val bol1: Boolean = (message.filePath != null)
                 val bol2: Boolean = (message.text != null)
-                return message.getImageUrl() != null
+                return message.filePath != null && message.fileIconPath !=null
             }
         }
         return false
