@@ -30,7 +30,7 @@ import com.support.robigroup.ututor.commons.*
 import com.support.robigroup.ututor.features.chat.custom.media.holders.CustomIncomingMessageViewHolder
 import com.support.robigroup.ututor.features.chat.custom.media.holders.CustomOutcomingMessageViewHolder
 import com.support.robigroup.ututor.features.chat.model.ChatMessage
-import com.support.robigroup.ututor.features.chat.model.User
+import com.support.robigroup.ututor.features.chat.model.ChatUser
 import com.support.robigroup.ututor.features.main.MenuActivity
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -63,12 +63,11 @@ class ChatActivity : AppCompatActivity(),
     }
     private var contentManager: ContentManager? = null
 
-    private var user: User by Delegates.notNull()
-    private var teacher: User by Delegates.notNull()
+    private var user: ChatUser by Delegates.notNull()
+    private var teacher: ChatUser by Delegates.notNull()
     private var mChatInformation: ChatInformation by Delegates.notNull()
     private var menu: Menu? = null
     private var selectionCount: Int = 0
-    private var lastLoadedDate: Date? = null
     private var realm: Realm by Delegates.notNull()
     private var imageLoader: ImageLoader? = null
     private var mMessages: RealmResults<ChatMessage> by Delegates.notNull()
@@ -135,8 +134,8 @@ class ChatActivity : AppCompatActivity(),
         mChatInformation = realm.where(ChatInformation::class.java).findFirst()!!
         mChatInformation.addChangeListener(mChatChangeListener)
 
-        teacher = User(Constants.TEACHER_ID, mChatInformation.Teacher,null,true)
-        user = User(Constants.LEARNER_ID, mChatInformation.Learner,null,true)
+        teacher = ChatUser(Constants.TEACHER_ID, mChatInformation.Teacher,null,true)
+        user = ChatUser(Constants.LEARNER_ID, mChatInformation.Learner,null,true)
 
         setSupportActionBar(toolbar)
         teacher_name_title.text =this.teacher.name!!.split(" ")[0]

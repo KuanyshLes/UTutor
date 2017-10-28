@@ -36,7 +36,7 @@ class TeachersActivity : AppCompatActivity(), OnTeachersActivityInteractionListe
     private val mRealmChangeListener: OrderedRealmCollectionChangeListener<RealmResults<ChatInformation>>
             = OrderedRealmCollectionChangeListener { chatInfo, changeSet ->
         if(chatInfo.size>0)
-            OnTeacherAccepted(chatInfo[0])
+            OnTeacherAccepted()
     }
 
     companion object {
@@ -199,7 +199,7 @@ class TeachersActivity : AppCompatActivity(), OnTeachersActivityInteractionListe
         myAdapter.OnRequestedState(requestForTeacher)
     }
 
-    private fun OnTeacherAccepted(info: ChatInformation){
+    private fun OnTeacherAccepted(){
         ChatActivity.open(this)
     }
 

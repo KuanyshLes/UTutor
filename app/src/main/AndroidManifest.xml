@@ -90,7 +90,8 @@
             android:name=".features.main.MenuActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".features.login.LogActivity"></activity>
+        <activity android:name=".features.login.LogActivity" />
+        <activity android:name=".features.chat.view.ActivityChat"></activity>
     </application>
 
 </manifest>
