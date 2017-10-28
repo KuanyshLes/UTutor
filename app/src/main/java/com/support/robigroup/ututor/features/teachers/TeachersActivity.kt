@@ -133,7 +133,7 @@ class TeachersActivity : AppCompatActivity(), OnTeachersActivityInteractionListe
                             }
                         },
                         { e ->
-                            Snackbar.make(findViewById(android.R.id.content), e.message ?: "", Snackbar.LENGTH_LONG).show()
+//                            Snackbar.make(findViewById(android.R.id.content), e.message ?: "", Snackbar.LENGTH_LONG).show()
                             e.printStackTrace()
                         }
                 )
@@ -144,19 +144,22 @@ class TeachersActivity : AppCompatActivity(), OnTeachersActivityInteractionListe
         val subscription = MainManager().getTeachers(classNumber,language,subjectId,type)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+                .doOnSubscribe {
+                    if(!swipeRefreshLayout.isRefreshing)
+                        swipeRefreshLayout.isRefreshing = true
+                }
+                .doAfterTerminate {
+                    swipeRefreshLayout.isRefreshing = false
+                }
                 .subscribe (
                         { teachers ->
                             if(requestErrorHandler(teachers.code(),teachers.message())){
                                 myAdapter.clearAndAddTeachers(teachers.body()!!)
                                 updateTeachersCount(teachers.body()!!.size)
-                                if(swipeRefreshLayout.isRefreshing)
-                                    swipeRefreshLayout.isRefreshing = false
-                            }else{
-                                //TODO handle server errors
                             }
                         },
                         { e ->
-                            Snackbar.make(findViewById(android.R.id.content), e.message ?: "", Snackbar.LENGTH_LONG).show()
+//                            Snackbar.make(findViewById(android.R.id.content), e.message ?: "", Snackbar.LENGTH_LONG).show()
                             e.printStackTrace()
                         }
                 )
@@ -181,7 +184,7 @@ class TeachersActivity : AppCompatActivity(), OnTeachersActivityInteractionListe
                             }
                         },
                         { e ->
-                            Snackbar.make(findViewById(android.R.id.content), e.message ?: "", Snackbar.LENGTH_LONG).show()
+//                            Snackbar.make(findViewById(android.R.id.content), e.message ?: "", Snackbar.LENGTH_LONG).show()
                         }
                 )
         compositeDisposable.add(subscription)

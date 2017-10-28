@@ -4,14 +4,11 @@ package com.support.robigroup.ututor.commons
 import android.app.Activity
 import android.app.ProgressDialog
 import android.content.Context
-import android.content.DialogInterface
 import android.graphics.Color
 import android.net.ConnectivityManager
-import android.net.Uri
 import android.os.Parcel
 import android.os.Parcelable
 import android.support.design.widget.Snackbar
-import android.support.v4.app.Fragment
 import android.support.v7.app.AlertDialog
 import android.util.Log
 import android.view.LayoutInflater
@@ -23,8 +20,6 @@ import com.facebook.drawee.view.SimpleDraweeView
 import com.squareup.picasso.Picasso
 import com.support.robigroup.ututor.Constants
 import com.support.robigroup.ututor.R
-import okhttp3.ResponseBody
-import java.time.Duration
 
 fun logd(message: String,tag: String = "myLogs"){
     Log.d(tag,message)

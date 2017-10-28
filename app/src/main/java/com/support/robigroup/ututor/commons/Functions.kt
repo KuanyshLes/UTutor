@@ -21,6 +21,7 @@ import java.util.*
 import android.R.attr.path
 import android.app.Activity
 import java.net.URI
+import java.util.concurrent.TimeUnit
 
 
 object Functions {
@@ -230,5 +231,18 @@ object Functions {
             Log.e("myLogs", e.message,e)
             return null
         }
+    }
+
+    fun getTimeWaiting(seconds: Long): String{
+        val hours = TimeUnit.SECONDS.toHours(seconds)
+        val minutes = TimeUnit.SECONDS.toMinutes(seconds) - TimeUnit.HOURS.toMinutes(hours)
+        val seconds = seconds -TimeUnit.MINUTES.toSeconds(TimeUnit.SECONDS.toMinutes(seconds))
+        if(hours == 0L) {
+            if (minutes == 0L) {
+                return String.format("%2dс.", seconds)
+            }
+            return String.format("%2dм. %2dc.", minutes, seconds)
+        }
+        return String.format("%2dч. %2dм. %2dc.", hours, minutes, seconds)
     }
 }

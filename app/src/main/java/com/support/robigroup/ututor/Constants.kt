@@ -51,7 +51,7 @@ object Constants {
 
     val TYPES = arrayOf(
             Type(1, "Домашнее задание", R.drawable.ic_choose_homes),
-            Type(2, "Административный срез", R.drawable.ic_choose_test),
+            Type(2, "Вопросы по тесту", R.drawable.ic_choose_test),
             Type( 3,"Подготовка к ЕНТ", R.drawable.ic_choose_test)
     )
 

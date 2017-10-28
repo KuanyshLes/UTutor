@@ -202,7 +202,7 @@ class ChatActivity : AppCompatActivity(),
         messagesAdapter!!.enableSelectionMode(this)
         messagesAdapter!!.setOnMessageClickListener {
             message: ChatMessage ->
-            if(message.imageUrl!=null)
+            if(message.filePath!=null)
                 ImageViewer.Builder(this, arrayOf(message.imageUrl))
                         .setStartPosition(0)
                         .show()
@@ -497,7 +497,7 @@ class ChatActivity : AppCompatActivity(),
         contentManager?.onSaveInstanceState(outState)
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         //Need for handle result
         contentManager?.onActivityResult(requestCode, resultCode, data)
@@ -513,8 +513,7 @@ class ChatActivity : AppCompatActivity(),
 
         fun open(context: Context) {
             val intent = Intent(context, ChatActivity::class.java)
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
             context.startActivity(intent)
         }
     }

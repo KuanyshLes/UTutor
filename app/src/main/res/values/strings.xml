@@ -29,7 +29,7 @@
     <string name="prompt_phone">Номер телефона</string>
     <string name="prompt_verify">Код подверждения</string>
     <string name="prompt_set_password">Придумайте пароль</string>
-    <string name="prompt_confirm_password">Повторите пароль</string>
+    <string name="prompt_confirm_password">Потвердите пароль</string>
     <string name="action_get_code">Получить код</string>
     <string name="action_set_password">Готово</string>
     <string name="action_verify_code">Подвердить код</string>
@@ -208,7 +208,7 @@
     <string name="action_send">Отправить</string>
     <string name="enter_feedback">Оставьте отзыв</string>
     <string name="choose_test">Пройти \n тест</string>
-    <string name="choose_srez">Административный\n срез</string>
+    <string name="choose_srez">Вопросы по тесту</string>
     <string name="choose_homework">Домашнее \n задание</string>
 
     <!-- TODO: Remove or change this placeholder text -->

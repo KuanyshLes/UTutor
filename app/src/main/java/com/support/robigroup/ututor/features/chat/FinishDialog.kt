@@ -13,6 +13,7 @@ import android.widget.TextView
 import com.support.robigroup.ututor.R
 import com.support.robigroup.ututor.commons.OnChatActivityDialogInteractionListener
 import com.support.robigroup.ututor.commons.ChatInformation
+import com.support.robigroup.ututor.commons.Functions
 
 
 class FinishDialog : DialogFragment() {
@@ -48,8 +49,15 @@ class FinishDialog : DialogFragment() {
         val textSum = view.findViewById<TextView>(R.id.sum_text) as TextView
         val textDuration = view.findViewById<TextView>(R.id.duration_text) as TextView
         ratingBar = view.findViewById<RatingBar>(R.id.rating_bar) as RatingBar
-        textSum.text = chatInformation?.InvoiceSum
-        textDuration.text = chatInformation?.Duration
+
+        textSum.text = String.format("%s₸", chatInformation?.InvoiceSum)
+        try {
+            textDuration.text = String.format("%s %s",
+                    getString(R.string.duration_short),
+                    Functions.getTimeWaiting(chatInformation?.Duration?.toLong()!!))
+        }catch (e: Exception){
+            textDuration.text = Functions.getTimeWaiting(1000)
+        }
         builder.setView(view)
         return builder.create()
     }

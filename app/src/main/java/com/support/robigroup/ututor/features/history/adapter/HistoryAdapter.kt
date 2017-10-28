@@ -15,6 +15,7 @@ import com.support.robigroup.ututor.Constants
 import com.support.robigroup.ututor.R
 import com.support.robigroup.ututor.commons.OnHistoryListInteractionListener
 import com.support.robigroup.ututor.commons.ChatHistory
+import com.support.robigroup.ututor.commons.Functions
 import java.sql.Time
 import java.text.SimpleDateFormat
 import java.util.*
@@ -47,7 +48,7 @@ class HistoryAdapter(
         holder.mSubjectTime.text = String.format(
                 "%s %s",
                 holder.itemView.context.getString(R.string.duration_short),
-                getTimeWaitingInMinutes((holder.mItem.Duration)!!.toLong())
+                Functions.getTimeWaiting((holder.mItem.Duration)!!.toLong())
         )
         holder.mCostLesson.text = String.format("%4s₸", holder.mItem.InvoiceSum)
         holder.mTeacher.text = String.format("%s", holder.mItem.ChatUserName)
@@ -73,14 +74,4 @@ class HistoryAdapter(
         mValues.addAll(subjects!!)
         notifyDataSetChanged()
     }
-
-    private fun getTimeWaitingInMinutes(seconds: Long): String{
-        val hours = TimeUnit.SECONDS.toHours(seconds)
-        val minutes = TimeUnit.SECONDS.toMinutes(seconds) - TimeUnit.HOURS.toMinutes(hours)
-        if(hours == 0L)
-            return String.format("%2dм.", minutes)
-        return String.format("%2dч. %2dм.", hours, minutes)
-    }
-
-
 }
