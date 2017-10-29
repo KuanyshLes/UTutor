@@ -1,4 +1,4 @@
-package com.support.robigroup.ututor.features.chat.view
+package com.support.robigroup.ututor.ui.chat
 
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
