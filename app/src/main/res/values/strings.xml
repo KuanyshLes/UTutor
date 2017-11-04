@@ -214,4 +214,10 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
+    <!--App Message-->
+    <string name="api_retry_error">Повторите!</string>
+    <string name="api_default_error">Что то неправильно, сообщите нам!</string>
+    <string name="some_error">Неизвестный ошибка вышла!</string>
+    <string name="connection_error">Интернет соединение потеряно!</string>
+
 </resources>
