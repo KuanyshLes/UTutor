@@ -10,8 +10,8 @@ import io.reactivex.Observable;
 
 public interface DbHelper {
 
-    Observable<Boolean> isQuestionEmpty();
-
-    Observable<Boolean> isOptionEmpty();
+//    Observable<Boolean> isQuestionEmpty();
+//
+//    Observable<Boolean> isOptionEmpty();
 
 }
