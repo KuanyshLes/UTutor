@@ -1,21 +1,13 @@
 package com.support.robigroup.ututor.data;
 
 import com.support.robigroup.ututor.data.db.DbHelper;
-import com.support.robigroup.ututor.data.network.ApiHelper;
 import com.support.robigroup.ututor.data.prefs.PreferencesHelper;
 
-import io.reactivex.Observable;
 
 
-
-public interface DataManager extends DbHelper, PreferencesHelper, ApiHelper {
-    void updateApiHeader(Long userId, String accessToken);
+public interface DataManager extends DbHelper, PreferencesHelper {
 
     void setUserAsLoggedOut();
-
-    Observable<Boolean> seedDatabaseQuestions();
-
-    Observable<Boolean> seedDatabaseOptions();
 
     void updateUserInfo(
             String accessToken,

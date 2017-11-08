@@ -12,10 +12,6 @@ interface ChatMvpView : MvpView {
 
 interface ChatMvpPresenter<V : ChatMvpView> : MvpPresenter<V> {
 
-    fun onServerLoginClick(email: String, password: String)
 
-    fun onGoogleLoginClick()
-
-    fun onFacebookLoginClick()
 
 }

@@ -22,9 +22,6 @@ import com.support.robigroup.ututor.features.teachers.TeachersActivity;
 
 import dagger.Component;
 
-/**
- * Created by janisharali on 27/01/17.
- */
 
 @PerActivity
 @Component(dependencies = ApplicationComponent.class, modules = ActivityModule.class)

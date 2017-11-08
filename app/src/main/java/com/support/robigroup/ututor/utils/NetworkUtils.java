@@ -13,35 +13,26 @@
  * limitations under the License
  */
 
-package com.support.robigroup.ututor.di.component;
+package com.support.robigroup.ututor.utils;
 
-import android.app.Application;
 import android.content.Context;
-
-import com.support.robigroup.ututor.UTutor;
-import com.support.robigroup.ututor.data.DataManager;
-import com.support.robigroup.ututor.di.ApplicationContext;
-import com.support.robigroup.ututor.di.module.ApplicationModule;
-
-import javax.inject.Singleton;
-
-import dagger.Component;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 
 /**
  * Created by janisharali on 27/01/17.
  */
 
-@Singleton
-@Component(modules = ApplicationModule.class)
-public interface ApplicationComponent {
+public final class NetworkUtils {
 
-    void inject(UTutor app);
+    private NetworkUtils() {
+        // This utility class is not publicly instantiable
+    }
 
-
-    @ApplicationContext
-    Context context();
-
-    Application application();
-
-    DataManager getDataManager();
+    public static boolean isNetworkConnected(Context context) {
+        ConnectivityManager cm =
+                (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        return activeNetwork != null && activeNetwork.isConnectedOrConnecting();
+    }
 }

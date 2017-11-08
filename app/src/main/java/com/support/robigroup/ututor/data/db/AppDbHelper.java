@@ -1,34 +1,30 @@
 package com.support.robigroup.ututor.data.db;
 
+import com.support.robigroup.ututor.commons.ChatInformation;
+import com.support.robigroup.ututor.features.chat.model.ChatMessage;
 import java.util.List;
-import java.util.concurrent.Callable;
-
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import io.realm.Realm;
 
-import io.reactivex.Observable;
-
-/**
- * Created by Bimurat Mukhtar on 29.10.2017.
- */
 
 @Singleton
 public class AppDbHelper implements DbHelper {
+    private Realm realm;
 
-//    @Inject
-//    public AppDbHelper(DbOpenHelper dbOpenHelper) {
-//        mDaoSession = new DaoMaster(dbOpenHelper.getWritableDb()).newSession();
-//    }
+    @Inject
+    public AppDbHelper() {
+        realm = Realm.getDefaultInstance();
+    }
 
-//    @Override
-//    public Observable<Long> insertUser(final User user) {
-//        return Observable.fromCallable(new Callable<Long>() {
-//            @Override
-//            public Long call() throws Exception {
-//                return mDaoSession.getUserDao().insert(user);
-//            }
-//        });
-//    }
+    @Override
+    public ChatInformation getChatInformation() {
+        return realm.where(ChatInformation.class).findFirst();
+    }
 
+    @Override
+    public List<ChatMessage> getChatMessages() {
+        return realm.where(ChatMessage.class).findAll();
+    }
 
 }

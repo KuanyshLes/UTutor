@@ -18,18 +18,12 @@ package com.support.robigroup.ututor.di.module;
 import android.app.Application;
 import android.content.Context;
 
-import com.support.robigroup.ututor.BuildConfig;
-import com.support.robigroup.ututor.R;
 import com.support.robigroup.ututor.data.AppDataManager;
 import com.support.robigroup.ututor.data.DataManager;
 import com.support.robigroup.ututor.data.db.AppDbHelper;
 import com.support.robigroup.ututor.data.db.DbHelper;
-import com.support.robigroup.ututor.data.network.ApiHeader;
-import com.support.robigroup.ututor.data.network.ApiHelper;
-import com.support.robigroup.ututor.data.network.AppApiHelper;
 import com.support.robigroup.ututor.data.prefs.AppPreferencesHelper;
 import com.support.robigroup.ututor.data.prefs.PreferencesHelper;
-import com.support.robigroup.ututor.di.ApiInfo;
 import com.support.robigroup.ututor.di.ApplicationContext;
 import com.support.robigroup.ututor.di.DatabaseInfo;
 import com.support.robigroup.ututor.di.PreferenceInfo;
@@ -93,21 +87,5 @@ public class ApplicationModule {
     @Singleton
     PreferencesHelper providePreferencesHelper(AppPreferencesHelper appPreferencesHelper) {
         return appPreferencesHelper;
-    }
-
-    @Provides
-    @Singleton
-    ApiHelper provideApiHelper(AppApiHelper appApiHelper) {
-        return appApiHelper;
-    }
-
-    @Provides
-    @Singleton
-    ApiHeader.ProtectedApiHeader provideProtectedApiHeader(@ApiInfo String apiKey,
-                                                           PreferencesHelper preferencesHelper) {
-        return new ApiHeader.ProtectedApiHeader(
-                apiKey,
-                preferencesHelper.getCurrentUserId(),
-                preferencesHelper.getAccessToken());
     }
 }

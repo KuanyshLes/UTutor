@@ -1,31 +1,17 @@
-/*
- * Copyright (C) 2017 MINDORKS NEXTGEN PRIVATE LIMITED
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     https://mindorks.com/license/apache-v2
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License
- */
-
 package com.support.robigroup.ututor.data.prefs;
 
-import android.content.Context;
-import android.content.SharedPreferences;
-
 import com.support.robigroup.ututor.data.DataManager;
+import com.support.robigroup.ututor.singleton.SingletonSharedPref;
 import com.support.robigroup.ututor.utils.AppConstants;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
 
 
 /**
  * Created by janisharali on 27/01/17.
  */
-
+@Singleton
 public class AppPreferencesHelper implements PreferencesHelper {
 
     private static final String PREF_KEY_USER_LOGGED_IN_MODE = "PREF_KEY_USER_LOGGED_IN_MODE";
@@ -34,13 +20,14 @@ public class AppPreferencesHelper implements PreferencesHelper {
     private static final String PREF_KEY_CURRENT_USER_EMAIL = "PREF_KEY_CURRENT_USER_EMAIL";
     private static final String PREF_KEY_CURRENT_USER_PROFILE_PIC_URL
             = "PREF_KEY_CURRENT_USER_PROFILE_PIC_URL";
-    private static final String PREF_KEY_ACCESS_TOKEN = "PREF_KEY_ACCESS_TOKEN";
+    private static final String PREF_KEY_ACCESS_TOKEN = "TOKEN";
+    private static final String KEY_BEARER = "bearer ";
 
-    private final SharedPreferences mPrefs;
+    private final SingletonSharedPref mPrefs;
 
-
-    public AppPreferencesHelper(Context context, String prefFileName) {
-        mPrefs = context.getSharedPreferences(prefFileName, Context.MODE_PRIVATE);
+    @Inject
+    public AppPreferencesHelper() {
+        mPrefs = SingletonSharedPref.getInstance();
     }
 
     @Override
@@ -52,7 +39,7 @@ public class AppPreferencesHelper implements PreferencesHelper {
     @Override
     public void setCurrentUserId(Long userId) {
         long id = userId == null ? AppConstants.NULL_INDEX : userId;
-        mPrefs.edit().putLong(PREF_KEY_CURRENT_USER_ID, id).apply();
+        mPrefs.put(PREF_KEY_CURRENT_USER_ID, id);
     }
 
     @Override
@@ -62,7 +49,7 @@ public class AppPreferencesHelper implements PreferencesHelper {
 
     @Override
     public void setCurrentUserName(String userName) {
-        mPrefs.edit().putString(PREF_KEY_CURRENT_USER_NAME, userName).apply();
+        mPrefs.put(PREF_KEY_CURRENT_USER_NAME, userName);
     }
 
     @Override
@@ -72,7 +59,7 @@ public class AppPreferencesHelper implements PreferencesHelper {
 
     @Override
     public void setCurrentUserEmail(String email) {
-        mPrefs.edit().putString(PREF_KEY_CURRENT_USER_EMAIL, email).apply();
+        mPrefs.put(PREF_KEY_CURRENT_USER_EMAIL, email);
     }
 
     @Override
@@ -82,7 +69,7 @@ public class AppPreferencesHelper implements PreferencesHelper {
 
     @Override
     public void setCurrentUserProfilePicUrl(String profilePicUrl) {
-        mPrefs.edit().putString(PREF_KEY_CURRENT_USER_PROFILE_PIC_URL, profilePicUrl).apply();
+        mPrefs.put(PREF_KEY_CURRENT_USER_PROFILE_PIC_URL, profilePicUrl);
     }
 
     @Override
@@ -93,7 +80,7 @@ public class AppPreferencesHelper implements PreferencesHelper {
 
     @Override
     public void setCurrentUserLoggedInMode(DataManager.LoggedInMode mode) {
-        mPrefs.edit().putInt(PREF_KEY_USER_LOGGED_IN_MODE, mode.getType()).apply();
+        mPrefs.put(PREF_KEY_USER_LOGGED_IN_MODE, mode.getType());
     }
 
     @Override
@@ -103,6 +90,6 @@ public class AppPreferencesHelper implements PreferencesHelper {
 
     @Override
     public void setAccessToken(String accessToken) {
-        mPrefs.edit().putString(PREF_KEY_ACCESS_TOKEN, accessToken).apply();
+        mPrefs.put(PREF_KEY_ACCESS_TOKEN, accessToken);
     }
 }

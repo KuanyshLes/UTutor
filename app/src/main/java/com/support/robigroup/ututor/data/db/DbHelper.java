@@ -1,7 +1,11 @@
 package com.support.robigroup.ututor.data.db;
 
+import com.support.robigroup.ututor.commons.ChatInformation;
+import com.support.robigroup.ututor.features.chat.model.ChatMessage;
+
 import java.util.List;
 
+import io.reactivex.Flowable;
 import io.reactivex.Observable;
 
 /**
@@ -10,8 +14,8 @@ import io.reactivex.Observable;
 
 public interface DbHelper {
 
-//    Observable<Boolean> isQuestionEmpty();
-//
-//    Observable<Boolean> isOptionEmpty();
+    ChatInformation getChatInformation();
+
+    List<ChatMessage> getChatMessages();
 
 }
