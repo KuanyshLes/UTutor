@@ -12,8 +12,6 @@ import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
-import com.google.gson.Gson
 import com.squareup.picasso.Picasso
 import com.stfalcon.chatkit.commons.ImageLoader
 import com.stfalcon.chatkit.messages.MessageHolders
@@ -82,8 +80,9 @@ class ChatActivity : AppCompatActivity(),
                 }
             }else if(rs.TeacherReady&&rs.LearnerReady){
                 mReadyDialog.dismiss()
-            }}else if(rs.LearnerReady&&!rs.TeacherReady){
-            mReadyDialog.onLearnerReady()
+            }else if(rs.LearnerReady&&!rs.TeacherReady){
+                mReadyDialog.updateButtonText()
+            }
         }
     }
 
@@ -140,7 +139,7 @@ class ChatActivity : AppCompatActivity(),
         setSupportActionBar(toolbar)
         teacher_name_title.text =this.teacher.name!!.split(" ")[0]
 
-        findViewById<View>(R.id.text_finish).setOnClickListener { showFinishDialog() }
+        text_finish.setOnClickListener { showFinishDialog() }
 
         val intent = Intent()
         intent.setClass(this, NotificationService::class.java)
@@ -335,7 +334,7 @@ class ChatActivity : AppCompatActivity(),
 
     private fun OnEvalChat(chatLesson: ChatInformation){
         val fin = FinishDialog()
-        fin.showMe(chatLesson,supportFragmentManager,"finishDial")
+        fin.showMe(chatLesson,"finishDial")
     }
 
     private fun sendFileMessage(imageUri: String){

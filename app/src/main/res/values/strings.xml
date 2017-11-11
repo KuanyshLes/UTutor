@@ -11,7 +11,7 @@
     <string name="desc_logo">Logo</string>
     <string name="desc_arrow_right">Open</string>
 
-    <string name="prompt_are_you_sure">Вы уверены закрыть диалог</string>
+    <string name="prompt_are_you_sure">Вы уверены закрыть чат</string>
 
 
     <string name="topic">Тема:</string>

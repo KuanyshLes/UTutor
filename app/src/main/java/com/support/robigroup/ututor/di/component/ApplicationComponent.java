@@ -37,7 +37,6 @@ public interface ApplicationComponent {
 
     void inject(UTutor app);
 
-
     @ApplicationContext
     Context context();
 

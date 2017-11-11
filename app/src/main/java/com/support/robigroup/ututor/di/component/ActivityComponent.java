@@ -17,8 +17,8 @@ package com.support.robigroup.ututor.di.component;
 
 import com.support.robigroup.ututor.di.PerActivity;
 import com.support.robigroup.ututor.di.module.ActivityModule;
-import com.support.robigroup.ututor.features.chat.ChatActivity;
 import com.support.robigroup.ututor.features.teachers.TeachersActivity;
+import com.support.robigroup.ututor.ui.chat.ActivityChat;
 
 import dagger.Component;
 
@@ -27,8 +27,7 @@ import dagger.Component;
 @Component(dependencies = ApplicationComponent.class, modules = ActivityModule.class)
 public interface ActivityComponent {
 
-    void inject(ChatActivity activity);
+    void inject(ActivityChat activity);
 
-    void inject(TeachersActivity activity);
 
 }

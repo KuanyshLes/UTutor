@@ -62,9 +62,9 @@ class FinishDialog : DialogFragment() {
         return builder.create()
     }
 
-    fun showMe(chatLesson: ChatInformation, fragmentManager: FragmentManager, t: String){
+    fun showMe(chatLesson: ChatInformation, t: String){
         this.chatInformation = chatLesson
-        show(fragmentManager,t)
+        show(activity.supportFragmentManager, t)
     }
 
     override fun onCancel(dialog: DialogInterface?) {

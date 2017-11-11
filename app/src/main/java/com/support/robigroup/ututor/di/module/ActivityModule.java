@@ -21,6 +21,10 @@ import android.support.v7.widget.LinearLayoutManager;
 
 
 import com.support.robigroup.ututor.di.ActivityContext;
+import com.support.robigroup.ututor.di.PerActivity;
+import com.support.robigroup.ututor.ui.chat.ChatMvpPresenter;
+import com.support.robigroup.ututor.ui.chat.ChatMvpView;
+import com.support.robigroup.ututor.ui.chat.ChatPresenter;
 import com.support.robigroup.ututor.utils.AppSchedulerProvider;
 import com.support.robigroup.ututor.utils.SchedulerProvider;
 
@@ -61,6 +65,13 @@ public class ActivityModule {
     @Provides
     SchedulerProvider provideSchedulerProvider() {
         return new AppSchedulerProvider();
+    }
+
+    @Provides
+    @PerActivity
+    ChatMvpPresenter<ChatMvpView> provideChatPresenter(
+            ChatPresenter<ChatMvpView> presenter) {
+        return presenter;
     }
 
     @Provides

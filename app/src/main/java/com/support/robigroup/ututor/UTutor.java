@@ -18,8 +18,6 @@ import io.realm.RealmConfiguration;
 
 public class UTutor extends Application {
 
-    public ApplicationComponent component;
-
     @Inject
     DataManager mDataManager;
     private ApplicationComponent mApplicationComponent;
@@ -47,5 +45,5 @@ public class UTutor extends Application {
         return (UTutor) context.getApplicationContext();
     }
 
-    public ApplicationComponent getComponent(){ return component;}
+    public ApplicationComponent getComponent(){ return mApplicationComponent;}
 }

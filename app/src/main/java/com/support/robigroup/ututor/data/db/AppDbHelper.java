@@ -27,4 +27,8 @@ public class AppDbHelper implements DbHelper {
         return realm.where(ChatMessage.class).findAll();
     }
 
+    @Override
+    public Realm getRealm() {
+        return realm;
+    }
 }

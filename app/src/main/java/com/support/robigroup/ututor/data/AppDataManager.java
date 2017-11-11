@@ -2,6 +2,8 @@ package com.support.robigroup.ututor.data;
 
 import android.content.Context;
 
+import com.support.robigroup.ututor.api.APIInterface;
+import com.support.robigroup.ututor.api.RestAPI;
 import com.support.robigroup.ututor.commons.ChatInformation;
 import com.support.robigroup.ututor.data.db.DbHelper;
 import com.support.robigroup.ututor.data.prefs.PreferencesHelper;
@@ -12,6 +14,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+
+import io.realm.Realm;
 
 /**
  * Created by Bimurat Mukhtar on 29.10.2017.
@@ -51,6 +55,11 @@ public class AppDataManager implements DataManager{
     @Override
     public void setAccessToken(String accessToken) {
         mPreferencesHelper.setAccessToken(accessToken);
+    }
+
+    @Override
+    public Realm getRealm() {
+        return mDbHelper.getRealm();
     }
 
     @Override
@@ -118,6 +127,11 @@ public class AppDataManager implements DataManager{
         setCurrentUserName(userName);
         setCurrentUserEmail(email);
         setCurrentUserProfilePicUrl(profilePicPath);
+    }
+
+    @Override
+    public APIInterface getApiHelper() {
+        return RestAPI.Companion.getApi();
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.support.robigroup.ututor.api
 
+import com.androidnetworking.interceptors.HttpLoggingInterceptor
 import com.support.robigroup.ututor.Constants
 import okhttp3.Interceptor
 import retrofit2.Retrofit
@@ -16,9 +17,12 @@ class RestAPI{
 
     companion object {
 
+        val logging = HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
+
         var client = OkHttpClient.Builder()
                 .readTimeout(30, TimeUnit.SECONDS)
                 .connectTimeout(10, TimeUnit.SECONDS)
+                .addInterceptor(logging)
                 .addInterceptor(object : Interceptor {
             @Throws(IOException::class)
             override fun intercept(chain: Interceptor.Chain): Response {
@@ -38,7 +42,6 @@ class RestAPI{
                         .setLenient()
                         .create()
                 ))
-//                .addConverterFactory(MoshiConverterFactory.create().asLenient())
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .build()
 
