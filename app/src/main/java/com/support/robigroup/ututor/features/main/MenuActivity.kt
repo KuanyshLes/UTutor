@@ -11,6 +11,7 @@ import com.support.robigroup.ututor.api.MainManager
 import com.support.robigroup.ututor.commons.*
 import com.support.robigroup.ututor.features.MenuesActivity
 import com.support.robigroup.ututor.features.chat.ChatActivity
+import com.support.robigroup.ututor.features.chat.model.ChatMessage
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -81,6 +82,10 @@ class MenuActivity : MenuesActivity() {
                     if(res.isValid)
                         res.deleteAllFromRealm()
                 }
+            val messages = realm.where(ChatMessage::class.java).findAll()
+            realm.executeTransaction {
+                messages.deleteAllFromRealm()
+            }
             realm.close()
         }else{
             val realm = Realm.getDefaultInstance()

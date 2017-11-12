@@ -424,12 +424,6 @@ class ChatActivity : AppCompatActivity(),
     }
 
     private fun finishCorrectly(){
-        realm.executeTransaction {
-            mMessages.deleteAllFromRealm()
-            if(mChatInformation.isValid){
-                mChatInformation.deleteFromRealm()
-            }
-        }
         startActivity(Intent(this@ChatActivity, MenuActivity::class.java))
         finish()
     }
