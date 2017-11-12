@@ -28,9 +28,11 @@ interface ChatMvpView : MvpView {
 
     fun closeEvalDialog()
 
-    fun changeCounterValueText(text: String)
-
     fun startMenuActivity()
+
+    fun onCancelImageLoad()
+
+    fun notifyItemRangeInserted(messages: List<ChatMessage>, startIndex: Int,rangeLength: Int)
 
 }
 

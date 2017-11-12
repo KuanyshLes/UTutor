@@ -6,9 +6,10 @@ import com.stfalcon.chatkit.commons.ImageLoader
 import com.stfalcon.chatkit.messages.MessageHolders
 import com.stfalcon.chatkit.messages.MessagesList
 import com.stfalcon.chatkit.messages.MessagesListAdapter
+import com.stfalcon.contentmanager.ContentManager
+import com.stfalcon.frescoimageviewer.ImageViewer
 import com.support.robigroup.ututor.Constants
 import com.support.robigroup.ututor.R
-import com.support.robigroup.ututor.features.chat.ChatActivity
 import com.support.robigroup.ututor.features.chat.custom.media.holders.CustomIncomingMessageViewHolder
 import com.support.robigroup.ututor.features.chat.custom.media.holders.CustomOutcomingMessageViewHolder
 import com.support.robigroup.ututor.features.chat.model.ChatMessage
@@ -22,7 +23,8 @@ class ActivityChat : BaseActivity(), ChatMvpView {
 
     lateinit var messagesList: MessagesList
     lateinit var messagesAdapter: MessagesListAdapter<ChatMessage>
-    val imageLoader = ImageLoader { imageView, url -> Picasso.with(baseContext).load(url).into(imageView) }
+    private val imageLoader = ImageLoader { imageView, url -> Picasso.with(baseContext).load(url).into(imageView) }
+    lateinit var contentManager: ContentManager
 
     @Inject
     lateinit var mPresenter: ChatMvpPresenter<ChatMvpView>
@@ -38,10 +40,11 @@ class ActivityChat : BaseActivity(), ChatMvpView {
 
     override fun setUp() {
         setSupportActionBar(toolbar)
+
         messagesList = findViewById(R.id.messagesList)
         val holders = MessageHolders()
                 .registerContentType(
-                        ChatActivity.CONTENT_TYPE_IMAGE_TEXT,
+                        Constants.CONTENT_TYPE_IMAGE_TEXT,
                         CustomIncomingMessageViewHolder::class.java,
                         R.layout.item_incoming_text_image_message,
                         CustomOutcomingMessageViewHolder::class.java,
@@ -49,6 +52,15 @@ class ActivityChat : BaseActivity(), ChatMvpView {
                         mPresenter)
         messagesAdapter = MessagesListAdapter(Constants.LEARNER_ID, holders, imageLoader)
         messagesAdapter.enableSelectionMode(mPresenter)
+        messagesAdapter.setOnMessageClickListener {
+            message: ChatMessage ->
+            if(message.filePath!=null)
+                ImageViewer.Builder(this, arrayOf(message.imageUrl))
+                        .setStartPosition(0)
+                        .show()
+        }
+
+        contentManager = ContentManager(this, mPresenter)
         text_finish.setOnClickListener { mPresenter.onFinishClick() }
         mPresenter.onViewInitialized()
     }
@@ -90,13 +102,19 @@ class ActivityChat : BaseActivity(), ChatMvpView {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
+    override fun onCancelImageLoad() {
+        mPresenter.handleApiError()
+    }
+
     override fun onLearnerReadyDialog() {
         val dialog = supportFragmentManager.findFragmentByTag(Constants.TAG_READY_DIALOG) as ReadyDialog?
         dialog?.updateButtonText()
     }
 
-    override fun changeCounterValueText(text: String) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun notifyItemRangeInserted(messages: List<ChatMessage>, startIndex: Int,rangeLength: Int){
+        for(i in startIndex until startIndex+rangeLength){
+            messagesAdapter.addToStart(messages[i],true)
+        }
     }
 
     override fun onDestroy() {

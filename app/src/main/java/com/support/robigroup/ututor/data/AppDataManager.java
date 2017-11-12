@@ -17,9 +17,7 @@ import javax.inject.Singleton;
 
 import io.realm.Realm;
 
-/**
- * Created by Bimurat Mukhtar on 29.10.2017.
- */
+
 @Singleton
 public class AppDataManager implements DataManager{
 

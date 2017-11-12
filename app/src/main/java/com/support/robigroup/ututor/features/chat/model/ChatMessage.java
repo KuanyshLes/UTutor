@@ -17,6 +17,7 @@ import java.util.Locale;
 
 import io.realm.RealmObject;
 import io.realm.annotations.Ignore;
+import io.realm.annotations.PrimaryKey;
 
 public class ChatMessage extends RealmObject implements IMessage, MessageContentType{
     @SerializedName("Id")

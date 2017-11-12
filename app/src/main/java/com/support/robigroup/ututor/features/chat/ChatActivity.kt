@@ -361,7 +361,6 @@ class ChatActivity : AppCompatActivity(),
                     )
             subscriptions.add(subscription)
         }
-
     }
 
     override fun onFinishCounterFromReadyDialog() {

@@ -45,6 +45,8 @@ object Constants {
     val WAIT_TIME = 30000
     val UTC_TIME = 6*60*60*1000
 
+    val CONTENT_TYPE_IMAGE_TEXT: Byte = 100
+
     val PASSWORD_PATTERN = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,}$"
     val EMAIL_PATTERN = "^[a-zA-Z0-9#_~!$&'()*+,;=:.\"(),:;<>@\\[\\]\\\\]+@[a-zA-Z0-9-]+(\\.[a-zA-Z0-9-]+)*$"
     val FLAGS = arrayOf(

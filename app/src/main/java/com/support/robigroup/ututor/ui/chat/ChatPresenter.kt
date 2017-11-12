@@ -2,6 +2,7 @@ package com.support.robigroup.ututor.ui.chat
 
 import android.net.Uri
 import com.androidnetworking.error.ANError
+import com.stfalcon.contentmanager.ContentManager
 import com.support.robigroup.ututor.Constants
 import com.support.robigroup.ututor.commons.ChatInformation
 import com.support.robigroup.ututor.commons.Functions
@@ -10,9 +11,11 @@ import com.support.robigroup.ututor.data.DataManager
 import com.support.robigroup.ututor.features.chat.model.ChatMessage
 import com.support.robigroup.ututor.ui.base.BasePresenter
 import com.support.robigroup.ututor.utils.SchedulerProvider
+import io.reactivex.Flowable
 import io.reactivex.disposables.CompositeDisposable
 import io.realm.OrderedRealmCollectionChangeListener
 import io.realm.RealmResults
+import retrofit2.Response
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -20,6 +23,7 @@ import javax.inject.Singleton
 class ChatPresenter<V : ChatMvpView> @Inject
 constructor(dataManager: DataManager, schedulerProvider: SchedulerProvider, compositeDisposable: CompositeDisposable)
     : BasePresenter<V>(dataManager, schedulerProvider, compositeDisposable), ChatMvpPresenter<V> {
+
 
     override fun onFinishClick() {
         mvpView.showFinishDialog()
@@ -87,39 +91,17 @@ constructor(dataManager: DataManager, schedulerProvider: SchedulerProvider, comp
         dataManager.chatMessages.addChangeListener {
             messages, changeSet ->
             if (changeSet == null) {
-                notifyItemRangeInserted(0,messages.size-1)
+                mvpView.notifyItemRangeInserted(messages,0,messages.size-1)
             }else{
                 val insertions = changeSet.insertionRanges
                 for (range in insertions) {
-                    notifyItemRangeInserted(range.startIndex, range.length)
+                    mvpView.notifyItemRangeInserted(messages, range.startIndex, range.length)
                 }
             }
         }
     }
 
-    private fun notifyItemRangeInserted(startIndex: Int,rangeLength: Int){
-        for(i in startIndex until startIndex+rangeLength){
-            messagesAdapter?.addToStart(mMessages[i],true)
-        }
-    }
-
     override fun onDestroyReadyView() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    override fun onStartContentLoading() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    override fun onError(error: String?) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    override fun onCanceled() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    override fun onContentLoaded(uri: Uri?, contentType: String?) {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
@@ -138,4 +120,68 @@ constructor(dataManager: DataManager, schedulerProvider: SchedulerProvider, comp
     override fun onAddAttachments() {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
+
+    //methods to add image from gallery or other resources
+    override fun onStartContentLoading() {
+        TODO("not implemented")
+    }
+
+    override fun onError(error: String?) {
+        handleApiError(ANError(error))
+    }
+
+    override fun onCanceled() {
+
+    }
+
+    override fun onContentLoaded(uri: Uri?, contentType: String?) {
+        if (contentType.equals(ContentManager.Content.IMAGE.toString())) {
+            if(uri!=null){
+                sendFileMessage(uri.path)
+            }
+        }
+    }
+
+    private fun sendFileMessage(imageUri: String){
+        val encodedImage = Functions.getEncodedImage(imageUri)
+        if(encodedImage!=null){
+            compositeDisposable.add(sendMessage(file64base = encodedImage)
+                    .subscribeOn(schedulerProvider.io())
+                    .observeOn(schedulerProvider.ui())
+                    .subscribe(
+                            { messageResponse ->
+                                if(messageResponse.isSuccessful){
+                                    val message: ChatMessage? = messageResponse.body()
+                                    if(message!=null){
+                                        dataManager.realm.executeTransaction {
+                                            dataManager.realm.copyToRealmOrUpdate(message)
+                                        }
+                                    }else{
+                                        handleApiError(null)
+                                    }
+                                }else{
+                                    handleApiError(ANError(messageResponse.raw()))
+                                }
+                            },
+                            { e ->
+                                handleApiError(ANError(e))
+                            }
+                    )
+            )
+        }
+    }
+
+    private fun sendMessage(messageText: String? = null, file64base: String? = null): Flowable<Response<ChatMessage>> =
+            if(file64base != null&&messageText!=null){
+                val res: HashMap<String,String> = HashMap()
+                res.put("File",file64base)
+                res.put("Message",messageText)
+                dataManager.apiHelper.postMessagePhoto(res)
+            } else if(file64base!=null) {
+                val res: HashMap<String,String> = HashMap()
+                res.put("File",file64base)
+                dataManager.apiHelper.postMessagePhoto(res)
+            }else if(messageText!=null) dataManager.apiHelper.postTextMessage(messageText)
+            else Flowable.empty()
+
 }
