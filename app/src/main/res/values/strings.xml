@@ -46,6 +46,7 @@
     <string name="error_no_balance">У вас недостаточно средств</string>
     <string name="error_same_password">Одинаковый пароль</string>
     <string name="error_request_exists">Запрос был создан</string>
+    <string name="error_cancelled">Отменен</string>
     <string name="prompt_retry">Повторить</string>
     <string name="duration_short">Длит:</string>
 

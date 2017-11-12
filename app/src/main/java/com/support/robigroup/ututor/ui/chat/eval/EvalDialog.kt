@@ -1,8 +1,7 @@
-package com.support.robigroup.ututor.features.chat
+package com.support.robigroup.ututor.ui.chat.eval
 
 import android.app.AlertDialog
 import android.app.Dialog
-import android.content.Context
 import android.content.DialogInterface
 import android.os.Bundle
 import android.support.v4.app.DialogFragment
@@ -11,30 +10,24 @@ import android.widget.Button
 import android.widget.RatingBar
 import android.widget.TextView
 import com.support.robigroup.ututor.R
-import com.support.robigroup.ututor.commons.OnChatActivityDialogInteractionListener
 import com.support.robigroup.ututor.commons.ChatInformation
 import com.support.robigroup.ututor.commons.Functions
+import com.support.robigroup.ututor.ui.chat.ChatMvpPresenter
+import com.support.robigroup.ututor.ui.chat.ChatMvpView
+import javax.inject.Inject
 
+class EvalDialog : DialogFragment() {
 
-class FinishDialog : DialogFragment() {
-
-    var mListener: OnChatActivityDialogInteractionListener? = null
+    @Inject
+    lateinit var mListener: ChatMvpPresenter<ChatMvpView>
     var chatInformation: ChatInformation? = null
     var ratingBar: RatingBar? = null
 
-    override fun onAttach(activity: Context?) {
-        super.onAttach(activity)
-        // Verify that the host activity implements the callback interface
-        try {
-            // Instantiate the NoticeDialogListener so we can send events to the host
-            mListener = activity as OnChatActivityDialogInteractionListener?
-        } catch (e: ClassCastException) {
-            // The activity doesn't implement the interface, throw exception
-            throw ClassCastException(activity!!.toString() + " must implement NoticeDialogListener")
+    companion object {
+        fun newInstance(): EvalDialog{
+            return EvalDialog()
         }
-
     }
-
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val builder = AlertDialog.Builder(activity)
@@ -43,7 +36,7 @@ class FinishDialog : DialogFragment() {
         val view = inflater.inflate(R.layout.dialog_finish,null)
         val buttonEvaluate = view.findViewById<Button>(R.id.button_evaluate) as Button
         buttonEvaluate.setOnClickListener {
-            mListener!!.onEvaluateDialogPositiveClick(ratingBar!!.rating)
+            mListener.onClickEvalButton(ratingBar!!.rating)
             dismiss()
         }
         val textSum = view.findViewById<TextView>(R.id.sum_text) as TextView
@@ -62,15 +55,14 @@ class FinishDialog : DialogFragment() {
         return builder.create()
     }
 
-    fun showMe(chatLesson: ChatInformation, t: String){
+    fun showMe(fragmentManager: FragmentManager, chatLesson: ChatInformation, t: String){
         this.chatInformation = chatLesson
-        show(activity.supportFragmentManager, t)
+        show(fragmentManager, t)
     }
 
     override fun onCancel(dialog: DialogInterface?) {
         super.onCancel(dialog)
-        mListener?.onCancelEvalDialog()
+        mListener.onCancelEvalDialog()
     }
-
 
 }

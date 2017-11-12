@@ -15,6 +15,7 @@ import com.support.robigroup.ututor.features.chat.custom.media.holders.CustomOut
 import com.support.robigroup.ututor.features.chat.model.ChatMessage
 import com.support.robigroup.ututor.features.main.MenuActivity
 import com.support.robigroup.ututor.ui.base.BaseActivity
+import com.support.robigroup.ututor.ui.chat.eval.EvalDialog
 import com.support.robigroup.ututor.ui.chat.ready.ReadyDialog
 import kotlinx.android.synthetic.main.activity_chat.*
 import javax.inject.Inject
@@ -76,11 +77,11 @@ class ActivityChat : BaseActivity(), ChatMvpView {
     }
 
     override fun showFinishDialog() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
     }
 
     override fun closeFinishDialog() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
     }
 
     override fun closeReadyDialog() {
@@ -95,15 +96,18 @@ class ActivityChat : BaseActivity(), ChatMvpView {
     }
 
     override fun showEvalDialog() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    override fun closeEvalDialog() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        val ft = supportFragmentManager.beginTransaction()
+        val prev = supportFragmentManager.findFragmentByTag(Constants.TAG_EVAL_DIALOG)
+        if (prev != null) {
+            ft.remove(prev)
+            ft.commit()
+            supportFragmentManager.popBackStack()
+        }
+        EvalDialog.newInstance().show(ft, Constants.TAG_EVAL_DIALOG)
     }
 
     override fun onCancelImageLoad() {
-        mPresenter.handleApiError()
+        showMessage(R.string.error_cancelled)
     }
 
     override fun onLearnerReadyDialog() {

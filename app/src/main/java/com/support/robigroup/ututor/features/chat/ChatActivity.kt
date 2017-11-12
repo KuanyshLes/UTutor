@@ -333,8 +333,8 @@ class ChatActivity : AppCompatActivity(),
     }
 
     private fun OnEvalChat(chatLesson: ChatInformation){
-        val fin = FinishDialog()
-        fin.showMe(chatLesson,"finishDial")
+        val fin = EvalDialog()
+        fin.showMe(supportFragmentManager, chatLesson,"finishDial")
     }
 
     private fun sendFileMessage(imageUri: String){

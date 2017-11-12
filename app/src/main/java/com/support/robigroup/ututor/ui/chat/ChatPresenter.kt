@@ -101,6 +101,37 @@ constructor(dataManager: DataManager, schedulerProvider: SchedulerProvider, comp
         }
     }
 
+    override fun onCancelEvalDialog() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onClickEvalButton(rating: Float) {
+        compositeDisposable.add(dataManager
+                .apiHelper.evalChat((rating*20).toInt(),dataManager.chatInformation.Id!!)
+                .subscribeOn(schedulerProvider.io())
+                .observeOn(schedulerProvider.ui())
+                .doAfterTerminate {
+                    mvpView.startMenuActivity()
+                }
+                .subscribe(
+                        { message ->
+                            if(message.isSuccessful){
+
+                            }else{
+                                handleApiError(ANError(message.raw()))
+                            }
+                        },
+                        { e ->
+                            handleApiError(ANError(e))
+                        }
+                )
+        )
+    }
+
+    override fun getChatInfo(): ChatInformation {
+        return dataManager.chatInformation
+    }
+
     override fun onDestroyReadyView() {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
@@ -131,7 +162,7 @@ constructor(dataManager: DataManager, schedulerProvider: SchedulerProvider, comp
     }
 
     override fun onCanceled() {
-
+        mvpView.onCancelImageLoad()
     }
 
     override fun onContentLoaded(uri: Uri?, contentType: String?) {

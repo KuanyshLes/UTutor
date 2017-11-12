@@ -19,6 +19,7 @@ import com.support.robigroup.ututor.di.PerActivity;
 import com.support.robigroup.ututor.di.module.ActivityModule;
 import com.support.robigroup.ututor.features.teachers.TeachersActivity;
 import com.support.robigroup.ututor.ui.chat.ActivityChat;
+import com.support.robigroup.ututor.ui.chat.eval.EvalDialog;
 
 import dagger.Component;
 

@@ -4,6 +4,7 @@ import com.stfalcon.chatkit.messages.MessageHolders
 import com.stfalcon.chatkit.messages.MessageInput
 import com.stfalcon.chatkit.messages.MessagesListAdapter
 import com.stfalcon.contentmanager.ContentManager
+import com.support.robigroup.ututor.commons.ChatInformation
 import com.support.robigroup.ututor.features.chat.model.ChatMessage
 import com.support.robigroup.ututor.ui.base.BasePresenter
 import com.support.robigroup.ututor.ui.base.MvpPresenter
@@ -25,8 +26,6 @@ interface ChatMvpView : MvpView {
     fun onLearnerReadyDialog()
 
     fun showEvalDialog()
-
-    fun closeEvalDialog()
 
     fun startMenuActivity()
 
@@ -53,4 +52,11 @@ interface ChatMvpPresenter<V : ChatMvpView> : MvpPresenter<V>,
     fun onDestroyReadyView()
 
     fun onCounterFinish()
+
+    fun onCancelEvalDialog()
+
+    fun onClickEvalButton(rating: Float)
+
+    fun getChatInfo(): ChatInformation
+
 }
