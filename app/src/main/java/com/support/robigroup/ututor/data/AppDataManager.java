@@ -16,6 +16,8 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import io.realm.Realm;
+import io.realm.RealmList;
+import io.realm.RealmResults;
 
 
 @Singleton
@@ -41,7 +43,7 @@ public class AppDataManager implements DataManager{
     }
 
     @Override
-    public List<ChatMessage> getChatMessages() {
+    public RealmResults<ChatMessage> getChatMessages() {
         return mDbHelper.getChatMessages();
     }
 

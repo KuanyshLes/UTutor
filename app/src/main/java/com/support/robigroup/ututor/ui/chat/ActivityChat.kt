@@ -15,7 +15,7 @@ import com.support.robigroup.ututor.features.chat.custom.media.holders.CustomOut
 import com.support.robigroup.ututor.features.chat.model.ChatMessage
 import com.support.robigroup.ututor.features.main.MenuActivity
 import com.support.robigroup.ututor.ui.base.BaseActivity
-import com.support.robigroup.ututor.ui.chat.eval.EvalDialog
+import com.support.robigroup.ututor.ui.chat.eval.RateDialog
 import com.support.robigroup.ututor.ui.chat.ready.ReadyDialog
 import kotlinx.android.synthetic.main.activity_chat.*
 import javax.inject.Inject
@@ -66,11 +66,6 @@ class ActivityChat : BaseActivity(), ChatMvpView {
         mPresenter.onViewInitialized()
     }
 
-    override fun openMenuActivity() {
-        MenuActivity.open(this)
-        finish()
-    }
-
     override fun startMenuActivity() {
         MenuActivity.open(this)
         finish()
@@ -92,18 +87,18 @@ class ActivityChat : BaseActivity(), ChatMvpView {
     override fun showReadyDialog(dif: Long) {
         val dialog = ReadyDialog()
         dialog.isCancelable = false
-        dialog.startShow(supportFragmentManager, Constants.TAG_READY_DIALOG, dif)
+        dialog.startShow(supportFragmentManager, Constants.TAG_READY_DIALOG, dif, mPresenter)
     }
 
     override fun showEvalDialog() {
         val ft = supportFragmentManager.beginTransaction()
-        val prev = supportFragmentManager.findFragmentByTag(Constants.TAG_EVAL_DIALOG)
+        val prev = supportFragmentManager.findFragmentByTag(Constants.TAG_RATE_DIALOG)
         if (prev != null) {
             ft.remove(prev)
             ft.commit()
             supportFragmentManager.popBackStack()
         }
-        EvalDialog.newInstance().show(ft, Constants.TAG_EVAL_DIALOG)
+        RateDialog().show(ft, Constants.TAG_RATE_DIALOG)
     }
 
     override fun onCancelImageLoad() {

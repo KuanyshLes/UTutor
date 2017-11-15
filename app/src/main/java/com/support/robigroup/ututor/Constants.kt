@@ -38,7 +38,7 @@ object Constants {
 
     val TAG_READY_DIALOG = "readyDialog"
     val TAG_FINISH_DIALOG = "finishDialog"
-    val TAG_EVAL_DIALOG = "evalDialog"
+    val TAG_RATE_DIALOG = "evalDialog"
 
     val UTC: TimeZone = TimeZone.getTimeZone("UTC")
     val TIMEFORMAT: String = "yyyy-MM-dd'T'HH:mm:ss"

@@ -1,33 +1,28 @@
-package com.support.robigroup.ututor.ui.chat.eval
+package com.support.robigroup.ututor.features.chat
 
 import android.app.AlertDialog
 import android.app.Dialog
 import android.content.DialogInterface
 import android.os.Bundle
 import android.support.v4.app.DialogFragment
-import android.support.v4.app.FragmentManager
 import android.widget.Button
 import android.widget.RatingBar
 import android.widget.TextView
 import com.support.robigroup.ututor.R
 import com.support.robigroup.ututor.commons.ChatInformation
 import com.support.robigroup.ututor.commons.Functions
-import com.support.robigroup.ututor.ui.chat.ChatMvpPresenter
-import com.support.robigroup.ututor.ui.chat.ChatMvpView
+import com.support.robigroup.ututor.ui.chat.ActivityChat
+import com.support.robigroup.ututor.ui.chat.RateMvpView
+import com.support.robigroup.ututor.ui.chat.eval.RatePresenter
 import javax.inject.Inject
 
-class EvalDialog : DialogFragment() {
+
+class RateDialog : DialogFragment() {
 
     @Inject
-    lateinit var mListener: ChatMvpPresenter<ChatMvpView>
+    lateinit var mListener: RatePresenter<RateMvpView>
     var chatInformation: ChatInformation? = null
     var ratingBar: RatingBar? = null
-
-    companion object {
-        fun newInstance(): EvalDialog{
-            return EvalDialog()
-        }
-    }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val builder = AlertDialog.Builder(activity)
@@ -36,7 +31,7 @@ class EvalDialog : DialogFragment() {
         val view = inflater.inflate(R.layout.dialog_finish,null)
         val buttonEvaluate = view.findViewById<Button>(R.id.button_evaluate) as Button
         buttonEvaluate.setOnClickListener {
-            mListener.onClickEvalButton(ratingBar!!.rating)
+            mListener.onClickRateButton(ratingBar!!.rating)
             dismiss()
         }
         val textSum = view.findViewById<TextView>(R.id.sum_text) as TextView
@@ -55,14 +50,15 @@ class EvalDialog : DialogFragment() {
         return builder.create()
     }
 
-    fun showMe(fragmentManager: FragmentManager, chatLesson: ChatInformation, t: String){
+    fun showMe(chatLesson: ChatInformation, t: String){
         this.chatInformation = chatLesson
-        show(fragmentManager, t)
+        show(activity.supportFragmentManager, t)
     }
 
     override fun onCancel(dialog: DialogInterface?) {
         super.onCancel(dialog)
-        mListener.onCancelEvalDialog()
+        (activity as ActivityChat).startMenuActivity()
     }
+
 
 }

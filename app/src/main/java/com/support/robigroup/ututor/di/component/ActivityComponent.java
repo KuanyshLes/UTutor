@@ -17,9 +17,8 @@ package com.support.robigroup.ututor.di.component;
 
 import com.support.robigroup.ututor.di.PerActivity;
 import com.support.robigroup.ututor.di.module.ActivityModule;
-import com.support.robigroup.ututor.features.teachers.TeachersActivity;
 import com.support.robigroup.ututor.ui.chat.ActivityChat;
-import com.support.robigroup.ututor.ui.chat.eval.EvalDialog;
+import com.support.robigroup.ututor.ui.chat.eval.RateDialog;
 
 import dagger.Component;
 
@@ -30,5 +29,6 @@ public interface ActivityComponent {
 
     void inject(ActivityChat activity);
 
+    void inject(RateDialog rateDialog);
 
 }

@@ -19,7 +19,7 @@ import retrofit2.Response
 import javax.inject.Inject
 import javax.inject.Singleton
 
-@Singleton
+
 class ChatPresenter<V : ChatMvpView> @Inject
 constructor(dataManager: DataManager, schedulerProvider: SchedulerProvider, compositeDisposable: CompositeDisposable)
     : BasePresenter<V>(dataManager, schedulerProvider, compositeDisposable), ChatMvpPresenter<V> {
@@ -99,33 +99,6 @@ constructor(dataManager: DataManager, schedulerProvider: SchedulerProvider, comp
                 }
             }
         }
-    }
-
-    override fun onCancelEvalDialog() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    override fun onClickEvalButton(rating: Float) {
-        compositeDisposable.add(dataManager
-                .apiHelper.evalChat((rating*20).toInt(),dataManager.chatInformation.Id!!)
-                .subscribeOn(schedulerProvider.io())
-                .observeOn(schedulerProvider.ui())
-                .doAfterTerminate {
-                    mvpView.startMenuActivity()
-                }
-                .subscribe(
-                        { message ->
-                            if(message.isSuccessful){
-
-                            }else{
-                                handleApiError(ANError(message.raw()))
-                            }
-                        },
-                        { e ->
-                            handleApiError(ANError(e))
-                        }
-                )
-        )
     }
 
     override fun getChatInfo(): ChatInformation {

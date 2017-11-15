@@ -6,14 +6,12 @@ import com.stfalcon.chatkit.messages.MessagesListAdapter
 import com.stfalcon.contentmanager.ContentManager
 import com.support.robigroup.ututor.commons.ChatInformation
 import com.support.robigroup.ututor.features.chat.model.ChatMessage
-import com.support.robigroup.ututor.ui.base.BasePresenter
+import com.support.robigroup.ututor.ui.base.DialogMvpView
 import com.support.robigroup.ututor.ui.base.MvpPresenter
 import com.support.robigroup.ututor.ui.base.MvpView
 
 
 interface ChatMvpView : MvpView {
-
-    fun openMenuActivity()
 
     fun showFinishDialog()
 
@@ -53,10 +51,21 @@ interface ChatMvpPresenter<V : ChatMvpView> : MvpPresenter<V>,
 
     fun onCounterFinish()
 
-    fun onCancelEvalDialog()
-
-    fun onClickEvalButton(rating: Float)
-
     fun getChatInfo(): ChatInformation
 
 }
+
+interface RateMvpView : DialogMvpView{
+
+    fun initViews(info: ChatInformation)
+
+}
+
+interface RateMvpPresenter<V: RateMvpView>: MvpPresenter<V>{
+
+    fun onClickRateButton(rating: Float)
+
+    fun onViewInitialized()
+
+}
+

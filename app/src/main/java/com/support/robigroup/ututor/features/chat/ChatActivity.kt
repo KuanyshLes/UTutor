@@ -333,8 +333,8 @@ class ChatActivity : AppCompatActivity(),
     }
 
     private fun OnEvalChat(chatLesson: ChatInformation){
-        val fin = EvalDialog()
-        fin.showMe(supportFragmentManager, chatLesson,"finishDial")
+        val fin = RateDialog()
+        fin.showMe(chatLesson,"finishDial")
     }
 
     private fun sendFileMessage(imageUri: String){
@@ -376,7 +376,6 @@ class ChatActivity : AppCompatActivity(),
     }
     override fun onCancelEvalDialog() {
         finishCorrectly()
-
     }
 
     override fun onReadyDialogReadyClick(dialog: DialogFragment) {

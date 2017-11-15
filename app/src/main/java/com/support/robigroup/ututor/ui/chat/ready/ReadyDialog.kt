@@ -16,7 +16,6 @@ import javax.inject.Inject
 
 class ReadyDialog : DialogFragment() {
 
-    @Inject
     lateinit var mListener: ChatMvpPresenter<ChatMvpView>
     var mButtonReady: Button? = null
     var mTextWait: TextView? = null
@@ -35,7 +34,8 @@ class ReadyDialog : DialogFragment() {
         return builder.create()
     }
 
-    fun startShow(fragmentManager: FragmentManager, tag: String, dif: Long){
+    fun startShow(fragmentManager: FragmentManager, tag: String, dif: Long, presenter: ChatMvpPresenter<ChatMvpView>){
+        mListener = presenter
         show(fragmentManager,tag)
         mTimer = MyDownTimer(dif)
         mTimer?.start()

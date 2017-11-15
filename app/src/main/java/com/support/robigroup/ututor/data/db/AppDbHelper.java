@@ -6,6 +6,8 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import io.realm.Realm;
+import io.realm.RealmList;
+import io.realm.RealmResults;
 
 
 @Singleton
@@ -23,7 +25,7 @@ public class AppDbHelper implements DbHelper {
     }
 
     @Override
-    public List<ChatMessage> getChatMessages() {
+    public RealmResults<ChatMessage> getChatMessages() {
         return realm.where(ChatMessage.class).findAll();
     }
 
