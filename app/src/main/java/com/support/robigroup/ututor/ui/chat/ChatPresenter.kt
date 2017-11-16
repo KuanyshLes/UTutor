@@ -13,11 +13,8 @@ import com.support.robigroup.ututor.ui.base.BasePresenter
 import com.support.robigroup.ututor.utils.SchedulerProvider
 import io.reactivex.Flowable
 import io.reactivex.disposables.CompositeDisposable
-import io.realm.OrderedRealmCollectionChangeListener
-import io.realm.RealmResults
 import retrofit2.Response
 import javax.inject.Inject
-import javax.inject.Singleton
 
 
 class ChatPresenter<V : ChatMvpView> @Inject
@@ -58,10 +55,12 @@ constructor(dataManager: DataManager, schedulerProvider: SchedulerProvider, comp
     }
 
     override fun onCounterFinish() {
-
+        mvpView.startMenuActivity()
     }
 
     override fun onViewInitialized() {
+        mvpView.setToolbarTitle(dataManager.chatInformation.Teacher)
+
         dataManager.chatInformation.addChangeListener<ChatInformation> {
             rs, changeset ->
             logd(rs.toString()+changeset.toString())
@@ -101,28 +100,18 @@ constructor(dataManager: DataManager, schedulerProvider: SchedulerProvider, comp
         }
     }
 
-    override fun getChatInfo(): ChatInformation {
-        return dataManager.chatInformation
-    }
-
-    override fun onDestroyReadyView() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    override fun onSelectionChanged(count: Int) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
     override fun onSubmit(input: CharSequence?): Boolean {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        sendMessage(messageText = input.toString())
+        return true
     }
 
     override fun hasContentFor(message: ChatMessage?, type: Byte): Boolean {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    override fun onAddAttachments() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        when (type) {
+            Constants.CONTENT_TYPE_IMAGE_TEXT -> {
+                return message!=null && message.filePath != null && message.fileIconPath !=null
+            }
+        }
+        return false
     }
 
     //methods to add image from gallery or other resources

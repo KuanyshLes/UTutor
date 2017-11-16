@@ -1,5 +1,6 @@
 package com.support.robigroup.ututor.ui.chat
 
+import android.content.DialogInterface
 import com.stfalcon.chatkit.messages.MessageHolders
 import com.stfalcon.chatkit.messages.MessageInput
 import com.stfalcon.chatkit.messages.MessagesListAdapter
@@ -13,9 +14,9 @@ import com.support.robigroup.ututor.ui.base.MvpView
 
 interface ChatMvpView : MvpView {
 
-    fun showFinishDialog()
+    fun setToolbarTitle(title: String)
 
-    fun closeFinishDialog()
+    fun showFinishDialog()
 
     fun showReadyDialog(dif: Long)
 
@@ -36,9 +37,7 @@ interface ChatMvpView : MvpView {
 
 interface ChatMvpPresenter<V : ChatMvpView> : MvpPresenter<V>,
         MessageInput.InputListener,
-        MessageInput.AttachmentsListener,
         MessageHolders.ContentChecker<ChatMessage>,
-        MessagesListAdapter.SelectionListener,
         ContentManager.PickContentListener{
 
     fun onFinishClick()
@@ -47,11 +46,7 @@ interface ChatMvpPresenter<V : ChatMvpView> : MvpPresenter<V>,
 
     fun onViewInitialized()
 
-    fun onDestroyReadyView()
-
     fun onCounterFinish()
-
-    fun getChatInfo(): ChatInformation
 
 }
 

@@ -125,7 +125,7 @@ public class NotificationService extends Service {
                     }
                     , ChatInformation.class);
 
-            mHubProxy.on("ChatReady",
+            mHubProxy.on("ChatMemberReady",
                     new SubscriptionHandler() {
                         @Override
                         public void run() {
