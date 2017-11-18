@@ -20,8 +20,6 @@ import android.content.Context;
 
 import com.support.robigroup.ututor.data.AppDataManager;
 import com.support.robigroup.ututor.data.DataManager;
-import com.support.robigroup.ututor.data.db.AppDbHelper;
-import com.support.robigroup.ututor.data.db.DbHelper;
 import com.support.robigroup.ututor.data.prefs.AppPreferencesHelper;
 import com.support.robigroup.ututor.data.prefs.PreferencesHelper;
 import com.support.robigroup.ututor.di.ApplicationContext;
@@ -75,12 +73,6 @@ public class ApplicationModule {
     @Singleton
     DataManager provideDataManager(AppDataManager appDataManager) {
         return appDataManager;
-    }
-
-    @Provides
-    @Singleton
-    DbHelper provideDbHelper(AppDbHelper appDbHelper) {
-        return appDbHelper;
     }
 
     @Provides

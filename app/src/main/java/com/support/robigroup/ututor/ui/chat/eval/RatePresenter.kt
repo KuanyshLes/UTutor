@@ -3,7 +3,7 @@ package com.support.robigroup.ututor.ui.chat.eval
 import com.androidnetworking.error.ANError
 import com.support.robigroup.ututor.Constants
 import com.support.robigroup.ututor.data.DataManager
-import com.support.robigroup.ututor.ui.base.BasePresenter
+import com.support.robigroup.ututor.ui.base.RealmBasedPresenter
 import com.support.robigroup.ututor.ui.chat.RateMvpPresenter
 import com.support.robigroup.ututor.ui.chat.RateMvpView
 import com.support.robigroup.ututor.utils.SchedulerProvider
@@ -13,11 +13,11 @@ import javax.inject.Inject
 
 class RatePresenter<V: RateMvpView> @Inject
 constructor(dataManager: DataManager, schedulerProvider: SchedulerProvider, compositeDisposable: CompositeDisposable)
-    : BasePresenter<V>(dataManager, schedulerProvider, compositeDisposable), RateMvpPresenter<V>{
+    : RealmBasedPresenter<V>(dataManager, schedulerProvider, compositeDisposable), RateMvpPresenter<V>{
 
     override fun onClickRateButton(rating: Float) {
         compositeDisposable.add(dataManager
-                .apiHelper.evalChat((rating*20).toInt(),dataManager.chatInformation.Id!!)
+                .apiHelper.evalChat(rating.toInt(), chatInformation.Id!!)
                 .subscribeOn(schedulerProvider.io())
                 .observeOn(schedulerProvider.ui())
                 .doAfterTerminate {
@@ -30,7 +30,6 @@ constructor(dataManager: DataManager, schedulerProvider: SchedulerProvider, comp
                 .subscribe(
                         { message ->
                             if(message.isSuccessful){
-
                             }else{
                                 handleApiError(ANError(message.raw()))
                             }
@@ -43,6 +42,6 @@ constructor(dataManager: DataManager, schedulerProvider: SchedulerProvider, comp
     }
 
     override fun onViewInitialized() {
-        mvpView.initViews(dataManager.chatInformation)
+        mvpView.initViews(chatInformation)
     }
 }

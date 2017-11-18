@@ -162,6 +162,16 @@ class ActivityChat : BaseActivity(), ChatMvpView {
         }
     }
 
+    override fun onFragmentDetached(tag: String?) {
+        if(tag!=null){
+            when(tag){
+                Constants.TAG_RATE_DIALOG ->
+                        startMenuActivity()
+            }
+        }
+        super.onFragmentDetached(tag)
+    }
+
     override fun onDestroy() {
         mPresenter.onDetach()
         super.onDestroy()

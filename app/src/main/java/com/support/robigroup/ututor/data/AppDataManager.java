@@ -4,20 +4,11 @@ import android.content.Context;
 
 import com.support.robigroup.ututor.api.APIInterface;
 import com.support.robigroup.ututor.api.RestAPI;
-import com.support.robigroup.ututor.commons.ChatInformation;
-import com.support.robigroup.ututor.data.db.DbHelper;
 import com.support.robigroup.ututor.data.prefs.PreferencesHelper;
 import com.support.robigroup.ututor.di.ApplicationContext;
-import com.support.robigroup.ututor.features.chat.model.ChatMessage;
-
-import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-
-import io.realm.Realm;
-import io.realm.RealmList;
-import io.realm.RealmResults;
 
 
 @Singleton
@@ -25,26 +16,13 @@ public class AppDataManager implements DataManager{
 
     private static final String TAG = "AppDataManager";
     private final Context mContext;
-    private final DbHelper mDbHelper;
     private final PreferencesHelper mPreferencesHelper;
 
     @Inject
     public AppDataManager(@ApplicationContext Context context,
-                          DbHelper dbHelper,
                           PreferencesHelper preferencesHelper) {
         mContext = context;
-        mDbHelper = dbHelper;
         mPreferencesHelper = preferencesHelper;
-    }
-
-    @Override
-    public ChatInformation getChatInformation() {
-        return mDbHelper.getChatInformation();
-    }
-
-    @Override
-    public RealmResults<ChatMessage> getChatMessages() {
-        return mDbHelper.getChatMessages();
     }
 
     @Override
@@ -55,16 +33,6 @@ public class AppDataManager implements DataManager{
     @Override
     public void setAccessToken(String accessToken) {
         mPreferencesHelper.setAccessToken(accessToken);
-    }
-
-    @Override
-    public Realm getRealm() {
-        return mDbHelper.getRealm();
-    }
-
-    @Override
-    public void initRealm() {
-        mDbHelper.initRealm();
     }
 
     @Override

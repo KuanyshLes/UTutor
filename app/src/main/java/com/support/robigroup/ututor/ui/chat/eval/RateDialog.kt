@@ -11,6 +11,7 @@ import android.widget.TextView
 import com.support.robigroup.ututor.R
 import com.support.robigroup.ututor.commons.ChatInformation
 import com.support.robigroup.ututor.commons.Functions
+import com.support.robigroup.ututor.commons.logd
 import com.support.robigroup.ututor.di.component.ActivityComponent
 import com.support.robigroup.ututor.ui.base.BaseDialog
 import com.support.robigroup.ututor.ui.chat.ActivityChat
@@ -36,17 +37,13 @@ class RateDialog : BaseDialog(), RateMvpView {
         val builder = AlertDialog.Builder(activity)
         val view = activity.layoutInflater.inflate(R.layout.dialog_finish,null)
         builder.setView(view)
+        setUp(view!!)
+        ratePresenter.onViewInitialized()
         return builder.create()
     }
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
-        setUp(view!!)
-        ratePresenter.onViewInitialized()
-        super.onViewCreated(view, savedInstanceState)
-    }
-
     override fun initViews(info: ChatInformation) {
-        textSum.text = String.format("%s₸", info.InvoiceSum)
+        textSum.text = String.format("%s₸, %s %s%s", info.InvoiceSum, getString(R.string.tarif), info.InvoiceTariff, getString(R.string.price_ratio))
         try {
             textDuration.text = String.format("%s %s",
                     getString(R.string.duration_short),
@@ -59,8 +56,8 @@ class RateDialog : BaseDialog(), RateMvpView {
     override fun setUp(view: View) {
         val buttonEvaluate = view.findViewById<Button>(R.id.button_evaluate) as Button
         buttonEvaluate.setOnClickListener {
+            logd("rating "+ratingBar!!.rating.toString())
             ratePresenter.onClickRateButton(ratingBar!!.rating)
-            dismiss()
         }
         textSum = view.findViewById<TextView>(R.id.sum_text) as TextView
         textDuration = view.findViewById<TextView>(R.id.duration_text) as TextView

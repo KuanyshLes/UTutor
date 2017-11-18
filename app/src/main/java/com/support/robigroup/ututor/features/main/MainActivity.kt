@@ -40,8 +40,12 @@ class MainActivity :
 
         type = intent.getIntExtra(KEY_TYPE,0)
         supportActionBar?.title = Constants.TYPES.get(type-1).Name
-        classNumber = Integer.parseInt(
-                Gson().fromJson(SingletonSharedPref.getInstance().getString(Constants.KEY_PROFILE), Profile::class.java).Class)
+        val profile = SingletonSharedPref.getInstance().getString(Constants.KEY_PROFILE,"")
+        if(!profile.equals(""))
+            classNumber = Integer.parseInt(Gson().fromJson(SingletonSharedPref.getInstance().getString(Constants.KEY_PROFILE), Profile::class.java).Class)
+        else{
+            classNumber = 0
+        }
 
 
         val intent = Intent()
