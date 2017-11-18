@@ -21,6 +21,7 @@ class ChatPresenter<V : ChatMvpView> @Inject
 constructor(dataManager: DataManager, schedulerProvider: SchedulerProvider, compositeDisposable: CompositeDisposable)
     : RealmBasedPresenter<V>(dataManager, schedulerProvider, compositeDisposable), ChatMvpPresenter<V> {
 
+
     override fun onViewInitialized() {
 
         mvpView.setToolbarTitle(chatInformation.Teacher)
@@ -60,6 +61,9 @@ constructor(dataManager: DataManager, schedulerProvider: SchedulerProvider, comp
             }
         }
 
+
+
+
         chatMessages.addChangeListener {
             messages, changeSet ->
             if (changeSet == null) {
@@ -67,11 +71,17 @@ constructor(dataManager: DataManager, schedulerProvider: SchedulerProvider, comp
             }else{
                 val insertions = changeSet.insertionRanges
                 for (range in insertions) {
-                    mvpView.notifyItemRangeInserted(messages, range.startIndex, range.length)
+                    if(mvpView==null){
+                        logd("mvpview is null")
+                        logd("hashcode from inside null : "+ this.hashCode().toString())
+                    }else{
+                        mvpView.notifyItemRangeInserted(messages, range.startIndex, range.length)
+                        logd("hashcode from inside not null : "+ this.hashCode().toString())
+
+                    }
                 }
             }
         }
-
         mvpView.notifyItemRangeInserted(chatMessages, 0, chatMessages.size-1)
     }
 

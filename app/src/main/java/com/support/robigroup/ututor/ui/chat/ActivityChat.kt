@@ -16,6 +16,7 @@ import com.stfalcon.contentmanager.ContentManager
 import com.stfalcon.frescoimageviewer.ImageViewer
 import com.support.robigroup.ututor.Constants
 import com.support.robigroup.ututor.R
+import com.support.robigroup.ututor.commons.logd
 import com.support.robigroup.ututor.features.chat.custom.media.holders.CustomIncomingMessageViewHolder
 import com.support.robigroup.ututor.features.chat.custom.media.holders.CustomOutcomingMessageViewHolder
 import com.support.robigroup.ututor.features.chat.model.ChatMessage
@@ -45,6 +46,7 @@ class ActivityChat : BaseActivity(), ChatMvpView {
         mPresenter.onAttach(this)
         setUp()
         mPresenter.onViewInitialized()
+
     }
 
     override fun setUp() {

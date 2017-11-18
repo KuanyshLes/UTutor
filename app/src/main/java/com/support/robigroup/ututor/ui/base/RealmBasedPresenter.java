@@ -18,6 +18,8 @@ public class RealmBasedPresenter<V extends MvpView>  extends BasePresenter<V> im
 
     private static final String TAG = "RealmBasedPresenter";
     private Realm realm;
+    private ChatInformation chatInformation;
+    private RealmResults<ChatMessage> chatMessages;
 
     @Inject
     public RealmBasedPresenter(DataManager dataManager, SchedulerProvider schedulerProvider, CompositeDisposable compositeDisposable) {
@@ -32,7 +34,6 @@ public class RealmBasedPresenter<V extends MvpView>  extends BasePresenter<V> im
 
     @Override
     public void onDetach() {
-        realm.removeAllChangeListeners();
         realm.close();
         super.onDetach();
     }
@@ -61,11 +62,17 @@ public class RealmBasedPresenter<V extends MvpView>  extends BasePresenter<V> im
 
     @Override
     public ChatInformation getChatInformation() {
-        return realm.where(ChatInformation.class).findFirst();
+        if(chatInformation==null){
+            chatInformation = realm.where(ChatInformation.class).findFirst();
+        }
+        return chatInformation;
     }
 
     @Override
     public RealmResults<ChatMessage> getChatMessages() {
-        return realm.where(ChatMessage.class).findAll();
+        if(chatMessages==null){
+            chatMessages = realm.where(ChatMessage.class).findAll();
+        }
+        return chatMessages;
     }
 }
