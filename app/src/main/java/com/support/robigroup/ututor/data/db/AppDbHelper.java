@@ -16,6 +16,10 @@ public class AppDbHelper implements DbHelper {
 
     @Inject
     public AppDbHelper() {
+    }
+
+    @Override
+    public void initRealm() {
         realm = Realm.getDefaultInstance();
     }
 

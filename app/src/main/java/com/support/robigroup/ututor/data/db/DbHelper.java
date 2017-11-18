@@ -19,4 +19,6 @@ public interface DbHelper {
 
     Realm getRealm();
 
+    void initRealm();
+
 }

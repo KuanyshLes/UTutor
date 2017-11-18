@@ -1,9 +1,7 @@
 package com.support.robigroup.ututor.ui.chat
 
-import android.content.DialogInterface
 import com.stfalcon.chatkit.messages.MessageHolders
 import com.stfalcon.chatkit.messages.MessageInput
-import com.stfalcon.chatkit.messages.MessagesListAdapter
 import com.stfalcon.contentmanager.ContentManager
 import com.support.robigroup.ututor.commons.ChatInformation
 import com.support.robigroup.ututor.features.chat.model.ChatMessage
@@ -41,6 +39,8 @@ interface ChatMvpPresenter<V : ChatMvpView> : MvpPresenter<V>,
         ContentManager.PickContentListener{
 
     fun onFinishClick()
+
+    fun onOkFinishClick()
 
     fun onReadyClick()
 

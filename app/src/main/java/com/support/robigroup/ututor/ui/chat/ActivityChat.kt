@@ -28,10 +28,10 @@ import javax.inject.Inject
 
 class ActivityChat : BaseActivity(), ChatMvpView {
 
-    lateinit var messagesList: MessagesList
-    lateinit var messagesAdapter: MessagesListAdapter<ChatMessage>
-    lateinit var contentManager: ContentManager
-    lateinit var menu: Menu
+    private lateinit var messagesList: MessagesList
+    private lateinit var messagesAdapter: MessagesListAdapter<ChatMessage>
+    private lateinit var contentManager: ContentManager
+    private lateinit var menu: Menu
     private var selectionCount: Int = 0
     private val imageLoader = ImageLoader { imageView, url -> Picasso.with(baseContext).load(url).into(imageView) }
 
@@ -43,7 +43,6 @@ class ActivityChat : BaseActivity(), ChatMvpView {
         setContentView(R.layout.activity_chat)
         activityComponent.inject(this)
         mPresenter.onAttach(this)
-
         setUp()
         mPresenter.onViewInitialized()
     }
@@ -84,6 +83,7 @@ class ActivityChat : BaseActivity(), ChatMvpView {
                         .setStartPosition(0)
                         .show()
         }
+        messagesList.setAdapter(messagesAdapter)
 
         contentManager = ContentManager(this, mPresenter)
         text_finish.setOnClickListener { mPresenter.onFinishClick() }
@@ -113,7 +113,7 @@ class ActivityChat : BaseActivity(), ChatMvpView {
                 {
                     dialog, id ->
                     dialog.cancel()
-                    startMenuActivity()
+                    mPresenter.onOkFinishClick()
                 }
                 .setNegativeButton("Cancel")
                 {

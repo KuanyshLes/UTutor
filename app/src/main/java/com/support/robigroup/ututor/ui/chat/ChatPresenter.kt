@@ -21,44 +21,8 @@ class ChatPresenter<V : ChatMvpView> @Inject
 constructor(dataManager: DataManager, schedulerProvider: SchedulerProvider, compositeDisposable: CompositeDisposable)
     : BasePresenter<V>(dataManager, schedulerProvider, compositeDisposable), ChatMvpPresenter<V> {
 
-
-    override fun onFinishClick() {
-        mvpView.showFinishDialog()
-    }
-
-    override fun onReadyClick() {
-        compositeDisposable.add(dataManager.apiHelper.postChatReady()
-                .observeOn(schedulerProvider.ui())
-                .subscribeOn(schedulerProvider.io())
-                .subscribe({ response ->
-                    if (response.isSuccessful) {
-                        val res = response.body()?.charStream()?.readText()
-                        if (res != null) {
-                            val info = dataManager.chatInformation
-                            if (res == "ready") {
-                                dataManager.realm.executeTransaction {
-                                    info.LearnerReady = true
-                                    info.TeacherReady = true
-                                }
-                            } else {
-                                info.LearnerReady = true
-                            }
-                        } else {
-                            handleApiError(null)
-                        }
-                    } else {
-                        handleApiError(ANError(response.raw()))
-                    }
-                }, { error ->
-                    handleApiError(ANError(error))
-                }))
-    }
-
-    override fun onCounterFinish() {
-        mvpView.startMenuActivity()
-    }
-
     override fun onViewInitialized() {
+
         mvpView.setToolbarTitle(dataManager.chatInformation.Teacher)
 
         dataManager.chatInformation.addChangeListener<ChatInformation> {
@@ -98,10 +62,88 @@ constructor(dataManager: DataManager, schedulerProvider: SchedulerProvider, comp
                 }
             }
         }
+
+        mvpView.notifyItemRangeInserted(dataManager.chatMessages, 0, dataManager.chatMessages.size-1)
+    }
+
+    override fun onFinishClick() {
+        mvpView.showFinishDialog()
+    }
+
+    override fun onReadyClick() {
+        compositeDisposable.add(dataManager.apiHelper.postChatReady()
+                .observeOn(schedulerProvider.ui())
+                .subscribeOn(schedulerProvider.io())
+                .subscribe({ response ->
+                    if (response.isSuccessful) {
+                        val res = response.body()?.charStream()?.readText()
+                        if (res != null) {
+                            val info = dataManager.chatInformation
+                            if (res == "ready") {
+                                dataManager.realm.executeTransaction {
+                                    info.LearnerReady = true
+                                    info.TeacherReady = true
+                                }
+                            } else {
+                                info.LearnerReady = true
+                            }
+                        } else {
+                            handleApiError(null)
+                        }
+                    } else {
+                        handleApiError(ANError(response.raw()))
+                    }
+                }, { error ->
+                    handleApiError(ANError(error))
+                }))
+    }
+
+    override fun onCounterFinish() {
+        mvpView.startMenuActivity()
+    }
+
+    override fun onOkFinishClick() {
+        compositeDisposable.add(dataManager.apiHelper.postChatComplete()
+                .subscribeOn(schedulerProvider.io())
+                .observeOn(schedulerProvider.ui())
+                .subscribe(
+                        { response ->
+                            if(response.isSuccessful){
+                                mvpView.showEvalDialog()
+                            }else{
+                                mvpView.startMenuActivity()
+                            }
+                        },
+                        { error ->
+                            handleApiError(ANError(error))
+                        }
+                ))
     }
 
     override fun onSubmit(input: CharSequence?): Boolean {
-        sendMessage(messageText = input.toString())
+        compositeDisposable.add(sendMessage(messageText = input.toString())
+                .subscribeOn(schedulerProvider.io())
+                .observeOn(schedulerProvider.ui())
+                .subscribe(
+                        { messageResponse ->
+                            if(messageResponse.isSuccessful){
+                                val message: ChatMessage? = messageResponse.body()
+                                if(message!=null){
+                                    dataManager.realm.executeTransaction {
+                                        dataManager.realm.insert(message)
+                                    }
+                                }else{
+                                    handleApiError(null)
+                                }
+                            }else{
+                                handleApiError(ANError(messageResponse.raw()))
+                            }
+                        },
+                        { e ->
+                            handleApiError(ANError(e))
+                        }
+                )
+        )
         return true
     }
 
@@ -177,4 +219,13 @@ constructor(dataManager: DataManager, schedulerProvider: SchedulerProvider, comp
             }else if(messageText!=null) dataManager.apiHelper.postTextMessage(messageText)
             else Flowable.empty()
 
+    override fun onDetach() {
+        dataManager.realm.close()
+        super.onDetach()
+    }
+
+    override fun onAttach(mvpView: V) {
+        super.onAttach(mvpView)
+        dataManager.initRealm()
+    }
 }

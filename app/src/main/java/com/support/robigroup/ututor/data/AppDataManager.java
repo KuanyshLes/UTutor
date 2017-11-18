@@ -63,6 +63,11 @@ public class AppDataManager implements DataManager{
     }
 
     @Override
+    public void initRealm() {
+        mDbHelper.initRealm();
+    }
+
+    @Override
     public int getCurrentUserLoggedInMode() {
         return mPreferencesHelper.getCurrentUserLoggedInMode();
     }

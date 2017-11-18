@@ -12,9 +12,9 @@ import com.support.robigroup.ututor.Constants
 import com.support.robigroup.ututor.R
 import com.support.robigroup.ututor.api.MainManager
 import com.support.robigroup.ututor.commons.*
-import com.support.robigroup.ututor.features.chat.ChatActivity
 import com.support.robigroup.ututor.features.teachers.adapters.TeachersAdapter
 import com.support.robigroup.ututor.singleton.SingletonSharedPref
+import com.support.robigroup.ututor.ui.chat.ActivityChat
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -200,7 +200,7 @@ class TeachersActivity : AppCompatActivity(), OnTeachersActivityInteractionListe
     }
 
     private fun OnTeacherAccepted(){
-        ChatActivity.open(this)
+        ActivityChat.open(this)
     }
 
 }
