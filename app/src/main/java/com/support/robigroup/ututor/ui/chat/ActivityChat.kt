@@ -16,12 +16,12 @@ import com.stfalcon.contentmanager.ContentManager
 import com.stfalcon.frescoimageviewer.ImageViewer
 import com.support.robigroup.ututor.Constants
 import com.support.robigroup.ututor.R
-import com.support.robigroup.ututor.commons.logd
-import com.support.robigroup.ututor.features.chat.custom.media.holders.CustomIncomingMessageViewHolder
-import com.support.robigroup.ututor.features.chat.custom.media.holders.CustomOutcomingMessageViewHolder
+import com.support.robigroup.ututor.ui.chat.custom_holders.IncomingImageMessageVH
+import com.support.robigroup.ututor.ui.chat.custom_holders.OutcomingImageMessageVH
 import com.support.robigroup.ututor.features.chat.model.ChatMessage
 import com.support.robigroup.ututor.features.main.MenuActivity
 import com.support.robigroup.ututor.ui.base.BaseActivity
+import com.support.robigroup.ututor.ui.chat.custom_holders.IncomingVoiceMessageVH
 import com.support.robigroup.ututor.ui.chat.eval.RateDialog
 import com.support.robigroup.ututor.ui.chat.ready.ReadyDialog
 import kotlinx.android.synthetic.main.activity_chat.*
@@ -66,11 +66,19 @@ class ActivityChat : BaseActivity(), ChatMvpView {
         val holders = MessageHolders()
                 .registerContentType(
                         Constants.CONTENT_TYPE_IMAGE_TEXT,
-                        CustomIncomingMessageViewHolder::class.java,
+                        IncomingImageMessageVH::class.java,
                         R.layout.item_incoming_text_image_message,
-                        CustomOutcomingMessageViewHolder::class.java,
+                        OutcomingImageMessageVH::class.java,
                         R.layout.item_outcoming_text_image_message,
                         mPresenter)
+                .registerContentType(
+                        Constants.CONTENT_TYPE_VOICE,
+                        IncomingVoiceMessageVH::class.java,
+                        R.layout.item_incoming_voice_message,
+                        IncomingVoiceMessageVH::class.java,
+                        R.layout.item_incoming_voice_message,
+                        mPresenter)
+
         messagesAdapter = MessagesListAdapter(Constants.LEARNER_ID, holders, imageLoader)
         messagesAdapter.enableSelectionMode({
             count ->

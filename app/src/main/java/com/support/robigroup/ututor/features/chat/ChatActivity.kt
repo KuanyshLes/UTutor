@@ -25,8 +25,8 @@ import com.support.robigroup.ututor.NotificationService
 import com.support.robigroup.ututor.R
 import com.support.robigroup.ututor.api.MainManager
 import com.support.robigroup.ututor.commons.*
-import com.support.robigroup.ututor.features.chat.custom.media.holders.CustomIncomingMessageViewHolder
-import com.support.robigroup.ututor.features.chat.custom.media.holders.CustomOutcomingMessageViewHolder
+import com.support.robigroup.ututor.ui.chat.custom_holders.IncomingImageMessageVH
+import com.support.robigroup.ututor.ui.chat.custom_holders.OutcomingImageMessageVH
 import com.support.robigroup.ututor.features.chat.model.ChatMessage
 import com.support.robigroup.ututor.features.chat.model.ChatUser
 import com.support.robigroup.ututor.features.main.MenuActivity
@@ -190,9 +190,9 @@ class ChatActivity : AppCompatActivity(),
         val holders = MessageHolders()
                 .registerContentType(
                         CONTENT_TYPE_IMAGE_TEXT,
-                        CustomIncomingMessageViewHolder::class.java,
+                        IncomingImageMessageVH::class.java,
                         R.layout.item_incoming_text_image_message,
-                        CustomOutcomingMessageViewHolder::class.java,
+                        OutcomingImageMessageVH::class.java,
                         R.layout.item_outcoming_text_image_message,
                         this)
 
