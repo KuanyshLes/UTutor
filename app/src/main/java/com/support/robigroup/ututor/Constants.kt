@@ -29,11 +29,7 @@ object Constants {
     val BASE_URL = "http://ututor.kz/"
 
     //chat constants
-    val STATUS_REQUESTED_WAIT = -2
-    val STATUS_ACCEPTED_TEACHER = -1
     val STATUS_NOT_REQUESTED = -3
-    val STATUS_DECLINED = 5
-    val STATUS_ERROR = -4
     val STATUS_COMPLETED = 6
 
     val TAG_READY_DIALOG = "readyDialog"
@@ -46,6 +42,7 @@ object Constants {
     val UTC_TIME = 6*60*60*1000
 
     val CONTENT_TYPE_IMAGE_TEXT: Byte = 100
+    val CONTENT_TYPE_VOICE: Byte = 100
 
     val PASSWORD_PATTERN = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,}$"
     val EMAIL_PATTERN = "^[a-zA-Z0-9#_~!$&'()*+,;=:.\"(),:;<>@\\[\\]\\\\]+@[a-zA-Z0-9-]+(\\.[a-zA-Z0-9-]+)*$"

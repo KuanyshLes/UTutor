@@ -13,7 +13,6 @@ import com.stfalcon.chatkit.messages.MessagesList
 import com.stfalcon.chatkit.messages.MessagesListAdapter
 import com.support.robigroup.ututor.R
 import io.reactivex.disposables.CompositeDisposable
-import com.support.robigroup.ututor.features.chat.ChatActivity
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -24,8 +23,8 @@ import com.support.robigroup.ututor.commons.requestErrorHandler
 import com.support.robigroup.ututor.commons.toast
 import com.support.robigroup.ututor.commons.ChatHistory
 import com.support.robigroup.ututor.features.chat.ChatActivity.Companion.CONTENT_TYPE_IMAGE_TEXT
-import com.support.robigroup.ututor.features.chat.custom.media.holders.CustomIncomingMessageViewHolder
-import com.support.robigroup.ututor.features.chat.custom.media.holders.CustomOutcomingMessageViewHolder
+import com.support.robigroup.ututor.ui.chat.custom_holders.IncomingImageMessageVH
+import com.support.robigroup.ututor.ui.chat.custom_holders.OutcomingImageMessageVH
 import com.support.robigroup.ututor.features.chat.model.ChatMessage
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -64,9 +63,9 @@ class HistoryMessages : AppCompatActivity(),
         val holders = MessageHolders()
                 .registerContentType(
                         CONTENT_TYPE_IMAGE_TEXT,
-                        CustomIncomingMessageViewHolder::class.java,
+                        IncomingImageMessageVH::class.java,
                         R.layout.item_incoming_text_image_message,
-                        CustomOutcomingMessageViewHolder::class.java,
+                        OutcomingImageMessageVH::class.java,
                         R.layout.item_outcoming_text_image_message,
                         this)
 

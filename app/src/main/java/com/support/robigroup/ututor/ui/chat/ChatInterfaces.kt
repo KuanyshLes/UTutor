@@ -2,7 +2,6 @@ package com.support.robigroup.ututor.ui.chat
 
 import com.stfalcon.chatkit.messages.MessageHolders
 import com.stfalcon.chatkit.messages.MessageInput
-import com.stfalcon.chatkit.messages.MessagesListAdapter
 import com.stfalcon.contentmanager.ContentManager
 import com.support.robigroup.ututor.commons.ChatInformation
 import com.support.robigroup.ututor.features.chat.model.ChatMessage
@@ -13,9 +12,9 @@ import com.support.robigroup.ututor.ui.base.MvpView
 
 interface ChatMvpView : MvpView {
 
-    fun showFinishDialog()
+    fun setToolbarTitle(title: String)
 
-    fun closeFinishDialog()
+    fun showFinishDialog()
 
     fun showReadyDialog(dif: Long)
 
@@ -36,22 +35,18 @@ interface ChatMvpView : MvpView {
 
 interface ChatMvpPresenter<V : ChatMvpView> : MvpPresenter<V>,
         MessageInput.InputListener,
-        MessageInput.AttachmentsListener,
         MessageHolders.ContentChecker<ChatMessage>,
-        MessagesListAdapter.SelectionListener,
         ContentManager.PickContentListener{
 
     fun onFinishClick()
+
+    fun onOkFinishClick()
 
     fun onReadyClick()
 
     fun onViewInitialized()
 
-    fun onDestroyReadyView()
-
     fun onCounterFinish()
-
-    fun getChatInfo(): ChatInformation
 
 }
 

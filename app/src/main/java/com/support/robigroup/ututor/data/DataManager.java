@@ -1,12 +1,11 @@
 package com.support.robigroup.ututor.data;
 
 import com.support.robigroup.ututor.api.APIInterface;
-import com.support.robigroup.ututor.data.db.DbHelper;
 import com.support.robigroup.ututor.data.prefs.PreferencesHelper;
 
 
 
-public interface DataManager extends DbHelper, PreferencesHelper {
+public interface DataManager extends  PreferencesHelper {
 
     void setUserAsLoggedOut();
 

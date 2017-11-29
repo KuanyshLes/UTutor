@@ -1,20 +1,27 @@
 package com.support.robigroup.ututor.ui.chat
 
+import android.content.Context
+import android.content.DialogInterface
+import android.content.Intent
 import android.os.Bundle
+import android.support.v7.app.AlertDialog
+import android.view.Menu
 import com.squareup.picasso.Picasso
 import com.stfalcon.chatkit.commons.ImageLoader
 import com.stfalcon.chatkit.messages.MessageHolders
+import com.stfalcon.chatkit.messages.MessageInput
 import com.stfalcon.chatkit.messages.MessagesList
 import com.stfalcon.chatkit.messages.MessagesListAdapter
 import com.stfalcon.contentmanager.ContentManager
 import com.stfalcon.frescoimageviewer.ImageViewer
 import com.support.robigroup.ututor.Constants
 import com.support.robigroup.ututor.R
-import com.support.robigroup.ututor.features.chat.custom.media.holders.CustomIncomingMessageViewHolder
-import com.support.robigroup.ututor.features.chat.custom.media.holders.CustomOutcomingMessageViewHolder
+import com.support.robigroup.ututor.ui.chat.custom_holders.IncomingImageMessageVH
+import com.support.robigroup.ututor.ui.chat.custom_holders.OutcomingImageMessageVH
 import com.support.robigroup.ututor.features.chat.model.ChatMessage
 import com.support.robigroup.ututor.features.main.MenuActivity
 import com.support.robigroup.ututor.ui.base.BaseActivity
+import com.support.robigroup.ututor.ui.chat.custom_holders.IncomingVoiceMessageVH
 import com.support.robigroup.ututor.ui.chat.eval.RateDialog
 import com.support.robigroup.ututor.ui.chat.ready.ReadyDialog
 import kotlinx.android.synthetic.main.activity_chat.*
@@ -22,10 +29,12 @@ import javax.inject.Inject
 
 class ActivityChat : BaseActivity(), ChatMvpView {
 
-    lateinit var messagesList: MessagesList
-    lateinit var messagesAdapter: MessagesListAdapter<ChatMessage>
+    private lateinit var messagesList: MessagesList
+    private lateinit var messagesAdapter: MessagesListAdapter<ChatMessage>
+    private lateinit var contentManager: ContentManager
+    private lateinit var menu: Menu
+    private var selectionCount: Int = 0
     private val imageLoader = ImageLoader { imageView, url -> Picasso.with(baseContext).load(url).into(imageView) }
-    lateinit var contentManager: ContentManager
 
     @Inject
     lateinit var mPresenter: ChatMvpPresenter<ChatMvpView>
@@ -35,24 +44,48 @@ class ActivityChat : BaseActivity(), ChatMvpView {
         setContentView(R.layout.activity_chat)
         activityComponent.inject(this)
         mPresenter.onAttach(this)
-
         setUp()
+        mPresenter.onViewInitialized()
+
     }
 
     override fun setUp() {
         setSupportActionBar(toolbar)
 
+        val input = findViewById<MessageInput>(R.id.input)
+        input.setInputListener(mPresenter)
+        input.setAttachmentsListener({
+            AlertDialog.Builder(this)
+                    .setItems(R.array.view_types_dialog, (
+                            DialogInterface.OnClickListener{ p0, order -> when (order) {
+                                0 -> contentManager.pickContent(ContentManager.Content.IMAGE)}})
+                    ).show()
+        })
+
         messagesList = findViewById(R.id.messagesList)
         val holders = MessageHolders()
                 .registerContentType(
                         Constants.CONTENT_TYPE_IMAGE_TEXT,
-                        CustomIncomingMessageViewHolder::class.java,
+                        IncomingImageMessageVH::class.java,
                         R.layout.item_incoming_text_image_message,
-                        CustomOutcomingMessageViewHolder::class.java,
+                        OutcomingImageMessageVH::class.java,
                         R.layout.item_outcoming_text_image_message,
                         mPresenter)
+                .registerContentType(
+                        Constants.CONTENT_TYPE_VOICE,
+                        IncomingVoiceMessageVH::class.java,
+                        R.layout.item_incoming_voice_message,
+                        IncomingVoiceMessageVH::class.java,
+                        R.layout.item_incoming_voice_message,
+                        mPresenter)
+
         messagesAdapter = MessagesListAdapter(Constants.LEARNER_ID, holders, imageLoader)
-        messagesAdapter.enableSelectionMode(mPresenter)
+        messagesAdapter.enableSelectionMode({
+            count ->
+            selectionCount = count
+            menu.findItem(R.id.action_delete).isVisible = count > 0
+            menu.findItem(R.id.action_copy).isVisible = count > 0
+        })
         messagesAdapter.setOnMessageClickListener {
             message: ChatMessage ->
             if(message.filePath!=null)
@@ -60,10 +93,21 @@ class ActivityChat : BaseActivity(), ChatMvpView {
                         .setStartPosition(0)
                         .show()
         }
+        messagesList.setAdapter(messagesAdapter)
 
         contentManager = ContentManager(this, mPresenter)
         text_finish.setOnClickListener { mPresenter.onFinishClick() }
-        mPresenter.onViewInitialized()
+    }
+
+    override fun setToolbarTitle(title: String) {
+        teacher_name_title.text = title
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.chat_actions_menu, menu)
+        this.menu = menu
+        messagesAdapter.unselectAllItems()
+        return true
     }
 
     override fun startMenuActivity() {
@@ -72,11 +116,23 @@ class ActivityChat : BaseActivity(), ChatMvpView {
     }
 
     override fun showFinishDialog() {
-
-    }
-
-    override fun closeFinishDialog() {
-
+        val builder = AlertDialog.Builder(this)
+        builder.setMessage(getString(R.string.prompt_are_you_sure))
+                .setCancelable(false)
+                .setPositiveButton("OK")
+                {
+                    dialog, id ->
+                    dialog.cancel()
+                    mPresenter.onOkFinishClick()
+                }
+                .setNegativeButton("Cancel")
+                {
+                    dialog, id ->
+                    dialog.cancel()
+                }
+        val alert = builder.create()
+        alert.setCancelable(true)
+        alert.show()
     }
 
     override fun closeReadyDialog() {
@@ -116,8 +172,26 @@ class ActivityChat : BaseActivity(), ChatMvpView {
         }
     }
 
+    override fun onFragmentDetached(tag: String?) {
+        if(tag!=null){
+            when(tag){
+                Constants.TAG_RATE_DIALOG ->
+                        startMenuActivity()
+            }
+        }
+        super.onFragmentDetached(tag)
+    }
+
     override fun onDestroy() {
         mPresenter.onDetach()
         super.onDestroy()
+    }
+
+    companion object {
+        fun open(context: Context) {
+            val intent = Intent(context, ActivityChat::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+            context.startActivity(intent)
+        }
     }
 }

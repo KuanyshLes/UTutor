@@ -3,6 +3,7 @@ package com.support.robigroup.ututor.features.main
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.support.design.widget.Snackbar
 import android.view.View
 import com.support.robigroup.ututor.Constants
 import com.support.robigroup.ututor.NotificationService
@@ -10,8 +11,8 @@ import com.support.robigroup.ututor.R
 import com.support.robigroup.ututor.api.MainManager
 import com.support.robigroup.ututor.commons.*
 import com.support.robigroup.ututor.features.MenuesActivity
-import com.support.robigroup.ututor.features.chat.ChatActivity
 import com.support.robigroup.ututor.features.chat.model.ChatMessage
+import com.support.robigroup.ututor.ui.chat.ActivityChat
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -74,7 +75,15 @@ class MenuActivity : MenuesActivity() {
     }
 
     private fun startTopicOrChatActivity(chatLesson: ChatLesson?){
-        if(chatLesson==null||chatLesson.StatusId== Constants.STATUS_COMPLETED){
+        var start = true
+        if(chatLesson!=null){
+            val dif = Functions.getDifferenceInMillis(chatLesson.CreateTime)
+            val utc = dif - 6*60*60*1000
+            logd(utc.toString())
+            start = (dif>1000&&dif<Constants.WAIT_TIME)||(utc>1000&&utc<Constants.WAIT_TIME)
+        }
+
+        if(chatLesson==null||chatLesson.StatusId== Constants.STATUS_COMPLETED ){
             val realm = Realm.getDefaultInstance()
             val res = realm.where(ChatInformation::class.java).findAll()
             if(res!=null)
@@ -87,7 +96,10 @@ class MenuActivity : MenuesActivity() {
                 messages.deleteAllFromRealm()
             }
             realm.close()
+        }else if(!start && (!chatLesson.LearnerReady || !chatLesson.TeacherReady)){
+            Snackbar.make(findViewById(android.R.id.content),getString(R.string.error_incorrect_time), Snackbar.LENGTH_SHORT).show()
         }else{
+
             val realm = Realm.getDefaultInstance()
             val res = realm.where(ChatInformation::class.java).findAll()
             if(res!=null)
@@ -98,7 +110,7 @@ class MenuActivity : MenuesActivity() {
                 realm.copyToRealm(Functions.getChatInformation(chatLesson))
             }
             realm.close()
-            ChatActivity.open(this)
+            ActivityChat.open(this)
             finish()
         }
     }

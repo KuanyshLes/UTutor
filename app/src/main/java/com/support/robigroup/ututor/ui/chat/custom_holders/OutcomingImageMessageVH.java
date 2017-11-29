@@ -1,4 +1,4 @@
-package com.support.robigroup.ututor.features.chat.custom.media.holders;
+package com.support.robigroup.ututor.ui.chat.custom_holders;
 
 import android.view.View;
 import android.widget.ImageView;
@@ -10,13 +10,13 @@ import com.stfalcon.chatkit.utils.RoundedImageView;
 import com.support.robigroup.ututor.R;
 import com.support.robigroup.ututor.features.chat.model.ChatMessage;
 
-
-public class CustomIncomingMessageViewHolder extends MessageHolders.IncomingTextMessageViewHolder<ChatMessage> {
+public class OutcomingImageMessageVH
+        extends MessageHolders.OutcomingTextMessageViewHolder<ChatMessage> {
 
     private ImageView image;
     private TextView tvTime;
 
-    public CustomIncomingMessageViewHolder(View itemView) {
+    public OutcomingImageMessageVH(View itemView) {
         super(itemView);
         image = itemView.findViewById(R.id.image);
         tvTime = itemView.findViewById(R.id.messageTime);
@@ -33,7 +33,9 @@ public class CustomIncomingMessageViewHolder extends MessageHolders.IncomingText
     @Override
     public void onBind(ChatMessage message) {
         super.onBind(message);
-        tvTime.setText(DateFormatter.format(message.getCreatedAt(), DateFormatter.Template.TIME));
+        String myText = DateFormatter.format(message.getCreatedAt(), DateFormatter.Template.TIME);
+        tvTime.setText(myText);
+        tvTime.setTextColor(tvTime.getContext().getResources().getColor(R.color.colorGrey));
         if (image != null && getImageLoader() != null) {
             getImageLoader().loadImage(image, message.getIconUrl());
         }

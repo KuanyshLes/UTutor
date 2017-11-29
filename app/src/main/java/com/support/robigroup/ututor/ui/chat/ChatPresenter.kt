@@ -9,21 +9,81 @@ import com.support.robigroup.ututor.commons.Functions
 import com.support.robigroup.ututor.commons.logd
 import com.support.robigroup.ututor.data.DataManager
 import com.support.robigroup.ututor.features.chat.model.ChatMessage
-import com.support.robigroup.ututor.ui.base.BasePresenter
+import com.support.robigroup.ututor.ui.base.RealmBasedPresenter
 import com.support.robigroup.ututor.utils.SchedulerProvider
 import io.reactivex.Flowable
 import io.reactivex.disposables.CompositeDisposable
-import io.realm.OrderedRealmCollectionChangeListener
-import io.realm.RealmResults
 import retrofit2.Response
 import javax.inject.Inject
-import javax.inject.Singleton
 
 
 class ChatPresenter<V : ChatMvpView> @Inject
 constructor(dataManager: DataManager, schedulerProvider: SchedulerProvider, compositeDisposable: CompositeDisposable)
-    : BasePresenter<V>(dataManager, schedulerProvider, compositeDisposable), ChatMvpPresenter<V> {
+    : RealmBasedPresenter<V>(dataManager, schedulerProvider, compositeDisposable), ChatMvpPresenter<V> {
 
+
+    override fun onViewInitialized() {
+
+        mvpView.setToolbarTitle(chatInformation.Teacher)
+
+        chatInformation.addChangeListener<ChatInformation> {
+            rs, changeset ->
+            if(changeset==null){
+                logd("chnage set is null")
+            }else{
+                if(changeset.isDeleted){
+                    logd("chnage set is deleted")
+                }else if(!rs.isLoaded){
+                    logd("object is not loaded")
+                }else if(!rs.isValid){
+                    logd("object is not valid")
+                }else{
+                    if(rs.StatusId == Constants.STATUS_COMPLETED){
+                        mvpView.showEvalDialog()
+                    }else if(rs.TeacherReady&&rs.LearnerReady){
+                        mvpView.closeReadyDialog()
+                    }else if(rs.LearnerReady&&!rs.TeacherReady){
+                        mvpView.onLearnerReadyDialog()
+                    }
+                }
+            }
+        }
+
+        val info = chatInformation
+        if(!info.TeacherReady||!info.LearnerReady){
+            val dif = Functions.getDifferenceInMillis(info.CreateTime)
+            val utc = dif - 6*60*60*1000
+            logd(utc.toString())
+            if((dif>1000&&dif<Constants.WAIT_TIME)||(utc>1000&&utc<Constants.WAIT_TIME)){
+                mvpView.showReadyDialog(dif+1000)
+            }else{
+                mvpView.startMenuActivity()
+            }
+        }
+
+
+
+
+        chatMessages.addChangeListener {
+            messages, changeSet ->
+            if (changeSet == null) {
+                mvpView.notifyItemRangeInserted(messages,0,messages.size-1)
+            }else{
+                val insertions = changeSet.insertionRanges
+                for (range in insertions) {
+                    if(mvpView==null){
+                        logd("mvpview is null")
+                        logd("hashcode from inside null : "+ this.hashCode().toString())
+                    }else{
+                        mvpView.notifyItemRangeInserted(messages, range.startIndex, range.length)
+                        logd("hashcode from inside not null : "+ this.hashCode().toString())
+
+                    }
+                }
+            }
+        }
+        mvpView.notifyItemRangeInserted(chatMessages, 0, chatMessages.size-1)
+    }
 
     override fun onFinishClick() {
         mvpView.showFinishDialog()
@@ -37,14 +97,14 @@ constructor(dataManager: DataManager, schedulerProvider: SchedulerProvider, comp
                     if (response.isSuccessful) {
                         val res = response.body()?.charStream()?.readText()
                         if (res != null) {
-                            val info = dataManager.chatInformation
-                            if (res == "ready") {
-                                dataManager.realm.executeTransaction {
+                            val info = chatInformation
+                            realm.executeTransaction {
+                                if (res == "ready") {
                                     info.LearnerReady = true
                                     info.TeacherReady = true
+                                } else {
+                                    info.LearnerReady = true
                                 }
-                            } else {
-                                info.LearnerReady = true
                             }
                         } else {
                             handleApiError(null)
@@ -58,71 +118,62 @@ constructor(dataManager: DataManager, schedulerProvider: SchedulerProvider, comp
     }
 
     override fun onCounterFinish() {
-
+        mvpView.startMenuActivity()
     }
 
-    override fun onViewInitialized() {
-        dataManager.chatInformation.addChangeListener<ChatInformation> {
-            rs, changeset ->
-            logd(rs.toString()+changeset.toString())
-            if(changeset!=null&&!rs.isManaged&&!changeset.isDeleted){
-                if(rs.StatusId == Constants.STATUS_COMPLETED){
-                    mvpView.showEvalDialog()
-                }else if(rs.TeacherReady&&rs.LearnerReady){
-                    mvpView.closeReadyDialog()
-                }else if(rs.LearnerReady&&!rs.TeacherReady){
-                    mvpView.onLearnerReadyDialog()
-                }
-            }
-        }
-
-        val info = dataManager.chatInformation
-        if(!info.TeacherReady||!info.LearnerReady){
-            val dif = Functions.getDifferenceInMillis(info.CreateTime)
-            val utc = dif - 6*60*60*1000
-            logd(utc.toString())
-            if((dif>1000&&dif<Constants.WAIT_TIME)||(utc>1000&&utc<Constants.WAIT_TIME)){
-                mvpView.showReadyDialog(dif)
-            }else{
-                mvpView.startMenuActivity()
-            }
-        }
-
-        dataManager.chatMessages.addChangeListener {
-            messages, changeSet ->
-            if (changeSet == null) {
-                mvpView.notifyItemRangeInserted(messages,0,messages.size-1)
-            }else{
-                val insertions = changeSet.insertionRanges
-                for (range in insertions) {
-                    mvpView.notifyItemRangeInserted(messages, range.startIndex, range.length)
-                }
-            }
-        }
-    }
-
-    override fun getChatInfo(): ChatInformation {
-        return dataManager.chatInformation
-    }
-
-    override fun onDestroyReadyView() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    override fun onSelectionChanged(count: Int) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun onOkFinishClick() {
+        compositeDisposable.add(dataManager.apiHelper.postChatComplete()
+                .subscribeOn(schedulerProvider.io())
+                .observeOn(schedulerProvider.ui())
+                .subscribe(
+                        { response ->
+                            if(response.isSuccessful){
+                                updateChatInformation(response.body())
+                                mvpView.showEvalDialog()
+                            }else{
+                                mvpView.startMenuActivity()
+                            }
+                        },
+                        { error ->
+                            handleApiError(ANError(error))
+                        }
+                ))
     }
 
     override fun onSubmit(input: CharSequence?): Boolean {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        compositeDisposable.add(sendMessage(messageText = input.toString())
+                .subscribeOn(schedulerProvider.io())
+                .observeOn(schedulerProvider.ui())
+                .subscribe(
+                        { messageResponse ->
+                            if(messageResponse.isSuccessful){
+                                val message: ChatMessage? = messageResponse.body()
+                                if(message!=null){
+                                    realm.executeTransaction {
+                                        realm.insert(message)
+                                    }
+                                }else{
+                                    handleApiError(null)
+                                }
+                            }else{
+                                handleApiError(ANError(messageResponse.raw()))
+                            }
+                        },
+                        { e ->
+                            handleApiError(ANError(e))
+                        }
+                )
+        )
+        return true
     }
 
     override fun hasContentFor(message: ChatMessage?, type: Byte): Boolean {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    override fun onAddAttachments() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        when (type) {
+            Constants.CONTENT_TYPE_IMAGE_TEXT -> {
+                return message!=null && message.filePath != null && message.fileIconPath !=null
+            }
+        }
+        return false
     }
 
     //methods to add image from gallery or other resources
@@ -157,8 +208,8 @@ constructor(dataManager: DataManager, schedulerProvider: SchedulerProvider, comp
                                 if(messageResponse.isSuccessful){
                                     val message: ChatMessage? = messageResponse.body()
                                     if(message!=null){
-                                        dataManager.realm.executeTransaction {
-                                            dataManager.realm.copyToRealmOrUpdate(message)
+                                        realm.executeTransaction {
+                                            realm.copyToRealmOrUpdate(message)
                                         }
                                     }else{
                                         handleApiError(null)
@@ -187,5 +238,4 @@ constructor(dataManager: DataManager, schedulerProvider: SchedulerProvider, comp
                 dataManager.apiHelper.postMessagePhoto(res)
             }else if(messageText!=null) dataManager.apiHelper.postTextMessage(messageText)
             else Flowable.empty()
-
 }
