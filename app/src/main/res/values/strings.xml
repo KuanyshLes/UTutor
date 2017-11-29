@@ -123,7 +123,7 @@
     <string name="feedback_send">Отзыв отправлен</string>
 
     <string-array name="view_types_dialog">
-        <item name="image">From gallery</item>
+        <item name="image">Галерея</item>
         <!--<item name="voice">Voice message (custom)</item>-->
     </string-array>
 

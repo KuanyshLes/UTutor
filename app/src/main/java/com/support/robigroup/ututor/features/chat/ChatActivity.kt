@@ -386,13 +386,11 @@ class ChatActivity : AppCompatActivity(),
 
     //interface methods for cutting and else
     override fun onStartContentLoading() {
-
+        logd("onStartContentLoading")
     }
 
     override fun onContentLoaded(uri: Uri?, contentType: String?) {
         if (contentType.equals(ContentManager.Content.IMAGE.toString())) {
-            //You can use any library for display image Fresco, Picasso, ImageLoader
-            //For sample:
             if(uri!=null){
                 sendFileMessage(uri.path)
             }
