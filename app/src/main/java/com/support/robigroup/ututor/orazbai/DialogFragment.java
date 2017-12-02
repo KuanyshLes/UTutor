@@ -101,28 +101,17 @@ import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
  * Created by root on 07.08.17.
  */
 
-public class DialogFragment extends Fragment implements MessageHolders.ContentChecker<DialogMessageNew>,HoldingButtonLayoutListener {
+public class DialogFragment extends Fragment implements MessageHolders.ContentChecker<DialogMessageNew>,
+        HoldingButtonLayoutListener {
     String logTAG = DialogFragment.class.getName();
-
     MainActivity context;
-
     BroadcastReceiver broadcastReceiver;
-
-
     DialogRoom privateRoom;
-
     private boolean typing=false;
-
     AlertDialog dialog;
-
     public static final int REQUEST_CODE_CAMERA_PERMISSION=1234;
 
     Vibrator vibrator;
-
-
-
-
-
     //UI
     View view;
     Toolbar toolbar;
@@ -133,14 +122,10 @@ public class DialogFragment extends Fragment implements MessageHolders.ContentCh
 
     RelativeLayout holdLongerLayout;
 
-//    MessageInput messageInput;
-
-
     SwipeRefreshLayout.OnRefreshListener onRefreshListener;
     MessagesListAdapter<DialogMessageNew> adapter;
 
     AudioPlayerCallback currentsCallback=null;
-
 
     //new message input components
     private static final DateFormat mFormatter = new SimpleDateFormat("mm:ss:SS");
@@ -353,18 +338,6 @@ public class DialogFragment extends Fragment implements MessageHolders.ContentCh
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-        Log.e(logTAG, "OnResume");
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        Log.e(logTAG, "OnPause");
-    }
-
-    @Override
     public void onStop() {
         super.onStop();
         Log.e(logTAG, "OnStop");
@@ -381,19 +354,13 @@ public class DialogFragment extends Fragment implements MessageHolders.ContentCh
     }
 
     @Override
+
     public void onDestroyView() {
         super.onDestroyView();
         context.updateUnreadDialogMessagesCount();
         context.functions.hideKeyboard();
         Log.e(logTAG, "OnDestroyView");
     }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        Log.e(logTAG, "onDestroy");
-    }
-
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
@@ -424,14 +391,17 @@ public class DialogFragment extends Fragment implements MessageHolders.ContentCh
         }
         return false;
     }
+
     public void setCurrentsCallback(AudioPlayerCallback callback){
         this.currentsCallback=callback;
     }
+
     public void stopPrevious(){
         if (currentsCallback!=null) {
             currentsCallback.onNewPlay();
         }
     }
+
     private void showSendTexMessageBtn(boolean show){
         if(show){
             mHoldingButtonLayout.setButtonEnabled(false);
@@ -468,6 +438,7 @@ public class DialogFragment extends Fragment implements MessageHolders.ContentCh
         mAnimationDuration = getResources().getInteger(android.R.integer.config_shortAnimTime);
 
     }
+
     private void showTyping(boolean isActive){
         if(isActive){
             toolbar.setSubtitle("typing");
@@ -528,6 +499,7 @@ public class DialogFragment extends Fragment implements MessageHolders.ContentCh
 
 
     }
+
     public void showAlert() {
         Log.e(logTAG,"showAlert");
         final CharSequence[] items = {"Камера", "Галерея",
@@ -558,6 +530,7 @@ public class DialogFragment extends Fragment implements MessageHolders.ContentCh
 
         builder.show();
     }
+
     private void chooseAudioType(final JSONArray soundTypes, final String originalUrl){
         Log.e(logTAG,"showAlert");
         final int originalIndex=soundTypes.length();
@@ -624,6 +597,7 @@ public class DialogFragment extends Fragment implements MessageHolders.ContentCh
         });
         builder.show();
     }
+
     private void requestPermissionCamera() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             Log.e(logTAG,"androidM+");
@@ -633,6 +607,7 @@ public class DialogFragment extends Fragment implements MessageHolders.ContentCh
             showAlert();
         }
     }
+
     private void uploadAudio(){
         Log.e("uploadAudio",AudioSavePathInDevice);
         File file=new File(AudioSavePathInDevice);
@@ -723,19 +698,20 @@ public class DialogFragment extends Fragment implements MessageHolders.ContentCh
             }
         });
     }
+
     private Uri getImageUri(Bitmap inImage) {
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
         String path = MediaStore.Images.Media.insertImage(context.getContentResolver(), inImage, "Title", null);
         return Uri.parse(path);
     }
+
     public String getRealPathFromURI(Uri uri) {
         Cursor cursor =context.getContentResolver().query(uri, null, null, null, null);
         cursor.moveToFirst();
         int idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
         return cursor.getString(idx);
     }
-
 
     public void OnPhotoPicked(Bitmap bitmap){
         Uri tempUri = getImageUri(bitmap);
@@ -750,6 +726,7 @@ public class DialogFragment extends Fragment implements MessageHolders.ContentCh
 
         uploadPhoto(finalFile,dialogMessageNew);
     }
+
     private static byte[] readBytesFromFile(File file) {
 
         FileInputStream fileInputStream = null;
@@ -787,6 +764,7 @@ public class DialogFragment extends Fragment implements MessageHolders.ContentCh
                 PrivateRooms.getInterlocutorId(privateRoom.getId()),
                 typing);
     }
+
     private void initAdapter() {
         MessageHolders holders = new MessageHolders();
 
@@ -828,6 +806,7 @@ public class DialogFragment extends Fragment implements MessageHolders.ContentCh
         messagesList.setAdapter(adapter);
 
     }
+
     private void setupStatusView(){
         long secAgo=context.functions.getLastActivity(PrivateRooms.getInterlocutorId(privateRoom.getId()));
         if (secAgo==0){
@@ -836,6 +815,7 @@ public class DialogFragment extends Fragment implements MessageHolders.ContentCh
             toolbar.setSubtitle(R.string.offline);
         }
     }
+
     private void createAlertDialog(){
         AlertDialog.Builder builder=new AlertDialog.Builder(context);
         builder.setTitle(R.string.set_dialog_name);
@@ -995,6 +975,7 @@ public class DialogFragment extends Fragment implements MessageHolders.ContentCh
         mSlideToCancel.setTranslationX(-mHoldingButtonLayout.getWidth() * offset);
         mSlideToCancel.setAlpha(1 - SLIDE_TO_CANCEL_ALPHA_MULTIPLIER * offset);
     }
+
     private void invalidateTimer() {
         mTimerRunnable = new Runnable() {
             @Override
@@ -1031,6 +1012,7 @@ public class DialogFragment extends Fragment implements MessageHolders.ContentCh
     private String getFormattedTime() {
         return mFormatter.format(new Date(System.currentTimeMillis() - mStartTime));
     }
+
     public void startRecord(){
         mediaRecorder.reset();
         mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
@@ -1060,6 +1042,7 @@ public class DialogFragment extends Fragment implements MessageHolders.ContentCh
         }
         return stringBuilder.toString();
     }
+
     public void  playAudio(String url) {
 
         try {
@@ -1082,9 +1065,11 @@ public class DialogFragment extends Fragment implements MessageHolders.ContentCh
             e.printStackTrace();
         }
     }
+
     public void stopAudio(){
         mediaPlayer.stop();
     }
+
     private void createMediaPlayer(){
         mediaPlayer=new MediaPlayer();
         mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
@@ -1098,10 +1083,11 @@ public class DialogFragment extends Fragment implements MessageHolders.ContentCh
             }
         });
     }
+
     private void createMediaRecorder(){
         mediaRecorder=new MediaRecorder();
-
     }
+
     private void makeDisabledForSomeTime(){
         mHoldingButtonLayout.setButtonEnabled(false);
         mHandler.postDelayed(new Runnable() {
@@ -1111,6 +1097,7 @@ public class DialogFragment extends Fragment implements MessageHolders.ContentCh
             }
         },1000);
     }
+
     private void showHoldLongerLayout(boolean show){
         if (show) {
             vibrator.vibrate(500);
@@ -1145,6 +1132,7 @@ public class DialogFragment extends Fragment implements MessageHolders.ContentCh
 
 
     }
+
     public void openFullSizeImage(String url){
         ImageSliderFragment imageSliderFragment=new ImageSliderFragment();
         Bundle bundle=new Bundle();

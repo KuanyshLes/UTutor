@@ -167,13 +167,13 @@ constructor(dataManager: DataManager, schedulerProvider: SchedulerProvider, comp
         return true
     }
 
-    override fun hasContentFor(message: ChatMessage?, type: Byte): Boolean {
-        when (type) {
-            Constants.CONTENT_TYPE_IMAGE_TEXT -> {
-                return message!=null && message.filePath != null && message.fileIconPath !=null
-            }
-        }
-        return false
+    override fun hasContentFor(message: ChatMessage, type: Byte): Boolean {
+        return Functions.hasContentFor(message, type)
+    }
+
+    //methods for audio
+    override fun getSavePath(): String {
+        return Functions.getSavePath(chatInformation.Id!!, chatMessages.last()!!.id)
     }
 
     //methods to add image from gallery or other resources
@@ -195,19 +195,6 @@ constructor(dataManager: DataManager, schedulerProvider: SchedulerProvider, comp
                 sendFileMessage(uri.path)
             }
         }
-    }
-
-    //overriding methods as audio listener
-    override fun onPlayClick() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    override fun onPauseClick() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    override fun onSeekChanged() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     private fun sendFileMessage(imageUri: String){

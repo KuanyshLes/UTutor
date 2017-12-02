@@ -1,4 +1,4 @@
-package com.support.robigroup.ututor.ui.chat.custom_holders
+package com.support.robigroup.ututor.ui.chat.holders
 
 import android.os.Handler
 import android.util.Log
@@ -14,28 +14,30 @@ import com.support.robigroup.ututor.Constants
 import com.support.robigroup.ututor.R
 import com.support.robigroup.ututor.commons.Functions
 import com.support.robigroup.ututor.features.chat.model.ChatMessage
-import com.support.robigroup.ututor.ui.chat.AudioHolderPresenter
+import com.support.robigroup.ututor.ui.chat.AudioHolderListener
 import com.support.robigroup.ututor.ui.chat.AudioPlayerCallback
 import com.support.robigroup.ututor.ui.chat.ChatMvpView
 
-/**
- * Created by Bimurat Mukhtar on 01.12.2017.
- */
 
 class OutcomingAudioMessageVH(itemView: View) : MessageHolders.OutcomingTextMessageViewHolder<ChatMessage>(itemView) {
 
-    lateinit var mPlayPauseBtn: ImageButton
-    lateinit var seekBar: SeekBar
-    lateinit var play_time: TextView
-    lateinit var mPresenter: AudioHolderPresenter
-
+    var mPlayPauseBtn: ImageButton
+    var seekBar: SeekBar
+    var play_time: TextView
+    var mListener: AudioHolderListener
 
     private var handler = Handler()
-
 
     private var duration: Int = 0
     private var stepToUpdate: Int = 0
     private var progress: Int = 0
+
+    init {
+        mListener = itemView.context as AudioHolderListener
+        mPlayPauseBtn = itemView.findViewById(R.id.btn_play_pause)
+        seekBar = itemView.findViewById(R.id.progress)
+        play_time = itemView.findViewById(R.id.play_time)
+    }
 
 
     private val mUpdateTimeTask = object : Runnable {
@@ -43,18 +45,11 @@ class OutcomingAudioMessageVH(itemView: View) : MessageHolders.OutcomingTextMess
             if (stepToUpdate * seekBar.progress < duration) {
                 progress += 1
                 seekBar.progress = progress
-                play_time.text = Functions.getTimerFromMillis(mPresenter.getPlayerCurrentPosition())
+                play_time.text = Functions.getTimerFromMillis(mListener.getPlayerCurrentPosition())
             }
             handler.postDelayed(this, stepToUpdate.toLong())
 
         }
-    }
-
-    init {
-        mPresenter = (itemView.context as ChatMvpView).getAudioPresenter()
-        mPlayPauseBtn = itemView.findViewById(R.id.btn_play_pause)
-        seekBar = itemView.findViewById(R.id.progress)
-        play_time = itemView.findViewById(R.id.play_time)
     }
 
     override fun onBind(message: ChatMessage) {
@@ -67,10 +62,10 @@ class OutcomingAudioMessageVH(itemView: View) : MessageHolders.OutcomingTextMess
 
         mPlayPauseBtn.setOnClickListener {
             if (mPlayPauseBtn.tag.toString() == Constants.TAG_AUDIO_PAUSE) {
-                mPresenter.stopPrevious()
+                mListener.stopPrevious()
                 download()
                 Log.e("Audio", "onStopSoPlay")
-                mPresenter.setPlayerCallback(object : AudioPlayerCallback {
+                mListener.setPlayerCallback(object : AudioPlayerCallback {
                     override fun onNewPlay() {
                         Log.e("Audio", "onNewPlay")
                         stop()
@@ -97,11 +92,11 @@ class OutcomingAudioMessageVH(itemView: View) : MessageHolders.OutcomingTextMess
                     }
 
                 })
-                mPresenter.onPlayClick(message.imageUrl)
+                mListener.onPlayClick(message.imageUrl)
 
             } else if (mPlayPauseBtn.tag.toString() == Constants.TAG_AUDIO_PLAY) {
                 Log.e("Audio", "onPlaySoStop")
-                mPresenter.onPauseClick()
+                mListener.onPauseClick()
                 stop()
             }
         }

@@ -20,6 +20,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 import android.R.attr.path
 import android.app.Activity
+import com.support.robigroup.ututor.features.chat.model.ChatMessage
 import java.net.URI
 import java.util.concurrent.TimeUnit
 
@@ -257,6 +258,33 @@ object Functions {
     }
 
     fun getProgressPercentage(tDur: Long, cDur: Long): Int{
+        return 0;
+    }
 
+    fun hasContentFor(message: ChatMessage, type: Byte): Boolean{
+        if(message.filePath != null && message.fileIconPath !=null){
+            when (type) {
+                Constants.CONTENT_TYPE_IMAGE_TEXT -> {
+                    return hasEqualFormat(message.filePath, Constants.IMAGE_TYPES)
+                }
+                Constants.CONTENT_TYPE_VOICE -> {
+                    return hasEqualFormat(message.filePath, Constants.AUDIO_TYPES)
+                }
+            }
+        }
+        return false
+    }
+
+    private fun hasEqualFormat(input: String, formats: Array<String>): Boolean{
+        val last3 = input.substring(input.length-3)
+        val last4 = input.substring(input.length-4)
+        for(format in formats){
+            return last3==format||last4==format
+        }
+        return false
+    }
+
+    fun getSavePath(chatId: Int, messageId: String): String{
+        return Constants.BASE_AUDIO_FOLDER + chatId.toString() + "/" + (messageId.toInt()+1).toString()
     }
 }

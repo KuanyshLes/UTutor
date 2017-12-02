@@ -1,11 +1,9 @@
-package com.support.robigroup.ututor.ui.chat.custom_holders;
+package com.support.robigroup.ututor.ui.chat.holders;
 
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.stfalcon.chatkit.messages.MessageHolders;
-import com.stfalcon.chatkit.utils.DateFormatter;
 import com.stfalcon.chatkit.utils.RoundedImageView;
 import com.support.robigroup.ututor.R;
 import com.support.robigroup.ututor.features.chat.model.ChatMessage;
@@ -14,12 +12,10 @@ public class OutcomingImageMessageVH
         extends MessageHolders.OutcomingTextMessageViewHolder<ChatMessage> {
 
     private ImageView image;
-    private TextView tvTime;
 
     public OutcomingImageMessageVH(View itemView) {
         super(itemView);
         image = itemView.findViewById(R.id.image);
-        tvTime = itemView.findViewById(R.id.messageTime);
         if (image != null && image instanceof RoundedImageView) {
             ((RoundedImageView) image).setCorners(
                     com.stfalcon.chatkit.R.dimen.message_bubble_corners_radius,
@@ -33,9 +29,7 @@ public class OutcomingImageMessageVH
     @Override
     public void onBind(ChatMessage message) {
         super.onBind(message);
-        String myText = DateFormatter.format(message.getCreatedAt(), DateFormatter.Template.TIME);
-        tvTime.setText(myText);
-        tvTime.setTextColor(tvTime.getContext().getResources().getColor(R.color.colorGrey));
+        time.setTextColor(time.getContext().getResources().getColor(R.color.colorGrey));
         if (image != null && getImageLoader() != null) {
             getImageLoader().loadImage(image, message.getIconUrl());
         }

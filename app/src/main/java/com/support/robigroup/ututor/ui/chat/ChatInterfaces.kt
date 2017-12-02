@@ -10,7 +10,7 @@ import com.support.robigroup.ututor.ui.base.MvpPresenter
 import com.support.robigroup.ututor.ui.base.MvpView
 
 
-interface ChatMvpView : MvpView {
+interface ChatMvpView : MvpView, AudioHolderListener {
 
     fun setToolbarTitle(title: String)
 
@@ -30,16 +30,13 @@ interface ChatMvpView : MvpView {
 
     fun notifyItemRangeInserted(messages: List<ChatMessage>, startIndex: Int,rangeLength: Int)
 
-    fun getAudioPresenter(): AudioHolderPresenter
-
 }
 
 
 interface ChatMvpPresenter<V : ChatMvpView> : MvpPresenter<V>,
         MessageInput.InputListener,
         MessageHolders.ContentChecker<ChatMessage>,
-        ContentManager.PickContentListener,
-        AudioHolderPresenter {
+        ContentManager.PickContentListener{
 
     fun onFinishClick()
 
@@ -51,16 +48,19 @@ interface ChatMvpPresenter<V : ChatMvpView> : MvpPresenter<V>,
 
     fun onCounterFinish()
 
+    fun getSavePath(): String
+
 }
 
-interface AudioHolderPresenter {
-    fun onPlayClick()
+interface AudioHolderListener {
+    fun onPlayClick(fileUrl: String)
     fun onPauseClick()
     fun onSeekChanged()
     fun setPlayerCallback(callback: AudioPlayerCallback)
     fun stopPrevious()
     fun getPlayerCurrentPosition(): Long
 }
+
 
 interface AudioPlayerCallback {
     fun onNewPlay()

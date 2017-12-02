@@ -23,8 +23,8 @@ import com.support.robigroup.ututor.commons.requestErrorHandler
 import com.support.robigroup.ututor.commons.toast
 import com.support.robigroup.ututor.commons.ChatHistory
 import com.support.robigroup.ututor.features.chat.ChatActivity.Companion.CONTENT_TYPE_IMAGE_TEXT
-import com.support.robigroup.ututor.ui.chat.custom_holders.IncomingImageMessageVH
-import com.support.robigroup.ututor.ui.chat.custom_holders.OutcomingImageMessageVH
+import com.support.robigroup.ututor.ui.chat.holders.IncomingImageMessageVH
+import com.support.robigroup.ututor.ui.chat.holders.OutcomingImageMessageVH
 import com.support.robigroup.ututor.features.chat.model.ChatMessage
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers

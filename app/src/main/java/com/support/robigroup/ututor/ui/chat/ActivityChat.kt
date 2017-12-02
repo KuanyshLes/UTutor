@@ -1,11 +1,29 @@
 package com.support.robigroup.ututor.ui.chat
 
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
+import android.media.AudioManager
+import android.media.MediaPlayer
+import android.media.MediaRecorder
 import android.os.Bundle
+import android.os.Environment
+import android.os.Vibrator
 import android.support.v7.app.AlertDialog
+import android.text.Editable
+import android.text.TextWatcher
+import android.util.Log
 import android.view.Menu
+import android.view.View
+import android.view.ViewPropertyAnimator
+import android.widget.EditText
+import android.widget.ImageView
+import android.widget.TextView
+import android.widget.Toast
+import com.dewarder.holdinglibrary.HoldingButtonLayout
+import com.dewarder.holdinglibrary.HoldingButtonLayoutListener
 import com.squareup.picasso.Picasso
 import com.stfalcon.chatkit.commons.ImageLoader
 import com.stfalcon.chatkit.messages.MessageHolders
@@ -16,18 +34,22 @@ import com.stfalcon.contentmanager.ContentManager
 import com.stfalcon.frescoimageviewer.ImageViewer
 import com.support.robigroup.ututor.Constants
 import com.support.robigroup.ututor.R
-import com.support.robigroup.ututor.ui.chat.custom_holders.IncomingImageMessageVH
-import com.support.robigroup.ututor.ui.chat.custom_holders.OutcomingImageMessageVH
+import com.support.robigroup.ututor.ui.chat.holders.IncomingImageMessageVH
+import com.support.robigroup.ututor.ui.chat.holders.OutcomingImageMessageVH
 import com.support.robigroup.ututor.features.chat.model.ChatMessage
 import com.support.robigroup.ututor.features.main.MenuActivity
 import com.support.robigroup.ututor.ui.base.BaseActivity
-import com.support.robigroup.ututor.ui.chat.custom_holders.IncomingAudioMessageVH
+import com.support.robigroup.ututor.ui.chat.holders.IncomingAudioMessageVH
 import com.support.robigroup.ututor.ui.chat.eval.RateDialog
+import com.support.robigroup.ututor.ui.chat.holders.OutcomingAudioMessageVH
 import com.support.robigroup.ututor.ui.chat.ready.ReadyDialog
 import kotlinx.android.synthetic.main.activity_chat.*
+import java.io.IOException
+import java.text.SimpleDateFormat
+import java.util.*
 import javax.inject.Inject
 
-class ActivityChat : BaseActivity(), ChatMvpView {
+class ActivityChat : BaseActivity(), ChatMvpView, HoldingButtonLayoutListener {
 
     private lateinit var messagesList: MessagesList
     private lateinit var messagesAdapter: MessagesListAdapter<ChatMessage>
@@ -39,9 +61,39 @@ class ActivityChat : BaseActivity(), ChatMvpView {
     @Inject
     lateinit var mPresenter: ChatMvpPresenter<ChatMvpView>
 
+    //audio parts
+    private lateinit var mediaPlayer: MediaPlayer
+    private lateinit var mediaRecorder: MediaRecorder
+
+    private var currentsCallback: AudioPlayerCallback? = null
+
+    //holding button
+    private val mFormatter = SimpleDateFormat("mm:ss:SS")
+    private val SLIDE_TO_CANCEL_ALPHA_MULTIPLIER = 2.5f
+    private val TIME_INVALIDATION_FREQUENCY = 50L
+
+    private lateinit var mHoldingButtonLayout: HoldingButtonLayout
+    private lateinit var mTime: TextView
+    private lateinit var mInput: EditText
+    private lateinit var mSlideToCancel: View
+    private lateinit var sendTextMessageIV: ImageView
+    private lateinit var attachFileIV: ImageView
+    private lateinit var startRecordIV: ImageView
+
+    private var mAnimationDuration: Int = 0
+    var mTimeAnimator: ViewPropertyAnimator? = null
+    var mSlideToCancelAnimator: ViewPropertyAnimator? = null
+    var mInputAnimator: ViewPropertyAnimator? = null
+
+    lateinit var vibrator: Vibrator
+    private var mStartTime: Long = 0
+    private var mTimerRunnable: Runnable? = null
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_chat)
+        vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
         activityComponent.inject(this)
         mPresenter.onAttach(this)
         setUp()
@@ -51,17 +103,47 @@ class ActivityChat : BaseActivity(), ChatMvpView {
 
     override fun setUp() {
         setSupportActionBar(toolbar)
+        //holding button
+        mInput = findViewById(R.id.input)
+        mInput.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {}
+            override fun onTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {
+                if (charSequence.isNotEmpty()) {
+                    showSendTexMessageBtn(true)
+                } else if (charSequence.isEmpty()) {
+                    showSendTexMessageBtn(false)
+                }
+            }
+            override fun afterTextChanged(editable: Editable) {}
+        })
 
-        val input = findViewById<MessageInput>(R.id.input)
-        input.setInputListener(mPresenter)
-        input.setAttachmentsListener({
+        mHoldingButtonLayout = findViewById(R.id.input_holder)
+        mHoldingButtonLayout.addListener(this)
+
+        mTime = findViewById(R.id.time)
+        mSlideToCancel = findViewById(R.id.slide_to_cancel)
+
+        mAnimationDuration = resources.getInteger(android.R.integer.config_shortAnimTime)
+
+        sendTextMessageIV = findViewById(R.id.sendTextMessage)
+        sendTextMessageIV.setOnClickListener{
+            showSendTexMessageBtn(false)
+            mPresenter.onSubmit(mInput.text.trim().toString())
+        }
+
+        attachFileIV = findViewById(R.id.attachIV)
+        attachFileIV.setOnClickListener {
             AlertDialog.Builder(this)
                     .setItems(R.array.view_types_dialog, (
                             DialogInterface.OnClickListener{ p0, order -> when (order) {
                                 0 -> contentManager.pickContent(ContentManager.Content.IMAGE)}})
                     ).show()
-        })
 
+        }
+
+        startRecordIV = findViewById(R.id.start_record)
+
+        //messages list
         messagesList = findViewById(R.id.messagesList)
         val holders = MessageHolders()
                 .registerContentType(
@@ -75,7 +157,7 @@ class ActivityChat : BaseActivity(), ChatMvpView {
                         Constants.CONTENT_TYPE_VOICE,
                         IncomingAudioMessageVH::class.java,
                         R.layout.item_incoming_audio_message,
-                        IncomingAudioMessageVH::class.java,
+                        OutcomingAudioMessageVH::class.java,
                         R.layout.item_incoming_audio_message,
                         mPresenter)
 
@@ -97,9 +179,18 @@ class ActivityChat : BaseActivity(), ChatMvpView {
 
         contentManager = ContentManager(this, mPresenter)
         text_finish.setOnClickListener { mPresenter.onFinishClick() }
-    }
 
-    override fun getAudioPresenter(): AudioHolderPresenter = mPresenter
+        //audio initialising
+        mediaPlayer = MediaPlayer()
+        mediaPlayer.setOnCompletionListener {
+            player ->
+            Log.e( "Audio", "onComplete")
+            currentsCallback?.onComplete()
+
+        }
+        mediaRecorder = MediaRecorder()
+        mSlideToCancel = findViewById(R.id.slide_to_cancel)
+    }
 
     override fun setToolbarTitle(title: String) {
         teacher_name_title.text = title
@@ -111,6 +202,189 @@ class ActivityChat : BaseActivity(), ChatMvpView {
         messagesAdapter.unselectAllItems()
         return true
     }
+
+    //overriding methods as audio listener
+    override fun onPlayClick(fileUrl: String) {
+        try {
+            mediaPlayer.reset()
+            mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC)
+            mediaPlayer.setDataSource(fileUrl)
+            mediaPlayer.setOnPreparedListener {
+                currentsCallback?.onReady(mediaPlayer.duration)
+                mediaPlayer.start()
+            }
+            mediaPlayer.prepareAsync()
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
+
+    }
+
+    override fun onPauseClick() {
+        mediaPlayer.pause()
+    }
+
+    override fun onSeekChanged() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun setPlayerCallback(callback: AudioPlayerCallback) {
+        currentsCallback = callback
+    }
+
+    override fun stopPrevious() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun getPlayerCurrentPosition(): Long {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    private fun showSendTexMessageBtn(show: Boolean) {
+        if (show) {
+            mHoldingButtonLayout.isButtonEnabled = false
+            startRecordIV.visibility = View.GONE
+            sendTextMessageIV.visibility = View.VISIBLE
+        } else {
+            mHoldingButtonLayout.isButtonEnabled = true
+            sendTextMessageIV.visibility = View.GONE
+            startRecordIV.visibility = View.VISIBLE
+        }
+    }
+
+    private fun startRecord() {
+        mediaRecorder.reset()
+        mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC)
+        mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)
+        mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC)
+        mediaRecorder.setOutputFile(mPresenter.getSavePath())
+        try {
+            mediaRecorder.prepare()
+            mediaRecorder.start()
+        } catch (e: IllegalStateException) {
+            // TODO Auto-generated catch block
+            e.printStackTrace()
+        } catch (e: IOException) {
+            // TODO Auto-generated catch block
+            e.printStackTrace()
+        }
+
+    }
+
+    //holding button methods
+    override fun onBeforeExpand() {
+        cancelAllAnimations()
+
+        mSlideToCancel.translationX = 0f
+        mSlideToCancel.alpha = 0f
+        mSlideToCancel.visibility = View.VISIBLE
+        mSlideToCancelAnimator = mSlideToCancel.animate().alpha(1f).setDuration(mAnimationDuration.toLong())
+        mSlideToCancelAnimator?.start()
+
+        mInputAnimator = mInput.animate().alpha(0f).setDuration(mAnimationDuration.toLong())
+        mInputAnimator?.setListener(object : AnimatorListenerAdapter() {
+            override fun onAnimationEnd(animation: Animator) {
+                mInput.visibility = View.INVISIBLE
+                mInputAnimator?.setListener(null)
+            }
+        })
+        mInputAnimator?.start()
+
+        mTime.translationY = mTime.height.toFloat()
+        mTime.alpha = 0f
+        mTime.visibility = View.VISIBLE
+        mTimeAnimator = mTime.animate().translationY(0f).alpha(1f).setDuration(mAnimationDuration.toLong())
+        mTimeAnimator?.start()
+
+    }
+
+    override fun onExpand() {
+        mStartTime = System.currentTimeMillis()
+        invalidateTimer()
+        currentsCallback?.onNewPlay()
+        currentsCallback = null
+        startRecord()
+    }
+
+    override fun onBeforeCollapse() {
+        cancelAllAnimations()
+
+        mSlideToCancelAnimator = mSlideToCancel.animate().alpha(0f).setDuration(mAnimationDuration.toLong())
+        mSlideToCancelAnimator?.setListener(object : AnimatorListenerAdapter() {
+            override fun onAnimationEnd(animation: Animator) {
+                mSlideToCancel.visibility = View.INVISIBLE
+                mSlideToCancelAnimator?.setListener(null)
+            }
+        })
+        mSlideToCancelAnimator?.start()
+
+        mInput.alpha = 0f
+        mInput.visibility = View.VISIBLE
+        mInputAnimator = mInput.animate().alpha(1f).setDuration(mAnimationDuration.toLong())
+        mInputAnimator?.start()
+
+        mTimeAnimator = mTime.animate().translationY(mTime.height.toFloat()).alpha(0f).setDuration(mAnimationDuration.toLong())
+        mTimeAnimator?.setListener(object : AnimatorListenerAdapter() {
+            override fun onAnimationEnd(animation: Animator) {
+                mTime.visibility = View.INVISIBLE
+                mTimeAnimator?.setListener(null)
+            }
+        })
+        mTimeAnimator?.start()
+    }
+
+    override fun onCollapse(isCancel: Boolean) {
+        stopTimer()
+        try {
+            mediaRecorder.stop()
+        } catch (e: RuntimeException) {
+            e.printStackTrace()
+        }
+        if (isCancel) {
+            vibrator.vibrate(500)
+            Toast.makeText(this, "Action canceled! Time " + getFormattedTime(), Toast.LENGTH_SHORT).show()
+        } else {
+            val duarationms = System.currentTimeMillis() - mStartTime
+            Log.e("Audio", "duration " + duarationms)
+//            if (duarationms / 1000.0 > 1.0) {
+//                uploadAudio()
+//            } else {
+//                showHoldLongerLayout(true)
+//            }
+            Toast.makeText(this, "Action submitted! Time " + getFormattedTime(), Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    override fun onOffsetChanged(offset: Float, isCancel: Boolean) {
+        mSlideToCancel.translationX = -mHoldingButtonLayout.width * offset
+        mSlideToCancel.alpha = 1 - SLIDE_TO_CANCEL_ALPHA_MULTIPLIER * offset
+    }
+
+    private fun invalidateTimer() {
+        mTimerRunnable = Runnable {
+            mTime.text = getFormattedTime()
+            invalidateTimer()
+        }
+
+        mTime.postDelayed(mTimerRunnable, TIME_INVALIDATION_FREQUENCY)
+    }
+
+    private fun stopTimer() {
+        if (mTimerRunnable != null) {
+            mTime.handler.removeCallbacks(mTimerRunnable)
+        }
+    }
+
+    private fun cancelAllAnimations() {
+        mInputAnimator?.cancel()
+        mSlideToCancelAnimator?.cancel()
+        mTimeAnimator?.cancel()
+    }
+
+    private fun getFormattedTime(): String {
+        return mFormatter.format(Date(System.currentTimeMillis() - mStartTime))
+    }
+    //END HOLDING BUTTON
 
     override fun startMenuActivity() {
         MenuActivity.open(this)
@@ -178,7 +452,7 @@ class ActivityChat : BaseActivity(), ChatMvpView {
         if(tag!=null){
             when(tag){
                 Constants.TAG_RATE_DIALOG ->
-                        startMenuActivity()
+                    startMenuActivity()
             }
         }
         super.onFragmentDetached(tag)

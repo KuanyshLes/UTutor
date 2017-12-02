@@ -1,0 +1,147 @@
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+    <!--<include-->
+        <!--android:id="@+id/toolbar_native"-->
+        <!--layout="@layout/toolbar_native">-->
+    <!--</include>-->
+    <!--<android.support.v4.widget.SwipeRefreshLayout-->
+        <!--android:layout_below="@+id/toolbar_native"-->
+        <!--android:id="@+id/swip"-->
+        <!--android:layout_above="@+id/input_holder"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent">-->
+        <!--<com.stfalcon.chatkit.messages.MessagesList-->
+            <!--app:outcomingTimeTextColor="@color/colorAccent"-->
+            <!--android:id="@+id/messagesList"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent" />-->
+    <!--</android.support.v4.widget.SwipeRefreshLayout>-->
+
+    <!--<View-->
+        <!--android:id="@+id/divider"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="1dp"-->
+        <!--android:layout_above="@+id/input_holder"-->
+        <!--android:layout_marginLeft="16dp"-->
+        <!--android:layout_marginRight="16dp"-->
+        <!--android:background="@color/gray_light"/>-->
+    <!--<RelativeLayout-->
+        <!--android:visibility="invisible"-->
+        <!--android:layout_marginBottom="5dp"-->
+        <!--android:background="@drawable/hold_longer_layout_bg"-->
+        <!--android:layout_alignEnd="@id/divider"-->
+        <!--android:layout_above="@+id/divider"-->
+        <!--android:id="@+id/holdLongerLayout"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content">-->
+        <!--<TextView-->
+            <!--android:layout_margin="10dp"-->
+            <!--android:textColor="@color/white"-->
+            <!--android:text="@string/hold_longer"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content" />-->
+
+    <!--</RelativeLayout>-->
+    <!--<com.dewarder.holdinglibrary.HoldingButtonLayout-->
+        <!--android:id="@+id/input_holder"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_alignParentBottom="true"-->
+        <!--android:layout_centerHorizontal="true"-->
+        <!--app:hbl_cancel_icon="@drawable/ic_close_black_24dp"-->
+        <!--app:hbl_holding_view="@+id/start_record"-->
+        <!--app:hbl_icon="@drawable/ic_mic_black_24dp"-->
+        <!--app:hbl_radius="@dimen/activity_main_holding_button_radius"-->
+        <!--app:hbl_second_radius="@dimen/activity_main_holding_button_second_radius">-->
+
+        <!--<LinearLayout-->
+            <!--android:id="@+id/slide_to_cancel"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_gravity="center_vertical|end"-->
+            <!--android:layout_marginEnd="@dimen/activity_main_slide_to_cancel_margin_right"-->
+            <!--android:layout_marginRight="@dimen/activity_main_slide_to_cancel_margin_right"-->
+            <!--android:gravity="center_vertical"-->
+            <!--android:visibility="invisible">-->
+
+            <!--<ImageView-->
+                <!--android:layout_width="@dimen/activity_main_slide_to_cancel_icon_size"-->
+                <!--android:layout_height="@dimen/activity_main_slide_to_cancel_icon_size"-->
+                <!--android:layout_marginEnd="@dimen/activity_main_slide_to_cancel_icon_margin_right"-->
+                <!--android:layout_marginRight="@dimen/activity_main_slide_to_cancel_icon_margin_right"-->
+                <!--android:scaleType="center"-->
+                <!--app:srcCompat="@drawable/ic_keyboard_arrow_left_black_24dp"/>-->
+
+            <!--<TextView-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text="Swipe to cancel"/>-->
+
+        <!--</LinearLayout>-->
+
+        <!--<RelativeLayout-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:minHeight="@dimen/activity_main_input_holder_min_height">-->
+            <!--<TextView-->
+                <!--android:layout_centerVertical="true"-->
+                <!--android:layout_marginLeft="20dp"-->
+                <!--android:id="@+id/time"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text="00:00:00"-->
+                <!--android:visibility="gone"/>-->
+
+            <!--<LinearLayout-->
+                <!--android:layout_marginLeft="10dp"-->
+                <!--android:layout_centerVertical="true"-->
+                <!--android:layout_toStartOf="@id/start_record"-->
+                <!--android:id="@+id/inputCont"-->
+                <!--android:orientation="horizontal"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content">-->
+                <!--<ImageView-->
+                    <!--android:id="@+id/attachIV"-->
+                    <!--android:src="@drawable/ic_add_box"-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content" />-->
+                <!--<EditText-->
+                    <!--android:layout_marginLeft="10dp"-->
+                    <!--android:id="@+id/input"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:background="@null"-->
+                    <!--android:hint="Type message"-->
+                    <!--android:paddingBottom="@dimen/activity_main_input_padding_vertical"-->
+                    <!--android:paddingTop="@dimen/activity_main_input_padding_vertical"-->
+                    <!--android:textSize="@dimen/activity_main_input_text_size"/>-->
+
+
+            <!--</LinearLayout>-->
+            <!--<ImageView-->
+                <!--android:layout_alignParentEnd="true"-->
+                <!--android:id="@+id/start_record"-->
+                <!--android:layout_width="@dimen/activity_main_start_record_width"-->
+                <!--android:layout_height="48dp"-->
+                <!--android:scaleType="center"-->
+                <!--app:srcCompat="@drawable/ic_mic_black_24dp"/>-->
+            <!--<ImageView-->
+                <!--android:layout_alignParentEnd="true"-->
+                <!--android:visibility="gone"-->
+                <!--android:id="@+id/sendTextMessage"-->
+                <!--android:src="@drawable/ic_send"-->
+                <!--android:scaleType="center"-->
+                <!--android:layout_width="48dp"-->
+                <!--android:layout_height="48dp" />-->
+
+        <!--</RelativeLayout>-->
+
+    <!--</com.dewarder.holdinglibrary.HoldingButtonLayout>-->
+
+
+
+</RelativeLayout>

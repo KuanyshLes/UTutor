@@ -1,5 +1,6 @@
 package com.support.robigroup.ututor
 
+import android.os.Environment
 import com.support.robigroup.ututor.commons.Language
 import com.support.robigroup.ututor.commons.Type
 import java.util.*
@@ -47,7 +48,7 @@ object Constants {
     val UTC_TIME = 6*60*60*1000
 
     val CONTENT_TYPE_IMAGE_TEXT: Byte = 100
-    val CONTENT_TYPE_VOICE: Byte = 100
+    val CONTENT_TYPE_VOICE: Byte = 101
 
     val PASSWORD_PATTERN = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,}$"
     val EMAIL_PATTERN = "^[a-zA-Z0-9#_~!$&'()*+,;=:.\"(),:;<>@\\[\\]\\\\]+@[a-zA-Z0-9-]+(\\.[a-zA-Z0-9-]+)*$"
@@ -61,6 +62,20 @@ object Constants {
             Type(1, "Домашнее задание", R.drawable.ic_choose_homes),
             Type(2, "Вопросы по тесту", R.drawable.ic_choose_test),
             Type( 3,"Подготовка к ЕНТ", R.drawable.ic_choose_test)
+    )
+
+    val BASE_AUDIO_FOLDER = Environment.getExternalStorageDirectory().absolutePath + "/UTutor/"
+
+    val AUDIO_TYPES = arrayOf(
+            "mp3",
+            "3gp",
+            "mp4"
+    )
+    val IMAGE_TYPES = arrayOf(
+            "jpg",
+            "png",
+            "bmp",
+            "gif"
     )
 
 

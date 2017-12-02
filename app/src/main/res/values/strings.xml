@@ -88,7 +88,7 @@
 
 
     // for chat
-    <string name="hint_enter_a_message">Type a message…</string>
+    <string name="hint_enter_a_message">Введите сообщение</string>
     <string name="action_delete">Delete</string>
     <string name="action_copy">Copy</string>
     <string name="copied_message">Message copied!</string>
@@ -125,6 +125,11 @@
     <string name="success_password">Пароли изменены</string>
     <string name="un_success_password">Пароли не был изменен</string>
     <string name="feedback_send">Отзыв отправлен</string>
+
+
+    //audio
+    <string name="label_slide_to_cancel">Slide to cancel</string>
+
 
     <string-array name="view_types_dialog">
         <item name="image">Галерея</item>

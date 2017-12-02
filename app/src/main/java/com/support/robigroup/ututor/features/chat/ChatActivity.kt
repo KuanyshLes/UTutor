@@ -25,8 +25,8 @@ import com.support.robigroup.ututor.NotificationService
 import com.support.robigroup.ututor.R
 import com.support.robigroup.ututor.api.MainManager
 import com.support.robigroup.ututor.commons.*
-import com.support.robigroup.ututor.ui.chat.custom_holders.IncomingImageMessageVH
-import com.support.robigroup.ututor.ui.chat.custom_holders.OutcomingImageMessageVH
+import com.support.robigroup.ututor.ui.chat.holders.IncomingImageMessageVH
+import com.support.robigroup.ututor.ui.chat.holders.OutcomingImageMessageVH
 import com.support.robigroup.ututor.features.chat.model.ChatMessage
 import com.support.robigroup.ututor.features.chat.model.ChatUser
 import com.support.robigroup.ututor.features.main.MenuActivity
@@ -152,9 +152,9 @@ class ChatActivity : AppCompatActivity(),
         if(messagesAdapter!!.isEmpty)
             reloadMessages()
 
-        val input = findViewById<MessageInput>(R.id.input)
-        input.setInputListener(this)
-        input.setAttachmentsListener(this)
+//        val input = findViewById<MessageInput>(R.id.input)
+//        input.setInputListener(this)
+//        input.setAttachmentsListener(this)
 
 
         mReadyDialog = ReadyDialog()
