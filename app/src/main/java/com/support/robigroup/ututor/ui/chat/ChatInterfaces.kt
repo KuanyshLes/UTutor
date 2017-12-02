@@ -30,13 +30,16 @@ interface ChatMvpView : MvpView {
 
     fun notifyItemRangeInserted(messages: List<ChatMessage>, startIndex: Int,rangeLength: Int)
 
+    fun getAudioPresenter(): AudioHolderPresenter
+
 }
 
 
 interface ChatMvpPresenter<V : ChatMvpView> : MvpPresenter<V>,
         MessageInput.InputListener,
         MessageHolders.ContentChecker<ChatMessage>,
-        ContentManager.PickContentListener{
+        ContentManager.PickContentListener,
+        AudioHolderPresenter {
 
     fun onFinishClick()
 
@@ -49,6 +52,23 @@ interface ChatMvpPresenter<V : ChatMvpView> : MvpPresenter<V>,
     fun onCounterFinish()
 
 }
+
+interface AudioHolderPresenter {
+    fun onPlayClick()
+    fun onPauseClick()
+    fun onSeekChanged()
+    fun setPlayerCallback(callback: AudioPlayerCallback)
+    fun stopPrevious()
+    fun getPlayerCurrentPosition(): Long
+}
+
+interface AudioPlayerCallback {
+    fun onNewPlay()
+    fun onProgressChanged(cDur: Long, tDur: Long)
+    fun onComplete()
+    fun onReady(duration: Int)
+}
+
 
 interface RateMvpView : DialogMvpView{
 

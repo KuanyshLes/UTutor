@@ -233,10 +233,10 @@ object Functions {
         }
     }
 
-    fun getTimeWaiting(seconds: Long): String{
-        val hours = TimeUnit.SECONDS.toHours(seconds)
-        val minutes = TimeUnit.SECONDS.toMinutes(seconds) - TimeUnit.HOURS.toMinutes(hours)
-        val seconds = seconds -TimeUnit.MINUTES.toSeconds(TimeUnit.SECONDS.toMinutes(seconds))
+    fun getTimeWaiting(millis: Long): String{
+        val hours = TimeUnit.SECONDS.toHours(millis)
+        val minutes = TimeUnit.SECONDS.toMinutes(millis) - TimeUnit.HOURS.toMinutes(hours)
+        val seconds = millis -TimeUnit.MINUTES.toSeconds(TimeUnit.SECONDS.toMinutes(millis))
         if(hours == 0L) {
             if (minutes == 0L) {
                 return String.format("%2dс.", seconds)
@@ -244,5 +244,19 @@ object Functions {
             return String.format("%2dм. %2dc.", minutes, seconds)
         }
         return String.format("%2dч. %2dм. %2dc.", hours, minutes, seconds)
+    }
+
+    fun getTimerFromMillis(millis: Long): String{
+        val hours = TimeUnit.SECONDS.toHours(millis)
+        val minutes = TimeUnit.SECONDS.toMinutes(millis) - TimeUnit.HOURS.toMinutes(hours)
+        val seconds = millis -TimeUnit.MINUTES.toSeconds(TimeUnit.SECONDS.toMinutes(millis))
+        if(hours == 0L) {
+            return String.format("%2d:%2d.", minutes, seconds)
+        }
+        return String.format("%2d:%2dм:2dc.", hours, minutes, seconds)
+    }
+
+    fun getProgressPercentage(tDur: Long, cDur: Long): Int{
+
     }
 }

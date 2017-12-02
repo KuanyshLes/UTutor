@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/bubble"
     android:layout_width="match_parent"
     android:layout_height="70dp">
 
     <ImageButton
-        android:id="@+id/ic_play_pause"
+        android:id="@+id/btn_play_pause"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_marginBottom="8dp"
@@ -16,44 +15,45 @@
         android:background="@null"
         android:scaleType="centerCrop"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/seek_bar"
+        app:layout_constraintEnd_toStartOf="@+id/progress"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_play_48_black" />
+        app:srcCompat="@drawable/ic_play_48_black"
+        android:layout_marginLeft="8dp" />
 
     <SeekBar
-        android:id="@+id/seek_bar"
+        android:id="@+id/progress"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/ic_play_pause"
+        app:layout_constraintStart_toEndOf="@+id/btn_play_pause"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/time"
+        android:id="@+id/messageTime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         android:layout_marginTop="8dp"
         android:text="@string/ex_clock_timer"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/seek_bar"
-        app:layout_constraintTop_toBottomOf="@+id/seek_bar" />
+        app:layout_constraintEnd_toEndOf="@+id/progress"
+        app:layout_constraintTop_toBottomOf="@+id/progress" />
 
     <TextView
-        android:id="@+id/counter_time"
+        android:id="@+id/play_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         android:layout_marginTop="8dp"
         android:text="@string/ex_clock_timer"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/seek_bar"
-        app:layout_constraintTop_toBottomOf="@+id/seek_bar" />
+        app:layout_constraintStart_toStartOf="@+id/progress"
+        app:layout_constraintTop_toBottomOf="@+id/progress" />
 
 
 </android.support.constraint.ConstraintLayout>

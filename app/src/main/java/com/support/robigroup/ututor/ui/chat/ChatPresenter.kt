@@ -197,6 +197,19 @@ constructor(dataManager: DataManager, schedulerProvider: SchedulerProvider, comp
         }
     }
 
+    //overriding methods as audio listener
+    override fun onPlayClick() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onPauseClick() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onSeekChanged() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
     private fun sendFileMessage(imageUri: String){
         val encodedImage = Functions.getEncodedImage(imageUri)
         if(encodedImage!=null){

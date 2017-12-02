@@ -36,6 +36,11 @@ object Constants {
     val TAG_FINISH_DIALOG = "finishDialog"
     val TAG_RATE_DIALOG = "evalDialog"
 
+    val TAG_AUDIO_PLAY = "play"
+    val TAG_AUDIO_PAUSE = "pause"
+    val TAG_AUDIO_DOWNLOAD = "download"
+
+
     val UTC: TimeZone = TimeZone.getTimeZone("UTC")
     val TIMEFORMAT: String = "yyyy-MM-dd'T'HH:mm:ss"
     val WAIT_TIME = 30000

@@ -14,12 +14,10 @@ import com.support.robigroup.ututor.features.chat.model.ChatMessage;
 public class IncomingImageMessageVH extends MessageHolders.IncomingTextMessageViewHolder<ChatMessage> {
 
     private ImageView image;
-    private TextView tvTime;
 
     public IncomingImageMessageVH(View itemView) {
         super(itemView);
         image = itemView.findViewById(R.id.image);
-        tvTime = itemView.findViewById(R.id.messageTime);
         if (image != null && image instanceof RoundedImageView) {
             ((RoundedImageView) image).setCorners(
                     com.stfalcon.chatkit.R.dimen.message_bubble_corners_radius,
@@ -33,7 +31,7 @@ public class IncomingImageMessageVH extends MessageHolders.IncomingTextMessageVi
     @Override
     public void onBind(ChatMessage message) {
         super.onBind(message);
-        tvTime.setText(DateFormatter.format(message.getCreatedAt(), DateFormatter.Template.TIME));
+        time.setText(DateFormatter.format(message.getCreatedAt(), DateFormatter.Template.TIME));
         if (image != null && getImageLoader() != null) {
             getImageLoader().loadImage(image, message.getIconUrl());
         }

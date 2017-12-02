@@ -21,7 +21,7 @@ import com.support.robigroup.ututor.ui.chat.custom_holders.OutcomingImageMessage
 import com.support.robigroup.ututor.features.chat.model.ChatMessage
 import com.support.robigroup.ututor.features.main.MenuActivity
 import com.support.robigroup.ututor.ui.base.BaseActivity
-import com.support.robigroup.ututor.ui.chat.custom_holders.IncomingVoiceMessageVH
+import com.support.robigroup.ututor.ui.chat.custom_holders.IncomingAudioMessageVH
 import com.support.robigroup.ututor.ui.chat.eval.RateDialog
 import com.support.robigroup.ututor.ui.chat.ready.ReadyDialog
 import kotlinx.android.synthetic.main.activity_chat.*
@@ -73,10 +73,10 @@ class ActivityChat : BaseActivity(), ChatMvpView {
                         mPresenter)
                 .registerContentType(
                         Constants.CONTENT_TYPE_VOICE,
-                        IncomingVoiceMessageVH::class.java,
-                        R.layout.item_incoming_voice_message,
-                        IncomingVoiceMessageVH::class.java,
-                        R.layout.item_incoming_voice_message,
+                        IncomingAudioMessageVH::class.java,
+                        R.layout.item_incoming_audio_message,
+                        IncomingAudioMessageVH::class.java,
+                        R.layout.item_incoming_audio_message,
                         mPresenter)
 
         messagesAdapter = MessagesListAdapter(Constants.LEARNER_ID, holders, imageLoader)
@@ -98,6 +98,8 @@ class ActivityChat : BaseActivity(), ChatMvpView {
         contentManager = ContentManager(this, mPresenter)
         text_finish.setOnClickListener { mPresenter.onFinishClick() }
     }
+
+    override fun getAudioPresenter(): AudioHolderPresenter = mPresenter
 
     override fun setToolbarTitle(title: String) {
         teacher_name_title.text = title
