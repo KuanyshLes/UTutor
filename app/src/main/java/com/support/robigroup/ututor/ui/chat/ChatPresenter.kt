@@ -1,5 +1,6 @@
 package com.support.robigroup.ututor.ui.chat
 
+import android.media.MediaPlayer
 import android.net.Uri
 import com.androidnetworking.error.ANError
 import com.stfalcon.contentmanager.ContentManager
@@ -14,13 +15,21 @@ import com.support.robigroup.ututor.utils.SchedulerProvider
 import io.reactivex.Flowable
 import io.reactivex.disposables.CompositeDisposable
 import retrofit2.Response
+import java.util.*
 import javax.inject.Inject
+import java.io.File.separator
+import android.os.Environment.getExternalStorageDirectory
+import android.icu.lang.UCharacter.GraphemeClusterBreak.V
+import android.os.Environment
+import java.io.File
 
 
 class ChatPresenter<V : ChatMvpView> @Inject
 constructor(dataManager: DataManager, schedulerProvider: SchedulerProvider, compositeDisposable: CompositeDisposable)
     : RealmBasedPresenter<V>(dataManager, schedulerProvider, compositeDisposable), ChatMvpPresenter<V> {
 
+
+    private var audioCallback: AudioPlayerCallback? = null
 
     override fun onViewInitialized() {
 
@@ -171,10 +180,84 @@ constructor(dataManager: DataManager, schedulerProvider: SchedulerProvider, comp
         return Functions.hasContentFor(message, type)
     }
 
-    //methods for audio
-    override fun getSavePath(): String {
-        return Functions.getSavePath(chatInformation.Id!!, chatMessages.last()!!.id)
+
+    //callback from play pause events
+    override fun onCompletion(p0: MediaPlayer?) {
+        audioCallback?.onComplete()
     }
+
+    override fun stopPrevious() {
+        mvpView.stopPlay()
+    }
+
+    override fun onPlayClick(message: ChatMessage) {
+        audioCallback?.onNewPlay()
+        mvpView.startPlay(getSavePath(chatInformation.Id!!.toString(),message.id.toString()))
+    }
+
+    override fun onPauseClick() {
+        mvpView.pausePlay()
+    }
+
+    override fun onPlayFinish() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun setPlayerCallback(callback: AudioPlayerCallback) {
+        audioCallback = callback
+    }
+
+    override fun getPlayerCurrentPosition(): Long {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    private fun getSavePath(chatId: String, messageId: String): String {
+        var path = Constants.BASE_AUDIO_FOLDER + chatId + "/"
+        File(path).mkdirs()
+        return Constants.BASE_AUDIO_FOLDER + chatId + "/" + messageId+
+                "audio.3gp"
+    }
+
+    //callbacks from holding button events
+    override fun onBeforeExpand() {
+        mvpView.cancelAnimations()
+        mvpView.startExpandAnimations()
+    }
+
+    override fun onExpand() {
+        mvpView.startTimer()
+        audioCallback?.onNewPlay()
+        audioCallback = null
+        mvpView.startRecord(getSavePath(chatInformation.Id!!.toString(),(chatMessages.last()!!.id.toInt()+1).toString()))
+    }
+
+    override fun onBeforeCollapse() {
+        mvpView.cancelAnimations()
+        mvpView.startCollapseAnimations()
+    }
+
+    override fun onCollapse(isCancel: Boolean) {
+        mvpView.stopTimer()
+        try {
+            mvpView.stopRecord()
+        } catch (e: RuntimeException) {
+            e.printStackTrace()
+        }
+        if (isCancel) {
+            mvpView.showCancelled()
+        } else {
+            val duarationms = System.currentTimeMillis() - mvpView.getStartTime()
+            if (duarationms / 1000.0 > 1.0) {
+                sendImageMessage(getSavePath(chatInformation.Id!!.toString(),(chatMessages.last()!!.id.toInt()+1).toString()))
+                mvpView.showSubmitted()
+            }
+        }
+    }
+
+    override fun onOffsetChanged(offset: Float, isCancel: Boolean) {
+        mvpView.moveSlideToCancel(offset, isCancel)
+    }
+
 
     //methods to add image from gallery or other resources
     override fun onStartContentLoading() {
@@ -192,12 +275,12 @@ constructor(dataManager: DataManager, schedulerProvider: SchedulerProvider, comp
     override fun onContentLoaded(uri: Uri?, contentType: String?) {
         if (contentType.equals(ContentManager.Content.IMAGE.toString())) {
             if(uri!=null){
-                sendFileMessage(uri.path)
+                sendImageMessage(uri.path)
             }
         }
     }
 
-    private fun sendFileMessage(imageUri: String){
+    private fun sendImageMessage(imageUri: String){
         val encodedImage = Functions.getEncodedImage(imageUri)
         if(encodedImage!=null){
             compositeDisposable.add(sendMessage(file64base = encodedImage)

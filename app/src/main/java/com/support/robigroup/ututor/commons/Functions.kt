@@ -284,7 +284,4 @@ object Functions {
         return false
     }
 
-    fun getSavePath(chatId: Int, messageId: String): String{
-        return Constants.BASE_AUDIO_FOLDER + chatId.toString() + "/" + (messageId.toInt()+1).toString()
-    }
 }

@@ -1,5 +1,7 @@
 package com.support.robigroup.ututor.ui.chat
 
+import android.media.MediaPlayer
+import com.dewarder.holdinglibrary.HoldingButtonLayoutListener
 import com.stfalcon.chatkit.messages.MessageHolders
 import com.stfalcon.chatkit.messages.MessageInput
 import com.stfalcon.contentmanager.ContentManager
@@ -10,7 +12,7 @@ import com.support.robigroup.ututor.ui.base.MvpPresenter
 import com.support.robigroup.ututor.ui.base.MvpView
 
 
-interface ChatMvpView : MvpView, AudioHolderListener {
+interface ChatMvpView : MvpView, AudioView, HoldingButtonView{
 
     fun setToolbarTitle(title: String)
 
@@ -36,7 +38,10 @@ interface ChatMvpView : MvpView, AudioHolderListener {
 interface ChatMvpPresenter<V : ChatMvpView> : MvpPresenter<V>,
         MessageInput.InputListener,
         MessageHolders.ContentChecker<ChatMessage>,
-        ContentManager.PickContentListener{
+        ContentManager.PickContentListener,
+        AudioPresenter,
+        HoldingButtonLayoutListener,
+        MediaPlayer.OnCompletionListener{
 
     fun onFinishClick()
 
@@ -48,19 +53,28 @@ interface ChatMvpPresenter<V : ChatMvpView> : MvpPresenter<V>,
 
     fun onCounterFinish()
 
-    fun getSavePath(): String
-
 }
 
-interface AudioHolderListener {
-    fun onPlayClick(fileUrl: String)
+
+
+interface AudioPresenter {
+    fun onPlayClick(message: ChatMessage)
     fun onPauseClick()
-    fun onSeekChanged()
+    fun onPlayFinish()
     fun setPlayerCallback(callback: AudioPlayerCallback)
-    fun stopPrevious()
     fun getPlayerCurrentPosition(): Long
+    fun stopPrevious()
 }
 
+interface AudioView {
+    fun startRecord(filePath: String)
+    fun stopRecord()
+    fun startPlay(filePath: String)
+    fun pausePlay()
+    fun stopPlay()
+    fun getCurrentPlayingTime(): Long
+    fun getAudioPresenter(): AudioPresenter
+}
 
 interface AudioPlayerCallback {
     fun onNewPlay()
@@ -68,6 +82,20 @@ interface AudioPlayerCallback {
     fun onComplete()
     fun onReady(duration: Int)
 }
+
+interface HoldingButtonView{
+    fun startTimer()
+    fun getStartTime(): Long
+    fun stopTimer()
+    fun showCancelled()
+    fun showSubmitted()
+    fun cancelAnimations()
+    fun startCollapseAnimations()
+    fun startExpandAnimations()
+    fun moveSlideToCancel(offset: Float, isCancel: Boolean)
+}
+
+
 
 
 interface RateMvpView : DialogMvpView{

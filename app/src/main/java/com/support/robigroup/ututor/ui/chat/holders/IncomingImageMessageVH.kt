@@ -13,9 +13,9 @@ import com.support.robigroup.ututor.Constants
 import com.support.robigroup.ututor.R
 import com.support.robigroup.ututor.commons.Functions
 import com.support.robigroup.ututor.features.chat.model.ChatMessage
-import com.support.robigroup.ututor.ui.chat.AudioHolderListener
+import com.support.robigroup.ututor.ui.chat.AudioPresenter
 import com.support.robigroup.ututor.ui.chat.AudioPlayerCallback
-import com.support.robigroup.ututor.ui.chat.ChatMvpView
+import com.support.robigroup.ututor.ui.chat.AudioView
 
 
 class IncomingImageMessageVH(itemView: View) : MessageHolders.IncomingTextMessageViewHolder<ChatMessage>(itemView) {
@@ -23,7 +23,7 @@ class IncomingImageMessageVH(itemView: View) : MessageHolders.IncomingTextMessag
     var mPlayPauseBtn: ImageButton
     var seekBar: SeekBar
     var play_time: TextView
-    var mListener: AudioHolderListener
+    var mListener: AudioPresenter
 
     private var handler = Handler()
 
@@ -32,7 +32,7 @@ class IncomingImageMessageVH(itemView: View) : MessageHolders.IncomingTextMessag
     private var progress: Int = 0
 
     init {
-        mListener = itemView.context as AudioHolderListener
+        mListener = (itemView.context as AudioView).getAudioPresenter()
         mPlayPauseBtn = itemView.findViewById(R.id.btn_play_pause)
         seekBar = itemView.findViewById(R.id.progress)
         play_time = itemView.findViewById(R.id.play_time)
@@ -72,7 +72,6 @@ class IncomingImageMessageVH(itemView: View) : MessageHolders.IncomingTextMessag
 
                     override fun onProgressChanged(cDur: Long, tDur: Long) {
                         play_time.text = Functions.getTimerFromMillis(tDur)
-
                         // Updating progress bar
                         val progress = Functions.getProgressPercentage(tDur, cDur)
                         Log.e("Audio", "progress " + progress)
@@ -89,9 +88,8 @@ class IncomingImageMessageVH(itemView: View) : MessageHolders.IncomingTextMessag
                         stepToUpdate = duration / 100
                         play()
                     }
-
                 })
-                mListener.onPlayClick(message.imageUrl)
+                mListener.onPlayClick(message)
 
             } else if (mPlayPauseBtn.tag.toString() == Constants.TAG_AUDIO_PLAY) {
                 Log.e("Audio", "onPlaySoStop")
@@ -99,7 +97,6 @@ class IncomingImageMessageVH(itemView: View) : MessageHolders.IncomingTextMessag
                 stop()
             }
         }
-
         seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar, i: Int, b: Boolean) {
 
