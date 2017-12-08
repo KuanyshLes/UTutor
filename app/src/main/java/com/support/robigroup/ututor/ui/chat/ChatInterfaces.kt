@@ -2,6 +2,7 @@ package com.support.robigroup.ututor.ui.chat
 
 import com.stfalcon.chatkit.messages.MessageHolders
 import com.stfalcon.chatkit.messages.MessageInput
+import com.stfalcon.chatkit.messages.MessagesListAdapter
 import com.stfalcon.contentmanager.ContentManager
 import com.support.robigroup.ututor.commons.ChatInformation
 import com.support.robigroup.ututor.features.chat.model.ChatMessage
@@ -30,13 +31,15 @@ interface ChatMvpView : MvpView, AudioHolderListener {
 
     fun notifyItemRangeInserted(messages: List<ChatMessage>, startIndex: Int,rangeLength: Int)
 
+    fun showImage(url: String)
 }
 
 
 interface ChatMvpPresenter<V : ChatMvpView> : MvpPresenter<V>,
         MessageInput.InputListener,
         MessageHolders.ContentChecker<ChatMessage>,
-        ContentManager.PickContentListener{
+        ContentManager.PickContentListener,
+        MessagesListAdapter.OnMessageClickListener<ChatMessage>{
 
     fun onFinishClick()
 

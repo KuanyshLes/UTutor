@@ -69,7 +69,8 @@ object Constants {
     val AUDIO_TYPES = arrayOf(
             "mp3",
             "3gp",
-            "mp4"
+            "mp4",
+            "wav"
     )
     val IMAGE_TYPES = arrayOf(
             "jpg",

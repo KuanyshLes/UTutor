@@ -3,6 +3,7 @@ package com.support.robigroup.ututor.ui.chat
 import android.net.Uri
 import com.androidnetworking.error.ANError
 import com.stfalcon.contentmanager.ContentManager
+import com.stfalcon.frescoimageviewer.ImageViewer
 import com.support.robigroup.ututor.Constants
 import com.support.robigroup.ututor.commons.ChatInformation
 import com.support.robigroup.ututor.commons.Functions
@@ -169,6 +170,11 @@ constructor(dataManager: DataManager, schedulerProvider: SchedulerProvider, comp
 
     override fun hasContentFor(message: ChatMessage, type: Byte): Boolean {
         return Functions.hasContentFor(message, type)
+    }
+
+    override fun onMessageClick(message: ChatMessage) {
+        if(Functions.hasContentFor(message, Constants.CONTENT_TYPE_IMAGE_TEXT))
+            mvpView.showImage(message.imageUrl)
     }
 
     //methods for audio

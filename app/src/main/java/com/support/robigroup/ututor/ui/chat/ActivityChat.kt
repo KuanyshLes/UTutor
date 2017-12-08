@@ -168,13 +168,7 @@ class ActivityChat : BaseActivity(), ChatMvpView, HoldingButtonLayoutListener {
             menu.findItem(R.id.action_delete).isVisible = count > 0
             menu.findItem(R.id.action_copy).isVisible = count > 0
         })
-        messagesAdapter.setOnMessageClickListener {
-            message: ChatMessage ->
-            if(message.filePath!=null)
-                ImageViewer.Builder(this, arrayOf(message.imageUrl))
-                        .setStartPosition(0)
-                        .show()
-        }
+        messagesAdapter.setOnMessageClickListener (mPresenter)
         messagesList.setAdapter(messagesAdapter)
 
         contentManager = ContentManager(this, mPresenter)
@@ -385,6 +379,12 @@ class ActivityChat : BaseActivity(), ChatMvpView, HoldingButtonLayoutListener {
         return mFormatter.format(Date(System.currentTimeMillis() - mStartTime))
     }
     //END HOLDING BUTTON
+
+    override fun showImage(url: String) {
+        ImageViewer.Builder(this, arrayOf(url))
+                .setStartPosition(0)
+                .show()
+    }
 
     override fun startMenuActivity() {
         MenuActivity.open(this)
