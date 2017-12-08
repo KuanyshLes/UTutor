@@ -15,7 +15,7 @@ import com.support.robigroup.ututor.Constants
 import com.support.robigroup.ututor.R
 import com.support.robigroup.ututor.commons.Functions
 import com.support.robigroup.ututor.features.chat.model.ChatMessage
-import com.support.robigroup.ututor.ui.chat.AudioHolderListener
+import com.support.robigroup.ututor.ui.chat.AudioPresenter
 import com.support.robigroup.ututor.ui.chat.AudioPlayerCallback
 
 
@@ -24,7 +24,7 @@ class IncomingAudioMessageVH(itemView: View): MessageHolders.OutcomingTextMessag
     var mPlayPauseBtn: ImageButton
     var seekBar: SeekBar
     var play_time: TextView
-    var mListener: AudioHolderListener
+    var mListener: AudioPresenter
 
     private var handler = Handler()
 
@@ -33,7 +33,7 @@ class IncomingAudioMessageVH(itemView: View): MessageHolders.OutcomingTextMessag
     private var progress: Int = 0
 
     init {
-        mListener = itemView.context as AudioHolderListener
+        mListener = itemView.context as AudioPresenter
         mPlayPauseBtn = itemView.findViewById(R.id.btn_play_pause)
         seekBar = itemView.findViewById(R.id.progress)
         play_time = itemView.findViewById(R.id.play_time)
@@ -92,7 +92,7 @@ class IncomingAudioMessageVH(itemView: View): MessageHolders.OutcomingTextMessag
                     }
 
                 })
-                mListener.onPlayClick(message.imageUrl)
+                mListener.onPlayClick(message)
 
             } else if (mPlayPauseBtn.tag.toString() == Constants.TAG_AUDIO_PLAY) {
                 Log.e("Audio", "onPlaySoStop")

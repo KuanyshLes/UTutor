@@ -3,6 +3,7 @@ package com.support.robigroup.ututor
 import android.os.Environment
 import com.support.robigroup.ututor.commons.Language
 import com.support.robigroup.ututor.commons.Type
+import java.io.File
 import java.util.*
 
 object Constants {
@@ -64,7 +65,10 @@ object Constants {
             Type( 3,"Подготовка к ЕНТ", R.drawable.ic_choose_test)
     )
 
-    val BASE_AUDIO_FOLDER = Environment.getExternalStorageDirectory().absolutePath + "/UTutor/"
+    val BASE_AUDIO_FOLDER = Environment.getExternalStorageDirectory().absolutePath +
+            File.separator +
+            "UTutor" +
+            File.separator
 
     val AUDIO_TYPES = arrayOf(
             "mp3",

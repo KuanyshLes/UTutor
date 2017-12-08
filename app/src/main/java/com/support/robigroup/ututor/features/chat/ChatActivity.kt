@@ -220,6 +220,8 @@ class ChatActivity : AppCompatActivity(),
                     message.user!!.name, text, createdAt)
         }
 
+
+
     private fun showFinishDialog() {
         val builder = android.support.v7.app.AlertDialog.Builder(this)
         builder.setMessage(getString(R.string.prompt_are_you_sure))
@@ -363,6 +365,8 @@ class ChatActivity : AppCompatActivity(),
         }
     }
 
+
+    //dialog methods
     override fun onFinishCounterFromReadyDialog() {
         if(!mChatInformation.LearnerReady||!mChatInformation.TeacherReady){
             finishCorrectly()
@@ -374,6 +378,7 @@ class ChatActivity : AppCompatActivity(),
         evalChat((rating*20).toInt(),mChatInformation.Id!!)
 
     }
+
     override fun onCancelEvalDialog() {
         finishCorrectly()
     }
@@ -410,7 +415,7 @@ class ChatActivity : AppCompatActivity(),
     }
 
 
-
+    //others
     override fun onBackPressed() {
         if (selectionCount == 0) {
             super.onBackPressed()
