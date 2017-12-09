@@ -3,7 +3,6 @@ package com.support.robigroup.ututor.ui.chat.holders
 import android.os.Handler
 import android.util.Log
 import android.view.View
-import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import android.widget.ImageButton
 import android.widget.SeekBar
@@ -15,8 +14,9 @@ import com.support.robigroup.ututor.Constants
 import com.support.robigroup.ututor.R
 import com.support.robigroup.ututor.commons.Functions
 import com.support.robigroup.ututor.features.chat.model.ChatMessage
-import com.support.robigroup.ututor.ui.chat.AudioPresenter
+import com.support.robigroup.ututor.ui.chat.PlayPresenter
 import com.support.robigroup.ututor.ui.chat.AudioPlayerCallback
+import com.support.robigroup.ututor.ui.chat.PlayView
 
 
 class IncomingAudioMessageVH(itemView: View): MessageHolders.OutcomingTextMessageViewHolder<ChatMessage>(itemView) {
@@ -24,7 +24,7 @@ class IncomingAudioMessageVH(itemView: View): MessageHolders.OutcomingTextMessag
     var mPlayPauseBtn: ImageButton
     var seekBar: SeekBar
     var play_time: TextView
-    var mListener: AudioPresenter
+    var mListener: PlayPresenter = (itemView.context as PlayView).getPlayPresenter()
 
     private var handler = Handler()
 
@@ -33,7 +33,6 @@ class IncomingAudioMessageVH(itemView: View): MessageHolders.OutcomingTextMessag
     private var progress: Int = 0
 
     init {
-        mListener = itemView.context as AudioPresenter
         mPlayPauseBtn = itemView.findViewById(R.id.btn_play_pause)
         seekBar = itemView.findViewById(R.id.progress)
         play_time = itemView.findViewById(R.id.play_time)
@@ -64,7 +63,7 @@ class IncomingAudioMessageVH(itemView: View): MessageHolders.OutcomingTextMessag
             if (mPlayPauseBtn.tag.toString() == Constants.TAG_AUDIO_PAUSE) {
                 mListener.stopPrevious()
                 download()
-                Log.e("Audio", "onStopSoPlay")
+                Log.e("Audio", "onPlayClicked")
                 mListener.setPlayerCallback(object : AudioPlayerCallback {
                     override fun onNewPlay() {
                         Log.e("Audio", "onNewPlay")
@@ -73,7 +72,6 @@ class IncomingAudioMessageVH(itemView: View): MessageHolders.OutcomingTextMessag
 
                     override fun onProgressChanged(cDur: Long, tDur: Long) {
                         play_time.text = Functions.getTimerFromMillis(tDur)
-
                         // Updating progress bar
                         val progress = Functions.getProgressPercentage(tDur, cDur)
                         Log.e("Audio", "progress " + progress)
@@ -90,7 +88,6 @@ class IncomingAudioMessageVH(itemView: View): MessageHolders.OutcomingTextMessag
                         stepToUpdate = duration / 100
                         play()
                     }
-
                 })
                 mListener.onPlayClick(message)
 
@@ -100,7 +97,6 @@ class IncomingAudioMessageVH(itemView: View): MessageHolders.OutcomingTextMessag
                 stop()
             }
         }
-
         seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar, i: Int, b: Boolean) {
 

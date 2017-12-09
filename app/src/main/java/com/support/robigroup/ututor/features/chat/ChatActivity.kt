@@ -353,7 +353,7 @@ class ChatActivity : AppCompatActivity(),
                                         realm.copyToRealm(message)
                                     }
                                 }else{
-                                    //TODO handle http errors
+
                                 }
                             },
                             { e ->

@@ -7,13 +7,17 @@ import com.stfalcon.chatkit.messages.MessageInput
 import com.stfalcon.chatkit.messages.MessagesListAdapter
 import com.stfalcon.contentmanager.ContentManager
 import com.support.robigroup.ututor.commons.ChatInformation
+import com.support.robigroup.ututor.data.play_record.AudioItem
 import com.support.robigroup.ututor.features.chat.model.ChatMessage
 import com.support.robigroup.ututor.ui.base.DialogMvpView
 import com.support.robigroup.ututor.ui.base.MvpPresenter
 import com.support.robigroup.ututor.ui.base.MvpView
+import omrecorder.PullableSource
+import omrecorder.Recorder
+import java.io.File
 
 
-interface ChatMvpView : MvpView, AudioView, HoldingButtonView{
+interface ChatMvpView : MvpView, PlayView, RecordView, HoldingButtonView{
 
     fun setToolbarTitle(title: String)
 
@@ -41,9 +45,8 @@ interface ChatMvpPresenter<V : ChatMvpView> : MvpPresenter<V>,
         MessageInput.InputListener,
         MessageHolders.ContentChecker<ChatMessage>,
         ContentManager.PickContentListener,
-        AudioPresenter,
+        PlayPresenter,
         HoldingButtonLayoutListener,
-        MediaPlayer.OnCompletionListener,
         MessagesListAdapter.OnMessageClickListener<ChatMessage>{
 
     fun onFinishClick()
@@ -60,23 +63,32 @@ interface ChatMvpPresenter<V : ChatMvpView> : MvpPresenter<V>,
 
 
 
-interface AudioPresenter {
+interface PlayPresenter : MediaPlayer.OnCompletionListener{
     fun onPlayClick(message: ChatMessage)
     fun onPauseClick()
     fun onPlayFinish()
+    fun onPlayerPrepared()
     fun setPlayerCallback(callback: AudioPlayerCallback)
     fun getPlayerCurrentPosition(): Long
     fun stopPrevious()
 }
 
-interface AudioView {
-    fun startRecord(filePath: String)
-    fun stopRecord()
-    fun startPlay(filePath: String)
+interface PlayView {
+    fun preparePlay(filePath: String)
+    fun startPlay()
     fun pausePlay()
     fun stopPlay()
-    fun getCurrentPlayingTime(): Long
-    fun getAudioPresenter(): AudioPresenter
+    fun getPlayDuration(): Int
+    fun getCurrentPlayingTime(): Int
+    fun getPlayPresenter(): PlayPresenter
+}
+
+interface RecordView{
+    fun startRecord()
+    fun stopRecord()
+    fun setupRecorder(filePath: String)
+    fun getFilePath(): String
+    fun getMic(): PullableSource
 }
 
 interface AudioPlayerCallback {

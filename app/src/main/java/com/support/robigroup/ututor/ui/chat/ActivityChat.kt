@@ -5,16 +5,15 @@ import android.animation.AnimatorListenerAdapter
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
+import android.media.AudioFormat
 import android.media.AudioManager
 import android.media.MediaPlayer
 import android.media.MediaRecorder
 import android.os.Bundle
-import android.os.Environment
 import android.os.Vibrator
 import android.support.v7.app.AlertDialog
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.Menu
 import android.view.View
 import android.view.ViewPropertyAnimator
@@ -23,33 +22,32 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import com.dewarder.holdinglibrary.HoldingButtonLayout
-import com.dewarder.holdinglibrary.HoldingButtonLayoutListener
 import com.squareup.picasso.Picasso
 import com.stfalcon.chatkit.commons.ImageLoader
 import com.stfalcon.chatkit.messages.MessageHolders
-import com.stfalcon.chatkit.messages.MessageInput
 import com.stfalcon.chatkit.messages.MessagesList
 import com.stfalcon.chatkit.messages.MessagesListAdapter
 import com.stfalcon.contentmanager.ContentManager
 import com.stfalcon.frescoimageviewer.ImageViewer
 import com.support.robigroup.ututor.Constants
 import com.support.robigroup.ututor.R
-import com.support.robigroup.ututor.ui.chat.holders.IncomingImageMessageVH
 import com.support.robigroup.ututor.ui.chat.holders.OutcomingImageMessageVH
 import com.support.robigroup.ututor.features.chat.model.ChatMessage
 import com.support.robigroup.ututor.features.main.MenuActivity
 import com.support.robigroup.ututor.ui.base.BaseActivity
+import com.support.robigroup.ututor.ui.chat.holders.IncomingImageMessageVH
 import com.support.robigroup.ututor.ui.chat.holders.IncomingAudioMessageVH
 import com.support.robigroup.ututor.ui.chat.eval.RateDialog
 import com.support.robigroup.ututor.ui.chat.holders.OutcomingAudioMessageVH
 import com.support.robigroup.ututor.ui.chat.ready.ReadyDialog
 import kotlinx.android.synthetic.main.activity_chat.*
-import java.io.IOException
+import omrecorder.*
+import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
 
-class ActivityChat : BaseActivity(), ChatMvpView{
+class ActivityChat : BaseActivity(), ChatMvpView {
 
     private lateinit var messagesList: MessagesList
     private lateinit var messagesAdapter: MessagesListAdapter<ChatMessage>
@@ -63,7 +61,8 @@ class ActivityChat : BaseActivity(), ChatMvpView{
 
     //audio parts
     private lateinit var mediaPlayer: MediaPlayer
-    private lateinit var mediaRecorder: MediaRecorder
+    private lateinit var mediaRecorder: Recorder
+    private lateinit var mRecordFilePath: String
 
     //holding button
     private val SLIDE_TO_CANCEL_ALPHA_MULTIPLIER = 2.5f
@@ -101,8 +100,8 @@ class ActivityChat : BaseActivity(), ChatMvpView{
     }
 
     override fun onFragmentDetached(tag: String?) {
-        if(tag!=null){
-            when(tag){
+        if (tag != null) {
+            when (tag) {
                 Constants.TAG_RATE_DIALOG ->
                     startMenuActivity()
             }
@@ -117,6 +116,9 @@ class ActivityChat : BaseActivity(), ChatMvpView{
     }
 
     override fun onDestroy() {
+        if(mediaPlayer.isPlaying)
+            mediaPlayer.stop()
+        mediaPlayer.release()
         mPresenter.onDetach()
         super.onDestroy()
     }
@@ -134,6 +136,7 @@ class ActivityChat : BaseActivity(), ChatMvpView{
                     showSendTexMessageBtn(false)
                 }
             }
+
             override fun afterTextChanged(editable: Editable) {}
         })
 
@@ -146,7 +149,7 @@ class ActivityChat : BaseActivity(), ChatMvpView{
         mAnimationDuration = resources.getInteger(android.R.integer.config_shortAnimTime)
 
         sendTextMessageIV = findViewById(R.id.sendTextMessage)
-        sendTextMessageIV.setOnClickListener{
+        sendTextMessageIV.setOnClickListener {
             showSendTexMessageBtn(false)
             mPresenter.onSubmit(mInput.text.trim().toString())
         }
@@ -155,8 +158,11 @@ class ActivityChat : BaseActivity(), ChatMvpView{
         attachFileIV.setOnClickListener {
             AlertDialog.Builder(this)
                     .setItems(R.array.view_types_dialog, (
-                            DialogInterface.OnClickListener{ p0, order -> when (order) {
-                                0 -> contentManager.pickContent(ContentManager.Content.IMAGE)}})
+                            DialogInterface.OnClickListener { p0, order ->
+                                when (order) {
+                                    0 -> contentManager.pickContent(ContentManager.Content.IMAGE)
+                                }
+                            })
                     ).show()
 
         }
@@ -182,13 +188,12 @@ class ActivityChat : BaseActivity(), ChatMvpView{
                         mPresenter)
 
         messagesAdapter = MessagesListAdapter(Constants.LEARNER_ID, holders, imageLoader)
-        messagesAdapter.enableSelectionMode({
-            count ->
+        messagesAdapter.enableSelectionMode({ count ->
             selectionCount = count
             menu.findItem(R.id.action_delete).isVisible = count > 0
             menu.findItem(R.id.action_copy).isVisible = count > 0
         })
-        messagesAdapter.setOnMessageClickListener (mPresenter)
+        messagesAdapter.setOnMessageClickListener(mPresenter)
         messagesList.setAdapter(messagesAdapter)
 
         contentManager = ContentManager(this, mPresenter)
@@ -197,7 +202,6 @@ class ActivityChat : BaseActivity(), ChatMvpView{
         //audio initialising
         mediaPlayer = MediaPlayer()
         mediaPlayer.setOnCompletionListener(mPresenter)
-        mediaRecorder = MediaRecorder()
         mSlideToCancel = findViewById(R.id.slide_to_cancel)
     }
 
@@ -213,39 +217,31 @@ class ActivityChat : BaseActivity(), ChatMvpView{
     }
 
 
-    //AudioView
-    override fun startPlay(filePath: String) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    //PlayView
+    override fun preparePlay(filePath: String) {
+        mediaPlayer.reset()
+        mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC)
+        mediaPlayer.setDataSource(filePath)
+        mediaPlayer.setOnPreparedListener(MediaPlayer.OnPreparedListener {
+            mPresenter.onPlayerPrepared()
+        })
+        mediaPlayer.prepareAsync()
+    }
+
+    override fun getPlayDuration(): Int {
+        return mediaPlayer.duration
+    }
+
+    override fun startPlay() {
+        mediaPlayer.start()
     }
 
     override fun stopPlay() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        mediaPlayer.stop()
     }
 
-    override fun getCurrentPlayingTime(): Long {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    override fun startRecord(filePath: String) {
-        mediaRecorder.reset()
-        mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC)
-        mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP)
-        mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC)
-        mediaRecorder.setOutputFile(filePath)
-        try {
-            mediaRecorder.prepare()
-            mediaRecorder.start()
-        } catch (e: IllegalStateException) {
-            // TODO Auto-generated catch block
-            e.printStackTrace()
-        } catch (e: IOException) {
-            // TODO Auto-generated catch block
-            e.printStackTrace()
-        }
-    }
-
-    override fun stopRecord() {
-        mediaRecorder.stop()
+    override fun getCurrentPlayingTime(): Int {
+        return mediaPlayer.currentPosition
     }
 
     override fun pausePlay() {
@@ -264,8 +260,35 @@ class ActivityChat : BaseActivity(), ChatMvpView{
         }
     }
 
-    override fun getAudioPresenter(): AudioPresenter = mPresenter
+    override fun getPlayPresenter(): PlayPresenter = mPresenter
 
+
+    //RecordView
+    override fun setupRecorder(filePath: String) {
+        mRecordFilePath = filePath
+        mediaRecorder = OmRecorder.wav(
+                PullTransport.Default(getMic(), PullTransport.OnAudioChunkPulledListener {
+                    _ ->  }), File(filePath))
+    }
+
+    override fun getMic(): PullableSource {
+        return PullableSource.Default(
+                AudioRecordConfig.Default(
+                        MediaRecorder.AudioSource.MIC, AudioFormat.ENCODING_PCM_16BIT,
+                        AudioFormat.CHANNEL_IN_MONO, 44100
+                )
+        )
+    }
+
+    override fun startRecord() {
+        mediaRecorder.startRecording()
+    }
+
+    override fun stopRecord() {
+        mediaRecorder.stopRecording()
+    }
+
+    override fun getFilePath(): String = mRecordFilePath
 
     //HoldingButtonView
     override fun showCancelled() {
@@ -344,7 +367,7 @@ class ActivityChat : BaseActivity(), ChatMvpView{
 
     override fun getStartTime(): Long = mStartTime
 
-    private fun repeadTimer(){
+    private fun repeadTimer() {
         mTimerRunnable = Runnable {
             mTime.text = getFormattedTime()
             repeadTimer()
@@ -374,14 +397,12 @@ class ActivityChat : BaseActivity(), ChatMvpView{
         builder.setMessage(getString(R.string.prompt_are_you_sure))
                 .setCancelable(false)
                 .setPositiveButton("OK")
-                {
-                    dialog, id ->
+                { dialog, id ->
                     dialog.cancel()
                     mPresenter.onOkFinishClick()
                 }
                 .setNegativeButton("Cancel")
-                {
-                    dialog, id ->
+                { dialog, id ->
                     dialog.cancel()
                 }
         val alert = builder.create()
@@ -420,9 +441,9 @@ class ActivityChat : BaseActivity(), ChatMvpView{
         dialog?.updateButtonText()
     }
 
-    override fun notifyItemRangeInserted(messages: List<ChatMessage>, startIndex: Int,rangeLength: Int){
-        for(i in startIndex until startIndex+rangeLength){
-            messagesAdapter.addToStart(messages[i],true)
+    override fun notifyItemRangeInserted(messages: List<ChatMessage>, startIndex: Int, rangeLength: Int) {
+        for (i in startIndex until startIndex + rangeLength) {
+            messagesAdapter.addToStart(messages[i], true)
         }
     }
 

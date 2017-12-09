@@ -4,7 +4,6 @@ import android.media.MediaPlayer
 import android.net.Uri
 import com.androidnetworking.error.ANError
 import com.stfalcon.contentmanager.ContentManager
-import com.stfalcon.frescoimageviewer.ImageViewer
 import com.support.robigroup.ututor.Constants
 import com.support.robigroup.ututor.commons.ChatInformation
 import com.support.robigroup.ututor.commons.Functions
@@ -16,13 +15,9 @@ import com.support.robigroup.ututor.utils.SchedulerProvider
 import io.reactivex.Flowable
 import io.reactivex.disposables.CompositeDisposable
 import retrofit2.Response
+import java.io.File
 import java.util.*
 import javax.inject.Inject
-import java.io.File.separator
-import android.os.Environment.getExternalStorageDirectory
-import android.icu.lang.UCharacter.GraphemeClusterBreak.V
-import android.os.Environment
-import java.io.File
 
 
 class ChatPresenter<V : ChatMvpView> @Inject
@@ -181,24 +176,29 @@ constructor(dataManager: DataManager, schedulerProvider: SchedulerProvider, comp
         return Functions.hasContentFor(message, type)
     }
 
-
-    //callback from play pause events
-    override fun onCompletion(p0: MediaPlayer?) {
-        audioCallback?.onComplete()
-    }
     override fun onMessageClick(message: ChatMessage) {
         if(Functions.hasContentFor(message, Constants.CONTENT_TYPE_IMAGE_TEXT))
             mvpView.showImage(message.imageUrl)
     }
 
-    //methods for audio
+
+    //methods for play presenter
+    override fun onCompletion(p0: MediaPlayer?) {
+        audioCallback?.onComplete()
+    }
+
     override fun stopPrevious() {
         mvpView.stopPlay()
     }
 
+    override fun onPlayerPrepared() {
+        audioCallback?.onReady(mvpView.getPlayDuration())
+        mvpView.startPlay()
+    }
+
     override fun onPlayClick(message: ChatMessage) {
         audioCallback?.onNewPlay()
-        mvpView.startPlay(getSavePath(chatInformation.Id!!.toString(),message.id.toString()))
+        mvpView.preparePlay(getSavePath(chatInformation.Id!!.toString(),message.id.toString()))
     }
 
     override fun onPauseClick() {
@@ -218,7 +218,7 @@ constructor(dataManager: DataManager, schedulerProvider: SchedulerProvider, comp
     }
 
     private fun getSavePath(chatId: String, messageId: String): String {
-        var path = Constants.BASE_AUDIO_FOLDER + chatId + "/"
+        val path = Constants.BASE_AUDIO_FOLDER + chatId + "/"
         File(path).mkdirs()
         return Constants.BASE_AUDIO_FOLDER + chatId + "/" + messageId+
                 "audio.3gp"
@@ -228,13 +228,14 @@ constructor(dataManager: DataManager, schedulerProvider: SchedulerProvider, comp
     override fun onBeforeExpand() {
         mvpView.cancelAnimations()
         mvpView.startExpandAnimations()
+        mvpView.setupRecorder(getSavePath(chatInformation.Id!!.toString(),(chatMessages.last()!!.id.toInt()+1).toString()))
     }
 
     override fun onExpand() {
         mvpView.startTimer()
         audioCallback?.onNewPlay()
         audioCallback = null
-        mvpView.startRecord(getSavePath(chatInformation.Id!!.toString(),(chatMessages.last()!!.id.toInt()+1).toString()))
+        mvpView.startRecord()
     }
 
     override fun onBeforeCollapse() {
@@ -254,7 +255,7 @@ constructor(dataManager: DataManager, schedulerProvider: SchedulerProvider, comp
         } else {
             val duarationms = System.currentTimeMillis() - mvpView.getStartTime()
             if (duarationms / 1000.0 > 1.0) {
-                sendImageMessage(getSavePath(chatInformation.Id!!.toString(),(chatMessages.last()!!.id.toInt()+1).toString()))
+                sendImageMessage(mvpView.getFilePath())
                 mvpView.showSubmitted()
             }
         }
