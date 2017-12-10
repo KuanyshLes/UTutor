@@ -5,6 +5,7 @@ import com.support.robigroup.ututor.commons.*
 import com.support.robigroup.ututor.features.chat.model.ChatMessage
 import com.support.robigroup.ututor.singleton.SingletonSharedPref
 import io.reactivex.Flowable
+import okhttp3.MultipartBody
 import okhttp3.ResponseBody
 import retrofit2.Response
 import retrofit2.http.*
@@ -83,9 +84,9 @@ interface APIInterface {
     ): Flowable<Response<List<ChatMessage>>>
 
     @GET("api/lesson/chat/messages")
-    fun getChatMeassages(
+    fun getChatMessages(
             @Header("Authorization") header: String = SingletonSharedPref.getInstance().getString(Constants.KEY_TOKEN)
-    ): Flowable<Response<ChatLesson>>
+    ): Flowable<Response<List<ChatMessage>>>
 
     @GET("api/lesson/chat/ready")  //   api/lesson/chat/ready
     fun postChatReady(
@@ -100,6 +101,13 @@ interface APIInterface {
     @POST("api/lesson/chat/message/file")
     fun postMessagePhoto(
             @Body hashMap: HashMap<String,String>,
+            @Header("Authorization") header: String = SingletonSharedPref.getInstance().getString(Constants.KEY_TOKEN)
+    ): Flowable<Response<ChatMessage>>
+
+    @Multipart
+    @POST("api/lesson/chat/message/file/payload")
+    fun postMessageAudio(
+            @Part filePart: MultipartBody.Part,
             @Header("Authorization") header: String = SingletonSharedPref.getInstance().getString(Constants.KEY_TOKEN)
     ): Flowable<Response<ChatMessage>>
 

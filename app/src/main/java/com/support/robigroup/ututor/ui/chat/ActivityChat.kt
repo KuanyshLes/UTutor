@@ -216,6 +216,11 @@ class ActivityChat : BaseActivity(), ChatMvpView {
         return true
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        contentManager.onActivityResult(requestCode, resultCode, data)
+    }
+
 
     //PlayView
     override fun preparePlay(filePath: String) {
@@ -444,6 +449,16 @@ class ActivityChat : BaseActivity(), ChatMvpView {
     override fun notifyItemRangeInserted(messages: List<ChatMessage>, startIndex: Int, rangeLength: Int) {
         for (i in startIndex until startIndex + rangeLength) {
             messagesAdapter.addToStart(messages[i], true)
+        }
+    }
+
+    override fun notifyItemRangeUpdated(messages: List<ChatMessage>, startIndex: Int, rangeLength: Int) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun notifyItemRangeDeleted(messages: List<ChatMessage>, startIndex: Int, rangeLength: Int) {
+        for (i in startIndex until startIndex + rangeLength) {
+            messagesAdapter.deleteById(messages[i].id)
         }
     }
 

@@ -6,6 +6,7 @@ import com.androidnetworking.error.ANError
 import com.stfalcon.contentmanager.ContentManager
 import com.support.robigroup.ututor.Constants
 import com.support.robigroup.ututor.commons.ChatInformation
+import com.support.robigroup.ututor.commons.ChatLesson
 import com.support.robigroup.ututor.commons.Functions
 import com.support.robigroup.ututor.commons.logd
 import com.support.robigroup.ututor.data.DataManager
@@ -76,17 +77,21 @@ constructor(dataManager: DataManager, schedulerProvider: SchedulerProvider, comp
             }else{
                 val insertions = changeSet.insertionRanges
                 for (range in insertions) {
-                    if(mvpView==null){
-                        logd("mvpview is null")
-                        logd("hashcode from inside null : "+ this.hashCode().toString())
-                    }else{
+                    if(mvpView!=null){
                         mvpView.notifyItemRangeInserted(messages, range.startIndex, range.length)
                         logd("hashcode from inside not null : "+ this.hashCode().toString())
-
+                    }
+                }
+                val deletions = changeSet.deletionRanges
+                for (range in deletions) {
+                    if(mvpView!=null){
+                        mvpView.notifyItemRangeDeleted(messages, range.startIndex, range.length)
+                        logd("hashcode from inside not null : "+ this.hashCode().toString())
                     }
                 }
             }
         }
+        updateChatMessages()
         mvpView.notifyItemRangeInserted(chatMessages, 0, chatMessages.size-1)
     }
 
@@ -221,7 +226,7 @@ constructor(dataManager: DataManager, schedulerProvider: SchedulerProvider, comp
         val path = Constants.BASE_AUDIO_FOLDER + chatId + "/"
         File(path).mkdirs()
         return Constants.BASE_AUDIO_FOLDER + chatId + "/" + messageId+
-                "audio.3gp"
+                "audio.wav"
     }
 
     //callbacks from holding button events
@@ -255,7 +260,7 @@ constructor(dataManager: DataManager, schedulerProvider: SchedulerProvider, comp
         } else {
             val duarationms = System.currentTimeMillis() - mvpView.getStartTime()
             if (duarationms / 1000.0 > 1.0) {
-                sendImageMessage(mvpView.getFilePath())
+                sendAudioMessage(mvpView.getFilePath())
                 mvpView.showSubmitted()
             }
         }
@@ -268,7 +273,7 @@ constructor(dataManager: DataManager, schedulerProvider: SchedulerProvider, comp
 
     //methods to add image from gallery or other resources
     override fun onStartContentLoading() {
-        TODO("not implemented")
+
     }
 
     override fun onError(error: String?) {
@@ -285,6 +290,33 @@ constructor(dataManager: DataManager, schedulerProvider: SchedulerProvider, comp
                 sendImageMessage(uri.path)
             }
         }
+    }
+
+    private fun updateChatMessages(){
+        compositeDisposable.add(dataManager.apiHelper.getChatMessages(chatInformation.Id.toString())
+                .subscribeOn(schedulerProvider.io())
+                .observeOn(schedulerProvider.ui())
+                .subscribe(
+                        { messageResponse ->
+                            if(messageResponse.isSuccessful){
+                                val messages: List<ChatMessage>? = messageResponse.body()
+                                if(messages!=null){
+                                    realm.executeTransaction {
+                                        r ->
+                                        chatMessages.deleteAllFromRealm()
+                                        r.insert(messages)
+                                    }
+                                }else{
+                                    handleApiError(null)
+                                }
+                            }else{
+                                handleApiError(ANError(messageResponse.raw()))
+                            }
+                        },
+                        { e ->
+                            handleApiError(ANError(e))
+                        }
+                ))
     }
 
     private fun sendImageMessage(imageUri: String){
@@ -313,6 +345,37 @@ constructor(dataManager: DataManager, schedulerProvider: SchedulerProvider, comp
                             }
                     )
             )
+        }
+    }
+
+    private fun sendAudioMessage(fileUri: String){
+        val file = File(fileUri)
+        if(file.exists()&&file.isFile){
+            compositeDisposable.add(dataManager.sendAudioMessage(file)
+                    .subscribeOn(schedulerProvider.io())
+                    .observeOn(schedulerProvider.ui())
+                    .subscribe(
+                            { messageResponse ->
+                                if(messageResponse.isSuccessful){
+                                    val message: ChatMessage? = messageResponse.body()
+                                    if(message!=null){
+                                        realm.executeTransaction {
+                                            realm.copyToRealmOrUpdate(message)
+                                        }
+                                    }else{
+                                        handleApiError(null)
+                                    }
+                                }else{
+                                    handleApiError(ANError(messageResponse.raw()))
+                                }
+                            },
+                            { e ->
+                                handleApiError(ANError(e))
+                            }
+                    )
+            )
+        }else{
+
         }
     }
 

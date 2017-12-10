@@ -4,11 +4,19 @@ import android.content.Context;
 
 import com.support.robigroup.ututor.api.APIInterface;
 import com.support.robigroup.ututor.api.RestAPI;
+import com.support.robigroup.ututor.data.network.NetworkHelper;
 import com.support.robigroup.ututor.data.prefs.PreferencesHelper;
 import com.support.robigroup.ututor.di.ApplicationContext;
+import com.support.robigroup.ututor.features.chat.model.ChatMessage;
+
+import java.io.File;
+import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+
+import io.reactivex.Flowable;
+import retrofit2.Response;
 
 
 @Singleton
@@ -17,12 +25,30 @@ public class AppDataManager implements DataManager{
     private static final String TAG = "AppDataManager";
     private final Context mContext;
     private final PreferencesHelper mPreferencesHelper;
+    private final NetworkHelper mNetworkHelper;
 
     @Inject
     public AppDataManager(@ApplicationContext Context context,
-                          PreferencesHelper preferencesHelper) {
+                          PreferencesHelper preferencesHelper,
+                          NetworkHelper networkHelper) {
         mContext = context;
         mPreferencesHelper = preferencesHelper;
+        mNetworkHelper = networkHelper;
+    }
+
+    @Override
+    public Flowable<Response<ChatMessage>> sendAudioMessage(File file) {
+        return mNetworkHelper.sendAudioMessage(file);
+    }
+
+    @Override
+    public Flowable<Response<ChatMessage>> sendImageMessage() {
+        return mNetworkHelper.sendImageMessage();
+    }
+
+    @Override
+    public Flowable<Response<List<ChatMessage>>> getChatMessages(String chatId) {
+        return mNetworkHelper.getChatMessages(chatId);
     }
 
     @Override

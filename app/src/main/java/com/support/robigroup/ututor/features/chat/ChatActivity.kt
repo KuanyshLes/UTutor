@@ -38,6 +38,7 @@ import io.realm.Realm
 import io.realm.RealmObjectChangeListener
 import io.realm.RealmResults
 import kotlinx.android.synthetic.main.activity_chat.*
+import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.properties.Delegates

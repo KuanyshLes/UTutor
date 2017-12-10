@@ -35,7 +35,9 @@ interface ChatMvpView : MvpView, PlayView, RecordView, HoldingButtonView{
 
     fun onCancelImageLoad()
 
-    fun notifyItemRangeInserted(messages: List<ChatMessage>, startIndex: Int,rangeLength: Int)
+    fun notifyItemRangeInserted(messages: List<ChatMessage>, startIndex: Int, rangeLength: Int)
+    fun notifyItemRangeUpdated(messages: List<ChatMessage>, startIndex: Int, rangeLength: Int)
+    fun notifyItemRangeDeleted(messages: List<ChatMessage>, startIndex: Int, rangeLength: Int)
 
     fun showImage(url: String)
 }

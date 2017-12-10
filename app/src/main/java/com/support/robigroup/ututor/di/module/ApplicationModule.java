@@ -20,6 +20,8 @@ import android.content.Context;
 
 import com.support.robigroup.ututor.data.AppDataManager;
 import com.support.robigroup.ututor.data.DataManager;
+import com.support.robigroup.ututor.data.network.AppNetworkHelper;
+import com.support.robigroup.ututor.data.network.NetworkHelper;
 import com.support.robigroup.ututor.data.prefs.AppPreferencesHelper;
 import com.support.robigroup.ututor.data.prefs.PreferencesHelper;
 import com.support.robigroup.ututor.di.ApplicationContext;
@@ -79,5 +81,11 @@ public class ApplicationModule {
     @Singleton
     PreferencesHelper providePreferencesHelper(AppPreferencesHelper appPreferencesHelper) {
         return appPreferencesHelper;
+    }
+
+    @Provides
+    @Singleton
+    NetworkHelper provideNetworkHelper(AppNetworkHelper appNetworkHelper) {
+        return appNetworkHelper;
     }
 }
