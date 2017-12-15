@@ -200,7 +200,7 @@ constructor(dataManager: DataManager, schedulerProvider: SchedulerProvider, comp
 
     override fun onPlayClick(message: ChatMessage) {
         audioCallback?.onNewPlay()
-        mvpView.preparePlay(getSavePath(chatInformation.Id!!.toString(),message.id.toString()))
+        mvpView.preparePlay(Constants.BASE_URL+message.filePath)
     }
 
     override fun onPauseClick() {

@@ -32,6 +32,9 @@ public class ChatMessage extends RealmObject implements IMessage, MessageContent
     @SerializedName("FilePath")
     @Expose
     private String FilePath;
+    @SerializedName("FilePath")
+    @Expose
+    private String LocalFilePath;
     @SerializedName("Text")
     @Expose
     private String Text;
@@ -93,6 +96,14 @@ public class ChatMessage extends RealmObject implements IMessage, MessageContent
 
     public void setFilePath(String filePath) {
         FilePath = filePath;
+    }
+
+    public String getLocalFilePath() {
+        return LocalFilePath;
+    }
+
+    public void setLocalFilePath(String localFilePath) {
+        LocalFilePath = localFilePath;
     }
 
     public String getText() {
