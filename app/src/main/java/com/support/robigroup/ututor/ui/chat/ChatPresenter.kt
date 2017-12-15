@@ -12,6 +12,7 @@ import com.support.robigroup.ututor.commons.logd
 import com.support.robigroup.ututor.data.DataManager
 import com.support.robigroup.ututor.features.chat.model.ChatMessage
 import com.support.robigroup.ututor.ui.base.RealmBasedPresenter
+import com.support.robigroup.ututor.utils.FileUtils
 import com.support.robigroup.ututor.utils.SchedulerProvider
 import io.reactivex.Flowable
 import io.reactivex.disposables.CompositeDisposable
@@ -200,6 +201,17 @@ constructor(dataManager: DataManager, schedulerProvider: SchedulerProvider, comp
 
     override fun onPlayClick(message: ChatMessage) {
         audioCallback?.onNewPlay()
+        if(message.localFilePath!=null){
+            val file = File(message.localFilePath)
+            if(file.exists()&&file.isFile){
+                mvpView.preparePlay(message.localFilePath)
+                return
+            }else{
+                realm.executeTransaction {
+                    message.localFilePath = null
+                }
+            }
+        }
         mvpView.preparePlay(Constants.BASE_URL+message.filePath)
     }
 
@@ -215,18 +227,12 @@ constructor(dataManager: DataManager, schedulerProvider: SchedulerProvider, comp
         return mvpView.getCurrentPlayingTime()
     }
 
-    private fun getSavePath(chatId: String, messageId: String): String {
-        val path = Constants.BASE_AUDIO_FOLDER + chatId + "/"
-        File(path).mkdirs()
-        return Constants.BASE_AUDIO_FOLDER + chatId + "/" + messageId+
-                "audio.wav"
-    }
 
     //callbacks from holding button events
     override fun onBeforeExpand() {
         mvpView.cancelAnimations()
         mvpView.startExpandAnimations() // TODO change to something logical
-        mvpView.setupRecorder(getSavePath(chatInformation.Id!!.toString(),(chatMessages.size+1).toString()))
+        mvpView.setupRecorder(FileUtils.getSentSavePath(chatInformation.Id!!.toString()))
     }
 
     override fun onExpand() {
@@ -352,6 +358,7 @@ constructor(dataManager: DataManager, schedulerProvider: SchedulerProvider, comp
                                 if(messageResponse.isSuccessful){
                                     val message: ChatMessage? = messageResponse.body()
                                     if(message!=null){
+                                        message.localFilePath = fileUri
                                         realm.executeTransaction {
                                             realm.copyToRealm(message)
                                         }
