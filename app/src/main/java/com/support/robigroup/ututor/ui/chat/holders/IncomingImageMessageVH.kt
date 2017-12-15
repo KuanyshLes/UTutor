@@ -18,10 +18,10 @@ class IncomingImageMessageVH(itemView: View) : MessageHolders.IncomingTextMessag
     init {
         if (image != null && image is RoundedImageView) {
             image.setCorners(
-                    com.stfalcon.chatkit.R.dimen.message_bubble_corners_radius,
-                    com.stfalcon.chatkit.R.dimen.message_bubble_corners_radius,
-                    com.stfalcon.chatkit.R.dimen.message_bubble_corners_radius,
-                    com.stfalcon.chatkit.R.dimen.message_bubble_corners_radius
+                    R.dimen.image_corner_radius,
+                    R.dimen.image_corner_radius,
+                    R.dimen.image_corner_radius,
+                    R.dimen.image_corner_radius
             )
         }
     }

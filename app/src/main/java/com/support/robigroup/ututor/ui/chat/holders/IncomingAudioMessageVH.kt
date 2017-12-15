@@ -7,6 +7,7 @@ import android.view.animation.AnimationUtils
 import android.widget.ImageButton
 import android.widget.SeekBar
 import android.widget.TextView
+import com.google.gson.Gson
 
 import com.stfalcon.chatkit.messages.MessageHolders
 import com.stfalcon.chatkit.utils.DateFormatter
@@ -19,25 +20,17 @@ import com.support.robigroup.ututor.ui.chat.AudioPlayerCallback
 import com.support.robigroup.ututor.ui.chat.PlayView
 
 
-class IncomingAudioMessageVH(itemView: View): MessageHolders.OutcomingTextMessageViewHolder<ChatMessage>(itemView) {
+class IncomingAudioMessageVH(itemView: View): MessageHolders.IncomingTextMessageViewHolder<ChatMessage>(itemView) {
 
-    var mPlayPauseBtn: ImageButton
-    var seekBar: SeekBar
-    var play_time: TextView
-    var mListener: PlayPresenter = (itemView.context as PlayView).getPlayPresenter()
+    private var mPlayPauseBtn: ImageButton = itemView.findViewById(R.id.btn_play_pause)
+    private var seekBar: SeekBar = itemView.findViewById(R.id.progress)
+    private var play_time: TextView = itemView.findViewById(R.id.play_time)
+    private var mListener: PlayPresenter = (itemView.context as PlayView).getPlayPresenter()
 
     private var handler = Handler()
-
     private var duration: Int = 0
     private var stepToUpdate: Int = 0
     private var progress: Int = 0
-
-    init {
-        mPlayPauseBtn = itemView.findViewById(R.id.btn_play_pause)
-        seekBar = itemView.findViewById(R.id.progress)
-        play_time = itemView.findViewById(R.id.play_time)
-    }
-
 
     private val mUpdateTimeTask = object : Runnable {
         override fun run() {
@@ -54,11 +47,14 @@ class IncomingAudioMessageVH(itemView: View): MessageHolders.OutcomingTextMessag
     override fun onBind(message: ChatMessage) {
         super.onBind(message)
 
+        Log.w("Message", Gson().toJson(message, ChatMessage::class.java))
+
         time.text = DateFormatter.format(message.createdAt, DateFormatter.Template.TIME)
 
         seekBar.progress = 0
         seekBar.max = 100
 
+        mPlayPauseBtn.tag = Constants.TAG_AUDIO_PAUSE
         mPlayPauseBtn.setOnClickListener {
             if (mPlayPauseBtn.tag.toString() == Constants.TAG_AUDIO_PAUSE) {
                 mListener.stopPrevious()

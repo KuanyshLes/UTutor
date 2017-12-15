@@ -68,10 +68,9 @@ interface ChatMvpPresenter<V : ChatMvpView> : MvpPresenter<V>,
 interface PlayPresenter : MediaPlayer.OnCompletionListener{
     fun onPlayClick(message: ChatMessage)
     fun onPauseClick()
-    fun onPlayFinish()
     fun onPlayerPrepared()
     fun setPlayerCallback(callback: AudioPlayerCallback)
-    fun getPlayerCurrentPosition(): Long
+    fun getPlayerCurrentPosition(): Int
     fun stopPrevious()
 }
 

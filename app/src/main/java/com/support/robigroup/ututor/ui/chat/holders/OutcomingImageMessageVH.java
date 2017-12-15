@@ -18,10 +18,10 @@ public class OutcomingImageMessageVH
         image = itemView.findViewById(R.id.image);
         if (image != null && image instanceof RoundedImageView) {
             ((RoundedImageView) image).setCorners(
-                    com.stfalcon.chatkit.R.dimen.message_bubble_corners_radius,
-                    com.stfalcon.chatkit.R.dimen.message_bubble_corners_radius,
-                    com.stfalcon.chatkit.R.dimen.message_bubble_corners_radius,
-                    com.stfalcon.chatkit.R.dimen.message_bubble_corners_radius
+                    R.dimen.image_corner_radius,
+                    R.dimen.image_corner_radius,
+                    R.dimen.image_corner_radius,
+                    R.dimen.image_corner_radius
             );
         }
     }

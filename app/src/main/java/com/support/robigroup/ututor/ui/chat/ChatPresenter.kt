@@ -67,9 +67,6 @@ constructor(dataManager: DataManager, schedulerProvider: SchedulerProvider, comp
             }
         }
 
-
-
-
         chatMessages.addChangeListener {
             messages, changeSet ->
             if (changeSet == null) {
@@ -210,16 +207,12 @@ constructor(dataManager: DataManager, schedulerProvider: SchedulerProvider, comp
         mvpView.pausePlay()
     }
 
-    override fun onPlayFinish() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
     override fun setPlayerCallback(callback: AudioPlayerCallback) {
         audioCallback = callback
     }
 
-    override fun getPlayerCurrentPosition(): Long {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun getPlayerCurrentPosition(): Int {
+        return mvpView.getCurrentPlayingTime()
     }
 
     private fun getSavePath(chatId: String, messageId: String): String {
@@ -232,8 +225,8 @@ constructor(dataManager: DataManager, schedulerProvider: SchedulerProvider, comp
     //callbacks from holding button events
     override fun onBeforeExpand() {
         mvpView.cancelAnimations()
-        mvpView.startExpandAnimations()
-        mvpView.setupRecorder(getSavePath(chatInformation.Id!!.toString(),(chatMessages.last()!!.id.toInt()+1).toString()))
+        mvpView.startExpandAnimations() // TODO change to something logical
+        mvpView.setupRecorder(getSavePath(chatInformation.Id!!.toString(),(chatMessages.size+1).toString()))
     }
 
     override fun onExpand() {
@@ -331,7 +324,7 @@ constructor(dataManager: DataManager, schedulerProvider: SchedulerProvider, comp
                                     val message: ChatMessage? = messageResponse.body()
                                     if(message!=null){
                                         realm.executeTransaction {
-                                            realm.copyToRealmOrUpdate(message)
+                                            realm.copyToRealm(message)
                                         }
                                     }else{
                                         handleApiError(null)
@@ -360,7 +353,7 @@ constructor(dataManager: DataManager, schedulerProvider: SchedulerProvider, comp
                                     val message: ChatMessage? = messageResponse.body()
                                     if(message!=null){
                                         realm.executeTransaction {
-                                            realm.copyToRealmOrUpdate(message)
+                                            realm.copyToRealm(message)
                                         }
                                     }else{
                                         handleApiError(null)

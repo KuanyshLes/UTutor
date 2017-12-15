@@ -2,13 +2,12 @@ package com.support.robigroup.ututor.ui.chat
 
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
-import android.media.AudioFormat
-import android.media.AudioManager
-import android.media.MediaPlayer
-import android.media.MediaRecorder
+import android.media.*
+import android.os.Build
 import android.os.Bundle
 import android.os.Vibrator
 import android.support.v7.app.AlertDialog
@@ -184,7 +183,7 @@ class ActivityChat : BaseActivity(), ChatMvpView {
                         IncomingAudioMessageVH::class.java,
                         R.layout.item_incoming_audio_message,
                         OutcomingAudioMessageVH::class.java,
-                        R.layout.item_incoming_audio_message,
+                        R.layout.item_outcoming_audio_message,
                         mPresenter)
 
         messagesAdapter = MessagesListAdapter(Constants.LEARNER_ID, holders, imageLoader)
@@ -221,11 +220,35 @@ class ActivityChat : BaseActivity(), ChatMvpView {
         contentManager.onActivityResult(requestCode, resultCode, data)
     }
 
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        super.onRestoreInstanceState(savedInstanceState)
+        contentManager.onRestoreInstanceState(savedInstanceState)
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        contentManager.onSaveInstanceState(outState)
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        contentManager.onRequestPermissionsResult(requestCode, permissions, grantResults)
+    }
 
     //PlayView
+    @SuppressLint("NewApi")
     override fun preparePlay(filePath: String) {
         mediaPlayer.reset()
-        mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            val audioAttributes =
+                    AudioAttributes.Builder()
+                            .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                            .setUsage(AudioAttributes.USAGE_MEDIA)
+                            .build()
+            mediaPlayer.setAudioAttributes(audioAttributes)
+        }else{
+            mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC)
+        }
         mediaPlayer.setDataSource(filePath)
         mediaPlayer.setOnPreparedListener(MediaPlayer.OnPreparedListener {
             mPresenter.onPlayerPrepared()
@@ -242,7 +265,8 @@ class ActivityChat : BaseActivity(), ChatMvpView {
     }
 
     override fun stopPlay() {
-        mediaPlayer.stop()
+        if(mediaPlayer.isPlaying)
+            mediaPlayer.stop()
     }
 
     override fun getCurrentPlayingTime(): Int {
@@ -453,7 +477,7 @@ class ActivityChat : BaseActivity(), ChatMvpView {
     }
 
     override fun notifyItemRangeUpdated(messages: List<ChatMessage>, startIndex: Int, rangeLength: Int) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
     }
 
     override fun notifyItemRangeDeleted(messages: List<ChatMessage>, startIndex: Int, rangeLength: Int) {

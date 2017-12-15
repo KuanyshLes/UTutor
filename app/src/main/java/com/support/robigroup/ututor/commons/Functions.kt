@@ -257,8 +257,19 @@ object Functions {
         return String.format("%2d:%2dм:2dc.", hours, minutes, seconds)
     }
 
+    fun getTimerFromMillis(millis: Int): String{
+        val millisLong = millis.toLong()
+        val hours = TimeUnit.MILLISECONDS.toHours(millisLong)
+        val minutes = TimeUnit.MILLISECONDS.toMinutes(millisLong) - TimeUnit.HOURS.toMinutes(millisLong)
+        val seconds = millis -TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millisLong))
+        if(hours == 0L) {
+            return String.format("%02d:%02d", minutes, seconds)
+        }
+        return String.format("%02d:%02d:%02d", hours, minutes, seconds)
+    }
+
     fun getProgressPercentage(tDur: Long, cDur: Long): Int{
-        return 0;
+        return 0
     }
 
     fun hasContentFor(message: ChatMessage, type: Byte): Boolean{

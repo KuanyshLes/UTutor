@@ -21,23 +21,15 @@ import com.support.robigroup.ututor.ui.chat.PlayView
 
 class OutcomingAudioMessageVH(itemView: View) : MessageHolders.OutcomingTextMessageViewHolder<ChatMessage>(itemView) {
 
-    var mPlayPauseBtn: ImageButton
-    var seekBar: SeekBar
-    var play_time: TextView
-    var mListener: PlayPresenter
+    private var mPlayPauseBtn: ImageButton = itemView.findViewById(R.id.btn_play_pause)
+    private var seekBar: SeekBar = itemView.findViewById(R.id.progress)
+    private var play_time: TextView = itemView.findViewById(R.id.play_time)
+    private var mListener: PlayPresenter = (itemView.context as PlayView).getPlayPresenter()
 
     private var handler = Handler()
-
     private var duration: Int = 0
     private var stepToUpdate: Int = 0
     private var progress: Int = 0
-
-    init {
-        mListener = (itemView.context as PlayView).getPlayPresenter()
-        mPlayPauseBtn = itemView.findViewById(R.id.btn_play_pause)
-        seekBar = itemView.findViewById(R.id.progress)
-        play_time = itemView.findViewById(R.id.play_time)
-    }
 
 
     private val mUpdateTimeTask = object : Runnable {
@@ -59,6 +51,7 @@ class OutcomingAudioMessageVH(itemView: View) : MessageHolders.OutcomingTextMess
 
         seekBar.progress = 0
         seekBar.max = 100
+        mPlayPauseBtn.tag = Constants.TAG_AUDIO_PAUSE
 
         mPlayPauseBtn.setOnClickListener {
             if (mPlayPauseBtn.tag.toString() == Constants.TAG_AUDIO_PAUSE) {
