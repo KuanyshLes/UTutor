@@ -95,7 +95,7 @@ constructor(dataManager: DataManager, schedulerProvider: SchedulerProvider, comp
             }
         }
 //        updateChatMessages()
-        mvpView.notifyItemRangeInserted(chatMessages, 0, chatMessages.size-1)
+        mvpView.notifyItemRangeInserted(chatMessages, 0, chatMessages.size)
     }
 
     override fun onFinishClick() {

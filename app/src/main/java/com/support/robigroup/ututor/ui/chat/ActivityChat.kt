@@ -21,6 +21,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import com.dewarder.holdinglibrary.HoldingButtonLayout
+import com.facebook.drawee.generic.GenericDraweeHierarchyBuilder
 import com.squareup.picasso.Picasso
 import com.stfalcon.chatkit.commons.ImageLoader
 import com.stfalcon.chatkit.messages.MessageHolders
@@ -109,8 +110,14 @@ class ActivityChat : BaseActivity(), ChatMvpView {
     }
 
     override fun showImage(url: String) {
+        val hierarchyBuilder = GenericDraweeHierarchyBuilder.newInstance(resources)
+                .setRetryImage(R.drawable.retry_image)
+                .setProgressBarImage(R.drawable.progress)
+                .setPlaceholderImage(R.drawable.change_logo)
         ImageViewer.Builder(this, arrayOf(url))
                 .setStartPosition(0)
+                .hideStatusBar(false)
+                .setCustomDraweeHierarchyBuilder(hierarchyBuilder)
                 .show()
     }
 

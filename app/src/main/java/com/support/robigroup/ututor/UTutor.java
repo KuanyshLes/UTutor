@@ -4,6 +4,8 @@ import android.app.Application;
 import android.content.Context;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.imagepipeline.core.ImagePipelineConfig;
+import com.facebook.imagepipeline.decoder.SimpleProgressiveJpegConfig;
 import com.support.robigroup.ututor.data.DataManager;
 import com.support.robigroup.ututor.di.component.ApplicationComponent;
 import com.support.robigroup.ututor.di.component.DaggerApplicationComponent;
@@ -31,7 +33,12 @@ public class UTutor extends Application {
                 .build();
         Realm.setDefaultConfiguration(config);
 
-        Fresco.initialize(this);
+        ImagePipelineConfig imageConfig = ImagePipelineConfig.newBuilder(this)
+                .setProgressiveJpegConfig(new SimpleProgressiveJpegConfig())
+                .setResizeAndRotateEnabledForNetwork(true)
+                .setDownsampleEnabled(true)
+                .build();
+        Fresco.initialize(this, imageConfig);
 
         SingletonSharedPref.getInstance(getBaseContext());
 
