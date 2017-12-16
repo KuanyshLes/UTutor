@@ -56,16 +56,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_above="@+id/input_divider"
-            app:outcomingDefaultBubbleColor="@color/colorLightBlue"
-            app:incomingBubblePaddingLeft="@dimen/bubble_padding"
-            app:incomingBubblePaddingRight="@dimen/bubble_padding"
-            app:incomingBubblePaddingTop="@dimen/bubble_padding"
-            app:incomingBubblePaddingBottom="@dimen/bubble_padding"
-            app:outcomingBubblePaddingLeft="@dimen/bubble_padding"
-            app:outcomingBubblePaddingRight="@dimen/bubble_padding"
-            app:outcomingBubblePaddingTop="@dimen/bubble_padding"
-            app:outcomingBubblePaddingBottom="@dimen/bubble_padding"
-            />
+            app:outcomingDefaultBubbleColor="@color/colorLightBlue"/>
 
         <TextView
             android:id="@+id/time"

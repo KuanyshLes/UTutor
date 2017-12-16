@@ -21,10 +21,9 @@
             android:id="@+id/btn_play_pause"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:layout_marginBottom="8dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginBottom="@dimen/message_item_margin"
+            android:layout_marginStart="@dimen/message_item_margin"
+            android:layout_marginTop="@dimen/message_item_margin"
             android:background="@null"
             android:scaleType="centerCrop"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -40,7 +39,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="@dimen/message_item_margin"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/btn_play_pause"
             app:layout_constraintTop_toTopOf="parent" />
@@ -49,19 +48,14 @@
             android:id="@+id/play_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
+            android:layout_marginBottom="@dimen/message_item_margin"
             android:layout_marginTop="8dp"
             android:text="@string/ex_clock_timer"
-            android:layout_alignLeft="@id/bubble"
-            android:layout_alignStart="@id/bubble"
-            android:layout_below="@id/bubble"
-            android:layout_marginLeft="16dp"
-            android:layout_marginStart="16dp"
-            android:textColor="@color/colorGrey"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="@+id/progress"
             app:layout_constraintTop_toBottomOf="@+id/progress" />
     </android.support.constraint.ConstraintLayout>
+
     <TextView
         android:id="@+id/messageTime"
         android:layout_width="wrap_content"
@@ -71,6 +65,7 @@
         android:layout_below="@id/bubble"
         android:layout_marginLeft="16dp"
         android:layout_marginStart="16dp"
+        android:text="@string/ex_clock_timer"
         android:textColor="@color/colorGrey"
-        android:text="@string/ex_clock_timer" />
+        android:visibility="visible" />
 </RelativeLayout>

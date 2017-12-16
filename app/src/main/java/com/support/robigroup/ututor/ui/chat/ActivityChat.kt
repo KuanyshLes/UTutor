@@ -150,7 +150,10 @@ class ActivityChat : BaseActivity(), ChatMvpView {
         sendTextMessageIV = findViewById(R.id.sendTextMessage)
         sendTextMessageIV.setOnClickListener {
             showSendTexMessageBtn(false)
-            mPresenter.onSubmit(mInput.text.trim().toString())
+            val text = mInput.text.trim().toString()
+            mPresenter.onSubmit(text)
+            mInput.text.clear()
+            hideKeyboard()
         }
 
         attachFileIV = findViewById(R.id.attachIV)

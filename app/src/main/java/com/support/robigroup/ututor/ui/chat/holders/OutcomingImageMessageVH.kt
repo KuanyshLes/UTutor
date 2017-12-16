@@ -1,17 +1,14 @@
 package com.support.robigroup.ututor.ui.chat.holders
 
-import android.support.v4.view.ViewCompat
 import android.view.View
 import android.widget.ImageView
 
 import com.stfalcon.chatkit.messages.MessageHolders
-import com.stfalcon.chatkit.utils.DateFormatter
 import com.stfalcon.chatkit.utils.RoundedImageView
 import com.support.robigroup.ututor.R
 import com.support.robigroup.ututor.features.chat.model.ChatMessage
 
-
-class IncomingImageMessageVH(itemView: View) : MessageHolders.IncomingTextMessageViewHolder<ChatMessage>(itemView) {
+class OutcomingImageMessageVH(itemView: View) : MessageHolders.OutcomingTextMessageViewHolder<ChatMessage>(itemView) {
 
     private val image: ImageView? = itemView.findViewById(R.id.image)
 
@@ -28,7 +25,7 @@ class IncomingImageMessageVH(itemView: View) : MessageHolders.IncomingTextMessag
 
     override fun onBind(message: ChatMessage) {
         super.onBind(message)
-        time.text = DateFormatter.format(message.createdAt, DateFormatter.Template.TIME)
+        time.setTextColor(time.context.resources.getColor(R.color.colorGrey))
         if (image != null && imageLoader != null) {
             imageLoader.loadImage(image, message.iconUrl)
         }

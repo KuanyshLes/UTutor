@@ -46,9 +46,7 @@ class OutcomingAudioMessageVH(itemView: View) : MessageHolders.OutcomingTextMess
 
     override fun onBind(message: ChatMessage) {
         super.onBind(message)
-
-        time.text = DateFormatter.format(message.createdAt, DateFormatter.Template.TIME)
-
+        time.setTextColor(time.context.resources.getColor(R.color.colorGrey))
         seekBar.progress = 0
         seekBar.max = 100
         mPlayPauseBtn.tag = Constants.TAG_AUDIO_PAUSE
@@ -107,6 +105,14 @@ class OutcomingAudioMessageVH(itemView: View) : MessageHolders.OutcomingTextMess
 
             }
         })
+
+        if (bubble != null) {
+            val valueInPixels = bubble.context.resources.getDimension(R.dimen.bubble_padding).toInt()
+            bubble.setPadding(valueInPixels,
+                    valueInPixels,
+                    valueInPixels,
+                    valueInPixels)
+        }
     }
 
     private fun play() {
@@ -118,7 +124,7 @@ class OutcomingAudioMessageVH(itemView: View) : MessageHolders.OutcomingTextMess
 
     private fun stop() {
         mPlayPauseBtn.clearAnimation()
-        play_time.text = ""
+        play_time.text = play_time.context.getString(R.string.ex_clock_timer)
         mPlayPauseBtn.setImageResource(R.drawable.ic_play_media_black)
         seekBar.progress = 0
         mPlayPauseBtn.tag = Constants.TAG_AUDIO_PAUSE

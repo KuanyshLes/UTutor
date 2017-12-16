@@ -31,7 +31,12 @@ constructor(dataManager: DataManager, schedulerProvider: SchedulerProvider, comp
 
     override fun onViewInitialized() {
 
-        mvpView.setToolbarTitle(chatInformation.Teacher)
+        val surnameName = chatInformation.Teacher.split(" ")
+        if(surnameName.size==2)
+            mvpView.setToolbarTitle(surnameName[1])
+        else{
+            mvpView.setToolbarTitle(surnameName[0])
+        }
 
         chatInformation.addChangeListener<ChatInformation> {
             rs, changeset ->
@@ -89,7 +94,7 @@ constructor(dataManager: DataManager, schedulerProvider: SchedulerProvider, comp
                 }
             }
         }
-        updateChatMessages()
+//        updateChatMessages()
         mvpView.notifyItemRangeInserted(chatMessages, 0, chatMessages.size-1)
     }
 

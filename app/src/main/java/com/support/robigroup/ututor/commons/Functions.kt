@@ -260,8 +260,8 @@ object Functions {
     fun getTimerFromMillis(millis: Int): String{
         val millisLong = millis.toLong()
         val hours = TimeUnit.MILLISECONDS.toHours(millisLong)
-        val minutes = TimeUnit.MILLISECONDS.toMinutes(millisLong) - TimeUnit.HOURS.toMinutes(millisLong)
-        val seconds = millis -TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millisLong))
+        val minutes = TimeUnit.MILLISECONDS.toMinutes(millisLong) - TimeUnit.HOURS.toMinutes(hours)
+        val seconds = TimeUnit.MILLISECONDS.toSeconds(millisLong) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millisLong))
         if(hours == 0L) {
             return String.format("%02d:%02d", minutes, seconds)
         }

@@ -47,9 +47,7 @@ class IncomingAudioMessageVH(itemView: View): MessageHolders.IncomingTextMessage
     override fun onBind(message: ChatMessage) {
         super.onBind(message)
 
-        Log.w("Message", Gson().toJson(message, ChatMessage::class.java))
-
-        time.text = DateFormatter.format(message.createdAt, DateFormatter.Template.TIME)
+        time.setTextColor(time.context.resources.getColor(R.color.colorGrey))
 
         seekBar.progress = 0
         seekBar.max = 100
@@ -106,6 +104,13 @@ class IncomingAudioMessageVH(itemView: View): MessageHolders.IncomingTextMessage
 
             }
         })
+        if (bubble != null) {
+            val valueInPixels = bubble.context.resources.getDimension(R.dimen.bubble_padding).toInt()
+            bubble.setPadding(valueInPixels,
+                    valueInPixels,
+                    valueInPixels,
+                    valueInPixels)
+        }
     }
 
     private fun play() {
