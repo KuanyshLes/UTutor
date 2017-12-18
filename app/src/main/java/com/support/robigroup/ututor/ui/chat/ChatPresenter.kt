@@ -6,7 +6,6 @@ import com.androidnetworking.error.ANError
 import com.stfalcon.contentmanager.ContentManager
 import com.support.robigroup.ututor.Constants
 import com.support.robigroup.ututor.commons.ChatInformation
-import com.support.robigroup.ututor.commons.ChatLesson
 import com.support.robigroup.ututor.commons.Functions
 import com.support.robigroup.ututor.commons.logd
 import com.support.robigroup.ututor.data.DataManager
@@ -14,11 +13,8 @@ import com.support.robigroup.ututor.features.chat.model.ChatMessage
 import com.support.robigroup.ututor.ui.base.RealmBasedPresenter
 import com.support.robigroup.ututor.utils.FileUtils
 import com.support.robigroup.ututor.utils.SchedulerProvider
-import io.reactivex.Flowable
 import io.reactivex.disposables.CompositeDisposable
-import retrofit2.Response
 import java.io.File
-import java.util.*
 import javax.inject.Inject
 
 
@@ -94,8 +90,10 @@ constructor(dataManager: DataManager, schedulerProvider: SchedulerProvider, comp
                 }
             }
         }
-//        updateChatMessages()
+        updateChatMessages()
         mvpView.notifyItemRangeInserted(chatMessages, 0, chatMessages.size)
+
+        mvpView.registerReceivers()
     }
 
     override fun onFinishClick() {
@@ -154,7 +152,7 @@ constructor(dataManager: DataManager, schedulerProvider: SchedulerProvider, comp
     }
 
     override fun onSubmit(input: CharSequence?): Boolean {
-        compositeDisposable.add(sendMessage(messageText = input.toString())
+        compositeDisposable.add(dataManager.sendImageTextMessage(messageText = input.toString())
                 .subscribeOn(schedulerProvider.io())
                 .observeOn(schedulerProvider.ui())
                 .subscribe(
@@ -274,6 +272,14 @@ constructor(dataManager: DataManager, schedulerProvider: SchedulerProvider, comp
         mvpView.moveSlideToCancel(offset, isCancel)
     }
 
+    //DownloadPresenter
+    override fun onDownloadComplete() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onNotificationClick() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
 
     //methods to add image from gallery or other resources
     override fun onStartContentLoading() {
@@ -297,7 +303,7 @@ constructor(dataManager: DataManager, schedulerProvider: SchedulerProvider, comp
     }
 
     private fun updateChatMessages(){
-        compositeDisposable.add(dataManager.apiHelper.getChatMessages(chatInformation.Id.toString())
+        compositeDisposable.add(dataManager.apiHelper.getChatMessages()
                 .subscribeOn(schedulerProvider.io())
                 .observeOn(schedulerProvider.ui())
                 .subscribe(
@@ -326,7 +332,7 @@ constructor(dataManager: DataManager, schedulerProvider: SchedulerProvider, comp
     private fun sendImageMessage(imageUri: String){
         val encodedImage = Functions.getEncodedImage(imageUri)
         if(encodedImage!=null){
-            compositeDisposable.add(sendMessage(file64base = encodedImage)
+            compositeDisposable.add(dataManager.sendImageTextMessage(file64base = encodedImage)
                     .subscribeOn(schedulerProvider.io())
                     .observeOn(schedulerProvider.ui())
                     .subscribe(
@@ -383,17 +389,4 @@ constructor(dataManager: DataManager, schedulerProvider: SchedulerProvider, comp
 
         }
     }
-
-    private fun sendMessage(messageText: String? = null, file64base: String? = null): Flowable<Response<ChatMessage>> =
-            if(file64base != null&&messageText!=null){
-                val res: HashMap<String,String> = HashMap()
-                res.put("File",file64base)
-                res.put("Message",messageText)
-                dataManager.apiHelper.postMessagePhoto(res)
-            } else if(file64base!=null) {
-                val res: HashMap<String,String> = HashMap()
-                res.put("File",file64base)
-                dataManager.apiHelper.postMessagePhoto(res)
-            }else if(messageText!=null) dataManager.apiHelper.postTextMessage(messageText)
-            else Flowable.empty()
 }

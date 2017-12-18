@@ -20,6 +20,8 @@ import android.content.Context;
 
 import com.support.robigroup.ututor.data.AppDataManager;
 import com.support.robigroup.ututor.data.DataManager;
+import com.support.robigroup.ututor.data.file.AppFileHelper;
+import com.support.robigroup.ututor.data.file.FileHelper;
 import com.support.robigroup.ututor.data.network.AppNetworkHelper;
 import com.support.robigroup.ututor.data.network.NetworkHelper;
 import com.support.robigroup.ututor.data.prefs.AppPreferencesHelper;
@@ -87,5 +89,11 @@ public class ApplicationModule {
     @Singleton
     NetworkHelper provideNetworkHelper(AppNetworkHelper appNetworkHelper) {
         return appNetworkHelper;
+    }
+
+    @Provides
+    @Singleton
+    FileHelper provideFileHelper(AppFileHelper appFileHelper) {
+        return appFileHelper;
     }
 }

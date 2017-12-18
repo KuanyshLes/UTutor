@@ -287,14 +287,8 @@ object Functions {
     }
 
     private fun hasEqualFormat(input: String, formats: Array<String>): Boolean{
-        val last3 = input.substring(input.length-3)
-        val last4 = input.substring(input.length-4)
-        for(format in formats){
-            if(last3==format||last4==format){
-                return true
-            }
-        }
-        return false
+        val last4 = input.substring(input.lastIndexOf(".") + 1)
+        return formats.contains(last4)
     }
 
 }

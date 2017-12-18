@@ -18,7 +18,7 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Response
 import android.webkit.MimeTypeMap
-
+import java.util.HashMap
 
 
 @Singleton
@@ -29,15 +29,24 @@ constructor(@param:ApplicationContext private val mContext: Context) : NetworkHe
         val resolver = getMimeType(file.absolutePath)
         val type = MediaType.parse(resolver)
         val filePart = MultipartBody.Part.createFormData("File", file.name, RequestBody.create(type, file))
-        return RestAPI.getApi().postMessageAudio(filePart)
+        return RestAPI.getUploadApi().postMessageAudio(filePart)
     }
 
-    override fun getChatMessages(chatId: String?): Flowable<Response<MutableList<ChatMessage>>> {
+    override fun sendImageTextMessage(messageText: String?, file64base: String?): Flowable<Response<ChatMessage>> =
+        if(file64base != null&&messageText!=null){
+            val res: HashMap<String, String> = HashMap()
+            res.put("File",file64base)
+            res.put("Message",messageText)
+            RestAPI.getUploadApi().postMessagePhoto(res)
+        } else if(file64base!=null) {
+            val res: HashMap<String, String> = HashMap()
+            res.put("File",file64base)
+            RestAPI.getUploadApi().postMessagePhoto(res)
+        }else if(messageText!=null) RestAPI.getUploadApi().postTextMessage(messageText)
+        else Flowable.empty()
+
+    override fun getChatMessages(chatId: String): Flowable<Response<List<ChatMessage>>> {
         return Flowable.empty()
-    }
-
-    override fun sendImageMessage(): Flowable<Response<ChatMessage>>? {
-        return null
     }
 
     private fun getMimeType(url: String): String {

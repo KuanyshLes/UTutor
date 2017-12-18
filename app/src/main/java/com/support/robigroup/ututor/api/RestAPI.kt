@@ -17,9 +17,9 @@ class RestAPI{
 
     companion object {
 
-        val logging = HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
+        private val logging = HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
 
-        var client = OkHttpClient.Builder()
+        private var client = OkHttpClient.Builder()
                 .readTimeout(30, TimeUnit.SECONDS)
                 .connectTimeout(10, TimeUnit.SECONDS)
                 .addInterceptor(logging)
@@ -34,6 +34,18 @@ class RestAPI{
             }
         }).build()
 
+        private var uploadImage = OkHttpClient.Builder()
+                .readTimeout(10000, TimeUnit.SECONDS)
+                .connectTimeout(10, TimeUnit.SECONDS)
+                .addInterceptor(logging)
+                .addInterceptor { chain: Interceptor.Chain ->
+                    val newRequest = chain.request().newBuilder()
+                            .addHeader("Content-Type", "application/x-www-form-urlencoded")
+                            .build()
+                    chain.proceed(newRequest)
+                }
+                .build()
+
         private val retrofit = Retrofit.Builder()
                 .baseUrl(Constants.BASE_URL)
                 .client(client)
@@ -44,9 +56,21 @@ class RestAPI{
                 ))
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .build()
+        private val uploadImageRetrofit = Retrofit.Builder()
+                .baseUrl(Constants.BASE_URL)
+                .client(uploadImage)
+                .addConverterFactory(GsonConverterFactory.create(
+                        GsonBuilder()
+                                .setLenient()
+                                .create()
+                ))
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                .build()
 
         private val apiInterface: APIInterface = retrofit.create(APIInterface::class.java)
+        private val uploadApiInterface: APIInterface = uploadImageRetrofit.create(APIInterface::class.java)
 
+        fun getUploadApi(): APIInterface =  uploadApiInterface
         fun getApi(): APIInterface = apiInterface
     }
 

@@ -3,12 +3,13 @@ package com.support.robigroup.ututor.ui.chat
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.annotation.SuppressLint
-import android.content.Context
-import android.content.DialogInterface
-import android.content.Intent
+import android.app.DownloadManager
+import android.content.*
 import android.media.*
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.Environment
 import android.os.Vibrator
 import android.support.v7.app.AlertDialog
 import android.text.Editable
@@ -86,6 +87,20 @@ class ActivityChat : BaseActivity(), ChatMvpView {
 
     lateinit var vibrator: Vibrator
 
+    //download view
+    private lateinit var mgr: DownloadManager
+    private var lastDownload = -1L
+    private val onComplete = object : BroadcastReceiver() {
+        override fun onReceive(ctxt: Context, intent: Intent) {
+            mPresenter.onDownloadComplete()
+        }
+    }
+    private val onNotificationClick = object : BroadcastReceiver() {
+        override fun onReceive(ctxt: Context, intent: Intent) {
+            mPresenter.onNotificationClick()
+        }
+    }
+
 
     //activity lifecycle methods
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -126,6 +141,7 @@ class ActivityChat : BaseActivity(), ChatMvpView {
             mediaPlayer.stop()
         mediaPlayer.release()
         mPresenter.onDetach()
+        unregisterReceivers()
         super.onDestroy()
     }
 
@@ -423,6 +439,49 @@ class ActivityChat : BaseActivity(), ChatMvpView {
     private fun getFormattedTime(): String {
         return mFormatter.format(Date(System.currentTimeMillis() - mStartTime))
     }
+
+    //DownloadView methods
+    override fun startDownload(messageId: String, url: String) {
+        val uri = Uri.parse(url)
+
+        Environment
+                .getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+                .mkdirs();
+
+//        lastDownload =
+//                mgr.enqueue( DownloadManager.Request(uri)
+//                        .setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI or DownloadManager.Request.NETWORK_MOBILE)
+//                        .setAllowedOverRoaming(false)
+//                        .setTitle("Demo")
+//                        .setDescription("Something useful. No, really.")
+//                        .setDestinationUri(Uri.fromFile())
+//                        .setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS,
+//                                "test.mp4"));
+//
+//        v.setEnabled(false);
+//        findViewById(R.id.query).setEnabled(true);
+    }
+
+    override fun queryStatus() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun statusMessage(): String {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun registerReceivers() {
+        mgr = getSystemService(DOWNLOAD_SERVICE) as DownloadManager
+        registerReceiver(onComplete,  IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
+        registerReceiver(onNotificationClick,  IntentFilter(DownloadManager.ACTION_NOTIFICATION_CLICKED))
+
+    }
+
+    override fun unregisterReceivers() {
+        unregisterReceiver(onComplete)
+        unregisterReceiver(onNotificationClick)
+    }
+
 
 
     //dialog, activity methods

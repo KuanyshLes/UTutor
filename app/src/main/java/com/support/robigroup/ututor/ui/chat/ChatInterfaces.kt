@@ -17,28 +17,19 @@ import omrecorder.Recorder
 import java.io.File
 
 
-interface ChatMvpView : MvpView, PlayView, RecordView, HoldingButtonView{
+interface ChatMvpView : MvpView, PlayView, RecordView, HoldingButtonView, DownloadView{
 
     fun setToolbarTitle(title: String)
-
     fun showFinishDialog()
-
     fun showReadyDialog(dif: Long)
-
     fun closeReadyDialog()
-
     fun onLearnerReadyDialog()
-
     fun showEvalDialog()
-
     fun startMenuActivity()
-
     fun onCancelImageLoad()
-
     fun notifyItemRangeInserted(messages: List<ChatMessage>, startIndex: Int, rangeLength: Int)
     fun notifyItemRangeUpdated(messages: List<ChatMessage>, startIndex: Int, rangeLength: Int)
     fun notifyItemRangeDeleted(messages: List<ChatMessage>, startIndex: Int, rangeLength: Int)
-
     fun showImage(url: String)
 }
 
@@ -49,21 +40,28 @@ interface ChatMvpPresenter<V : ChatMvpView> : MvpPresenter<V>,
         ContentManager.PickContentListener,
         PlayPresenter,
         HoldingButtonLayoutListener,
-        MessagesListAdapter.OnMessageClickListener<ChatMessage>{
+        MessagesListAdapter.OnMessageClickListener<ChatMessage>,
+        DownloadPresenter{
 
     fun onFinishClick()
-
     fun onOkFinishClick()
-
     fun onReadyClick()
-
     fun onViewInitialized()
-
     fun onCounterFinish()
-
 }
 
+interface DownloadView {
+    fun startDownload(messageId: String, url: String)
+    fun queryStatus()
+    fun statusMessage(): String
+    fun registerReceivers()
+    fun unregisterReceivers()
+}
 
+interface DownloadPresenter{
+    fun onDownloadComplete()
+    fun onNotificationClick()
+}
 
 interface PlayPresenter : MediaPlayer.OnCompletionListener{
     fun onPlayClick(message: ChatMessage)
@@ -111,20 +109,13 @@ interface HoldingButtonView{
     fun moveSlideToCancel(offset: Float, isCancel: Boolean)
 }
 
-
-
-
 interface RateMvpView : DialogMvpView{
-
     fun initViews(info: ChatInformation)
-
 }
 
 interface RateMvpPresenter<V: RateMvpView>: MvpPresenter<V>{
 
     fun onClickRateButton(rating: Float)
-
     fun onViewInitialized()
-
 }
 

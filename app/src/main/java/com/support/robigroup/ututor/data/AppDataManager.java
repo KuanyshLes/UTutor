@@ -1,13 +1,18 @@
 package com.support.robigroup.ututor.data;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 
 import com.support.robigroup.ututor.api.APIInterface;
 import com.support.robigroup.ututor.api.RestAPI;
+import com.support.robigroup.ututor.data.file.FileHelper;
 import com.support.robigroup.ututor.data.network.NetworkHelper;
 import com.support.robigroup.ututor.data.prefs.PreferencesHelper;
 import com.support.robigroup.ututor.di.ApplicationContext;
 import com.support.robigroup.ututor.features.chat.model.ChatMessage;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.util.List;
@@ -26,24 +31,29 @@ public class AppDataManager implements DataManager{
     private final Context mContext;
     private final PreferencesHelper mPreferencesHelper;
     private final NetworkHelper mNetworkHelper;
+    private final FileHelper mFileHelper;
 
     @Inject
     public AppDataManager(@ApplicationContext Context context,
                           PreferencesHelper preferencesHelper,
-                          NetworkHelper networkHelper) {
+                          NetworkHelper networkHelper,
+                          FileHelper fileHelper) {
         mContext = context;
         mPreferencesHelper = preferencesHelper;
         mNetworkHelper = networkHelper;
+        mFileHelper = fileHelper;
     }
 
+    @NonNull
     @Override
     public Flowable<Response<ChatMessage>> sendAudioMessage(File file) {
         return mNetworkHelper.sendAudioMessage(file);
     }
 
+    @NotNull
     @Override
-    public Flowable<Response<ChatMessage>> sendImageMessage() {
-        return mNetworkHelper.sendImageMessage();
+    public Flowable<Response<ChatMessage>> sendImageTextMessage(@Nullable String messageText, @Nullable String file64base) {
+        return mNetworkHelper.sendImageTextMessage(messageText, file64base);
     }
 
     @Override
@@ -142,5 +152,17 @@ public class AppDataManager implements DataManager{
                 null,
                 null,
                 null);
+    }
+
+    @NotNull
+    @Override
+    public String getSentSavePath(@NotNull String chatId) {
+        return mFileHelper.getSentSavePath(chatId);
+    }
+
+    @NotNull
+    @Override
+    public String getDownloadSavePath(@NotNull String messageId) {
+        return mFileHelper.getDownloadSavePath(messageId);
     }
 }
