@@ -1,24 +1,19 @@
 package com.support.robigroup.ututor.data.network
 
 import android.content.Context
-import android.net.Uri
-
+import android.webkit.MimeTypeMap
 import com.support.robigroup.ututor.api.RestAPI
 import com.support.robigroup.ututor.di.ApplicationContext
 import com.support.robigroup.ututor.features.chat.model.ChatMessage
-
-import java.io.File
-
-import javax.inject.Inject
-import javax.inject.Singleton
-
 import io.reactivex.Flowable
 import okhttp3.MediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Response
-import android.webkit.MimeTypeMap
-import java.util.HashMap
+import java.io.File
+import java.util.*
+import javax.inject.Inject
+import javax.inject.Singleton
 
 
 @Singleton
@@ -57,4 +52,13 @@ constructor(@param:ApplicationContext private val mContext: Context) : NetworkHe
         }
         return type
     }
+
+//    override fun downloadAudio(url: String, onProgress: () -> Unit, onFinish: () -> Unit, onError: () -> Unit) {
+//
+//    }
+//
+//    override fun cancelDownload(url: String, onCancelled: () -> Unit) {
+//        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+//    }
+
 }

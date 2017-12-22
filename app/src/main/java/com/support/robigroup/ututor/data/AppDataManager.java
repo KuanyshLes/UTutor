@@ -21,6 +21,8 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import io.reactivex.Flowable;
+import kotlin.Unit;
+import kotlin.jvm.functions.Function0;
 import retrofit2.Response;
 
 
@@ -164,5 +166,10 @@ public class AppDataManager implements DataManager{
     @Override
     public String getDownloadSavePath(@NotNull String messageId) {
         return mFileHelper.getDownloadSavePath(messageId);
+    }
+
+    @Override
+    public boolean checkFileExistance(@NotNull String messageId) {
+        return mFileHelper.checkFileExistance(messageId);
     }
 }

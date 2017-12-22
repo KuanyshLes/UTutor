@@ -1,6 +1,7 @@
 package com.support.robigroup.ututor.data.file
 
 import android.content.Context
+import android.util.Log
 import com.support.robigroup.ututor.di.ApplicationContext
 import java.io.File
 import javax.inject.Inject
@@ -13,7 +14,7 @@ constructor(@param:ApplicationContext private val mContext: Context) : FileHelpe
 
     override fun getSentSavePath(chatId: String): String {
         val absol = mContext.filesDir.absolutePath
-        val path = absol + "/sent/"+ chatId + "/"
+        val path = absol + "/recorded/"+ chatId + "/"
         val dir = File(path)
         if(!dir.exists())
             dir.mkdirs()
@@ -26,7 +27,7 @@ constructor(@param:ApplicationContext private val mContext: Context) : FileHelpe
                         max =fileName
                     }
                 } catch (e: Exception) {
-
+                    Log.e("File", "error converting to number")
                 }
             }
         }
@@ -40,5 +41,10 @@ constructor(@param:ApplicationContext private val mContext: Context) : FileHelpe
         if(!dir.exists())
             dir.mkdirs()
         return path + messageId + ".wav"
+    }
+
+    override fun checkFileExistance(messageId: String): Boolean {
+        val file = File(getDownloadSavePath(messageId))
+        return file.exists() && file.isFile
     }
 }

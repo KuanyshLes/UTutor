@@ -16,6 +16,11 @@ import com.support.robigroup.ututor.utils.SchedulerProvider
 import io.reactivex.disposables.CompositeDisposable
 import java.io.File
 import javax.inject.Inject
+import com.androidnetworking.interfaces.DownloadProgressListener
+import com.androidnetworking.AndroidNetworking
+import android.icu.lang.UCharacter.GraphemeClusterBreak.V
+import com.androidnetworking.common.Priority
+import com.androidnetworking.interfaces.DownloadListener
 
 
 class ChatPresenter<V : ChatMvpView> @Inject
@@ -90,7 +95,7 @@ constructor(dataManager: DataManager, schedulerProvider: SchedulerProvider, comp
                 }
             }
         }
-        updateChatMessages()
+//        updateChatMessages()
         mvpView.notifyItemRangeInserted(chatMessages, 0, chatMessages.size)
 
         mvpView.registerReceivers()
@@ -386,7 +391,10 @@ constructor(dataManager: DataManager, schedulerProvider: SchedulerProvider, comp
                     )
             )
         }else{
-
+            
         }
     }
+
+
+
 }

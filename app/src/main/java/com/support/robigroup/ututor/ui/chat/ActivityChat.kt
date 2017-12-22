@@ -7,10 +7,7 @@ import android.app.DownloadManager
 import android.content.*
 import android.media.*
 import android.net.Uri
-import android.os.Build
-import android.os.Bundle
-import android.os.Environment
-import android.os.Vibrator
+import android.os.*
 import android.support.v7.app.AlertDialog
 import android.text.Editable
 import android.text.TextWatcher
@@ -562,4 +559,6 @@ class ActivityChat : BaseActivity(), ChatMvpView {
             context.startActivity(intent)
         }
     }
+
+
 }

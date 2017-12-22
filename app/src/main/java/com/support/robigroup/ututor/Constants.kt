@@ -41,6 +41,7 @@ object Constants {
     val TAG_AUDIO_PLAY = "play"
     val TAG_AUDIO_PAUSE = "pause"
     val TAG_AUDIO_DOWNLOAD = "download"
+    val TAG_AUDIO_DOWNLOADING = "downloading"
 
 
     val UTC: TimeZone = TimeZone.getTimeZone("UTC")

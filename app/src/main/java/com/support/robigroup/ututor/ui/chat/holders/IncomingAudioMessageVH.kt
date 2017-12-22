@@ -7,6 +7,10 @@ import android.view.animation.AnimationUtils
 import android.widget.ImageButton
 import android.widget.SeekBar
 import android.widget.TextView
+import com.androidnetworking.AndroidNetworking
+import com.androidnetworking.common.Priority
+import com.androidnetworking.error.ANError
+import com.androidnetworking.interfaces.DownloadListener
 import com.google.gson.Gson
 
 import com.stfalcon.chatkit.messages.MessageHolders
@@ -14,10 +18,12 @@ import com.stfalcon.chatkit.utils.DateFormatter
 import com.support.robigroup.ututor.Constants
 import com.support.robigroup.ututor.R
 import com.support.robigroup.ututor.commons.Functions
+import com.support.robigroup.ututor.data.DataManager
 import com.support.robigroup.ututor.features.chat.model.ChatMessage
 import com.support.robigroup.ututor.ui.chat.PlayPresenter
 import com.support.robigroup.ututor.ui.chat.AudioPlayerCallback
 import com.support.robigroup.ututor.ui.chat.PlayView
+import javax.inject.Inject
 
 
 class IncomingAudioMessageVH(itemView: View): MessageHolders.IncomingTextMessageViewHolder<ChatMessage>(itemView) {
@@ -26,6 +32,9 @@ class IncomingAudioMessageVH(itemView: View): MessageHolders.IncomingTextMessage
     private var seekBar: SeekBar = itemView.findViewById(R.id.progress)
     private var play_time: TextView = itemView.findViewById(R.id.play_time)
     private var mListener: PlayPresenter = (itemView.context as PlayView).getPlayPresenter()
+
+    @Inject
+    lateinit var dataManager: DataManager
 
     private var handler = Handler()
     private var duration: Int = 0
@@ -53,6 +62,9 @@ class IncomingAudioMessageVH(itemView: View): MessageHolders.IncomingTextMessage
         seekBar.max = 100
 
         mPlayPauseBtn.tag = Constants.TAG_AUDIO_PAUSE
+        if(!dataManager.checkFileExistance(message.id)){
+            mPlayPauseBtn.tag = Constants.TAG_AUDIO_DOWNLOAD
+        }
         mPlayPauseBtn.setOnClickListener {
             if (mPlayPauseBtn.tag.toString() == Constants.TAG_AUDIO_PAUSE) {
                 mListener.stopPrevious()
@@ -134,5 +146,24 @@ class IncomingAudioMessageVH(itemView: View): MessageHolders.IncomingTextMessage
         mPlayPauseBtn.tag = Constants.TAG_AUDIO_DOWNLOAD
         mPlayPauseBtn.setImageResource(R.drawable.ic_spinner_of_dots)
         mPlayPauseBtn.startAnimation(AnimationUtils.loadAnimation(mPlayPauseBtn.context, R.anim.download_rotate))
+    }
+
+    private fun downloadFileFromServer(url: String, dirPath: String, fileName: String){
+        AndroidNetworking.download(url, dirPath, fileName)
+                .setTag("downloadTest")
+                .setPriority(Priority.MEDIUM)
+                .build()
+                .setDownloadProgressListener { bytesDownloaded, totalBytes ->
+
+                }
+                .startDownload(object : DownloadListener {
+                    override fun onDownloadComplete() {
+                        // do anything after completion
+                    }
+
+                    override fun onError(error: ANError) {
+                        // handle error
+                    }
+                })
     }
 }

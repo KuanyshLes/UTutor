@@ -17,4 +17,8 @@ interface NetworkHelper {
 
     fun getChatMessages(chatId: String): Flowable<Response<List<ChatMessage>>>
 
+//    fun downloadAudio(url: String, onProgress: ()->Unit, onFinish: ()->Unit, onError: ()->Unit)
+//
+//    fun cancelDownload(url: String, onCancelled: ()->Unit)
+
 }

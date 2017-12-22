@@ -7,4 +7,5 @@ package com.support.robigroup.ututor.data.file
 interface FileHelper{
     fun getSentSavePath(chatId: String): String
     fun getDownloadSavePath(messageId: String): String
+    fun checkFileExistance(messageId: String): Boolean
 }

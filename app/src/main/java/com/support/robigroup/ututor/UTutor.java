@@ -3,6 +3,7 @@ package com.support.robigroup.ututor;
 import android.app.Application;
 import android.content.Context;
 
+import com.androidnetworking.AndroidNetworking;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.imagepipeline.core.ImagePipelineConfig;
 import com.facebook.imagepipeline.decoder.SimpleProgressiveJpegConfig;
@@ -32,6 +33,8 @@ public class UTutor extends Application {
                 .deleteRealmIfMigrationNeeded()
                 .build();
         Realm.setDefaultConfiguration(config);
+
+        AndroidNetworking.initialize(getApplicationContext());
 
         ImagePipelineConfig imageConfig = ImagePipelineConfig.newBuilder(this)
                 .setProgressiveJpegConfig(new SimpleProgressiveJpegConfig())
