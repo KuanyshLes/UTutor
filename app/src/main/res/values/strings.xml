@@ -12,6 +12,7 @@
     <string name="desc_arrow_right">Open</string>
 
     <string name="prompt_are_you_sure">Вы уверены закрыть чат</string>
+    <string name="prompt_audio_message_warning">Если хотите изпользовать аудио сообщение вы должны разрешить доступ</string>
 
 
     <string name="topic">Тема:</string>
@@ -112,6 +113,7 @@
     <string name="currency">тенге</string>
     <string name="recent">Недавнее</string>
     <string name="ex_class_name">10 класс</string>
+    <string name="audio_sent">Аудиозапись загружается</string>
 
     //account
     <string name="change_fio">Изменить Ф.И.О</string>

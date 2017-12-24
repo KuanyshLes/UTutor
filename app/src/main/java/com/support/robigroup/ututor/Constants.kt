@@ -38,10 +38,11 @@ object Constants {
     val TAG_FINISH_DIALOG = "finishDialog"
     val TAG_RATE_DIALOG = "evalDialog"
 
-    val TAG_AUDIO_PLAY = "play"
-    val TAG_AUDIO_PAUSE = "pause"
-    val TAG_AUDIO_DOWNLOAD = "download"
-    val TAG_AUDIO_DOWNLOADING = "downloading"
+    val MESSAGE_PAUSE = 1
+    val MESSAGE_DOWNLOADING = 2
+    val MESSAGE_DOWNLOAD = 0
+    val MESSAGE_PLAYING = 3
+    val MESSAGE_STOPPED = 4
 
 
     val UTC: TimeZone = TimeZone.getTimeZone("UTC")

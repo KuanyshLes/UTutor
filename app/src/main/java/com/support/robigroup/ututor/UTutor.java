@@ -24,6 +24,7 @@ public class UTutor extends Application {
     @Inject
     DataManager mDataManager;
     private ApplicationComponent mApplicationComponent;
+    private Realm realm;
 
     @Override
     public void onCreate() {
@@ -33,6 +34,7 @@ public class UTutor extends Application {
                 .deleteRealmIfMigrationNeeded()
                 .build();
         Realm.setDefaultConfiguration(config);
+        realm = Realm.getDefaultInstance();
 
         AndroidNetworking.initialize(getApplicationContext());
 

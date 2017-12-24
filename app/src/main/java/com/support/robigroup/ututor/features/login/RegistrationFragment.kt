@@ -36,10 +36,10 @@ class RegistrationFragment : Fragment() {
 
     private var mListener: OnLoginActivityInteractionListener? = null
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
-        return inflater!!.inflate(R.layout.fragment_registration, container, false)
+        return inflater.inflate(R.layout.fragment_registration, container, false)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -102,7 +102,7 @@ class RegistrationFragment : Fragment() {
                                     when(key){
                                         "Email" -> reg_email.error = value
                                         "" -> Snackbar.make(
-                                                activity.findViewById(android.R.id.content),
+                                                activity!!.findViewById(android.R.id.content),
                                                 value,
                                                 Snackbar.LENGTH_SHORT
                                         ).show()

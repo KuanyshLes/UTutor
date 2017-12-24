@@ -7,17 +7,19 @@ import com.stfalcon.chatkit.messages.MessageInput
 import com.stfalcon.chatkit.messages.MessagesListAdapter
 import com.stfalcon.contentmanager.ContentManager
 import com.support.robigroup.ututor.commons.ChatInformation
+import com.support.robigroup.ututor.data.DataManager
 import com.support.robigroup.ututor.data.play_record.AudioItem
 import com.support.robigroup.ututor.features.chat.model.ChatMessage
 import com.support.robigroup.ututor.ui.base.DialogMvpView
 import com.support.robigroup.ututor.ui.base.MvpPresenter
 import com.support.robigroup.ututor.ui.base.MvpView
+import com.support.robigroup.ututor.ui.base.RealmBasedPresenter
 import omrecorder.PullableSource
 import omrecorder.Recorder
 import java.io.File
 
 
-interface ChatMvpView : MvpView, PlayView, RecordView, HoldingButtonView, DownloadView{
+interface ChatMvpView : MvpView, PlayView, RecordView, HoldingButtonView{
 
     fun setToolbarTitle(title: String)
     fun showFinishDialog()
@@ -40,14 +42,14 @@ interface ChatMvpPresenter<V : ChatMvpView> : MvpPresenter<V>,
         ContentManager.PickContentListener,
         PlayPresenter,
         HoldingButtonLayoutListener,
-        MessagesListAdapter.OnMessageClickListener<ChatMessage>,
-        DownloadPresenter{
+        MessagesListAdapter.OnMessageClickListener<ChatMessage>{
 
     fun onFinishClick()
     fun onOkFinishClick()
     fun onReadyClick()
     fun onViewInitialized()
     fun onCounterFinish()
+    fun onChatFinished()
 }
 
 interface DownloadView {
@@ -68,8 +70,11 @@ interface PlayPresenter : MediaPlayer.OnCompletionListener{
     fun onPauseClick()
     fun onPlayerPrepared()
     fun setPlayerCallback(callback: AudioPlayerCallback)
-    fun getPlayerCurrentPosition(): Int
+    fun getPlayerCurrentPosition(): Int?
     fun stopPrevious()
+    fun resumePlay()
+    fun provideDataManager(): DataManager
+    fun onSeekChanged(progress: Int)
 }
 
 interface PlayView {
@@ -78,8 +83,9 @@ interface PlayView {
     fun pausePlay()
     fun stopPlay()
     fun getPlayDuration(): Int
-    fun getCurrentPlayingTime(): Int
+    fun getCurrentPlayingTime(): Int?
     fun getPlayPresenter(): PlayPresenter
+    fun seekTo(progress: Int)
 }
 
 interface RecordView{
@@ -92,7 +98,6 @@ interface RecordView{
 
 interface AudioPlayerCallback {
     fun onNewPlay()
-    fun onProgressChanged(cDur: Long, tDur: Long)
     fun onComplete()
     fun onReady(duration: Int)
 }

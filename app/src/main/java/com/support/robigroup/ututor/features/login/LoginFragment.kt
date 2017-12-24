@@ -37,7 +37,7 @@ class LoginFragment : Fragment() {
         logd("onCreate LoginFragment")
     }
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         logd("onCreateView LoginFragment")
         val view: View? = container?.inflate(R.layout.fragment_login)
@@ -48,7 +48,7 @@ class LoginFragment : Fragment() {
         return view
     }
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         logd("onViewCreated LoginFragment")
 

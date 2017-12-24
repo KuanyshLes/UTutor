@@ -26,7 +26,7 @@ class RateDialog : DialogFragment() {
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val builder = AlertDialog.Builder(activity)
-        val inflater = activity.layoutInflater
+        val inflater = activity!!.layoutInflater
 
         val view = inflater.inflate(R.layout.dialog_finish,null)
         val buttonEvaluate = view.findViewById<Button>(R.id.button_evaluate) as Button
@@ -52,7 +52,7 @@ class RateDialog : DialogFragment() {
 
     fun showMe(chatLesson: ChatInformation, t: String){
         this.chatInformation = chatLesson
-        show(activity.supportFragmentManager, t)
+        show(activity!!.supportFragmentManager, t)
     }
 
     override fun onCancel(dialog: DialogInterface?) {

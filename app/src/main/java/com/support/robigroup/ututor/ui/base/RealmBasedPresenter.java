@@ -16,7 +16,6 @@ import io.realm.RealmResults;
 
 public class RealmBasedPresenter<V extends MvpView>  extends BasePresenter<V> implements MvpRealmPresenter{
 
-    private static final String TAG = "RealmBasedPresenter";
     private Realm realm;
     private ChatInformation chatInformation;
     private RealmResults<ChatMessage> chatMessages;

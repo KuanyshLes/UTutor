@@ -23,9 +23,9 @@ class GetCodeFragment : Fragment() {
 
     lateinit var mListener: OnLoginActivityInteractionListener
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        return inflater!!.inflate(R.layout.fragment_reg_2, container, false)
+        return inflater.inflate(R.layout.fragment_reg_2, container, false)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -55,7 +55,7 @@ class GetCodeFragment : Fragment() {
                                     when(key){
                                         "PhoneNumber" -> phone.error = value
                                         "" -> Snackbar.make(
-                                                activity.findViewById(android.R.id.content),
+                                                activity!!.findViewById(android.R.id.content),
                                                 value,
                                                 Snackbar.LENGTH_SHORT
                                         ).show()

@@ -11,16 +11,10 @@ import com.support.robigroup.ututor.commons.logd
 import com.support.robigroup.ututor.data.DataManager
 import com.support.robigroup.ututor.features.chat.model.ChatMessage
 import com.support.robigroup.ututor.ui.base.RealmBasedPresenter
-import com.support.robigroup.ututor.utils.FileUtils
 import com.support.robigroup.ututor.utils.SchedulerProvider
 import io.reactivex.disposables.CompositeDisposable
 import java.io.File
 import javax.inject.Inject
-import com.androidnetworking.interfaces.DownloadProgressListener
-import com.androidnetworking.AndroidNetworking
-import android.icu.lang.UCharacter.GraphemeClusterBreak.V
-import com.androidnetworking.common.Priority
-import com.androidnetworking.interfaces.DownloadListener
 
 
 class ChatPresenter<V : ChatMvpView> @Inject
@@ -72,6 +66,8 @@ constructor(dataManager: DataManager, schedulerProvider: SchedulerProvider, comp
             }else{
                 mvpView.startMenuActivity()
             }
+        }else{
+            updateChatMessages()
         }
 
         chatMessages.addChangeListener {
@@ -86,19 +82,15 @@ constructor(dataManager: DataManager, schedulerProvider: SchedulerProvider, comp
                         logd("hashcode from inside not null : "+ this.hashCode().toString())
                     }
                 }
-                val deletions = changeSet.deletionRanges
-                for (range in deletions) {
-                    if(mvpView!=null){
-                        mvpView.notifyItemRangeDeleted(messages, range.startIndex, range.length)
-                        logd("hashcode from inside not null : "+ this.hashCode().toString())
-                    }
-                }
+//                val deletions = changeSet.deletionRanges
+//                for (range in deletions) {
+//                    if(mvpView!=null){
+//                        mvpView.notifyItemRangeDeleted(messages, range.startIndex, range.length)
+//                        logd("hashcode from inside not null : "+ this.hashCode().toString())
+//                    }
+//                }
             }
         }
-//        updateChatMessages()
-        mvpView.notifyItemRangeInserted(chatMessages, 0, chatMessages.size)
-
-        mvpView.registerReceivers()
     }
 
     override fun onFinishClick() {
@@ -192,6 +184,9 @@ constructor(dataManager: DataManager, schedulerProvider: SchedulerProvider, comp
             mvpView.showImage(message.imageUrl)
     }
 
+    override fun onChatFinished() {
+        dataManager.cleanDirectories()
+    }
 
     //methods for play presenter
     override fun onCompletion(p0: MediaPlayer?) {
@@ -200,6 +195,11 @@ constructor(dataManager: DataManager, schedulerProvider: SchedulerProvider, comp
 
     override fun stopPrevious() {
         mvpView.stopPlay()
+        audioCallback?.onComplete()
+    }
+
+    override fun resumePlay() {
+        mvpView.startPlay()
     }
 
     override fun onPlayerPrepared() {
@@ -209,18 +209,7 @@ constructor(dataManager: DataManager, schedulerProvider: SchedulerProvider, comp
 
     override fun onPlayClick(message: ChatMessage) {
         audioCallback?.onNewPlay()
-        if(message.localFilePath!=null){
-            val file = File(message.localFilePath)
-            if(file.exists()&&file.isFile){
-                mvpView.preparePlay(message.localFilePath)
-                return
-            }else{
-                realm.executeTransaction {
-                    message.localFilePath = null
-                }
-            }
-        }
-        mvpView.preparePlay(Constants.BASE_URL+message.filePath)
+        mvpView.preparePlay(message.localFilePath)
     }
 
     override fun onPauseClick() {
@@ -231,22 +220,30 @@ constructor(dataManager: DataManager, schedulerProvider: SchedulerProvider, comp
         audioCallback = callback
     }
 
-    override fun getPlayerCurrentPosition(): Int {
+    override fun getPlayerCurrentPosition(): Int? {
         return mvpView.getCurrentPlayingTime()
     }
 
+    override fun onSeekChanged(progress: Int) {
+        mvpView.seekTo(progress)
+    }
+
+    override fun provideDataManager(): DataManager {
+        return dataManager
+    }
 
     //callbacks from holding button events
     override fun onBeforeExpand() {
         mvpView.cancelAnimations()
         mvpView.startExpandAnimations() // TODO change to something logical
-        mvpView.setupRecorder(FileUtils.getSentSavePath(chatInformation.Id!!.toString()))
+        mvpView.setupRecorder(dataManager.getSentSavePath(chatInformation.Id.toString()))
     }
 
     override fun onExpand() {
-        mvpView.startTimer()
-        audioCallback?.onNewPlay()
+        mvpView.stopPlay()
+        audioCallback?.onComplete()
         audioCallback = null
+        mvpView.startTimer()
         mvpView.startRecord()
     }
 
@@ -277,15 +274,6 @@ constructor(dataManager: DataManager, schedulerProvider: SchedulerProvider, comp
         mvpView.moveSlideToCancel(offset, isCancel)
     }
 
-    //DownloadPresenter
-    override fun onDownloadComplete() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    override fun onNotificationClick() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
     //methods to add image from gallery or other resources
     override fun onStartContentLoading() {
 
@@ -311,11 +299,25 @@ constructor(dataManager: DataManager, schedulerProvider: SchedulerProvider, comp
         compositeDisposable.add(dataManager.apiHelper.getChatMessages()
                 .subscribeOn(schedulerProvider.io())
                 .observeOn(schedulerProvider.ui())
+                .doOnSubscribe {
+                    mvpView.showLoading()
+                }
+                .doAfterTerminate {
+                    mvpView.hideLoading()
+                }
                 .subscribe(
                         { messageResponse ->
                             if(messageResponse.isSuccessful){
                                 val messages: List<ChatMessage>? = messageResponse.body()
                                 if(messages!=null){
+                                    for(message in messages){
+                                        for(chatMessage in chatMessages){
+                                            if(message.id == chatMessage.id){
+                                                message.localFilePath = chatMessage.localFilePath
+                                                break
+                                            }
+                                        }
+                                    }
                                     realm.executeTransaction {
                                         r ->
                                         chatMessages.deleteAllFromRealm()

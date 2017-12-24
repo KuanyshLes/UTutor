@@ -35,7 +35,7 @@ class RateDialog : BaseDialog(), RateMvpView {
         }
 
         val builder = AlertDialog.Builder(activity)
-        val view = activity.layoutInflater.inflate(R.layout.dialog_finish,null)
+        val view = activity!!.layoutInflater.inflate(R.layout.dialog_finish,null)
         builder.setView(view)
         setUp(view!!)
         ratePresenter.onViewInitialized()
@@ -54,19 +54,20 @@ class RateDialog : BaseDialog(), RateMvpView {
     }
 
     override fun setUp(view: View) {
-        val buttonEvaluate = view.findViewById<Button>(R.id.button_evaluate) as Button
+        val buttonEvaluate = view.findViewById(R.id.button_evaluate) as Button
         buttonEvaluate.setOnClickListener {
             logd("rating "+ratingBar!!.rating.toString())
             ratePresenter.onClickRateButton(ratingBar!!.rating)
         }
-        textSum = view.findViewById<TextView>(R.id.sum_text) as TextView
-        textDuration = view.findViewById<TextView>(R.id.duration_text) as TextView
-        ratingBar = view.findViewById<RatingBar>(R.id.rating_bar) as RatingBar
+        textSum = view.findViewById(R.id.sum_text) as TextView
+        textDuration = view.findViewById(R.id.duration_text) as TextView
+        ratingBar = view.findViewById(R.id.rating_bar) as RatingBar
     }
 
     override fun onCancel(dialog: DialogInterface?) {
         super.onCancel(dialog)
         (activity as ActivityChat).startMenuActivity()
+
     }
 
 }

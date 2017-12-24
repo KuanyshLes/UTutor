@@ -35,7 +35,7 @@ class ReadyDialog : DialogFragment() {
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val builder = AlertDialog.Builder(activity)
-        val inflater = activity.layoutInflater
+        val inflater = activity!!.layoutInflater
         val view = inflater.inflate(R.layout.dialog_ready,null)
         mButtonReady = view.findViewById<Button>(R.id.button_ready) as Button
         mTextWait = view.findViewById<TextView>(R.id.text_ready_time) as TextView
@@ -53,7 +53,7 @@ class ReadyDialog : DialogFragment() {
     }
 
     fun updateButtonText(){
-        mButtonReady?.text = context.getString(R.string.waiting)
+        mButtonReady?.text = context!!.getString(R.string.waiting)
     }
 
     override fun onDestroyView() {

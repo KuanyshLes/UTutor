@@ -1,10 +1,12 @@
 package com.support.robigroup.ututor.ui.chat
 
+import android.Manifest
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.annotation.SuppressLint
 import android.app.DownloadManager
 import android.content.*
+import android.content.pm.PackageManager
 import android.media.*
 import android.net.Uri
 import android.os.*
@@ -82,21 +84,11 @@ class ActivityChat : BaseActivity(), ChatMvpView {
     var mSlideToCancelAnimator: ViewPropertyAnimator? = null
     var mInputAnimator: ViewPropertyAnimator? = null
 
-    lateinit var vibrator: Vibrator
+    private val permissions = arrayOf(Manifest.permission.RECORD_AUDIO)
+    private val REQUEST_RECORD_AUDIO_PERMISSION = 200
+    private var permissionToRecordAccepted = false
 
-    //download view
-    private lateinit var mgr: DownloadManager
-    private var lastDownload = -1L
-    private val onComplete = object : BroadcastReceiver() {
-        override fun onReceive(ctxt: Context, intent: Intent) {
-            mPresenter.onDownloadComplete()
-        }
-    }
-    private val onNotificationClick = object : BroadcastReceiver() {
-        override fun onReceive(ctxt: Context, intent: Intent) {
-            mPresenter.onNotificationClick()
-        }
-    }
+    lateinit var vibrator: Vibrator
 
 
     //activity lifecycle methods
@@ -138,7 +130,6 @@ class ActivityChat : BaseActivity(), ChatMvpView {
             mediaPlayer.stop()
         mediaPlayer.release()
         mPresenter.onDetach()
-        unregisterReceivers()
         super.onDestroy()
     }
 
@@ -160,7 +151,11 @@ class ActivityChat : BaseActivity(), ChatMvpView {
         })
 
         mHoldingButtonLayout = findViewById(R.id.input_holder)
-        mHoldingButtonLayout.addListener(mPresenter)
+        if(hasPermission(permissions[0]))
+            mHoldingButtonLayout.addListener(mPresenter)
+        else{
+            requestPermissionsSafely(permissions, REQUEST_RECORD_AUDIO_PERMISSION)
+        }
 
         mTime = findViewById(R.id.time)
         mSlideToCancel = findViewById(R.id.slide_to_cancel)
@@ -255,7 +250,30 @@ class ActivityChat : BaseActivity(), ChatMvpView {
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        when (requestCode) {
+            REQUEST_RECORD_AUDIO_PERMISSION -> permissionToRecordAccepted = grantResults[0] == PackageManager.PERMISSION_GRANTED
+        }
+        if (permissionToRecordAccepted){
+            mHoldingButtonLayout.addListener(mPresenter)
+        }else{
+            val builder = AlertDialog.Builder(this)
+            builder.setMessage(getString(R.string.prompt_audio_message_warning))
+                    .setCancelable(false)
+                    .setPositiveButton("Да")
+                    { dialog, id ->
+                        dialog.cancel()
+                        requestPermissionsSafely(permissions, REQUEST_RECORD_AUDIO_PERMISSION)
+                    }
+                    .setNegativeButton("Нет не надо")
+                    { dialog, id ->
+                        dialog.cancel()
+                    }
+            val alert = builder.create()
+            alert.setCancelable(false)
+            alert.show()
+        }
         contentManager.onRequestPermissionsResult(requestCode, permissions, grantResults)
+
     }
 
     //PlayView
@@ -273,10 +291,8 @@ class ActivityChat : BaseActivity(), ChatMvpView {
             mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC)
         }
         mediaPlayer.setDataSource(filePath)
-        mediaPlayer.setOnPreparedListener(MediaPlayer.OnPreparedListener {
-            mPresenter.onPlayerPrepared()
-        })
-        mediaPlayer.prepareAsync()
+        mediaPlayer.prepare()
+        mPresenter.onPlayerPrepared()
     }
 
     override fun getPlayDuration(): Int {
@@ -314,6 +330,9 @@ class ActivityChat : BaseActivity(), ChatMvpView {
 
     override fun getPlayPresenter(): PlayPresenter = mPresenter
 
+    override fun seekTo(progress: Int) {
+        mediaPlayer.seekTo(progress)
+    }
 
     //RecordView
     override fun setupRecorder(filePath: String) {
@@ -321,6 +340,7 @@ class ActivityChat : BaseActivity(), ChatMvpView {
         mediaRecorder = OmRecorder.wav(
                 PullTransport.Default(getMic(), PullTransport.OnAudioChunkPulledListener {
                     _ ->  }), File(filePath))
+
     }
 
     override fun getMic(): PullableSource {
@@ -345,12 +365,11 @@ class ActivityChat : BaseActivity(), ChatMvpView {
     //HoldingButtonView
     override fun showCancelled() {
         vibrator.vibrate(500)
-        Toast.makeText(this, "Action canceled! Time " + getFormattedTime(), Toast.LENGTH_SHORT).show()
+        showMessage(R.string.error_cancelled)
     }
 
     override fun showSubmitted() {
-        Toast.makeText(this, "Action submitted! Time " + getFormattedTime(), Toast.LENGTH_SHORT).show()
-
+        showMessage(R.string.audio_sent)
     }
 
     override fun cancelAnimations() {
@@ -437,52 +456,9 @@ class ActivityChat : BaseActivity(), ChatMvpView {
         return mFormatter.format(Date(System.currentTimeMillis() - mStartTime))
     }
 
-    //DownloadView methods
-    override fun startDownload(messageId: String, url: String) {
-        val uri = Uri.parse(url)
-
-        Environment
-                .getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
-                .mkdirs();
-
-//        lastDownload =
-//                mgr.enqueue( DownloadManager.Request(uri)
-//                        .setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI or DownloadManager.Request.NETWORK_MOBILE)
-//                        .setAllowedOverRoaming(false)
-//                        .setTitle("Demo")
-//                        .setDescription("Something useful. No, really.")
-//                        .setDestinationUri(Uri.fromFile())
-//                        .setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS,
-//                                "test.mp4"));
-//
-//        v.setEnabled(false);
-//        findViewById(R.id.query).setEnabled(true);
-    }
-
-    override fun queryStatus() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    override fun statusMessage(): String {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    override fun registerReceivers() {
-        mgr = getSystemService(DOWNLOAD_SERVICE) as DownloadManager
-        registerReceiver(onComplete,  IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
-        registerReceiver(onNotificationClick,  IntentFilter(DownloadManager.ACTION_NOTIFICATION_CLICKED))
-
-    }
-
-    override fun unregisterReceivers() {
-        unregisterReceiver(onComplete)
-        unregisterReceiver(onNotificationClick)
-    }
-
-
-
     //dialog, activity methods
     override fun startMenuActivity() {
+        mPresenter.onChatFinished()
         MenuActivity.open(this)
         finish()
     }

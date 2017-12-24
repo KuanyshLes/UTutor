@@ -23,25 +23,39 @@ public class ChatMessage extends RealmObject implements IMessage, MessageContent
     @SerializedName("Id")
     @Expose
     private String Id;
+
     @SerializedName("Time")
     @Expose
     private String Time;
+
     @SerializedName("FileIconPath")
     @Expose
     private String FileIconPath;
+
     @SerializedName("FilePath")
     @Expose
     private String FilePath;
+
     @SerializedName("LocalFilePath")
     @Expose
     private String LocalFilePath;
+
+    @Ignore
+    private Integer playingPosition = 0;
+
+    @Ignore
+    private Integer status = 0;
+
     @SerializedName("Text")
     @Expose
     private String Text;
+
     @SerializedName("Owner")
     @Expose
     private String Owner;
+
     @Ignore private ChatUser user;
+
 
     public ChatMessage(String id, String time, String fileIconPath, String filePath, String text, String owner) {
         Id = id;
@@ -142,5 +156,21 @@ public class ChatMessage extends RealmObject implements IMessage, MessageContent
 
     public void setOwner(String owner) {
         Owner = owner;
+    }
+
+    public Integer getPlayingPosition() {
+        return playingPosition;
+    }
+
+    public void setPlayingPosition(Integer playingPosition) {
+        this.playingPosition = playingPosition;
+    }
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
     }
 }

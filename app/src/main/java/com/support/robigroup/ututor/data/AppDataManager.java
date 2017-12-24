@@ -21,8 +21,6 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import io.reactivex.Flowable;
-import kotlin.Unit;
-import kotlin.jvm.functions.Function0;
 import retrofit2.Response;
 
 
@@ -169,7 +167,34 @@ public class AppDataManager implements DataManager{
     }
 
     @Override
-    public boolean checkFileExistance(@NotNull String messageId) {
-        return mFileHelper.checkFileExistance(messageId);
+    public boolean checkMessageFileExistance(@NotNull String messageId) {
+        return mFileHelper.checkMessageFileExistance(messageId);
+    }
+
+    @NotNull
+    @Override
+    public String getDownloadSaveDir() {
+        return mFileHelper.getDownloadSaveDir();
+    }
+
+    @NotNull
+    @Override
+    public String getDownloadFileName(@NotNull String messageId) {
+        return mFileHelper.getDownloadFileName(messageId);
+    }
+
+    @Override
+    public boolean checkFileExistance(@NotNull String url) {
+        return mFileHelper.checkFileExistance(url);
+    }
+
+    @Override
+    public void cleanDirectories() {
+        mFileHelper.cleanDirectories();
+    }
+
+    @Override
+    public void removeFile(@NotNull String path) {
+        mFileHelper.removeFile(path);
     }
 }
