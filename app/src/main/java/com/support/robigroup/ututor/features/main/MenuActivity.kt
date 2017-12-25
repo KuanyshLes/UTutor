@@ -11,7 +11,7 @@ import com.support.robigroup.ututor.R
 import com.support.robigroup.ututor.api.MainManager
 import com.support.robigroup.ututor.commons.*
 import com.support.robigroup.ututor.features.MenuesActivity
-import com.support.robigroup.ututor.features.chat.model.ChatMessage
+import com.support.robigroup.ututor.ui.chat.model.ChatMessage
 import com.support.robigroup.ututor.ui.chat.ActivityChat
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable

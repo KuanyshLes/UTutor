@@ -1,25 +1,19 @@
-package com.support.robigroup.ututor.features.history.adapter
+package com.support.robigroup.ututor.ui.history
 
 import android.net.Uri
-import android.support.v4.content.ContextCompat
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.RatingBar
 import android.widget.TextView
 import com.facebook.drawee.view.SimpleDraweeView
-import com.squareup.picasso.Picasso
 import com.support.robigroup.ututor.Constants
 import com.support.robigroup.ututor.R
 import com.support.robigroup.ututor.commons.OnHistoryListInteractionListener
 import com.support.robigroup.ututor.commons.ChatHistory
 import com.support.robigroup.ututor.commons.Functions
-import java.sql.Time
-import java.text.SimpleDateFormat
 import java.util.*
-import java.util.concurrent.TimeUnit
 
 
 class HistoryAdapter(

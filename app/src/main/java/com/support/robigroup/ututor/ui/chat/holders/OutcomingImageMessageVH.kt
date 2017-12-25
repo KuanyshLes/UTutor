@@ -6,7 +6,7 @@ import android.widget.ImageView
 import com.stfalcon.chatkit.messages.MessageHolders
 import com.stfalcon.chatkit.utils.RoundedImageView
 import com.support.robigroup.ututor.R
-import com.support.robigroup.ututor.features.chat.model.ChatMessage
+import com.support.robigroup.ututor.ui.chat.model.ChatMessage
 
 class OutcomingImageMessageVH(itemView: View) : MessageHolders.OutcomingTextMessageViewHolder<ChatMessage>(itemView) {
 

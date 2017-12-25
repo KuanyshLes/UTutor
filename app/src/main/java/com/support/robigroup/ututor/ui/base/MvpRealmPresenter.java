@@ -2,7 +2,7 @@ package com.support.robigroup.ututor.ui.base;
 
 import com.support.robigroup.ututor.commons.ChatInformation;
 import com.support.robigroup.ututor.commons.ChatLesson;
-import com.support.robigroup.ututor.features.chat.model.ChatMessage;
+import com.support.robigroup.ututor.ui.chat.model.ChatMessage;
 
 import io.realm.Realm;
 import io.realm.RealmResults;

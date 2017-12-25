@@ -12,7 +12,6 @@ import com.support.robigroup.ututor.R
 import com.support.robigroup.ututor.commons.ChatInformation
 import com.support.robigroup.ututor.commons.Functions
 import com.support.robigroup.ututor.commons.logd
-import com.support.robigroup.ututor.di.component.ActivityComponent
 import com.support.robigroup.ututor.ui.base.BaseDialog
 import com.support.robigroup.ututor.ui.chat.ActivityChat
 import com.support.robigroup.ututor.ui.chat.RateMvpView

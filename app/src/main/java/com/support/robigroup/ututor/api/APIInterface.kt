@@ -2,7 +2,7 @@ package com.support.robigroup.ututor.api
 
 import com.support.robigroup.ututor.Constants
 import com.support.robigroup.ututor.commons.*
-import com.support.robigroup.ututor.features.chat.model.ChatMessage
+import com.support.robigroup.ututor.ui.chat.model.ChatMessage
 import com.support.robigroup.ututor.singleton.SingletonSharedPref
 import io.reactivex.Flowable
 import okhttp3.MultipartBody

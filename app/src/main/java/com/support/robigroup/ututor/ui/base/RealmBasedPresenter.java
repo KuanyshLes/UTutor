@@ -4,7 +4,7 @@ import com.support.robigroup.ututor.Constants;
 import com.support.robigroup.ututor.commons.ChatInformation;
 import com.support.robigroup.ututor.commons.ChatLesson;
 import com.support.robigroup.ututor.data.DataManager;
-import com.support.robigroup.ututor.features.chat.model.ChatMessage;
+import com.support.robigroup.ututor.ui.chat.model.ChatMessage;
 import com.support.robigroup.ututor.utils.SchedulerProvider;
 
 import javax.inject.Inject;

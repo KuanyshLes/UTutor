@@ -25,7 +25,7 @@ import com.support.robigroup.ututor.commons.Profile
 import com.support.robigroup.ututor.commons.requestErrorHandler
 import com.support.robigroup.ututor.features.account.AccountActivity
 import com.support.robigroup.ututor.features.feedback.FeedbackActivity
-import com.support.robigroup.ututor.features.history.HistoryList
+import com.support.robigroup.ututor.ui.history.HistoryList
 import com.support.robigroup.ututor.features.login.LoginActivity
 import com.support.robigroup.ututor.features.main.MenuActivity
 import com.support.robigroup.ututor.singleton.SingletonSharedPref

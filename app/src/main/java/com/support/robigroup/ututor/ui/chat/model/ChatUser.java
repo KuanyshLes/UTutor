@@ -1,4 +1,4 @@
-package com.support.robigroup.ututor.features.chat.model;
+package com.support.robigroup.ututor.ui.chat.model;
 
 import com.stfalcon.chatkit.commons.models.IUser;
 

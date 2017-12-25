@@ -1,7 +1,6 @@
 package com.support.robigroup.ututor.ui.chat.holders
 
 import android.os.Handler
-import android.util.Log
 import android.view.View
 import android.widget.ImageButton
 import android.widget.ProgressBar
@@ -15,7 +14,7 @@ import com.stfalcon.chatkit.messages.MessageHolders
 import com.support.robigroup.ututor.Constants
 import com.support.robigroup.ututor.R
 import com.support.robigroup.ututor.commons.Functions
-import com.support.robigroup.ututor.features.chat.model.ChatMessage
+import com.support.robigroup.ututor.ui.chat.model.ChatMessage
 import com.support.robigroup.ututor.ui.chat.AudioPlayerCallback
 import com.support.robigroup.ututor.ui.chat.PlayView
 import io.realm.Realm
@@ -52,7 +51,7 @@ class IncomingAudioMessageVH(itemView: View): MessageHolders.IncomingTextMessage
         super.onBind(message)
         time.setTextColor(time.context.resources.getColor(R.color.colorGrey))
 
-        if(!dataManager.checkMessageFileExistance(message.id)){
+        if(message.localFilePath==null || !dataManager.checkMessageFileExistance(message.id)){
             message.playingPosition = 0
             message.status = Constants.MESSAGE_DOWNLOAD
             if(message.localFilePath!=null){
@@ -63,13 +62,6 @@ class IncomingAudioMessageVH(itemView: View): MessageHolders.IncomingTextMessage
                 r.close()
             }
         }else{
-            if(message.localFilePath==null){
-                val r = Realm.getDefaultInstance()
-                r.executeTransaction {
-                    message.localFilePath = dataManager.getDownloadSavePath(message.id)
-                }
-                r.close()
-            }
             if(message.status == Constants.MESSAGE_DOWNLOAD || message.playingPosition == 0)
                 message.status = Constants.MESSAGE_STOPPED
         }
@@ -205,6 +197,7 @@ class IncomingAudioMessageVH(itemView: View): MessageHolders.IncomingTextMessage
         Rx2AndroidNetworking.download(url, dirPath, fileName)
                 .setTag(message.id)
                 .setPriority(Priority.MEDIUM)
+                .doNotCacheResponse()
                 .build()
                 .setDownloadProgressListener { bytesDownloaded, totalBytes ->
                     val progress = ((bytesDownloaded * 360 / totalBytes)).toInt()

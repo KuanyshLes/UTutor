@@ -1,9 +1,8 @@
 package com.support.robigroup.ututor.data.network
 
-import com.support.robigroup.ututor.features.chat.model.ChatMessage
+import com.support.robigroup.ututor.ui.chat.model.ChatMessage
 
 import java.io.File
-import java.util.HashMap
 
 import io.reactivex.Flowable
 import retrofit2.Response

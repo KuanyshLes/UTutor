@@ -28,6 +28,9 @@ import com.support.robigroup.ututor.ui.chat.ChatPresenter;
 import com.support.robigroup.ututor.ui.chat.RateMvpPresenter;
 import com.support.robigroup.ututor.ui.chat.RateMvpView;
 import com.support.robigroup.ututor.ui.chat.eval.RatePresenter;
+import com.support.robigroup.ututor.ui.history.HistoryMvpPresenter;
+import com.support.robigroup.ututor.ui.history.HistoryMvpView;
+import com.support.robigroup.ututor.ui.history.HistoryPresenter;
 import com.support.robigroup.ututor.utils.AppSchedulerProvider;
 import com.support.robigroup.ututor.utils.SchedulerProvider;
 
@@ -80,6 +83,13 @@ public class ActivityModule {
     @PerActivity
     ChatMvpPresenter<ChatMvpView> provideChatPresenter(
             ChatPresenter<ChatMvpView> presenter) {
+        return presenter;
+    }
+
+    @Provides
+    @PerActivity
+    HistoryMvpPresenter<HistoryMvpView> provideHistoryPresenter(
+            HistoryPresenter<HistoryMvpView> presenter) {
         return presenter;
     }
 

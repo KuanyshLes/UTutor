@@ -4,7 +4,7 @@ import android.content.Context
 import android.webkit.MimeTypeMap
 import com.support.robigroup.ututor.api.RestAPI
 import com.support.robigroup.ututor.di.ApplicationContext
-import com.support.robigroup.ututor.features.chat.model.ChatMessage
+import com.support.robigroup.ututor.ui.chat.model.ChatMessage
 import io.reactivex.Flowable
 import okhttp3.MediaType
 import okhttp3.MultipartBody

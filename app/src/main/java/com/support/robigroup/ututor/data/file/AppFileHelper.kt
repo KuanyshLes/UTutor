@@ -6,17 +6,17 @@ import com.support.robigroup.ututor.di.ApplicationContext
 import java.io.File
 import javax.inject.Inject
 import javax.inject.Singleton
-import android.os.Environment.getExternalStorageDirectory
-
-
-
+import android.media.MediaMetadataRetriever
+import android.net.Uri
 
 @Singleton
 class AppFileHelper @Inject
 constructor(@param:ApplicationContext private val mContext: Context) : FileHelper{
 
+    private fun getAbsolPath(): String = mContext.filesDir.absolutePath+"/UTutor"
+
     override fun getSentSavePath(chatId: String): String {
-        val absol = mContext.filesDir.absolutePath
+        val absol = getAbsolPath()
         val path = absol + "/recorded/"+ chatId + "/"
         val dir = File(path)
         if(!dir.exists())
@@ -39,13 +39,12 @@ constructor(@param:ApplicationContext private val mContext: Context) : FileHelpe
     }
 
     override fun getDownloadSavePath(messageId: String): String {
-        val absol = mContext.filesDir.absolutePath
         val path = getDownloadSaveDir()
         return path + getDownloadFileName(messageId)
     }
 
     override fun getDownloadSaveDir(): String {
-        val absol = mContext.filesDir.absolutePath
+        val absol = getAbsolPath()
         val path = absol + "/downloaded/"
         val dir = File(path)
         if(!dir.exists())
@@ -68,14 +67,25 @@ constructor(@param:ApplicationContext private val mContext: Context) : FileHelpe
     }
 
     override fun cleanDirectories() {
-        val absol = mContext.filesDir.absolutePath
+        val absol = getAbsolPath()
         val dir = File(absol)
         if (dir.isDirectory) {
-            val children = dir.list()
-            for (i in children.indices) {
-                File(dir, children[i]).delete()
+            deleteDirectory(dir)
+        }
+    }
+
+    private fun deleteDirectory(path: File): Boolean {
+        if (path.exists()) {
+            val files = path.listFiles()
+            for (i in files.indices) {
+                if (files[i].isDirectory) {
+                    deleteDirectory(files[i])
+                } else {
+                    files[i].delete()
+                }
             }
         }
+        return path.delete()
     }
 
     override fun removeFile(path: String) {
@@ -86,5 +96,13 @@ constructor(@param:ApplicationContext private val mContext: Context) : FileHelpe
                 File(dir, children[i]).delete()
             }
         }
+    }
+
+    override fun getDurationOfAudioInMillis(path: String): Int {
+        val uri = Uri.parse(path)
+        val mmr = MediaMetadataRetriever()
+        mmr.setDataSource(mContext, uri)
+        val durationStr = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
+        return Integer.parseInt(durationStr)
     }
 }

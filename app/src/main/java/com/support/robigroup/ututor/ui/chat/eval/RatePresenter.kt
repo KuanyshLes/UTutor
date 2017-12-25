@@ -30,6 +30,7 @@ constructor(dataManager: DataManager, schedulerProvider: SchedulerProvider, comp
                 .subscribe(
                         { message ->
                             if(message.isSuccessful){
+                                mvpView.showMessage("Успешно")
                             }else{
                                 handleApiError(ANError(message.raw()))
                             }

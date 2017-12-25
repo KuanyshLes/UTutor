@@ -1,6 +1,5 @@
 package com.support.robigroup.ututor.ui.chat.holders
 
-import android.support.v4.view.ViewCompat
 import android.view.View
 import android.widget.ImageView
 
@@ -8,7 +7,7 @@ import com.stfalcon.chatkit.messages.MessageHolders
 import com.stfalcon.chatkit.utils.DateFormatter
 import com.stfalcon.chatkit.utils.RoundedImageView
 import com.support.robigroup.ututor.R
-import com.support.robigroup.ututor.features.chat.model.ChatMessage
+import com.support.robigroup.ututor.ui.chat.model.ChatMessage
 
 
 class IncomingImageMessageVH(itemView: View) : MessageHolders.IncomingTextMessageViewHolder<ChatMessage>(itemView) {

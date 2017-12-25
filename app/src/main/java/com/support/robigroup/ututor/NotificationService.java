@@ -11,7 +11,7 @@ import com.google.gson.Gson;
 import com.support.robigroup.ututor.commons.ChatInformation;
 import com.support.robigroup.ututor.commons.ChatLesson;
 import com.support.robigroup.ututor.commons.Functions;
-import com.support.robigroup.ututor.features.chat.model.ChatMessage;
+import com.support.robigroup.ututor.ui.chat.model.ChatMessage;
 import com.support.robigroup.ututor.singleton.SingletonSharedPref;
 
 import io.realm.Realm;

@@ -12,7 +12,7 @@
     <string name="desc_arrow_right">Open</string>
 
     <string name="prompt_are_you_sure">Вы уверены закрыть чат</string>
-    <string name="prompt_audio_message_warning">Если хотите изпользовать аудио сообщение вы должны разрешить доступ</string>
+    <string name="prompt_audio_message_warning">Если хотите использовать аудио сообщение вы должны разрешить доступ</string>
 
 
     <string name="topic">Тема:</string>
@@ -92,9 +92,9 @@
     <string name="hint_enter_a_message">Введите сообщение</string>
     <string name="action_delete">Delete</string>
     <string name="action_copy">Copy</string>
-    <string name="copied_message">Message copied!</string>
+    <string name="copied_message">Скопировано в буфер обмена</string>
     <string name="session_finished">Cеанс завершен</string>
-    <string name="text_get_money">С вашего лицевого счета быль списан</string>
+    <string name="text_get_money">С вашего лицевого счета быль списано</string>
     <string name="ex_dollar">10.00$</string>
     <string name="loading_status">Загрузка...</string>
     <string name="ex_time_long">Длительность: 1ч 20 м</string>
@@ -130,7 +130,7 @@
 
 
     //audio
-    <string name="label_slide_to_cancel">Slide to cancel</string>
+    <string name="label_slide_to_cancel">Проведите для отмены</string>
 
 
     <string-array name="view_types_dialog">

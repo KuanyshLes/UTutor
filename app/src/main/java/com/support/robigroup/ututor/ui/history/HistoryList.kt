@@ -1,4 +1,4 @@
-package com.support.robigroup.ututor.features.history
+package com.support.robigroup.ututor.ui.history
 
 import android.content.Context
 import android.content.Intent
@@ -11,13 +11,11 @@ import com.support.robigroup.ututor.commons.OnHistoryListInteractionListener
 import com.support.robigroup.ututor.commons.requestErrorHandler
 import com.support.robigroup.ututor.commons.ChatHistory
 import com.support.robigroup.ututor.features.MenuesActivity
-import com.support.robigroup.ututor.features.history.adapter.HistoryAdapter
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_history_list.*
 import android.support.v7.widget.DividerItemDecoration
-import android.view.View
 
 
 class HistoryList : MenuesActivity(), OnHistoryListInteractionListener {
@@ -55,7 +53,7 @@ class HistoryList : MenuesActivity(), OnHistoryListInteractionListener {
     }
 
     override fun onHistoryItemClicked(item: ChatHistory) {
-        HistoryMessages.open(this,item)
+        HistoryMessages.open(this, item)
     }
 
     private fun requestHistory() {

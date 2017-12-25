@@ -19,6 +19,7 @@ import com.support.robigroup.ututor.di.PerActivity;
 import com.support.robigroup.ututor.di.module.ActivityModule;
 import com.support.robigroup.ututor.ui.chat.ActivityChat;
 import com.support.robigroup.ututor.ui.chat.eval.RateDialog;
+import com.support.robigroup.ututor.ui.history.HistoryMessages;
 
 import dagger.Component;
 
@@ -30,5 +31,7 @@ public interface ActivityComponent {
     void inject(ActivityChat activity);
 
     void inject(RateDialog rateDialog);
+
+    void inject(HistoryMessages activity);
 
 }

@@ -9,7 +9,7 @@ import com.support.robigroup.ututor.data.file.FileHelper;
 import com.support.robigroup.ututor.data.network.NetworkHelper;
 import com.support.robigroup.ututor.data.prefs.PreferencesHelper;
 import com.support.robigroup.ututor.di.ApplicationContext;
-import com.support.robigroup.ututor.features.chat.model.ChatMessage;
+import com.support.robigroup.ututor.ui.chat.model.ChatMessage;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -196,5 +196,10 @@ public class AppDataManager implements DataManager{
     @Override
     public void removeFile(@NotNull String path) {
         mFileHelper.removeFile(path);
+    }
+
+    @Override
+    public int getDurationOfAudioInMillis(@NotNull String path) {
+        return mFileHelper.getDurationOfAudioInMillis(path);
     }
 }

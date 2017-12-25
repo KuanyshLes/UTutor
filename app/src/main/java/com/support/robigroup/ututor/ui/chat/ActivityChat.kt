@@ -4,22 +4,24 @@ import android.Manifest
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.annotation.SuppressLint
-import android.app.DownloadManager
-import android.content.*
+import android.content.Context
+import android.content.DialogInterface
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.media.*
-import android.net.Uri
-import android.os.*
+import android.os.Build
+import android.os.Bundle
+import android.os.Vibrator
 import android.support.v7.app.AlertDialog
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewPropertyAnimator
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import com.dewarder.holdinglibrary.HoldingButtonLayout
 import com.facebook.drawee.generic.GenericDraweeHierarchyBuilder
 import com.squareup.picasso.Picasso
@@ -31,14 +33,14 @@ import com.stfalcon.contentmanager.ContentManager
 import com.stfalcon.frescoimageviewer.ImageViewer
 import com.support.robigroup.ututor.Constants
 import com.support.robigroup.ututor.R
-import com.support.robigroup.ututor.ui.chat.holders.OutcomingImageMessageVH
-import com.support.robigroup.ututor.features.chat.model.ChatMessage
 import com.support.robigroup.ututor.features.main.MenuActivity
 import com.support.robigroup.ututor.ui.base.BaseActivity
-import com.support.robigroup.ututor.ui.chat.holders.IncomingImageMessageVH
-import com.support.robigroup.ututor.ui.chat.holders.IncomingAudioMessageVH
 import com.support.robigroup.ututor.ui.chat.eval.RateDialog
+import com.support.robigroup.ututor.ui.chat.holders.IncomingAudioMessageVH
+import com.support.robigroup.ututor.ui.chat.holders.IncomingImageMessageVH
 import com.support.robigroup.ututor.ui.chat.holders.OutcomingAudioMessageVH
+import com.support.robigroup.ututor.ui.chat.holders.OutcomingImageMessageVH
+import com.support.robigroup.ututor.ui.chat.model.ChatMessage
 import com.support.robigroup.ututor.ui.chat.ready.ReadyDialog
 import kotlinx.android.synthetic.main.activity_chat.*
 import omrecorder.*
@@ -55,6 +57,13 @@ class ActivityChat : BaseActivity(), ChatMvpView {
     private lateinit var menu: Menu
     private var selectionCount: Int = 0
     private val imageLoader = ImageLoader { imageView, url -> Picasso.with(baseContext).load(url).into(imageView) }
+    private val messageStringFormatter = MessagesListAdapter.Formatter<ChatMessage> { message ->
+            val createdAt = SimpleDateFormat(Constants.TIMEFORMAT, Locale.getDefault()).format(message.createdAt)
+            var text: String? = message.text
+            if (text == null) text = "[attachment]"
+            String.format(Locale.getDefault(), "%s: %s (%s)",
+                    message.user!!.name, text, createdAt)
+        }
 
     @Inject
     lateinit var mPresenter: ChatMvpPresenter<ChatMvpView>
@@ -168,7 +177,6 @@ class ActivityChat : BaseActivity(), ChatMvpView {
             val text = mInput.text.trim().toString()
             mPresenter.onSubmit(text)
             mInput.text.clear()
-            hideKeyboard()
         }
 
         attachFileIV = findViewById(R.id.attachIV)
@@ -207,7 +215,7 @@ class ActivityChat : BaseActivity(), ChatMvpView {
         messagesAdapter = MessagesListAdapter(Constants.LEARNER_ID, holders, imageLoader)
         messagesAdapter.enableSelectionMode({ count ->
             selectionCount = count
-            menu.findItem(R.id.action_delete).isVisible = count > 0
+            menu.findItem(R.id.action_delete).isVisible = false
             menu.findItem(R.id.action_copy).isVisible = count > 0
         })
         messagesAdapter.setOnMessageClickListener(mPresenter)
@@ -231,6 +239,25 @@ class ActivityChat : BaseActivity(), ChatMvpView {
         this.menu = menu
         messagesAdapter.unselectAllItems()
         return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.action_delete -> messagesAdapter.deleteSelectedMessages()
+            R.id.action_copy -> {
+                messagesAdapter.copySelectedMessagesText(this, messageStringFormatter, true)
+                showMessage(R.string.copied_message)
+            }
+        }
+        return true
+    }
+
+    override fun onBackPressed() {
+        if (selectionCount == 0) {
+            super.onBackPressed()
+        } else {
+            messagesAdapter.unselectAllItems()
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -314,18 +341,6 @@ class ActivityChat : BaseActivity(), ChatMvpView {
 
     override fun pausePlay() {
         mediaPlayer.pause()
-    }
-
-    private fun showSendTexMessageBtn(show: Boolean) {
-        if (show) {
-            mHoldingButtonLayout.isButtonEnabled = false
-            startRecordIV.visibility = View.GONE
-            sendTextMessageIV.visibility = View.VISIBLE
-        } else {
-            mHoldingButtonLayout.isButtonEnabled = true
-            sendTextMessageIV.visibility = View.GONE
-            startRecordIV.visibility = View.VISIBLE
-        }
     }
 
     override fun getPlayPresenter(): PlayPresenter = mPresenter
@@ -454,6 +469,18 @@ class ActivityChat : BaseActivity(), ChatMvpView {
 
     private fun getFormattedTime(): String {
         return mFormatter.format(Date(System.currentTimeMillis() - mStartTime))
+    }
+
+    private fun showSendTexMessageBtn(show: Boolean) {
+        if (show) {
+            mHoldingButtonLayout.isButtonEnabled = false
+            startRecordIV.visibility = View.GONE
+            sendTextMessageIV.visibility = View.VISIBLE
+        } else {
+            mHoldingButtonLayout.isButtonEnabled = true
+            sendTextMessageIV.visibility = View.GONE
+            startRecordIV.visibility = View.VISIBLE
+        }
     }
 
     //dialog, activity methods

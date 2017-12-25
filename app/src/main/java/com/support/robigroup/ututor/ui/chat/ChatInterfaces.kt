@@ -8,15 +8,11 @@ import com.stfalcon.chatkit.messages.MessagesListAdapter
 import com.stfalcon.contentmanager.ContentManager
 import com.support.robigroup.ututor.commons.ChatInformation
 import com.support.robigroup.ututor.data.DataManager
-import com.support.robigroup.ututor.data.play_record.AudioItem
-import com.support.robigroup.ututor.features.chat.model.ChatMessage
+import com.support.robigroup.ututor.ui.chat.model.ChatMessage
 import com.support.robigroup.ututor.ui.base.DialogMvpView
 import com.support.robigroup.ututor.ui.base.MvpPresenter
 import com.support.robigroup.ututor.ui.base.MvpView
-import com.support.robigroup.ututor.ui.base.RealmBasedPresenter
 import omrecorder.PullableSource
-import omrecorder.Recorder
-import java.io.File
 
 
 interface ChatMvpView : MvpView, PlayView, RecordView, HoldingButtonView{
@@ -50,19 +46,6 @@ interface ChatMvpPresenter<V : ChatMvpView> : MvpPresenter<V>,
     fun onViewInitialized()
     fun onCounterFinish()
     fun onChatFinished()
-}
-
-interface DownloadView {
-    fun startDownload(messageId: String, url: String)
-    fun queryStatus()
-    fun statusMessage(): String
-    fun registerReceivers()
-    fun unregisterReceivers()
-}
-
-interface DownloadPresenter{
-    fun onDownloadComplete()
-    fun onNotificationClick()
 }
 
 interface PlayPresenter : MediaPlayer.OnCompletionListener{

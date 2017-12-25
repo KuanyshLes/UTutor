@@ -13,4 +13,5 @@ interface FileHelper{
     fun checkFileExistance(url: String): Boolean
     fun cleanDirectories()
     fun removeFile(path: String)
+    fun getDurationOfAudioInMillis(path: String): Int
 }

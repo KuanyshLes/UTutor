@@ -39,11 +39,6 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
 
-        <activity
-            android:name=".features.chat.ChatActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" />
-
         <service
             android:name=".NotificationService"
             android:enabled="true"
@@ -59,13 +54,10 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".features.draw.CanvasActivity" />
         <activity
-            android:name=".features.history.HistoryActivity"
+            android:name=".ui.history.HistoryMessages"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".features.history.HistoryMessages"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".features.history.HistoryList"
+            android:name=".ui.history.HistoryList"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
 

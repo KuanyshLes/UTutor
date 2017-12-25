@@ -18,10 +18,7 @@ import java.io.IOException
 import java.io.InputStream
 import java.text.SimpleDateFormat
 import java.util.*
-import android.R.attr.path
-import android.app.Activity
-import com.support.robigroup.ututor.features.chat.model.ChatMessage
-import java.net.URI
+import com.support.robigroup.ututor.ui.chat.model.ChatMessage
 import java.util.concurrent.TimeUnit
 
 

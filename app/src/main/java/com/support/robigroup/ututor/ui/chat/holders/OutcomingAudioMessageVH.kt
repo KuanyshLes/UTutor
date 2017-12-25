@@ -1,8 +1,6 @@
 package com.support.robigroup.ututor.ui.chat.holders
 
 import android.os.Handler
-import android.support.v4.content.ContextCompat
-import android.util.Log
 import android.view.View
 import android.widget.ImageButton
 import android.widget.ProgressBar
@@ -16,12 +14,10 @@ import com.stfalcon.chatkit.messages.MessageHolders
 import com.support.robigroup.ututor.Constants
 import com.support.robigroup.ututor.R
 import com.support.robigroup.ututor.commons.Functions
-import com.support.robigroup.ututor.data.DataManager
-import com.support.robigroup.ututor.features.chat.model.ChatMessage
 import com.support.robigroup.ututor.ui.chat.AudioPlayerCallback
 import com.support.robigroup.ututor.ui.chat.PlayView
+import com.support.robigroup.ututor.ui.chat.model.ChatMessage
 import io.realm.Realm
-import javax.inject.Inject
 
 
 class OutcomingAudioMessageVH(itemView: View) : MessageHolders.OutcomingTextMessageViewHolder<ChatMessage>(itemView) {
@@ -55,15 +51,16 @@ class OutcomingAudioMessageVH(itemView: View) : MessageHolders.OutcomingTextMess
         time.setTextColor(time.context.resources.getColor(R.color.colorGrey))
 
         //outcoming logic different
-        if(message.localFilePath==null){
+        if(message.localFilePath==null || !dataManager.checkFileExistance(message.localFilePath)){
             message.playingPosition = 0
             message.status = Constants.MESSAGE_DOWNLOAD
-        }else if(!dataManager.checkFileExistance(message.localFilePath)){
-            val r = Realm.getDefaultInstance()
-            r.executeTransaction {
-                message.localFilePath = null
+            if(message.localFilePath!=null){
+                val r = Realm.getDefaultInstance()
+                r.executeTransaction {
+                    message.localFilePath = null
+                }
+                r.close()
             }
-            r.close()
         }else{
             if(message.status == Constants.MESSAGE_DOWNLOAD || message.playingPosition == 0)
                 message.status = Constants.MESSAGE_STOPPED
@@ -202,6 +199,7 @@ class OutcomingAudioMessageVH(itemView: View) : MessageHolders.OutcomingTextMess
         Rx2AndroidNetworking.download(url, dirPath, fileName)
                 .setTag(message.id)
                 .setPriority(Priority.MEDIUM)
+                .doNotCacheResponse()
                 .build()
                 .setDownloadProgressListener { bytesDownloaded, totalBytes ->
                     val progress = ((bytesDownloaded * 360 / totalBytes)).toInt()

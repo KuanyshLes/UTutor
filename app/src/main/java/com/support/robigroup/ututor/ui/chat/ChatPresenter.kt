@@ -9,8 +9,8 @@ import com.support.robigroup.ututor.commons.ChatInformation
 import com.support.robigroup.ututor.commons.Functions
 import com.support.robigroup.ututor.commons.logd
 import com.support.robigroup.ututor.data.DataManager
-import com.support.robigroup.ututor.features.chat.model.ChatMessage
 import com.support.robigroup.ututor.ui.base.RealmBasedPresenter
+import com.support.robigroup.ututor.ui.chat.model.ChatMessage
 import com.support.robigroup.ututor.utils.SchedulerProvider
 import io.reactivex.disposables.CompositeDisposable
 import java.io.File
@@ -186,6 +186,11 @@ constructor(dataManager: DataManager, schedulerProvider: SchedulerProvider, comp
 
     override fun onChatFinished() {
         dataManager.cleanDirectories()
+    }
+
+    override fun onDetach() {
+        audioCallback?.onComplete()
+        super.onDetach()
     }
 
     //methods for play presenter
