@@ -121,15 +121,12 @@ class IncomingAudioMessageVH(itemView: View): MessageHolders.IncomingTextMessage
                 Constants.MESSAGE_DOWNLOAD ->{
                     startDownload(message)
                 }
-
             }
         }
         seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar, i: Int, b: Boolean) {
                 if(b){
                     mListener.onSeekChanged(i)
-                }else{
-
                 }
             }
             override fun onStartTrackingTouch(seekBar: SeekBar) {
