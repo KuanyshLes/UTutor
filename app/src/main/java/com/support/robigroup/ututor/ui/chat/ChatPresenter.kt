@@ -58,13 +58,16 @@ constructor(dataManager: DataManager, schedulerProvider: SchedulerProvider, comp
 
         val info = chatInformation
         if(!info.TeacherReady||!info.LearnerReady){
-            val dif = Functions.getDifferenceInMillis(info.CreateTime)
-            val utc = dif - 6*60*60*1000
-            logd(utc.toString())
-            if((dif>1000&&dif<Constants.WAIT_TIME)||(utc>1000&&utc<Constants.WAIT_TIME)){
-                mvpView.showReadyDialog(dif+1000)
-            }else{
+            if(info.deviceCreateTime == null){
                 mvpView.startMenuActivity()
+                return
+            }else{
+                val dif = Functions.getDifferenceInMillis(info.deviceCreateTime!!)
+                if(dif>1000&&dif<Constants.WAIT_TIME){
+                    mvpView.showReadyDialog(dif+1000)
+                }else{
+                    mvpView.startMenuActivity()
+                }
             }
         }else{
             updateChatMessages()

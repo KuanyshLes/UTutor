@@ -210,6 +210,7 @@ public class NotificationService extends Service {
                 ChatInformation request = realm.where(ChatInformation.class).findFirst();
                 if(request!=null){
                     request.setTeacherReady(true);
+                    request.setDeviceCreateTime(Functions.INSTANCE.getDeviceTime());
                 }
             }
         });

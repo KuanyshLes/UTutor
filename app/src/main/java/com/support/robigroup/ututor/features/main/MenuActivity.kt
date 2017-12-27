@@ -75,6 +75,9 @@ class MenuActivity : MenuesActivity() {
     }
 
     private fun startTopicOrChatActivity(chatLesson: ChatLesson?){
+        val realm = Realm.getDefaultInstance()
+        val res = realm.where(ChatInformation::class.java).findFirst()
+
         var start = true
         if(chatLesson!=null){
             val dif = Functions.getDifferenceInMillis(chatLesson.CreateTime)

@@ -71,11 +71,16 @@ object Functions {
 
     fun getDifferenceInMillis(dateString: String): Long{
         val currentTime = Calendar.getInstance().time
-        val sdf = SimpleDateFormat(Constants.TIMEFORMAT, Locale.getDefault())
-
-        val dif = sdf.parse(dateString+"Z").time-currentTime.time+Constants.WAIT_TIME
-        Log.e("Difference","created: "+dateString+"Z"+ " now: "+sdf.format(currentTime.time)+" dif: "+dif.toString())
+        val sdf = SimpleDateFormat(Constants.DEVICE_TIMEFORMAT, Locale.getDefault())
+        val dif = sdf.parse(dateString).time-currentTime.time
+        Log.e("Difference","created: "+dateString + " now: "+sdf.format(currentTime.time)+" dif: "+dif.toString())
         return dif
+    }
+
+    fun getDeviceTime():String{
+        val currentTime = Calendar.getInstance().time
+        val sdf = SimpleDateFormat(Constants.DEVICE_TIMEFORMAT, Locale.getDefault())
+        return sdf.format(currentTime)
     }
 
     fun isOnline(context: Context): Boolean {

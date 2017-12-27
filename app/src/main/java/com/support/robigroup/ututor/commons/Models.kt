@@ -286,7 +286,8 @@ open class ChatInformation(
         var SubjectId: Int? = null,
         var Language: String? = null,
         var InvoiceSum: String? = null,
-        var InvoiceTariff: String? = null
+        var InvoiceTariff: String? = null,
+        var deviceCreateTime: String? = null
 ): RealmObject()
 
 data class Profile(

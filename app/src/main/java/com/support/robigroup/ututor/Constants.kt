@@ -47,6 +47,7 @@ object Constants {
 
     val UTC: TimeZone = TimeZone.getTimeZone("UTC")
     val TIMEFORMAT: String = "yyyy-MM-dd'T'HH:mm:ss"
+    val DEVICE_TIMEFORMAT: String = "yyyy-MM-dd HH:mm:ss"
     val WAIT_TIME = 30000
     val UTC_TIME = 6*60*60*1000
 
