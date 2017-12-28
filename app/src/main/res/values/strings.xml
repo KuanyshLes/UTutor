@@ -39,6 +39,7 @@
     <string name="prompt_first_name">Имя</string>
     <string name="prompt_last_name">Фамилия</string>
     <string name="error_invalid_email">Email адрес неверный</string>
+    <string name="error_invalid_username_or_password">Не правильно введен данные пользователя</string>
     <string name="error_invalid_password">Паспорт слишком маленький</string>
     <string name="error_field_required">Это поле не может быть пусто</string>
     <string name="error_phone_number">Неправильный номер телефона</string>

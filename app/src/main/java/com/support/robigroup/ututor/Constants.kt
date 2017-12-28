@@ -33,6 +33,7 @@ object Constants {
     //chat constants
     val STATUS_NOT_REQUESTED = -3
     val STATUS_COMPLETED = 6
+    val STATUS_CANCELLED = 6
 
     val TAG_READY_DIALOG = "readyDialog"
     val TAG_FINISH_DIALOG = "finishDialog"

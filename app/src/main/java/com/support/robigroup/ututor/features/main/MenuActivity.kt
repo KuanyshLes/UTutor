@@ -17,6 +17,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import io.realm.Realm
+import io.realm.RealmResults
 
 class MenuActivity : MenuesActivity() {
 
@@ -72,11 +73,11 @@ class MenuActivity : MenuesActivity() {
 
     private fun startTopicOrChatActivity(chatLesson: ChatLesson?){
         val realm = Realm.getDefaultInstance()
-        var res = realm.where(ChatInformation::class.java).findFirst()
+        var res = realm.where(ChatInformation::class.java).findAllSorted("timestamp").last()
 
         var start = true
 
-        if(chatLesson == null){
+        if(chatLesson == null || chatLesson.StatusId == Constants.STATUS_CANCELLED){
             start = false
         }else if(res == null){
             // this situation occurs when service does not work it is very rarely

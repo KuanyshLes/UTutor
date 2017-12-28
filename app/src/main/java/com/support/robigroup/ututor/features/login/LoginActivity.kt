@@ -3,6 +3,7 @@ package com.support.robigroup.ututor.features.login
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.text.TextUtils
 import android.view.View
@@ -91,7 +92,7 @@ class LoginActivity : AppCompatActivity(), OnLoginActivityInteractionListener {
                                 }else{
                                     showProgress(false)
                                     when(result.code()){
-                                        Constants.BAD_REQUEST -> loginFragment.setPasswordError(result.message())!!.requestFocus()
+                                        Constants.BAD_REQUEST -> loginFragment.setPasswordError(getString(R.string.error_invalid_username_or_password))!!.requestFocus()
                                         else -> this.requestErrorHandler(result.code(),result.message())
                                     }
                                 }
