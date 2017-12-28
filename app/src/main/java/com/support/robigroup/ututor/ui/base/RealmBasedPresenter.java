@@ -62,7 +62,7 @@ public class RealmBasedPresenter<V extends MvpView>  extends BasePresenter<V> im
     @Override
     public ChatInformation getChatInformation() {
         if(chatInformation==null){
-            chatInformation = realm.where(ChatInformation.class).findFirst();
+            chatInformation = realm.where(ChatInformation.class).findAllSorted("timestamp").last();
         }
         return chatInformation;
     }

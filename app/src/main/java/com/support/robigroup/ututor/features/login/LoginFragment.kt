@@ -14,10 +14,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
-import android.widget.AutoCompleteTextView
-import android.widget.Button
-import android.widget.EditText
-import android.widget.TextView
+import android.widget.*
 import com.support.robigroup.ututor.R
 import com.support.robigroup.ututor.commons.OnLoginActivityInteractionListener
 import com.support.robigroup.ututor.commons.inflate
@@ -30,6 +27,7 @@ class LoginFragment : Fragment() {
     private var email_sign_in_button: Button? = null
     private var go_sign_up_button: TextView? = null
     private var emailContainer: AutoCompleteTextView? = null
+    private var logoImage: ImageView? = null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -45,12 +43,29 @@ class LoginFragment : Fragment() {
         email_sign_in_button = view.findViewById(R.id.email_sign_in_button)
         go_sign_up_button = view.findViewById(R.id.go_sign_up_button)
         emailContainer = view.findViewById(R.id.emailContainer)
+        logoImage = view.findViewById(R.id.reg_logo_image)
         return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         logd("onViewCreated LoginFragment")
+
+//        emailContainer?.setOnFocusChangeListener { view, hasFocus ->
+//            if(hasFocus){
+//                logoImage?.visibility = View.GONE
+//            }else{
+//                logoImage?.visibility = View.VISIBLE
+//            }
+//        }
+//
+//        passwordContainer?.setOnFocusChangeListener { view, hasFocus ->
+//            if(hasFocus){
+//                logoImage?.visibility = View.GONE
+//            }else{
+//                logoImage?.visibility = View.VISIBLE
+//            }
+//        }
 
         passwordContainer!!.setOnEditorActionListener(TextView.OnEditorActionListener { _, id, _ ->
             if (id == EditorInfo.IME_ACTION_DONE || id == EditorInfo.IME_NULL) {
