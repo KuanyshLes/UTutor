@@ -72,7 +72,7 @@ object Functions {
     fun getDifferenceInMillis(dateString: String): Long{
         val currentTime = Calendar.getInstance().time
         val sdf = SimpleDateFormat(Constants.DEVICE_TIMEFORMAT, Locale.getDefault())
-        val dif = sdf.parse(dateString).time-currentTime.time
+        val dif = sdf.parse(dateString).time-currentTime.time+Constants.WAIT_TIME
         Log.e("Difference","created: "+dateString + " now: "+sdf.format(currentTime.time)+" dif: "+dif.toString())
         return dif
     }

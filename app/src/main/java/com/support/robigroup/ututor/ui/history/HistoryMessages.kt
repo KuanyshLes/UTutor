@@ -49,7 +49,7 @@ class HistoryMessages : BaseActivity(), HistoryMvpView{
 
     private val messageStringFormatter: MessagesListAdapter.Formatter<ChatMessage>
         get() = MessagesListAdapter.Formatter { message ->
-            val createdAt = SimpleDateFormat(Constants.TIMEFORMAT, Locale.getDefault())
+            val createdAt = SimpleDateFormat(Constants.DEVICE_TIMEFORMAT, Locale.getDefault())
                     .format(message.createdAt)
 
             var text: String? = message.text

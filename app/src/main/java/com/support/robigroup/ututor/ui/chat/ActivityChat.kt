@@ -58,7 +58,7 @@ class ActivityChat : BaseActivity(), ChatMvpView {
     private var selectionCount: Int = 0
     private val imageLoader = ImageLoader { imageView, url -> Picasso.with(baseContext).load(url).into(imageView) }
     private val messageStringFormatter = MessagesListAdapter.Formatter<ChatMessage> { message ->
-            val createdAt = SimpleDateFormat(Constants.TIMEFORMAT, Locale.getDefault()).format(message.createdAt)
+            val createdAt = SimpleDateFormat(Constants.DEVICE_TIMEFORMAT, Locale.getDefault()).format(message.createdAt)
             var text: String? = message.text
             if (text == null) text = "[attachment]"
             String.format(Locale.getDefault(), "%s: %s (%s)",
@@ -94,7 +94,7 @@ class ActivityChat : BaseActivity(), ChatMvpView {
     var mInputAnimator: ViewPropertyAnimator? = null
 
     private val permissions = arrayOf(Manifest.permission.RECORD_AUDIO)
-    private val REQUEST_RECORD_AUDIO_PERMISSION = 200
+    private val REQUEST_RECORD_AUDIO_PERMISSION = 3
     private var permissionToRecordAccepted = false
 
     lateinit var vibrator: Vibrator

@@ -84,10 +84,6 @@ class TeachersActivity : AppCompatActivity(), OnTeachersActivityInteractionListe
         }
     }
 
-
-
-
-
     override fun onDestroy() {
         super.onDestroy()
         compositeDisposable.clear()

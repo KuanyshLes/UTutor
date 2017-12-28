@@ -187,6 +187,7 @@ public class NotificationService extends Service {
                 }
             }
         });
+        stopSelf();
     }
 
     private void notifyTeacherAccepted(final ChatInformation chatInformation){
@@ -196,6 +197,7 @@ public class NotificationService extends Service {
             @Override
             public void execute(Realm realm) {
                 realm.where(ChatInformation.class).findAll().deleteAllFromRealm();
+                chatInformation.setDeviceCreateTime(Functions.INSTANCE.getDeviceTime());
                 realm.copyToRealm(chatInformation);
             }
         });
@@ -210,7 +212,6 @@ public class NotificationService extends Service {
                 ChatInformation request = realm.where(ChatInformation.class).findFirst();
                 if(request!=null){
                     request.setTeacherReady(true);
-                    request.setDeviceCreateTime(Functions.INSTANCE.getDeviceTime());
                 }
             }
         });
@@ -226,7 +227,4 @@ public class NotificationService extends Service {
             }
         });
     }
-
-
-
 }

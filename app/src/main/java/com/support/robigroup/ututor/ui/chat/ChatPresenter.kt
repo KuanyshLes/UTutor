@@ -33,6 +33,18 @@ constructor(dataManager: DataManager, schedulerProvider: SchedulerProvider, comp
             mvpView.setToolbarTitle(surnameName[0])
         }
 
+        val info = chatInformation
+        if(!info.TeacherReady||!info.LearnerReady){
+            val dif = Functions.getDifferenceInMillis(info.deviceCreateTime!!)
+            if(dif>500&&dif<Constants.WAIT_TIME){
+                mvpView.showReadyDialog(dif)
+            }else{
+                mvpView.startMenuActivity()
+            }
+        }else{
+            updateChatMessages()
+        }
+
         chatInformation.addChangeListener<ChatInformation> {
             rs, changeset ->
             if(changeset==null){
@@ -54,23 +66,6 @@ constructor(dataManager: DataManager, schedulerProvider: SchedulerProvider, comp
                     }
                 }
             }
-        }
-
-        val info = chatInformation
-        if(!info.TeacherReady||!info.LearnerReady){
-            if(info.deviceCreateTime == null){
-                mvpView.startMenuActivity()
-                return
-            }else{
-                val dif = Functions.getDifferenceInMillis(info.deviceCreateTime!!)
-                if(dif>1000&&dif<Constants.WAIT_TIME){
-                    mvpView.showReadyDialog(dif+1000)
-                }else{
-                    mvpView.startMenuActivity()
-                }
-            }
-        }else{
-            updateChatMessages()
         }
 
         chatMessages.addChangeListener {
@@ -108,17 +103,18 @@ constructor(dataManager: DataManager, schedulerProvider: SchedulerProvider, comp
                     if (response.isSuccessful) {
                         val res = response.body()?.charStream()?.readText()
                         if (res != null) {
-                            val info = chatInformation
                             realm.executeTransaction {
                                 if (res == "ready") {
-                                    info.LearnerReady = true
-                                    info.TeacherReady = true
+                                    chatInformation.LearnerReady = true
+                                    chatInformation.TeacherReady = true
                                 } else {
-                                    info.LearnerReady = true
+                                    chatInformation.LearnerReady = true
                                 }
                             }
                         } else {
-                            handleApiError(null)
+                            realm.executeTransaction {
+                                chatInformation.LearnerReady = true
+                            }
                         }
                     } else {
                         handleApiError(ANError(response.raw()))
@@ -189,6 +185,10 @@ constructor(dataManager: DataManager, schedulerProvider: SchedulerProvider, comp
 
     override fun onChatFinished() {
         dataManager.cleanDirectories()
+        chatInformation.removeAllChangeListeners()
+        chatMessages.removeAllChangeListeners()
+        realm.where(ChatInformation::class.java).findAll().deleteAllFromRealm()
+        realm.where(ChatMessage::class.java).findAll().deleteAllFromRealm()
     }
 
     override fun onDetach() {
@@ -401,7 +401,7 @@ constructor(dataManager: DataManager, schedulerProvider: SchedulerProvider, comp
                     )
             )
         }else{
-            
+
         }
     }
 

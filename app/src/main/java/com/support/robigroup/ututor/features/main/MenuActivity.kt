@@ -30,10 +30,6 @@ class MenuActivity : MenuesActivity() {
         initNav(this)
         supportActionBar?.title = getString(R.string.choose_type)
 
-        val intent = Intent()
-        intent.setClass(this, NotificationService::class.java)
-        startService(intent)
-
         if(Functions.isOnline(this)){
             sendQueries()
         }else{
@@ -76,45 +72,27 @@ class MenuActivity : MenuesActivity() {
 
     private fun startTopicOrChatActivity(chatLesson: ChatLesson?){
         val realm = Realm.getDefaultInstance()
-        val res = realm.where(ChatInformation::class.java).findFirst()
+        var res = realm.where(ChatInformation::class.java).findFirst()
 
         var start = true
-        if(chatLesson!=null){
-            val dif = Functions.getDifferenceInMillis(chatLesson.CreateTime)
-            val utc = dif - 6*60*60*1000
-            logd(utc.toString())
-            start = (dif>1000&&dif<Constants.WAIT_TIME)||(utc>1000&&utc<Constants.WAIT_TIME)
+
+        if(chatLesson == null){
+            start = false
+        }else if(res == null){
+            // this situation occurs when service does not work it is very rarely
+            res = Functions.getChatInformation(chatLesson)
+            res.deviceCreateTime = Functions.getDeviceTime()
+            realm.executeTransaction {
+                realm.copyToRealm(res)
+            }
+            start = true
+        }else{
+            val dif = Functions.getDifferenceInMillis(res.deviceCreateTime!!)
+            start = dif>500&&dif<Constants.WAIT_TIME
         }
 
-        if(chatLesson==null||chatLesson.StatusId== Constants.STATUS_COMPLETED ){
-            val realm = Realm.getDefaultInstance()
-            val res = realm.where(ChatInformation::class.java).findAll()
-            if(res!=null)
-                realm.executeTransaction {
-                    if(res.isValid)
-                        res.deleteAllFromRealm()
-                }
-            val messages = realm.where(ChatMessage::class.java).findAll()
-            realm.executeTransaction {
-                messages.deleteAllFromRealm()
-            }
-            realm.close()
-        }else if(!start && (!chatLesson.LearnerReady || !chatLesson.TeacherReady)){
-            Snackbar.make(findViewById(android.R.id.content),getString(R.string.error_incorrect_time), Snackbar.LENGTH_SHORT).show()
-        }else{
-
-            val realm = Realm.getDefaultInstance()
-            val res = realm.where(ChatInformation::class.java).findAll()
-            if(res!=null)
-                realm.executeTransaction {
-                    res.deleteAllFromRealm()
-                }
-            realm.executeTransaction {
-                realm.copyToRealm(Functions.getChatInformation(chatLesson))
-            }
-            realm.close()
+        if(start){
             ActivityChat.open(this)
-            finish()
         }
     }
 

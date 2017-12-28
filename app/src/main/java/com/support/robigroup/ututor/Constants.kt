@@ -45,11 +45,9 @@ object Constants {
     val MESSAGE_STOPPED = 4
 
 
-    val UTC: TimeZone = TimeZone.getTimeZone("UTC")
-    val TIMEFORMAT: String = "yyyy-MM-dd'T'HH:mm:ss"
-    val DEVICE_TIMEFORMAT: String = "yyyy-MM-dd HH:mm:ss"
+    val DEVICE_TIMEFORMAT: String = "yyyy-MM-dd HH:mm:sss"
+    val BACKEND_TIMEFORMAT: String = "yyyy-MM-dd'T'HH:mm:ss"
     val WAIT_TIME = 30000
-    val UTC_TIME = 6*60*60*1000
 
     val CONTENT_TYPE_IMAGE_TEXT: Byte = 100
     val CONTENT_TYPE_VOICE: Byte = 101
@@ -67,11 +65,6 @@ object Constants {
             Type(2, "Вопросы по тесту", R.drawable.ic_choose_test),
             Type( 3,"Подготовка к ЕНТ", R.drawable.ic_choose_test)
     )
-
-    val BASE_AUDIO_FOLDER = Environment.getExternalStorageDirectory().absolutePath +
-            File.separator +
-            "UTutor" +
-            File.separator
 
     val AUDIO_TYPES = arrayOf(
             "mp3",

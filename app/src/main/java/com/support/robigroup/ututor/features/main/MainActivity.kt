@@ -47,7 +47,6 @@ class MainActivity :
             classNumber = 0
         }
 
-
         val intent = Intent()
         intent.setClass(this, NotificationService::class.java)
         startService(intent)

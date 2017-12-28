@@ -302,7 +302,6 @@ data class Profile(
         var ProfilePhotoPath: String? = null,
         var FullName: String? = null,
         var Birthday: String? = null
-
 )
 
 data class Language(
