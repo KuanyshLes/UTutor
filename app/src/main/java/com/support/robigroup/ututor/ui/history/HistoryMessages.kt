@@ -158,7 +158,7 @@ class HistoryMessages : BaseActivity(), HistoryMvpView{
     override fun showImage(url: String) {
         val hierarchyBuilder = GenericDraweeHierarchyBuilder.newInstance(resources)
                 .setRetryImage(R.drawable.retry_image)
-                .setProgressBarImage(R.drawable.progress)
+                .setProgressBarImage(R.drawable.progress_image_rotate)
                 .setPlaceholderImage(R.drawable.change_logo)
         ImageViewer.Builder(this, arrayOf(url))
                 .setStartPosition(0)

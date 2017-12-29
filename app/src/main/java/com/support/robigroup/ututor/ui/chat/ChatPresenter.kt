@@ -5,6 +5,7 @@ import android.net.Uri
 import com.androidnetworking.error.ANError
 import com.stfalcon.contentmanager.ContentManager
 import com.support.robigroup.ututor.Constants
+import com.support.robigroup.ututor.NotificationService
 import com.support.robigroup.ututor.commons.ChatInformation
 import com.support.robigroup.ututor.commons.Functions
 import com.support.robigroup.ututor.commons.logd
@@ -187,8 +188,10 @@ constructor(dataManager: DataManager, schedulerProvider: SchedulerProvider, comp
         dataManager.cleanDirectories()
         chatInformation.removeAllChangeListeners()
         chatMessages.removeAllChangeListeners()
-        realm.where(ChatInformation::class.java).findAll().deleteAllFromRealm()
-        realm.where(ChatMessage::class.java).findAll().deleteAllFromRealm()
+        realm.executeTransaction {
+            realm.where(ChatInformation::class.java).findAll().deleteAllFromRealm()
+            realm.where(ChatMessage::class.java).findAll().deleteAllFromRealm()
+        }
     }
 
     override fun onDetach() {

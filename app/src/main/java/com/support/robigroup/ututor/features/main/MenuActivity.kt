@@ -3,21 +3,17 @@ package com.support.robigroup.ututor.features.main
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.support.design.widget.Snackbar
 import android.view.View
 import com.support.robigroup.ututor.Constants
-import com.support.robigroup.ututor.NotificationService
 import com.support.robigroup.ututor.R
 import com.support.robigroup.ututor.api.MainManager
 import com.support.robigroup.ututor.commons.*
 import com.support.robigroup.ututor.features.MenuesActivity
-import com.support.robigroup.ututor.ui.chat.model.ChatMessage
 import com.support.robigroup.ututor.ui.chat.ActivityChat
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import io.realm.Realm
-import io.realm.RealmResults
 
 class MenuActivity : MenuesActivity() {
 
@@ -73,9 +69,13 @@ class MenuActivity : MenuesActivity() {
 
     private fun startTopicOrChatActivity(chatLesson: ChatLesson?){
         val realm = Realm.getDefaultInstance()
-        var res = realm.where(ChatInformation::class.java).findAllSorted("timestamp").last()
-
+        var chats = realm.where(ChatInformation::class.java).findAll()
         var start = true
+        var res: ChatInformation? = null
+        if(!chats.isEmpty()){
+            res = chats.last()
+        }
+
 
         if(chatLesson == null || chatLesson.StatusId == Constants.STATUS_CANCELLED){
             start = false
@@ -86,6 +86,8 @@ class MenuActivity : MenuesActivity() {
             realm.executeTransaction {
                 realm.copyToRealm(res)
             }
+            start = true
+        }else if(chatLesson.TeacherReady && chatLesson.LearnerReady){
             start = true
         }else{
             val dif = Functions.getDifferenceInMillis(res.deviceCreateTime!!)
@@ -102,6 +104,14 @@ class MenuActivity : MenuesActivity() {
             R.id.choose_test -> MainActivity.open(this,2)
             R.id.choose_homework -> MainActivity.open(this,1)
         }
+    }
+
+    override fun onStart() {
+        super.onStart()
+    }
+
+    override fun onResume() {
+        super.onResume()
     }
 
     companion object {

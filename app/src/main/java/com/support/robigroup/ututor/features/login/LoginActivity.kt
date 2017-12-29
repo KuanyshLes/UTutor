@@ -58,6 +58,11 @@ class LoginActivity : AppCompatActivity(), OnLoginActivityInteractionListener {
 
     override fun onSignInButtonClicked(email: String, password: String) {
 
+        if(Constants.DEBUG){
+            debugLogin()
+            return
+        }
+
         val loginFragment: LoginFragment = supportFragmentManager.findFragmentByTag(TAG_LOGIN_FRAGMENT) as LoginFragment
         logd(loginFragment.equals(this.loginFragment).toString())
         loginFragment.resetError()
@@ -111,6 +116,16 @@ class LoginActivity : AppCompatActivity(), OnLoginActivityInteractionListener {
     private fun saveTokenAndFinish(stringResult: LoginResponse?){
         SingletonSharedPref.getInstance().put(Constants.KEY_TOKEN,Constants.KEY_BEARER.plus(stringResult!!.access_token))
         SingletonSharedPref.getInstance().put(Constants.KEY_FULL_NAME,stringResult.FullName)
+        SingletonSharedPref.getInstance().put(Constants.KEY_LANGUAGE,"kk")
+        showProgress(false)
+        startActivity(Intent(baseContext, MenuActivity::class.java))
+        finish()
+    }
+
+    private fun debugLogin(){
+        val debugToken = "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6ImRmMWRjNTNkLWE4MTctNGY2NC04N2I2LTNmZTRmNzVmMWYxYiIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWUiOiJiZXliaXQ5MkBnbWFpbC5jb20iLCJodHRwOi8vdXR1dG9yLmt6L2NsYWltcy9waG9uZWNvbmZpcm1lZCI6IlRydWUiLCJodHRwOi8vdXR1dG9yLmt6L2NsYWltcy9oYXNwYXNzd29yZCI6IlRydWUiLCJqdGkiOiI4NTE3ZDQwMi0xMWMwLTRmZjEtYmE3MS0zM2I0YjUzYWUyODQiLCJpYXQiOjE1MTI5MDc3MjcsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IkxlYXJuZXIiLCJuYmYiOjE1MTI5MDc3MjcsImV4cCI6MTUyNTg2NzcyNywiaXNzIjoiVVR1dG9ySXNzdWVyIiwiYXVkIjoiVVR1dG9yQXVkaWVuY2UifQ.bhjp2vTxVKhIJ3xjO6pBmO0S_MFLwlGgf0b3gs6AOOQ"
+        SingletonSharedPref.getInstance().put(Constants.KEY_TOKEN,debugToken)
+        SingletonSharedPref.getInstance().put(Constants.KEY_FULL_NAME,"Beybit DEBUG")
         SingletonSharedPref.getInstance().put(Constants.KEY_LANGUAGE,"kk")
         showProgress(false)
         startActivity(Intent(baseContext, MenuActivity::class.java))

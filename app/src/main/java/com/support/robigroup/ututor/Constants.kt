@@ -8,6 +8,8 @@ import java.util.*
 
 object Constants {
 
+    val DEBUG = false
+
     val BAD_REQUEST = 400 // плохой плохой клиент каку написал
     val UNAUTHORIZED = 401 // нужен токен
     val FORBIDDEN = 403 // запрещенный запрос

@@ -29,6 +29,8 @@ import microsoft.aspnet.signalr.client.transport.LongPollingTransport;
 
 public class NotificationService extends Service {
 
+    public static boolean isStarted = false;
+
     private static final String CHAT_HUB = "chat";
     private static final String SERVER_URL = "http://ututor.kz";
     private static final String KEY_TOKEN = "TOKEN";
@@ -46,7 +48,7 @@ public class NotificationService extends Service {
     private final Logger logger = new Logger() {
         @Override
         public void log(String s, LogLevel logLevel) {
-//            Log.d("MyLogger",s);
+            Log.d("MyLogger",s);
         }
     };
 
@@ -68,12 +70,15 @@ public class NotificationService extends Service {
         super.onDestroy();
         mHubConnection.stop();
         realm.close();
+        isStarted = false;
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        if(mHubConnection==null||mHubConnection.getState()== ConnectionState.Disconnected)
+        if(mHubConnection==null||mHubConnection.getState()== ConnectionState.Disconnected){
             startSignalR();
+            isStarted = true;
+        }
         return super.onStartCommand(intent, flags, startId);
     }
 

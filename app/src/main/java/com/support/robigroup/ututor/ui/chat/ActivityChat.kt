@@ -32,6 +32,7 @@ import com.stfalcon.chatkit.messages.MessagesListAdapter
 import com.stfalcon.contentmanager.ContentManager
 import com.stfalcon.frescoimageviewer.ImageViewer
 import com.support.robigroup.ututor.Constants
+import com.support.robigroup.ututor.NotificationService
 import com.support.robigroup.ututor.R
 import com.support.robigroup.ututor.features.main.MenuActivity
 import com.support.robigroup.ututor.ui.base.BaseActivity
@@ -109,6 +110,11 @@ class ActivityChat : BaseActivity(), ChatMvpView {
         mPresenter.onAttach(this)
         setUp()
         mPresenter.onViewInitialized()
+        if(!NotificationService.isStarted){
+            val intent = Intent()
+            intent.setClass(this, NotificationService::class.java)
+            startService(intent)
+        }
 
     }
 
@@ -125,7 +131,7 @@ class ActivityChat : BaseActivity(), ChatMvpView {
     override fun showImage(url: String) {
         val hierarchyBuilder = GenericDraweeHierarchyBuilder.newInstance(resources)
                 .setRetryImage(R.drawable.retry_image)
-                .setProgressBarImage(R.drawable.progress)
+                .setProgressBarImage(R.drawable.progress_image_rotate)
                 .setPlaceholderImage(R.drawable.change_logo)
         ImageViewer.Builder(this, arrayOf(url))
                 .setStartPosition(0)
