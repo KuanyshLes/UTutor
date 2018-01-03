@@ -96,7 +96,6 @@ class ActivityChat : BaseActivity(), ChatMvpView {
 
     private val permissions = arrayOf(Manifest.permission.RECORD_AUDIO)
     private val REQUEST_RECORD_AUDIO_PERMISSION = 3
-    private var permissionToRecordAccepted = false
 
     lateinit var vibrator: Vibrator
 
@@ -129,14 +128,9 @@ class ActivityChat : BaseActivity(), ChatMvpView {
     }
 
     override fun showImage(url: String) {
-        val hierarchyBuilder = GenericDraweeHierarchyBuilder.newInstance(resources)
-                .setRetryImage(R.drawable.retry_image)
-                .setProgressBarImage(R.drawable.progress_image_rotate)
-                .setPlaceholderImage(R.drawable.change_logo)
         ImageViewer.Builder(this, arrayOf(url))
                 .setStartPosition(0)
                 .hideStatusBar(false)
-                .setCustomDraweeHierarchyBuilder(hierarchyBuilder)
                 .show()
     }
 
@@ -283,12 +277,9 @@ class ActivityChat : BaseActivity(), ChatMvpView {
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        when (requestCode) {
-            REQUEST_RECORD_AUDIO_PERMISSION -> permissionToRecordAccepted = grantResults[0] == PackageManager.PERMISSION_GRANTED
-        }
-        if (permissionToRecordAccepted){
+        if(hasPermission(permissions[0]))
             mHoldingButtonLayout.addListener(mPresenter)
-        }else{
+        else{
             val builder = AlertDialog.Builder(this)
             builder.setMessage(getString(R.string.prompt_audio_message_warning))
                     .setCancelable(false)

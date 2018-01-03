@@ -11,7 +11,7 @@
         android:id="@+id/reg_logo_image"
         android:layout_width="76dp"
         android:layout_height="97dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginBottom="4dp"
         android:contentDescription="@string/desc_logo"
         android:scaleType="centerCrop"
         android:src="@drawable/ic_logo_blue"
@@ -19,37 +19,66 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0"
-        app:layout_constraintVertical_chainStyle="packed" />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
         android:id="@+id/textView3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
+        android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
         android:text="@string/app_name"
         android:textSize="20sp"
         app:layout_constraintBottom_toTopOf="@+id/login_form"
-        app:layout_constraintEnd_toEndOf="@+id/reg_logo_image"
-        app:layout_constraintStart_toStartOf="@+id/reg_logo_image"
-        app:layout_constraintTop_toBottomOf="@+id/reg_logo_image" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0"
+        app:layout_constraintVertical_chainStyle="packed" />
+
+
+    <LinearLayout
+        android:id="@+id/login_buttons_container"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/login_form">
+
+        <Button
+            android:id="@+id/email_sign_in_button"
+            style="@style/reg_buttons"
+            android:layout_width="match_parent"
+            android:layout_marginTop="16dp"
+            android:text="@string/action_sign_in" />
+
+        <TextView
+            android:id="@+id/go_sign_up_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_margin="10dp"
+            android:text="@string/action_go_sign_up"
+            android:textColorLink="@color/colorBlack" />
+    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/login_form"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
         android:orientation="vertical"
-        app:layout_constraintBottom_toTopOf="@+id/linearLayout2"
+        app:layout_constraintBottom_toTopOf="@+id/login_buttons_container"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView3">
 
@@ -62,7 +91,8 @@
                 style="@style/email_field"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/prompt_email" />
+                android:hint="@string/prompt_email"
+                android:imeOptions="actionNext" />
 
         </android.support.design.widget.TextInputLayout>
 
@@ -80,35 +110,6 @@
 
         </android.support.design.widget.TextInputLayout>
 
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/linearLayout2"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginStart="16dp"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
-
-        <Button
-            android:id="@+id/email_sign_in_button"
-            style="@style/reg_buttons"
-            android:layout_width="match_parent"
-            android:layout_marginTop="16dp"
-            android:text="@string/action_sign_in" />
-
-        <TextView
-            android:id="@+id/go_sign_up_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_margin="10dp"
-            android:text="@string/action_go_sign_up"
-            android:textColorLink="@color/colorBlack" />
     </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>
