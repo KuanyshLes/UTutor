@@ -8,6 +8,7 @@ import android.media.AudioManager
 import android.media.MediaPlayer
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import com.facebook.drawee.generic.GenericDraweeHierarchyBuilder
@@ -163,7 +164,9 @@ class HistoryMessages : BaseActivity(), HistoryMvpView{
         ImageViewer.Builder(this, arrayOf(url))
                 .setStartPosition(0)
                 .hideStatusBar(false)
+                .setImageChangeListener { position -> Log.e("IMAGE", "changed") }
                 .show()
+
     }
 
     override fun addMessages(messages: List<ChatMessage>) {

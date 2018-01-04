@@ -49,6 +49,7 @@
     <string name="error_same_password">Одинаковый пароль</string>
     <string name="error_request_exists">Запрос был создан</string>
     <string name="error_cancelled">Отменен</string>
+    <string name="error_teacher_sign_in">Приложение работает только для учеников</string>
     <string name="error_incorrect_time">Проверьте правильность часы вашем устройстве</string>
     <string name="prompt_retry">Повторить</string>
     <string name="duration_short">Длит:</string>

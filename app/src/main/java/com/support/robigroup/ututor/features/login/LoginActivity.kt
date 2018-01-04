@@ -7,6 +7,7 @@ import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.text.TextUtils
 import android.view.View
+import android.widget.Toast
 import com.support.robigroup.ututor.Constants
 import com.support.robigroup.ututor.R
 import com.support.robigroup.ututor.api.RestAPI
@@ -89,13 +90,19 @@ class LoginActivity : AppCompatActivity(), OnLoginActivityInteractionListener {
                     RestAPI.getApi().getToken(email,password)
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribeOn(Schedulers.io())
+                            .doAfterTerminate {
+                                showProgress(false)
+                            }
                             .subscribe({
                                 result ->
                                 logd(result.toString())
-                                if(result.isSuccessful){
-                                    saveTokenAndFinish(result.body())
+                                if(result.isSuccessful && result.body() != null){
+                                    if(isTeacher(result.body()!!)){
+                                        showTeacherError()
+                                    }else{
+                                        saveTokenAndFinish(result.body())
+                                    }
                                 }else{
-                                    showProgress(false)
                                     when(result.code()){
                                         Constants.BAD_REQUEST -> loginFragment.setPasswordError(getString(R.string.error_invalid_username_or_password))!!.requestFocus()
                                         else -> this.requestErrorHandler(result.code(),result.message())
@@ -103,8 +110,6 @@ class LoginActivity : AppCompatActivity(), OnLoginActivityInteractionListener {
                                 }
                             },{
                                 error ->
-                                showProgress(false)
-                                logd(error.toString())
                                 toast(error.message.toString())
                             }
                             ))
@@ -113,11 +118,18 @@ class LoginActivity : AppCompatActivity(), OnLoginActivityInteractionListener {
         }
     }
 
+    private fun isTeacher(response: LoginResponse): Boolean{
+        return response.Role == Constants.TEACHER_ID
+    }
+
+    private fun showTeacherError(){
+        toast(getString(R.string.error_teacher_sign_in), Toast.LENGTH_LONG)
+    }
+
     private fun saveTokenAndFinish(stringResult: LoginResponse?){
         SingletonSharedPref.getInstance().put(Constants.KEY_TOKEN,Constants.KEY_BEARER.plus(stringResult!!.access_token))
         SingletonSharedPref.getInstance().put(Constants.KEY_FULL_NAME,stringResult.FullName)
         SingletonSharedPref.getInstance().put(Constants.KEY_LANGUAGE,"kk")
-        showProgress(false)
         startActivity(Intent(baseContext, MenuActivity::class.java))
         finish()
     }
