@@ -7,7 +7,6 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.media.*
 import android.os.Build
 import android.os.Bundle
@@ -24,7 +23,6 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.dewarder.holdinglibrary.HoldingButtonLayout
 import com.facebook.drawee.generic.GenericDraweeHierarchyBuilder
-import com.squareup.picasso.Picasso
 import com.stfalcon.chatkit.commons.ImageLoader
 import com.stfalcon.chatkit.messages.MessageHolders
 import com.stfalcon.chatkit.messages.MessagesList
@@ -32,10 +30,12 @@ import com.stfalcon.chatkit.messages.MessagesListAdapter
 import com.stfalcon.contentmanager.ContentManager
 import com.stfalcon.frescoimageviewer.ImageViewer
 import com.support.robigroup.ututor.Constants
+import com.support.robigroup.ututor.GlideApp
 import com.support.robigroup.ututor.NotificationService
 import com.support.robigroup.ututor.R
 import com.support.robigroup.ututor.features.main.MenuActivity
 import com.support.robigroup.ututor.ui.base.BaseActivity
+import com.support.robigroup.ututor.ui.base.CircleProgressBarDrawable
 import com.support.robigroup.ututor.ui.chat.eval.RateDialog
 import com.support.robigroup.ututor.ui.chat.holders.IncomingAudioMessageVH
 import com.support.robigroup.ututor.ui.chat.holders.IncomingImageMessageVH
@@ -43,6 +43,7 @@ import com.support.robigroup.ututor.ui.chat.holders.OutcomingAudioMessageVH
 import com.support.robigroup.ututor.ui.chat.holders.OutcomingImageMessageVH
 import com.support.robigroup.ututor.ui.chat.model.ChatMessage
 import com.support.robigroup.ututor.ui.chat.ready.ReadyDialog
+import com.support.robigroup.ututor.utils.CommonUtils
 import kotlinx.android.synthetic.main.activity_chat.*
 import omrecorder.*
 import java.io.File
@@ -57,7 +58,7 @@ class ActivityChat : BaseActivity(), ChatMvpView {
     private lateinit var contentManager: ContentManager
     private lateinit var menu: Menu
     private var selectionCount: Int = 0
-    private val imageLoader = ImageLoader { imageView, url -> Picasso.with(baseContext).load(url).into(imageView) }
+    private val imageLoader = ImageLoader { imageView, url -> GlideApp.with(baseContext).load(url).fitCenter().into(imageView) }
     private val messageStringFormatter = MessagesListAdapter.Formatter<ChatMessage> { message ->
             val createdAt = SimpleDateFormat(Constants.DEVICE_TIMEFORMAT, Locale.getDefault()).format(message.createdAt)
             var text: String? = message.text
@@ -128,9 +129,14 @@ class ActivityChat : BaseActivity(), ChatMvpView {
     }
 
     override fun showImage(url: String) {
+        val circleProgressBar = CircleProgressBarDrawable()
+        circleProgressBar.barWidth = CommonUtils.getPixelsFromDPs(this, 2)
+        val hierarchyBuilder = GenericDraweeHierarchyBuilder.newInstance(resources)
+                .setRetryImage(R.drawable.retry_image)
+                .setProgressBarImage(circleProgressBar)
         ImageViewer.Builder(this, arrayOf(url))
+                .setCustomDraweeHierarchyBuilder(hierarchyBuilder)
                 .setStartPosition(0)
-                .hideStatusBar(false)
                 .show()
     }
 

@@ -16,8 +16,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.Toast
+import com.bumptech.glide.Glide
 import com.facebook.drawee.view.SimpleDraweeView
-import com.squareup.picasso.Picasso
 import com.support.robigroup.ututor.Constants
 import com.support.robigroup.ututor.R
 
@@ -50,9 +50,6 @@ fun ViewGroup.inflate(layoutId: Int, attachToRoot: Boolean = false): View {
 fun Context.toast(message: CharSequence,length: Int = Toast.LENGTH_SHORT) =
         Toast.makeText(this, message, length).show()
 
-fun ImageView.loadImg(path: String = "https://www.tes.com/sites/default/files/stress_1.jpg"){
-    Picasso.with(context).load(path).into(this)
-}
 
 fun SimpleDraweeView.loadSimpleImg(path: String?){
     if(path==null){

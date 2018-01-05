@@ -16,12 +16,15 @@
 package com.support.robigroup.ututor.utils;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.res.AssetManager;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.provider.Settings;
+import android.util.TypedValue;
 
 
 import com.support.robigroup.ututor.R;
@@ -87,6 +90,12 @@ public final class CommonUtils {
         is.close();
 
         return new String(buffer, "UTF-8");
+    }
+    public static int getPixelsFromDPs(Context context, int dps){
+        Resources r = context.getResources();
+        int pixels = (int) (TypedValue.applyDimension(
+                TypedValue.COMPLEX_UNIT_DIP, dps, r.getDisplayMetrics()));
+        return pixels;
     }
 
     public static String getTimeStamp() {

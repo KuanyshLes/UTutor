@@ -1,9 +1,7 @@
 package com.support.robigroup.ututor.features.login
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.text.TextUtils
 import android.view.View
@@ -12,7 +10,6 @@ import com.support.robigroup.ututor.Constants
 import com.support.robigroup.ututor.R
 import com.support.robigroup.ututor.api.RestAPI
 import com.support.robigroup.ututor.commons.*
-import com.support.robigroup.ututor.commons.LoginResponse
 import com.support.robigroup.ututor.features.loading.LoadingDialog
 import com.support.robigroup.ututor.features.loading.LoadingView
 import com.support.robigroup.ututor.features.main.MenuActivity

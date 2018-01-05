@@ -8,27 +8,32 @@ import android.media.AudioManager
 import android.media.MediaPlayer
 import android.os.Build
 import android.os.Bundle
+import android.support.v4.content.ContextCompat
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import com.bumptech.glide.Glide
+import com.facebook.drawee.drawable.ProgressBarDrawable
 import com.facebook.drawee.generic.GenericDraweeHierarchyBuilder
-import com.squareup.picasso.Picasso
 import com.stfalcon.chatkit.commons.ImageLoader
 import com.stfalcon.chatkit.messages.MessageHolders
 import com.stfalcon.chatkit.messages.MessagesList
 import com.stfalcon.chatkit.messages.MessagesListAdapter
 import com.stfalcon.frescoimageviewer.ImageViewer
 import com.support.robigroup.ututor.Constants
+import com.support.robigroup.ututor.GlideApp
 import com.support.robigroup.ututor.R
 import com.support.robigroup.ututor.commons.ChatHistory
 import com.support.robigroup.ututor.commons.toast
 import com.support.robigroup.ututor.ui.base.BaseActivity
+import com.support.robigroup.ututor.ui.base.CircleProgressBarDrawable
 import com.support.robigroup.ututor.ui.chat.PlayPresenter
 import com.support.robigroup.ututor.ui.chat.holders.IncomingAudioMessageVH
 import com.support.robigroup.ututor.ui.chat.holders.IncomingImageMessageVH
 import com.support.robigroup.ututor.ui.chat.holders.OutcomingAudioMessageVH
 import com.support.robigroup.ututor.ui.chat.holders.OutcomingImageMessageVH
 import com.support.robigroup.ututor.ui.chat.model.ChatMessage
+import com.support.robigroup.ututor.utils.CommonUtils
 import kotlinx.android.synthetic.main.activity_history_messages.*
 import java.text.SimpleDateFormat
 import java.util.*
@@ -46,7 +51,7 @@ class HistoryMessages : BaseActivity(), HistoryMvpView{
 
     private lateinit var menu: Menu
     private var selectionCount: Int = 0
-    private val imageLoader = ImageLoader { imageView, url -> Picasso.with(baseContext).load(url).into(imageView) }
+    private val imageLoader = ImageLoader { imageView, url -> GlideApp.with(baseContext).load(url).fitCenter().into(imageView) }
 
     private val messageStringFormatter: MessagesListAdapter.Formatter<ChatMessage>
         get() = MessagesListAdapter.Formatter { message ->
@@ -157,14 +162,15 @@ class HistoryMessages : BaseActivity(), HistoryMvpView{
     }
 
     override fun showImage(url: String) {
-//        val hierarchyBuilder = GenericDraweeHierarchyBuilder.newInstance(resources)
-//                .setRetryImage(R.drawable.retry_image)
-//                .setProgressBarImage(R.drawable.progress_image_rotate)
-//                .setPlaceholderImage(R.drawable.change_logo)
+        val circleProgressBar = CircleProgressBarDrawable()
+        circleProgressBar.barWidth = CommonUtils.getPixelsFromDPs(this, 2)
+        circleProgressBar.color = ContextCompat.getColor(this, R.color.colorLightBlue)
+        val hierarchyBuilder = GenericDraweeHierarchyBuilder.newInstance(resources)
+                .setRetryImage(R.drawable.retry_image)
+                .setProgressBarImage(circleProgressBar)
         ImageViewer.Builder(this, arrayOf(url))
+                .setCustomDraweeHierarchyBuilder(hierarchyBuilder)
                 .setStartPosition(0)
-                .hideStatusBar(false)
-                .setImageChangeListener { position -> Log.e("IMAGE", "changed") }
                 .show()
 
     }
