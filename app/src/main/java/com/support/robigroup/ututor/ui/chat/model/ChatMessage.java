@@ -138,11 +138,6 @@ public class ChatMessage extends RealmObject implements IMessage, MessageContent
     @Override
     public Date getCreatedAt() {
         Date currentTime = Calendar.getInstance().getTime();
-        try{
-            currentTime = new SimpleDateFormat(Constants.INSTANCE.getBACKEND_TIMEFORMAT(), Locale.getDefault()).parse(getTime());
-        }catch (ParseException exception){
-            Log.e("Error","error occured time parsing");
-        }
         return currentTime;
     }
 

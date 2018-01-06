@@ -7,6 +7,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.media.*
 import android.os.Build
 import android.os.Bundle
@@ -33,6 +34,7 @@ import com.support.robigroup.ututor.Constants
 import com.support.robigroup.ututor.GlideApp
 import com.support.robigroup.ututor.NotificationService
 import com.support.robigroup.ututor.R
+import com.support.robigroup.ututor.commons.logd
 import com.support.robigroup.ututor.features.main.MenuActivity
 import com.support.robigroup.ututor.ui.base.BaseActivity
 import com.support.robigroup.ututor.ui.base.CircleProgressBarDrawable
@@ -166,9 +168,10 @@ class ActivityChat : BaseActivity(), ChatMvpView {
         })
 
         mHoldingButtonLayout = findViewById(R.id.input_holder)
-        if(hasPermission(permissions[0]))
+        if(hasPermission(permissions[0])){
             mHoldingButtonLayout.addListener(mPresenter)
-        else{
+            logd("permission added")
+        }else{
             requestPermissionsSafely(permissions, REQUEST_RECORD_AUDIO_PERMISSION)
         }
 
@@ -283,25 +286,31 @@ class ActivityChat : BaseActivity(), ChatMvpView {
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if(hasPermission(permissions[0]))
-            mHoldingButtonLayout.addListener(mPresenter)
-        else{
-            val builder = AlertDialog.Builder(this)
-            builder.setMessage(getString(R.string.prompt_audio_message_warning))
-                    .setCancelable(false)
-                    .setPositiveButton("Да")
-                    { dialog, id ->
-                        dialog.cancel()
-                        requestPermissionsSafely(permissions, REQUEST_RECORD_AUDIO_PERMISSION)
-                    }
-                    .setNegativeButton("Нет не надо")
-                    { dialog, id ->
-                        dialog.cancel()
-                    }
-            val alert = builder.create()
-            alert.setCancelable(false)
-            alert.show()
+        when(requestCode){
+            REQUEST_RECORD_AUDIO_PERMISSION ->
+                if (grantResults.isNotEmpty()
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    mHoldingButtonLayout.addListener(mPresenter)
+                    logd("permission added")
+                } else {
+                    val builder = AlertDialog.Builder(this)
+                    builder.setMessage(getString(R.string.prompt_audio_message_warning))
+                            .setCancelable(false)
+                            .setPositiveButton("Да")
+                            { dialog, id ->
+                                dialog.cancel()
+                                requestPermissionsSafely(permissions, REQUEST_RECORD_AUDIO_PERMISSION)
+                            }
+                            .setNegativeButton("Нет не надо")
+                            { dialog, id ->
+                                dialog.cancel()
+                            }
+                    val alert = builder.create()
+                    alert.setCancelable(false)
+                    alert.show()
+                }
         }
+
         contentManager.onRequestPermissionsResult(requestCode, permissions, grantResults)
 
     }
@@ -364,7 +373,7 @@ class ActivityChat : BaseActivity(), ChatMvpView {
     override fun getMic(): PullableSource {
         return PullableSource.Default(
                 AudioRecordConfig.Default(
-                        MediaRecorder.AudioSource.MIC, AudioFormat.ENCODING_PCM_16BIT,
+                        MediaRecorder.AudioSource.MIC, AudioFormat.ENCODING_PCM_8BIT,
                         AudioFormat.CHANNEL_IN_MONO, 44100
                 )
         )
