@@ -35,7 +35,7 @@ constructor(@param:ApplicationContext private val mContext: Context) : FileHelpe
                 }
             }
         }
-        return path + (max + 1) + ".wav"
+        return path + (max + 1) + ".mp3"
     }
 
     override fun getDownloadSavePath(messageId: String): String {

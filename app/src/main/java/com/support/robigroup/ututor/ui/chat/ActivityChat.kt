@@ -23,6 +23,7 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import com.dewarder.holdinglibrary.HoldingButtonLayout
+import com.dewarder.holdinglibrary.HoldingButtonLayoutListener
 import com.facebook.drawee.generic.GenericDraweeHierarchyBuilder
 import com.stfalcon.chatkit.commons.ImageLoader
 import com.stfalcon.chatkit.messages.MessageHolders
@@ -62,21 +63,20 @@ class ActivityChat : BaseActivity(), ChatMvpView {
     private var selectionCount: Int = 0
     private val imageLoader = ImageLoader { imageView, url -> GlideApp.with(baseContext).load(url).fitCenter().into(imageView) }
     private val messageStringFormatter = MessagesListAdapter.Formatter<ChatMessage> { message ->
-            val createdAt = SimpleDateFormat(Constants.DEVICE_TIMEFORMAT, Locale.getDefault()).format(message.createdAt)
-            var text: String? = message.text
-            if (text == null) text = "[attachment]"
-            String.format(Locale.getDefault(), "%s: %s (%s)",
-                    message.user!!.name, text, createdAt)
-        }
+        val createdAt = SimpleDateFormat(Constants.DEVICE_TIMEFORMAT, Locale.getDefault()).format(message.createdAt)
+        var text: String? = message.text
+        if (text == null) text = "[attachment]"
+        String.format(Locale.getDefault(), "%s: %s (%s)",
+                message.user!!.name, text, createdAt)
+    }
 
     @Inject
     lateinit var mPresenter: ChatMvpPresenter<ChatMvpView>
 
     //audio parts
     private lateinit var mediaPlayer: MediaPlayer
-    private lateinit var mediaRecorder: Recorder
+    private lateinit var mediaRecorder: MediaRecorder
     private lateinit var mRecordFilePath: String
-
     //holding button
     private val SLIDE_TO_CANCEL_ALPHA_MULTIPLIER = 2.5f
     private val TIME_INVALIDATION_FREQUENCY = 50L
@@ -362,29 +362,25 @@ class ActivityChat : BaseActivity(), ChatMvpView {
     }
 
     //RecordView
-    override fun setupRecorder(filePath: String) {
+    override fun startRecord(filePath: String) {
         mRecordFilePath = filePath
-        mediaRecorder = OmRecorder.wav(
-                PullTransport.Default(getMic(), PullTransport.OnAudioChunkPulledListener {
-                    _ ->  }), File(filePath))
-
-    }
-
-    override fun getMic(): PullableSource {
-        return PullableSource.Default(
-                AudioRecordConfig.Default(
-                        MediaRecorder.AudioSource.MIC, AudioFormat.ENCODING_PCM_8BIT,
-                        AudioFormat.CHANNEL_IN_MONO, 44100
-                )
-        )
-    }
-
-    override fun startRecord() {
-        mediaRecorder.startRecording()
+        mediaRecorder = MediaRecorder()
+        mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC)
+        mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)
+        mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC)
+        mediaRecorder.setAudioEncodingBitRate(20000)
+        mediaRecorder.setAudioSamplingRate(16000)
+        mediaRecorder.setOutputFile(filePath)
+        mediaRecorder.prepare()
+        mediaRecorder.start()
     }
 
     override fun stopRecord() {
-        mediaRecorder.stopRecording()
+        try {
+            mediaRecorder.stop()
+        }finally {
+            mediaRecorder.release()
+        }
     }
 
     override fun getFilePath(): String = mRecordFilePath

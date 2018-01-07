@@ -72,11 +72,9 @@ interface PlayView {
 }
 
 interface RecordView{
-    fun startRecord()
+    fun startRecord(filePath: String)
     fun stopRecord()
-    fun setupRecorder(filePath: String)
     fun getFilePath(): String
-    fun getMic(): PullableSource
 }
 
 interface AudioPlayerCallback {

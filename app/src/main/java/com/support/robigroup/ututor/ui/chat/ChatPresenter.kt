@@ -78,7 +78,7 @@ constructor(dataManager: DataManager, schedulerProvider: SchedulerProvider, comp
                 for (range in insertions) {
                     if(mvpView!=null){
                         mvpView.notifyItemRangeInserted(messages, range.startIndex, range.length)
-                        logd("hashcode from inside not null : "+ this.hashCode().toString())
+//                        logd("hashcode from inside not null : "+ this.hashCode().toString())
                     }
                 }
 //                val deletions = changeSet.deletionRanges
@@ -245,25 +245,28 @@ constructor(dataManager: DataManager, schedulerProvider: SchedulerProvider, comp
 
     //callbacks from holding button events
     override fun onBeforeExpand() {
+        logd("onBeforeExpand")
         mvpView.cancelAnimations()
         mvpView.startExpandAnimations() // TODO change to something logical
-        mvpView.setupRecorder(dataManager.getSentSavePath(chatInformation.Id.toString()))
     }
 
     override fun onExpand() {
+        logd("onExpand")
         mvpView.stopPlay()
         audioCallback?.onComplete()
         audioCallback = null
         mvpView.startTimer()
-        mvpView.startRecord()
+        mvpView.startRecord(dataManager.getSentSavePath(chatInformation.Id.toString()))
     }
 
     override fun onBeforeCollapse() {
+        logd("onBeforeCollapse")
         mvpView.cancelAnimations()
         mvpView.startCollapseAnimations()
     }
 
     override fun onCollapse(isCancel: Boolean) {
+        logd("onCollapse")
         mvpView.stopTimer()
         try {
             mvpView.stopRecord()

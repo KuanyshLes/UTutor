@@ -29,7 +29,7 @@ class TeachersActivity : AppCompatActivity(), OnTeachersActivityInteractionListe
     private var myAdapter: TeachersAdapter by Delegates.notNull()
     private var compositeDisposable: CompositeDisposable by Delegates.notNull()
     private var realm: Realm by Delegates.notNull()
-    private var chatInfos: RealmResults<ChatInformation> by Delegates.notNull()
+    private lateinit var chatInfos: RealmResults<ChatInformation>
     private var type = 0
     private var language = "kk"
 
