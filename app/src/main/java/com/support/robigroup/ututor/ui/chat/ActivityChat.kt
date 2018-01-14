@@ -8,7 +8,10 @@ import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.media.*
+import android.media.AudioAttributes
+import android.media.AudioManager
+import android.media.MediaPlayer
+import android.media.MediaRecorder
 import android.os.Build
 import android.os.Bundle
 import android.os.Vibrator
@@ -23,7 +26,6 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import com.dewarder.holdinglibrary.HoldingButtonLayout
-import com.dewarder.holdinglibrary.HoldingButtonLayoutListener
 import com.facebook.drawee.generic.GenericDraweeHierarchyBuilder
 import com.stfalcon.chatkit.commons.ImageLoader
 import com.stfalcon.chatkit.messages.MessageHolders
@@ -48,8 +50,6 @@ import com.support.robigroup.ututor.ui.chat.model.ChatMessage
 import com.support.robigroup.ututor.ui.chat.ready.ReadyDialog
 import com.support.robigroup.ututor.utils.CommonUtils
 import kotlinx.android.synthetic.main.activity_chat.*
-import omrecorder.*
-import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
