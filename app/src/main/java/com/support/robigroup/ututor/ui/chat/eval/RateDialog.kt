@@ -21,7 +21,6 @@ class RateDialog : BaseDialog(), RateMvpView {
 
     @Inject
     lateinit var ratePresenter: RatePresenter<RateMvpView>
-    lateinit var textSum: TextView
     lateinit var textDuration: TextView
     var ratingBar: RatingBar? = null
 
@@ -42,7 +41,6 @@ class RateDialog : BaseDialog(), RateMvpView {
     }
 
     override fun initViews(info: ChatInformation) {
-        textSum.text = String.format("%s₸, %s %s%s", info.InvoiceSum, getString(R.string.tarif), info.InvoiceTariff, getString(R.string.price_ratio))
         try {
             textDuration.text = String.format("%s %s",
                     getString(R.string.duration_short),
@@ -58,7 +56,6 @@ class RateDialog : BaseDialog(), RateMvpView {
             logd("rating "+ratingBar!!.rating.toString())
             ratePresenter.onClickRateButton(ratingBar!!.rating)
         }
-        textSum = view.findViewById(R.id.sum_text) as TextView
         textDuration = view.findViewById(R.id.duration_text) as TextView
         ratingBar = view.findViewById(R.id.rating_bar) as RatingBar
     }

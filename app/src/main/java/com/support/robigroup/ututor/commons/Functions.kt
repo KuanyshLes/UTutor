@@ -236,17 +236,18 @@ object Functions {
         }
     }
 
-    fun getTimeWaiting(millis: Long): String{
-        val hours = TimeUnit.SECONDS.toHours(millis)
-        val minutes = TimeUnit.SECONDS.toMinutes(millis) - TimeUnit.HOURS.toMinutes(hours)
-        val seconds = millis -TimeUnit.MINUTES.toSeconds(TimeUnit.SECONDS.toMinutes(millis))
+    fun getTimeWaiting(seconds: Long): String{
+        val one_minute_added = seconds + 60000L
+        val hours = TimeUnit.SECONDS.toHours(one_minute_added)
+        val minutes = TimeUnit.SECONDS.toMinutes(one_minute_added) - TimeUnit.HOURS.toMinutes(hours)
+        val remain = seconds -TimeUnit.MINUTES.toSeconds(TimeUnit.SECONDS.toMinutes(one_minute_added))
         if(hours == 0L) {
             if (minutes == 0L) {
-                return String.format("%2dс.", seconds)
+                return String.format("%2dс.", 0)
             }
-            return String.format("%2dм. %2dc.", minutes, seconds)
+            return String.format("%2dм.", minutes)
         }
-        return String.format("%2dч. %2dм. %2dc.", hours, minutes, seconds)
+        return String.format("%2dч. %2dм.", hours, minutes)
     }
 
     fun getTimerFromMillis(millis: Long): String{

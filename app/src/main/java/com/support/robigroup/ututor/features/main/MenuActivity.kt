@@ -26,7 +26,7 @@ class MenuActivity : MenuesActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Fabric.with(this, Crashlytics())
+//        Fabric.with(this, Crashlytics())
         setContentView(R.layout.activity_menu)
 
         initNav(this)

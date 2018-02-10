@@ -44,7 +44,6 @@ class HistoryAdapter(
                 holder.itemView.context.getString(R.string.duration_short),
                 Functions.getTimeWaiting((holder.mItem.Duration)!!.toLong())
         )
-        holder.mCostLesson.text = String.format("%4s₸", holder.mItem.InvoiceSum)
         holder.mTeacher.text = String.format("%s", holder.mItem.ChatUserName)
         holder.mTeacherImage.setImageURI(Uri.parse(Constants.BASE_URL+holder.mItem.ChatUserProfilePhoto))
 
@@ -59,7 +58,6 @@ class HistoryAdapter(
         var mSubjectTime: TextView = mView.findViewById<TextView>(R.id.his_des) as TextView
         var mTeacher: TextView = mView.findViewById<TextView>(R.id.his_teacher_name) as TextView
         var mTeacherImage: ImageView = mView.findViewById<SimpleDraweeView>(R.id.his_teacher_image)
-        var mCostLesson: TextView = mView.findViewById<TextView>(R.id.his_cost) as TextView
         lateinit var mItem: ChatHistory
     }
 
