@@ -23,6 +23,10 @@ import io.realm.Realm
 import io.realm.RealmResults
 import kotlinx.android.synthetic.main.activity_teachers.*
 import kotlin.properties.Delegates
+import com.crashlytics.android.Crashlytics
+import io.fabric.sdk.android.Fabric
+
+
 
 class TeachersActivity : AppCompatActivity(), OnTeachersActivityInteractionListener {
     private var mSubject: Subject by Delegates.notNull()
@@ -53,6 +57,7 @@ class TeachersActivity : AppCompatActivity(), OnTeachersActivityInteractionListe
     }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Fabric.with(this, Crashlytics())
         setContentView(R.layout.activity_teachers)
 
         language = SingletonSharedPref.getInstance().getString(Constants.KEY_LANGUAGE)

@@ -14,6 +14,10 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import io.realm.Realm
+import com.crashlytics.android.Crashlytics
+import io.fabric.sdk.android.Fabric
+
+
 
 class MenuActivity : MenuesActivity() {
 
@@ -22,6 +26,7 @@ class MenuActivity : MenuesActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Fabric.with(this, Crashlytics())
         setContentView(R.layout.activity_menu)
 
         initNav(this)

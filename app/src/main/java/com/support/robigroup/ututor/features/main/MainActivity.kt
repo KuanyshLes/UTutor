@@ -19,6 +19,10 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.app_bar_main_nav.*
+import com.crashlytics.android.Crashlytics
+import io.fabric.sdk.android.Fabric
+
+
 
 
 class MainActivity :
@@ -33,7 +37,7 @@ class MainActivity :
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        Fabric.with(this, Crashlytics())
         setContentView(R.layout.app_bar_main_nav)
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)

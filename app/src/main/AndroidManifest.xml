@@ -16,11 +16,15 @@
         android:name=".UTutor"
         android:allowBackup="true"
         android:fullBackupContent="@xml/backup_descriptor"
-        android:icon="@drawable/ic_logo_blue"
+        android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="fc0f79b53415bb668a46d6d48f15a2e54b5f6555"
+            />
         <activity
             android:name=".features.login.LoginActivity"
             android:label="@string/app_name"

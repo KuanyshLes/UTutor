@@ -17,6 +17,10 @@ import com.support.robigroup.ututor.singleton.SingletonSharedPref
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
+import com.crashlytics.android.Crashlytics
+import io.fabric.sdk.android.Fabric
+
+
 
 class LoginActivity : AppCompatActivity(), OnLoginActivityInteractionListener {
 
@@ -36,6 +40,7 @@ class LoginActivity : AppCompatActivity(), OnLoginActivityInteractionListener {
 
         //TODO move indide else if super.OnCreate method if signedIn
         super.onCreate(savedInstanceState)
+        Fabric.with(this, Crashlytics())
         setContentView(R.layout.activity_login)
         if(isSignedIn()){
             startActivity(Intent(baseContext, MenuActivity::class.java))

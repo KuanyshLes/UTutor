@@ -17,6 +17,10 @@ import android.preference.RingtonePreference
 import android.text.TextUtils
 import android.view.MenuItem
 import com.support.robigroup.ututor.R
+import com.crashlytics.android.Crashlytics
+import io.fabric.sdk.android.Fabric
+
+
 
 /**
  * A [PreferenceActivity] that presents a set of application settings. On
@@ -32,6 +36,7 @@ class SettingsActivity : AppCompatPreferenceActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Fabric.with(this, Crashlytics())
         setupActionBar()
     }
 

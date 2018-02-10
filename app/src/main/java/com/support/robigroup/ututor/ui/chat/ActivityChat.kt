@@ -25,6 +25,7 @@ import android.view.ViewPropertyAnimator
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
+import com.crashlytics.android.Crashlytics
 import com.dewarder.holdinglibrary.HoldingButtonLayout
 import com.facebook.drawee.generic.GenericDraweeHierarchyBuilder
 import com.stfalcon.chatkit.commons.ImageLoader
@@ -49,6 +50,7 @@ import com.support.robigroup.ututor.ui.chat.holders.OutcomingImageMessageVH
 import com.support.robigroup.ututor.ui.chat.model.ChatMessage
 import com.support.robigroup.ututor.ui.chat.ready.ReadyDialog
 import com.support.robigroup.ututor.utils.CommonUtils
+import io.fabric.sdk.android.Fabric
 import kotlinx.android.synthetic.main.activity_chat.*
 import java.text.SimpleDateFormat
 import java.util.*
@@ -106,6 +108,7 @@ class ActivityChat : BaseActivity(), ChatMvpView {
     //activity lifecycle methods
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Fabric.with(this, Crashlytics())
         setContentView(R.layout.activity_chat)
         vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
         activityComponent.inject(this)

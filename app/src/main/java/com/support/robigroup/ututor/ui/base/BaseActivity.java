@@ -32,6 +32,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.crashlytics.android.Crashlytics;
 import com.support.robigroup.ututor.R;
 import com.support.robigroup.ututor.UTutor;
 import com.support.robigroup.ututor.di.component.ActivityComponent;
@@ -41,9 +42,8 @@ import com.support.robigroup.ututor.features.login.LoginActivity;
 import com.support.robigroup.ututor.utils.CommonUtils;
 import com.support.robigroup.ututor.utils.NetworkUtils;
 
-/**
- * Created by janisharali on 27/01/17.
- */
+import io.fabric.sdk.android.Fabric;
+
 
 public abstract class BaseActivity extends AppCompatActivity
         implements MvpView, BaseFragment.Callback {
@@ -55,6 +55,7 @@ public abstract class BaseActivity extends AppCompatActivity
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Fabric.with(this, new Crashlytics());
         mActivityComponent = DaggerActivityComponent.builder()
                 .activityModule(new ActivityModule(this))
                 .applicationComponent(((UTutor) getApplication()).getComponent())

@@ -13,6 +13,7 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import com.bumptech.glide.Glide
+import com.crashlytics.android.Crashlytics
 import com.facebook.drawee.drawable.ProgressBarDrawable
 import com.facebook.drawee.generic.GenericDraweeHierarchyBuilder
 import com.stfalcon.chatkit.commons.ImageLoader
@@ -34,6 +35,7 @@ import com.support.robigroup.ututor.ui.chat.holders.OutcomingAudioMessageVH
 import com.support.robigroup.ututor.ui.chat.holders.OutcomingImageMessageVH
 import com.support.robigroup.ututor.ui.chat.model.ChatMessage
 import com.support.robigroup.ututor.utils.CommonUtils
+import io.fabric.sdk.android.Fabric
 import kotlinx.android.synthetic.main.activity_history_messages.*
 import java.text.SimpleDateFormat
 import java.util.*
@@ -72,6 +74,7 @@ class HistoryMessages : BaseActivity(), HistoryMvpView{
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_history_messages)
+        Fabric.with(this, Crashlytics())
 
         activityComponent.inject(this)
         mPresenter.onAttach(this)

@@ -16,6 +16,10 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_history_list.*
 import android.support.v7.widget.DividerItemDecoration
+import com.crashlytics.android.Crashlytics
+import io.fabric.sdk.android.Fabric
+
+
 
 
 class HistoryList : MenuesActivity(), OnHistoryListInteractionListener {
@@ -25,6 +29,7 @@ class HistoryList : MenuesActivity(), OnHistoryListInteractionListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Fabric.with(this, Crashlytics())
         setContentView(R.layout.activity_history_list)
 
         initNav(this)

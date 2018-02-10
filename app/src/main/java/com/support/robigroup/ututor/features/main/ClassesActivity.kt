@@ -14,6 +14,10 @@ import com.support.robigroup.ututor.features.main.adapters.ClassAdapter
 import com.support.robigroup.ututor.features.teachers.TeachersActivity
 import kotlinx.android.synthetic.main.activity_classes.*
 import kotlin.properties.Delegates
+import com.crashlytics.android.Crashlytics
+import io.fabric.sdk.android.Fabric
+
+
 
 class ClassesActivity : AppCompatActivity(), ClassesActivityListener {
 
@@ -24,6 +28,7 @@ class ClassesActivity : AppCompatActivity(), ClassesActivityListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Fabric.with(this, Crashlytics())
         setContentView(R.layout.activity_classes)
 
         if (intent != null) {
