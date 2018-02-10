@@ -20,7 +20,7 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-import io.reactivex.Flowable;
+import io.reactivex.Single;
 import retrofit2.Response;
 
 
@@ -46,18 +46,18 @@ public class AppDataManager implements DataManager{
 
     @NonNull
     @Override
-    public Flowable<Response<ChatMessage>> sendAudioMessage(File file) {
+    public Single<Response<ChatMessage>> sendAudioMessage(File file) {
         return mNetworkHelper.sendAudioMessage(file);
     }
 
     @NotNull
     @Override
-    public Flowable<Response<ChatMessage>> sendImageTextMessage(@Nullable String messageText, @Nullable String file64base) {
+    public Single<Response<ChatMessage>> sendImageTextMessage(@Nullable String messageText, @Nullable String file64base) {
         return mNetworkHelper.sendImageTextMessage(messageText, file64base);
     }
 
     @Override
-    public Flowable<Response<List<ChatMessage>>> getChatMessages(String chatId) {
+    public Single<Response<List<ChatMessage>>> getChatMessages(String chatId) {
         return mNetworkHelper.getChatMessages(chatId);
     }
 

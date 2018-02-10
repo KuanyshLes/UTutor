@@ -5,7 +5,7 @@ import android.webkit.MimeTypeMap
 import com.support.robigroup.ututor.api.RestAPI
 import com.support.robigroup.ututor.di.ApplicationContext
 import com.support.robigroup.ututor.ui.chat.model.ChatMessage
-import io.reactivex.Flowable
+import io.reactivex.Single
 import okhttp3.MediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -20,14 +20,14 @@ import javax.inject.Singleton
 class AppNetworkHelper @Inject
 constructor(@param:ApplicationContext private val mContext: Context) : NetworkHelper {
 
-    override fun sendAudioMessage(file: File): Flowable<Response<ChatMessage>> {
+    override fun sendAudioMessage(file: File): Single<Response<ChatMessage>> {
         val resolver = getMimeType(file.absolutePath)
         val type = MediaType.parse(resolver)
         val filePart = MultipartBody.Part.createFormData("File", file.name, RequestBody.create(type, file))
         return RestAPI.getUploadApi().postMessageAudio(filePart)
     }
 
-    override fun sendImageTextMessage(messageText: String?, file64base: String?): Flowable<Response<ChatMessage>> =
+    override fun sendImageTextMessage(messageText: String?, file64base: String?): Single<Response<ChatMessage>> =
         if(file64base != null&&messageText!=null){
             val res: HashMap<String, String> = HashMap()
             res.put("File",file64base)
@@ -37,11 +37,10 @@ constructor(@param:ApplicationContext private val mContext: Context) : NetworkHe
             val res: HashMap<String, String> = HashMap()
             res.put("File",file64base)
             RestAPI.getUploadApi().postMessagePhoto(res)
-        }else if(messageText!=null) RestAPI.getUploadApi().postTextMessage(messageText)
-        else Flowable.empty()
+        }else RestAPI.getUploadApi().postTextMessage(messageText!!)
 
-    override fun getChatMessages(chatId: String): Flowable<Response<List<ChatMessage>>> {
-        return Flowable.empty()
+    override fun getChatMessages(chatId: String): Single<Response<List<ChatMessage>>>? {
+        return null
     }
 
     private fun getMimeType(url: String): String {
