@@ -236,15 +236,10 @@ object Functions {
         }
     }
 
-    fun getTimeWaiting(seconds: Long): String{
-        val one_minute_added = seconds + 60000L
-        val hours = TimeUnit.SECONDS.toHours(one_minute_added)
-        val minutes = TimeUnit.SECONDS.toMinutes(one_minute_added) - TimeUnit.HOURS.toMinutes(hours)
-        val remain = seconds -TimeUnit.MINUTES.toSeconds(TimeUnit.SECONDS.toMinutes(one_minute_added))
+    fun getTimeWaiting(total_minutes: Long): String{
+        val hours = TimeUnit.MINUTES.toHours(total_minutes)
+        val minutes = total_minutes - TimeUnit.HOURS.toMinutes(hours)
         if(hours == 0L) {
-            if (minutes == 0L) {
-                return String.format("%2dс.", 0)
-            }
             return String.format("%2dм.", minutes)
         }
         return String.format("%2dч. %2dм.", hours, minutes)
