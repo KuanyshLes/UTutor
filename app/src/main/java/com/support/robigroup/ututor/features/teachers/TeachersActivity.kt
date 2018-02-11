@@ -57,7 +57,6 @@ class TeachersActivity : AppCompatActivity(), OnTeachersActivityInteractionListe
     }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Fabric.with(this, Crashlytics())
         setContentView(R.layout.activity_teachers)
 
         language = SingletonSharedPref.getInstance().getString(Constants.KEY_LANGUAGE)

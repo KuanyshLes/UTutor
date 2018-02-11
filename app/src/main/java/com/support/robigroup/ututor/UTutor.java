@@ -4,6 +4,8 @@ import android.app.Application;
 import android.content.Context;
 
 import com.androidnetworking.AndroidNetworking;
+import com.crashlytics.android.Crashlytics;
+import com.crashlytics.android.core.CrashlyticsCore;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.imagepipeline.core.ImagePipelineConfig;
 import com.facebook.imagepipeline.decoder.SimpleProgressiveJpegConfig;
@@ -15,6 +17,7 @@ import com.support.robigroup.ututor.singleton.SingletonSharedPref;
 
 import javax.inject.Inject;
 
+import io.fabric.sdk.android.Fabric;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 
@@ -29,6 +32,8 @@ public class UTutor extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        configureCrashReporting();
+
         Realm.init(this);
         RealmConfiguration config = new RealmConfiguration.Builder()
                 .deleteRealmIfMigrationNeeded()
@@ -58,4 +63,11 @@ public class UTutor extends Application {
     }
 
     public ApplicationComponent getComponent(){ return mApplicationComponent;}
+
+    private void configureCrashReporting() {
+        CrashlyticsCore crashlyticsCore = new CrashlyticsCore.Builder()
+                .disabled(BuildConfig.DEBUG)
+                .build();
+        Fabric.with(this, new Crashlytics.Builder().core(crashlyticsCore).build());
+    }
 }

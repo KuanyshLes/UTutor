@@ -108,7 +108,6 @@ class ActivityChat : BaseActivity(), ChatMvpView {
     //activity lifecycle methods
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Fabric.with(this, Crashlytics())
         setContentView(R.layout.activity_chat)
         vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
         activityComponent.inject(this)

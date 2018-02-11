@@ -74,7 +74,6 @@ class HistoryMessages : BaseActivity(), HistoryMvpView{
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_history_messages)
-        Fabric.with(this, Crashlytics())
 
         activityComponent.inject(this)
         mPresenter.onAttach(this)
