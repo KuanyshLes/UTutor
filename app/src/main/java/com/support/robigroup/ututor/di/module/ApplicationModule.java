@@ -91,6 +91,7 @@ public class ApplicationModule {
         return appNetworkHelper;
     }
 
+
     @Provides
     @Singleton
     FileHelper provideFileHelper(AppFileHelper appFileHelper) {

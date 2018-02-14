@@ -40,7 +40,6 @@ class LoginActivity : AppCompatActivity(), OnLoginActivityInteractionListener {
 
         //TODO move indide else if super.OnCreate method if signedIn
         super.onCreate(savedInstanceState)
-        Fabric.with(this, Crashlytics())
         setContentView(R.layout.activity_login)
         if(isSignedIn()){
             startActivity(Intent(baseContext, MenuActivity::class.java))

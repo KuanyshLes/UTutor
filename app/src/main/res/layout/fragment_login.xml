@@ -54,14 +54,14 @@
         app:layout_constraintTop_toBottomOf="@+id/login_form">
 
         <Button
-            android:id="@+id/email_sign_in_button"
+            android:id="@+id/signInButton"
             style="@style/reg_buttons"
             android:layout_width="match_parent"
             android:layout_marginTop="16dp"
             android:text="@string/action_sign_in" />
 
         <TextView
-            android:id="@+id/go_sign_up_button"
+            android:id="@+id/signUpButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"

@@ -7,7 +7,6 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.VIBRATE" />
@@ -23,8 +22,8 @@
         android:theme="@style/AppTheme">
         <meta-data
             android:name="io.fabric.ApiKey"
-            android:value="fc0f79b53415bb668a46d6d48f15a2e54b5f6555"
-            />
+            android:value="fc0f79b53415bb668a46d6d48f15a2e54b5f6555" />
+
         <activity
             android:name=".features.login.LoginActivity"
             android:label="@string/app_name"
@@ -36,7 +35,6 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
         </activity>
         <activity
             android:name=".features.main.MainActivity"
@@ -64,7 +62,6 @@
             android:name=".ui.history.HistoryList"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
-
         <activity
             android:name=".features.settings.SettingsActivity"
             android:label="@string/title_activity_settings">
@@ -76,37 +73,30 @@
             <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
             <!-- </intent-filter> -->
         </activity>
-
         <activity
             android:name=".features.account.AccountActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
-
         <activity
             android:name=".features.account.ChangePasswordActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".features.account.ChangeLanguageActivity" />
-
         <activity android:name=".features.MenuesActivity" />
-
         <activity
             android:name=".features.feedback.FeedbackActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
-
         <activity
             android:name=".features.main.MenuActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
-
         <activity android:name=".features.login.LogActivity" />
-
-        <activity android:name=".ui.chat.ActivityChat"
+        <activity
+            android:name=".ui.chat.ActivityChat"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" >
-
-        </activity>
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity android:name=".ui.login.LoginRegistrationActivity"></activity>
     </application>
 
 </manifest>

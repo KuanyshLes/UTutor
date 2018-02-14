@@ -52,12 +52,4 @@ constructor(@param:ApplicationContext private val mContext: Context) : NetworkHe
         return type
     }
 
-//    override fun downloadAudio(url: String, onProgress: () -> Unit, onFinish: () -> Unit, onError: () -> Unit) {
-//
-//    }
-//
-//    override fun cancelDownload(url: String, onCancelled: () -> Unit) {
-//        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-//    }
-
 }

@@ -119,7 +119,6 @@ class ActivityChat : BaseActivity(), ChatMvpView {
             intent.setClass(this, NotificationService::class.java)
             startService(intent)
         }
-
     }
 
     override fun onFragmentDetached(tag: String?) {
