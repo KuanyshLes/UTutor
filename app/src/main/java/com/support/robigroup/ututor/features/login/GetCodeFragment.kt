@@ -14,7 +14,7 @@ import com.support.robigroup.ututor.api.RestAPI
 import com.support.robigroup.ututor.commons.OnLoginActivityInteractionListener
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.fragment_reg_2.*
+import kotlinx.android.synthetic.main.fragment_registr_phone_number.*
 import org.json.JSONObject
 
 
@@ -24,7 +24,7 @@ class GetCodeFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_reg_2, container, false)
+        return inflater.inflate(R.layout.fragment_registr_phone_number, container, false)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {

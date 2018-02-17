@@ -14,7 +14,7 @@ import com.support.robigroup.ututor.api.RestAPI
 import com.support.robigroup.ututor.commons.OnLoginActivityInteractionListener
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.fragment_registration.*
+import kotlinx.android.synthetic.main.fragment_registr_email.*
 import android.widget.Toast
 import com.support.robigroup.ututor.Constants
 import com.support.robigroup.ututor.singleton.SingletonSharedPref
@@ -36,7 +36,7 @@ class RegistrationFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_registration, container, false)
+        return inflater.inflate(R.layout.fragment_registr_email, container, false)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -83,7 +83,7 @@ class RegistrationFragment : Fragment() {
                             try {
                                 val body = JSONObject(response.body()?.string())
                                 SingletonSharedPref.getInstance().put(Constants.KEY_FULL_NAME, name+surname)
-                                val token = Constants.KEY_BEARER+body.getString(Constants.KEY_RES_TOKEN)
+                                val token = Constants.KEY_BEARER+body.getString(Constants.KEY_GET_TOKEN_FROM_RESULT_BODY)
                                 mListener?.onNextButtonClicked(token)
                             } catch (e: Exception) {
                                 Toast.makeText(context, e.message, Toast.LENGTH_LONG).show()

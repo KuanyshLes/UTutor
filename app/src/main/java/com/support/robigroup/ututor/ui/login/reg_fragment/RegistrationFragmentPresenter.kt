@@ -52,8 +52,8 @@ constructor(dataManager: DataManager,
                         try {
                             val body = JSONObject(response.body()?.string())
                             sharedPreferences.put(Constants.KEY_FULL_NAME, name + surname)
-                            val token = Constants.KEY_BEARER + body.getString(Constants.KEY_RES_TOKEN)
-                            sharedPreferences.put(Constants.KEY_EMAIL_TOKEN, token)
+                            val token = Constants.KEY_BEARER + body.getString(Constants.KEY_GET_TOKEN_FROM_RESULT_BODY)
+                            sharedPreferences.put(Constants.KEY_SAVE_EMAIL_TOKEN, token)
                             mvpView.openRegPhoneNumberFragment()
                         } catch (e: Exception) {
                             handleApiError(ANError(e))

@@ -11,8 +11,7 @@ import com.support.robigroup.ututor.ui.base.BaseFragment
 import com.support.robigroup.ututor.ui.login.LoginRegistrationActivityMvpView
 import com.support.robigroup.ututor.ui.login.RegistrationFragmentMvpPresenter
 import com.support.robigroup.ututor.ui.login.RegistrationFragmentView
-import com.support.robigroup.ututor.ui.login.reg_phone_number_fragment.RegPhoneNumberFragment
-import kotlinx.android.synthetic.main.fragment_registration.*
+import kotlinx.android.synthetic.main.fragment_registr_email.*
 import javax.inject.Inject
 
 class RegistrationFragment : BaseFragment(), RegistrationFragmentView {
@@ -23,7 +22,7 @@ class RegistrationFragment : BaseFragment(), RegistrationFragmentView {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        val view = container?.inflate(R.layout.fragment_registration)
+        val view = container?.inflate(R.layout.fragment_registr_email)
         activityComponent.inject(this)
         mPresenter.onAttach(this)
         return view

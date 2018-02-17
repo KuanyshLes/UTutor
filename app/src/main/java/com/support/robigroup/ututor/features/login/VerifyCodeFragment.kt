@@ -30,17 +30,17 @@ class VerifyCodeFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        button_verify.setOnClickListener {
+        verifyPhoneNumberButton.setOnClickListener {
             validateCode()
         }
     }
 
     private fun validateCode(){
-        val codeString: String = code.text.toString()
+        val codeString: String = codeContainer.text.toString()
         if(codeString.isEmpty()){
-            code.error = getString(R.string.error_field_required)
+            codeContainer.error = getString(R.string.error_field_required)
         }else{
-            RestAPI.getApi().postPhone(codeString, mListener.getPhoneNumber(), mListener.getFirstToken())
+            RestAPI.getApi().verifyPhoneNumberWithCode(codeString, mListener.getPhoneNumber(), mListener.getFirstToken())
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe ({
@@ -48,7 +48,7 @@ class VerifyCodeFragment : Fragment() {
                         if (response.isSuccessful) {
                             try {
                                 val body = JSONObject(response.body()?.string())
-                                val token = Constants.KEY_BEARER+body.getString(Constants.KEY_RES_TOKEN)
+                                val token = Constants.KEY_BEARER+body.getString(Constants.KEY_GET_TOKEN_FROM_RESULT_BODY)
                                 mListener.onVerifyCodeButtonClicked(token)
                             } catch (e: Exception) {
                                 Toast.makeText(context, e.message, Toast.LENGTH_LONG).show()
@@ -56,7 +56,7 @@ class VerifyCodeFragment : Fragment() {
                         } else {
                             try {
                                 val body = response.errorBody()?.string()
-                                code.error = body
+                                codeContainer.error = body
                             } catch (e: Exception) {
                                 Toast.makeText(context, e.message, Toast.LENGTH_LONG).show()
                             }

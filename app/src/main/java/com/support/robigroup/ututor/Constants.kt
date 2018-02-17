@@ -22,10 +22,11 @@ object Constants {
     val KEY_BALANCE = "balance"
     val KEY_PROFILE = "profile"
     val KEY_EMAIL = "username"
-    val KEY_EMAIL_TOKEN = "username"
+    val KEY_SAVE_EMAIL_TOKEN = "username"
+    val KEY_SAVE_PHONE_TOKEN = "username"
     val KEY_PHONE_NUMBER = "number"
     val KEY_PASSWORD = "password"
-    val KEY_RES_TOKEN = "access_token"
+    val KEY_GET_TOKEN_FROM_RESULT_BODY = "access_token"
     val KEY_RES_EXPIRES = "expires_in"
     val KEY_BEARER = "bearer "
 

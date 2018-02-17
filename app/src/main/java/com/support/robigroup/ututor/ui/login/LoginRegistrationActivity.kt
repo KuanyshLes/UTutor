@@ -65,4 +65,15 @@ class LoginRegistrationActivity : BaseActivity(), LoginRegistrationActivityMvpVi
                 .addToBackStack(RegPhoneNumberFragment.TAG)
                 .commit()
     }
+
+    override fun replaceVerifyPhoneNumberFragment() {
+        var regPhoneNumberFragment = supportFragmentManager.findFragmentByTag(RegPhoneNumberFragment.TAG)
+        if(regPhoneNumberFragment==null){
+            regPhoneNumberFragment = RegPhoneNumberFragment.newInstance()
+        }
+        supportFragmentManager.beginTransaction()
+                .replace(R.id.container, regPhoneNumberFragment, RegPhoneNumberFragment.TAG)
+                .addToBackStack(RegPhoneNumberFragment.TAG)
+                .commit()
+    }
 }

@@ -157,7 +157,7 @@ interface APIInterface {
     ): Single<Response<ResponseBody>>
 
     @POST("api/account/phone/verify")
-    fun postPhone(
+    fun verifyPhoneNumberWithCode(
             @Query("Code") code: String,
             @Query("PhoneNumber") phoneNumber: String,
             @Header("Authorization") token: String

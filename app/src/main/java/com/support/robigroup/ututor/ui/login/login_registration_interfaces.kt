@@ -9,6 +9,7 @@ interface LoginRegistrationActivityMvpView: MvpView{
     fun replaceLoginFragment()
     fun replaceRegistrationFragment()
     fun replaceRegPhoneNumberFragment()
+    fun replaceVerifyPhoneNumberFragment()
 
 }
 
@@ -65,6 +66,20 @@ interface RegPhoneNumberFragmentView: MvpView{
 interface RegPhoneNumberFragmentMvpPresenter<V: RegPhoneNumberFragmentView>: MvpPresenter<V>{
 
     fun onRegisterPhoneButtonClicked(number: String)
+
+}
+
+interface VerifyPhoneNumberFragmentView: MvpView{
+
+    fun resetErrors()
+    fun setCodeError(error: String?)
+    fun replaceSetPasswordFragment()
+
+}
+
+interface VerifyPhoneNumberFragmentMvpPresenter<V: VerifyPhoneNumberFragmentView>: MvpPresenter<V>{
+
+    fun onVerifyPhoneNumberButtonClicked(code: String)
 
 }
 

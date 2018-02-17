@@ -1,4 +1,4 @@
-package com.support.robigroup.ututor.ui.login.reg_phone_number_fragment
+package com.support.robigroup.ututor.ui.login.verify_phone_number_fragment
 
 import android.content.Context
 import android.os.Bundle
@@ -9,18 +9,18 @@ import com.support.robigroup.ututor.R
 import com.support.robigroup.ututor.commons.inflate
 import com.support.robigroup.ututor.ui.base.BaseFragment
 import com.support.robigroup.ututor.ui.login.*
-import kotlinx.android.synthetic.main.fragment_registr_phone_number.*
+import kotlinx.android.synthetic.main.fragment_verify_code.*
 import javax.inject.Inject
 
-class RegPhoneNumberFragment : BaseFragment(), RegPhoneNumberFragmentView {
+class VerifyPhoneNumberFragment : BaseFragment(), VerifyPhoneNumberFragmentView {
 
     @Inject
-    lateinit var mPresenter: RegPhoneNumberFragmentMvpPresenter<RegPhoneNumberFragmentView>
+    lateinit var mPresenter: VerifyPhoneNumberFragmentMvpPresenter<VerifyPhoneNumberFragmentView>
     lateinit var mRegistrationActivity: LoginRegistrationActivityMvpView
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        val view = container?.inflate(R.layout.fragment_registr_phone_number)
+        val view = container?.inflate(R.layout.fragment_verify_code)
         activityComponent.inject(this)
         mPresenter.onAttach(this)
         return view
@@ -37,35 +37,31 @@ class RegPhoneNumberFragment : BaseFragment(), RegPhoneNumberFragmentView {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        sendPhoneNumberButton.setOnClickListener {
-            val number: String = phone.text.toString()
-            mPresenter.onRegisterPhoneButtonClicked(number)
+        verifyPhoneNumberButton.setOnClickListener {
+            val code: String = codeContainer.text.toString()
+            mPresenter.onVerifyPhoneNumberButtonClicked(code)
         }
     }
 
     override fun resetErrors() {
-        phone.error = null
+        codeContainer.error = null
     }
 
-    override fun setIncorrectNumberError(error: String?) {
-        if(error == null){
-            phone.error = getString(R.string.error_phone_number)
-        }else{
-            phone.error = error
+    override fun setCodeError(error: String?) {
+        when(error){
+            null -> codeContainer.error = getString(R.string.error_invalid_verify_code)
+            "" -> codeContainer.error = getString(R.string.error_field_required)
+            else -> codeContainer.error = error
         }
     }
 
-    override fun setEmptyNumberError() {
-        phone.error = getString(R.string.error_field_required)
-    }
+    override fun openMenuActivity(token: String) {
 
-    override fun openVerifyCodeFragment(token: String) {
-        mRegistrationActivity.replaceVerifyPhoneNumberFragment()
     }
 
     companion object {
-        fun newInstance(): RegPhoneNumberFragment {
-            val fragment = RegPhoneNumberFragment()
+        fun newInstance(): VerifyPhoneNumberFragment {
+            val fragment = VerifyPhoneNumberFragment()
             return fragment
         }
 

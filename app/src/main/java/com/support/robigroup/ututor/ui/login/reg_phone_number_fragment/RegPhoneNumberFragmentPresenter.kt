@@ -34,7 +34,7 @@ constructor(dataManager: DataManager,
             return
         }
 
-        val emailToken = sharedPreferences.getString(Constants.KEY_EMAIL_TOKEN)
+        val emailToken = sharedPreferences.getString(Constants.KEY_SAVE_EMAIL_TOKEN)
         compositeDisposable.add(dataManager.apiHelper.getPhone(number, emailToken)
                 .subscribeOn(schedulerProvider.io())
                 .observeOn(schedulerProvider.ui())

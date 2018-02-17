@@ -42,6 +42,7 @@
     <string name="error_invalid_username_or_password">Не правильно введен данные пользователя</string>
     <string name="error_invalid_password">Паспорт слишком короткий</string>
     <string name="error_field_required">Это поле не может быть пусто</string>
+    <string name="error_invalid_verify_code">Неправильно код верификаций</string>
     <string name="error_phone_number">Неправильный номер телефона</string>
     <string name="error_password">Неправильный пароль</string>
     <string name="error_not_same_password">Пароли не соответствует</string>
