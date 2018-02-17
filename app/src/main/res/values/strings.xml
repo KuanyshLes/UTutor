@@ -40,7 +40,7 @@
     <string name="prompt_last_name">Фамилия</string>
     <string name="error_invalid_email">Email адрес неверный</string>
     <string name="error_invalid_username_or_password">Не правильно введен данные пользователя</string>
-    <string name="error_invalid_password">Паспорт слишком маленький</string>
+    <string name="error_invalid_password">Паспорт слишком короткий</string>
     <string name="error_field_required">Это поле не может быть пусто</string>
     <string name="error_phone_number">Неправильный номер телефона</string>
     <string name="error_password">Неправильный пароль</string>
@@ -230,8 +230,8 @@
 
     <!--App Message-->
     <string name="api_retry_error">Повторите!</string>
-    <string name="api_default_error">Что то неправильно, сообщите нам!</string>
+    <string name="api_default_error">Ошибка сервера, сообщите нам!</string>
     <string name="some_error">Неизвестный ошибка вышла!</string>
-    <string name="connection_error">Интернет соединение потеряно!</string>
+    <string name="internet_connection_error">Проверте интернет соединение!</string>
 
 </resources>

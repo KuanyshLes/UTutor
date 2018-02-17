@@ -21,6 +21,9 @@ import com.support.robigroup.ututor.ui.chat.ActivityChat;
 import com.support.robigroup.ututor.ui.chat.eval.RateDialog;
 import com.support.robigroup.ututor.ui.history.HistoryMessages;
 import com.support.robigroup.ututor.ui.login.LoginRegistrationActivity;
+import com.support.robigroup.ututor.ui.login.login_fragment.LoginFragment;
+import com.support.robigroup.ututor.ui.login.reg_fragment.RegistrationFragment;
+import com.support.robigroup.ututor.ui.login.reg_phone_number_fragment.RegPhoneNumberFragment;
 
 import dagger.Component;
 
@@ -36,5 +39,11 @@ public interface ActivityComponent {
     void inject(HistoryMessages activity);
 
     void inject(LoginRegistrationActivity activity);
+
+    void inject(LoginFragment loginFragment);
+
+    void inject(RegistrationFragment registrationFragment);
+
+    void inject(RegPhoneNumberFragment regPhoneNumberFragment);
 
 }

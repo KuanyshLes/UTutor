@@ -37,10 +37,6 @@ import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-/**
- * Created by janisharali on 27/01/17.
- */
-
 public final class CommonUtils {
 
     private static final String TAG = "CommonUtils";
@@ -75,6 +71,16 @@ public final class CommonUtils {
                         + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
         pattern = Pattern.compile(EMAIL_PATTERN);
         matcher = pattern.matcher(email);
+        return matcher.matches();
+    }
+
+    public static boolean isPhoneNumberValid(String number) {
+        Pattern pattern;
+        Matcher matcher;
+        final String PHONE_PATTERN =
+                "^[+]?[0-9]{8,20}$";
+        pattern = Pattern.compile(PHONE_PATTERN);
+        matcher = pattern.matcher(number);
         return matcher.matches();
     }
 

@@ -36,7 +36,13 @@ import com.support.robigroup.ututor.ui.login.LoginFragmentMvpView;
 import com.support.robigroup.ututor.ui.login.LoginRegistrationActivityMvpPresenter;
 import com.support.robigroup.ututor.ui.login.LoginRegistrationActivityMvpView;
 import com.support.robigroup.ututor.ui.login.LoginRegistrationActivityPresenter;
+import com.support.robigroup.ututor.ui.login.RegPhoneNumberFragmentMvpPresenter;
+import com.support.robigroup.ututor.ui.login.RegPhoneNumberFragmentView;
+import com.support.robigroup.ututor.ui.login.RegistrationFragmentMvpPresenter;
+import com.support.robigroup.ututor.ui.login.RegistrationFragmentView;
 import com.support.robigroup.ututor.ui.login.login_fragment.LoginFragmentPresenter;
+import com.support.robigroup.ututor.ui.login.reg_fragment.RegPhoneNumberFragmentPresenter;
+import com.support.robigroup.ututor.ui.login.reg_fragment.RegistrationFragmentPresenter;
 import com.support.robigroup.ututor.utils.AppSchedulerProvider;
 import com.support.robigroup.ututor.utils.SchedulerProvider;
 
@@ -110,6 +116,20 @@ public class ActivityModule {
     @PerActivity
     LoginFragmentMvpPresenter<LoginFragmentMvpView> provideLoginFragmentPresenter(
             LoginFragmentPresenter<LoginFragmentMvpView> presenter) {
+        return presenter;
+    }
+
+    @Provides
+    @PerActivity
+    RegistrationFragmentMvpPresenter<RegistrationFragmentView> provideRegistrationFragmentPresenter(
+            RegistrationFragmentPresenter<RegistrationFragmentView> presenter) {
+        return presenter;
+    }
+
+    @Provides
+    @PerActivity
+    RegPhoneNumberFragmentMvpPresenter<RegPhoneNumberFragmentView> provideRegPhoneFragmentPresenter(
+            RegPhoneNumberFragmentPresenter<RegPhoneNumberFragmentView> presenter){
         return presenter;
     }
 

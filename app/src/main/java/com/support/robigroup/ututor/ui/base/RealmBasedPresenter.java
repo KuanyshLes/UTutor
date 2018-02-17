@@ -74,4 +74,6 @@ public class RealmBasedPresenter<V extends MvpView>  extends BasePresenter<V> im
         }
         return chatMessages;
     }
+
+
 }

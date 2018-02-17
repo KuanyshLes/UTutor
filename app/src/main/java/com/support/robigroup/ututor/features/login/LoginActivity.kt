@@ -38,11 +38,11 @@ class LoginActivity : AppCompatActivity(), OnLoginActivityInteractionListener {
         //TODO move indide else if super.OnCreate method if signedIn
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
-        if(isSignedIn()){
+        if (isSignedIn()) {
             startActivity(Intent(baseContext, MenuActivity::class.java))
             finish()
-        }else if(supportFragmentManager.fragments.size==0){
-            supportFragmentManager.beginTransaction().replace(R.id.container,loginFragment,TAG_LOGIN_FRAGMENT).commit()
+        } else if (supportFragmentManager.fragments.size == 0) {
+            supportFragmentManager.beginTransaction().replace(R.id.container, loginFragment, TAG_LOGIN_FRAGMENT).commit()
         }
     }
 
@@ -51,13 +51,13 @@ class LoginActivity : AppCompatActivity(), OnLoginActivityInteractionListener {
         super.onDestroy()
     }
 
-    private fun isSignedIn(): Boolean{
-        return !SingletonSharedPref.getInstance().getString(Constants.KEY_TOKEN,"").equals("")
+    private fun isSignedIn(): Boolean {
+        return !SingletonSharedPref.getInstance().getString(Constants.KEY_TOKEN, "").equals("")
     }
 
     override fun onSignInButtonClicked(email: String, password: String) {
 
-        if(Constants.DEBUG){
+        if (Constants.DEBUG) {
             debugLogin()
             return
         }
@@ -70,7 +70,7 @@ class LoginActivity : AppCompatActivity(), OnLoginActivityInteractionListener {
         if (TextUtils.isEmpty(password)) {
             requestView = loginFragment.setPasswordError(getString(R.string.error_field_required))
             cancel = true
-        }else if (!isPasswordValid(password)) {
+        } else if (!isPasswordValid(password)) {
             requestView = loginFragment.setPasswordError(getString(R.string.error_invalid_password))
             cancel = true
         }
@@ -81,69 +81,67 @@ class LoginActivity : AppCompatActivity(), OnLoginActivityInteractionListener {
             requestView = loginFragment.setEmailError(getString(R.string.error_invalid_email))
             cancel = true
         }
-        if (!cancel)  {
+        if (!cancel) {
             showProgress(true)
 
             compositeDisposable.add(
-                    RestAPI.getApi().getToken(email,password)
+                    RestAPI.getApi().getToken(email, password)
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribeOn(Schedulers.io())
                             .doAfterTerminate {
                                 showProgress(false)
                             }
-                            .subscribe({
-                                result ->
+                            .subscribe({ result ->
                                 logd(result.toString())
-                                if(result.isSuccessful && result.body() != null){
-                                    if(isTeacher(result.body()!!)){
+                                if (result.isSuccessful && result.body() != null) {
+                                    if (isTeacher(result.body()!!)) {
                                         showTeacherError()
-                                    }else{
+                                    } else {
                                         saveTokenAndFinish(result.body())
                                     }
-                                }else{
-                                    when(result.code()){
+                                } else {
+                                    when (result.code()) {
                                         Constants.BAD_REQUEST -> loginFragment.setPasswordError(getString(R.string.error_invalid_username_or_password))!!.requestFocus()
-                                        else -> this.requestErrorHandler(result.code(),result.message())
+                                        else -> this.requestErrorHandler(result.code(), result.message())
                                     }
                                 }
-                            },{
-                                error ->
+                            }, { error ->
                                 toast(error.message.toString())
                             }
                             ))
-        }else{
+        } else {
             requestView!!.requestFocus()
         }
     }
 
-    private fun isTeacher(response: LoginResponse): Boolean{
+    private fun isTeacher(response: LoginResponse): Boolean {
         return response.Role == Constants.TEACHER_ID
     }
 
-    private fun showTeacherError(){
+    private fun showTeacherError() {
         toast(getString(R.string.error_teacher_sign_in), Toast.LENGTH_LONG)
     }
 
-    private fun saveTokenAndFinish(stringResult: LoginResponse?){
-        SingletonSharedPref.getInstance().put(Constants.KEY_TOKEN,Constants.KEY_BEARER.plus(stringResult!!.access_token))
-        SingletonSharedPref.getInstance().put(Constants.KEY_FULL_NAME,stringResult.FullName)
-        SingletonSharedPref.getInstance().put(Constants.KEY_LANGUAGE,"kk")
+    private fun saveTokenAndFinish(stringResult: LoginResponse?) {
+        SingletonSharedPref.getInstance().put(Constants.KEY_TOKEN, Constants.KEY_BEARER.plus(stringResult!!.access_token))
+        SingletonSharedPref.getInstance().put(Constants.KEY_FULL_NAME, stringResult.FullName)
+        SingletonSharedPref.getInstance().put(Constants.KEY_LANGUAGE, "kk")
         startActivity(Intent(baseContext, MenuActivity::class.java))
         finish()
     }
 
-    private fun debugLogin(){
+    private fun debugLogin() {
         val debugToken = "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6ImRmMWRjNTNkLWE4MTctNGY2NC04N2I2LTNmZTRmNzVmMWYxYiIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWUiOiJiZXliaXQ5MkBnbWFpbC5jb20iLCJodHRwOi8vdXR1dG9yLmt6L2NsYWltcy9waG9uZWNvbmZpcm1lZCI6IlRydWUiLCJodHRwOi8vdXR1dG9yLmt6L2NsYWltcy9oYXNwYXNzd29yZCI6IlRydWUiLCJqdGkiOiI4NTE3ZDQwMi0xMWMwLTRmZjEtYmE3MS0zM2I0YjUzYWUyODQiLCJpYXQiOjE1MTI5MDc3MjcsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IkxlYXJuZXIiLCJuYmYiOjE1MTI5MDc3MjcsImV4cCI6MTUyNTg2NzcyNywiaXNzIjoiVVR1dG9ySXNzdWVyIiwiYXVkIjoiVVR1dG9yQXVkaWVuY2UifQ.bhjp2vTxVKhIJ3xjO6pBmO0S_MFLwlGgf0b3gs6AOOQ"
-        SingletonSharedPref.getInstance().put(Constants.KEY_TOKEN,debugToken)
-        SingletonSharedPref.getInstance().put(Constants.KEY_FULL_NAME,"Beybit DEBUG")
-        SingletonSharedPref.getInstance().put(Constants.KEY_LANGUAGE,"kk")
+        SingletonSharedPref.getInstance().put(Constants.KEY_TOKEN, debugToken)
+        SingletonSharedPref.getInstance().put(Constants.KEY_FULL_NAME, "Beybit DEBUG")
+        SingletonSharedPref.getInstance().put(Constants.KEY_LANGUAGE, "kk")
         showProgress(false)
         startActivity(Intent(baseContext, MenuActivity::class.java))
         finish()
     }
 
     override fun onSignUpTextClicked() {
-        supportFragmentManager.beginTransaction().replace(R.id.container,regFragment).addToBackStack(null).commit()
+        supportFragmentManager.beginTransaction().replace(R.id.container, regFragment).addToBackStack(null).commit()
     }
 
     override fun onNextButtonClicked(token: String) {
@@ -162,18 +160,20 @@ class LoginActivity : AppCompatActivity(), OnLoginActivityInteractionListener {
     }
 
     override fun onSetPasswordButtonClicked(token: String) {
-        logd("token is "+ token)
+        logd("token is " + token)
         SingletonSharedPref.getInstance().put(Constants.KEY_TOKEN, token)
-        SingletonSharedPref.getInstance().put(Constants.KEY_LANGUAGE,"kk")
+        SingletonSharedPref.getInstance().put(Constants.KEY_LANGUAGE, "kk")
         MenuActivity.open(this)
     }
 
-    override fun getFirstToken(): String{
+    override fun getFirstToken(): String {
         return firstToken!!
     }
+
     override fun getSecondToken(): String {
         return secondToken!!
     }
+
     override fun getPhoneNumber(): String {
         return phoneNumber!!
     }
@@ -186,12 +186,12 @@ class LoginActivity : AppCompatActivity(), OnLoginActivityInteractionListener {
         return email.contains("@")
     }
 
-    private fun isPasswordValid(    password: String): Boolean {
+    private fun isPasswordValid(password: String): Boolean {
         return password.length > 4
     }
 
     private fun showProgress(show: Boolean) {
-        if(show) loadingView.showLoadingIndicator()
+        if (show) loadingView.showLoadingIndicator()
         else loadingView.hideLoadingIndicator()
     }
 

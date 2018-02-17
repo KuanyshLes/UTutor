@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.text.SpannableString
 import android.text.Spanned
 import android.text.method.LinkMovementMethod
+import android.text.style.ClickableSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -30,7 +31,10 @@ class LoginFragment : BaseFragment(), LoginFragmentMvpView {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        return container?.inflate(R.layout.fragment_login)
+        val view = container?.inflate(R.layout.fragment_login)
+        activityComponent.inject(this)
+        mPresenter.onAttach(this)
+        return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -62,12 +66,32 @@ class LoginFragment : BaseFragment(), LoginFragmentMvpView {
         mRegistrationActivity.replaceRegistrationFragment()
     }
 
-    override fun setIncorrectLoginError(error: String) {
-        emailContainer.error = error
+    override fun setIncorrectEmailError(error: String?) {
+        if(error == null){
+            emailContainer.error = getString(R.string.error_invalid_email)
+        }else{
+            emailContainer.error = error
+        }
     }
 
-    override fun setIncorrectPasswordError(error: String) {
-        passwordContainer.error = error
+    override fun setIncorrectPasswordError(error: String?) {
+        if(error == null){
+            passwordContainer.error = getString(R.string.error_invalid_password)
+        }else{
+            passwordContainer.error = error
+        }
+    }
+
+    override fun setIncorrectPasswordOrEmailError() {
+        passwordContainer.error = getString(R.string.error_invalid_username_or_password)
+    }
+
+    override fun showTeacherAccountError() {
+        onError(getString(R.string.error_teacher_sign_in))
+    }
+
+    override fun startMenuActivity() {
+        mRegistrationActivity.startMenuActivity()
     }
 
     override fun resetErrors() {
@@ -88,10 +112,13 @@ class LoginFragment : BaseFragment(), LoginFragmentMvpView {
         textNoAccount = textNoAccount.plus(" ").plus(textSignUp).plus("!")
         val lastIndex = textNoAccount.length
         val ss = SpannableString(textNoAccount)
+        val clickableSpan = object : ClickableSpan() {
+            override fun onClick(textView: View) {
+                mPresenter.onSignUpButtonClicked()
+            }
+        }
         ss.setSpan(
-                {  _: View ->
-                    mPresenter.onSignUpButtonClicked()
-                },
+                clickableSpan,
                 startIndex,
                 lastIndex,
                 Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)

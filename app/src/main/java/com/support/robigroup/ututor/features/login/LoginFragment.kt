@@ -93,11 +93,6 @@ class LoginFragment : Fragment() {
             override fun onClick(textView: View) {
                 mListener!!.onSignUpTextClicked()
             }
-
-            override fun updateDrawState(ds: TextPaint) {
-                super.updateDrawState(ds)
-//                ds.isUnderlineText = false
-            }
         }
         ss.setSpan(clickableSpan, i1, i2, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         go_sign_up_button!!.text = ss

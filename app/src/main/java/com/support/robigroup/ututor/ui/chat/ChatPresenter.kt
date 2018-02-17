@@ -28,66 +28,56 @@ constructor(dataManager: DataManager, schedulerProvider: SchedulerProvider, comp
     override fun onViewInitialized() {
 
         val surnameName = chatInformation.Teacher.split(" ")
-        if(surnameName.size==2)
+        if (surnameName.size == 2)
             mvpView.setToolbarTitle(surnameName[1])
-        else{
+        else {
             mvpView.setToolbarTitle(surnameName[0])
         }
 
         val info = chatInformation
-        if(!info.TeacherReady||!info.LearnerReady){
+        if (!info.TeacherReady || !info.LearnerReady) {
             val dif = Functions.getDifferenceInMillis(info.deviceCreateTime!!)
-            if(dif>500&&dif<Constants.WAIT_TIME){
+            if (dif > 500 && dif < Constants.WAIT_TIME) {
                 mvpView.showReadyDialog(dif)
-            }else{
+            } else {
                 mvpView.startMenuActivity()
             }
-        }else{
+        } else {
             updateChatMessages()
         }
 
-        chatInformation.addChangeListener<ChatInformation> {
-            rs, changeset ->
-            if(changeset==null){
+        chatInformation.addChangeListener<ChatInformation> { rs, changeset ->
+            if (changeset == null) {
                 logd("chnage set is null")
-            }else{
-                if(changeset.isDeleted){
+            } else {
+                if (changeset.isDeleted) {
                     logd("chnage set is deleted")
-                }else if(!rs.isLoaded){
+                } else if (!rs.isLoaded) {
                     logd("object is not loaded")
-                }else if(!rs.isValid){
+                } else if (!rs.isValid) {
                     logd("object is not valid")
-                }else{
-                    if(rs.StatusId == Constants.STATUS_COMPLETED){
+                } else {
+                    if (rs.StatusId == Constants.STATUS_COMPLETED) {
                         mvpView.showEvalDialog()
-                    }else if(rs.TeacherReady&&rs.LearnerReady){
+                    } else if (rs.TeacherReady && rs.LearnerReady) {
                         mvpView.closeReadyDialog()
-                    }else if(rs.LearnerReady&&!rs.TeacherReady){
+                    } else if (rs.LearnerReady && !rs.TeacherReady) {
                         mvpView.onLearnerReadyDialog()
                     }
                 }
             }
         }
 
-        chatMessages.addChangeListener {
-            messages, changeSet ->
+        chatMessages.addChangeListener { messages, changeSet ->
             if (changeSet == null) {
-                mvpView.notifyItemRangeInserted(messages,0,messages.size-1)
-            }else{
+                mvpView.notifyItemRangeInserted(messages, 0, messages.size - 1)
+            } else {
                 val insertions = changeSet.insertionRanges
                 for (range in insertions) {
-                    if(mvpView!=null){
+                    if (mvpView != null) {
                         mvpView.notifyItemRangeInserted(messages, range.startIndex, range.length)
-//                        logd("hashcode from inside not null : "+ this.hashCode().toString())
                     }
                 }
-//                val deletions = changeSet.deletionRanges
-//                for (range in deletions) {
-//                    if(mvpView!=null){
-//                        mvpView.notifyItemRangeDeleted(messages, range.startIndex, range.length)
-//                        logd("hashcode from inside not null : "+ this.hashCode().toString())
-//                    }
-//                }
             }
         }
     }
@@ -135,10 +125,10 @@ constructor(dataManager: DataManager, schedulerProvider: SchedulerProvider, comp
                 .observeOn(schedulerProvider.ui())
                 .subscribe(
                         { response ->
-                            if(response.isSuccessful){
+                            if (response.isSuccessful) {
                                 updateChatInformation(response.body())
                                 mvpView.showEvalDialog()
-                            }else{
+                            } else {
                                 mvpView.startMenuActivity()
                             }
                         },
@@ -154,16 +144,16 @@ constructor(dataManager: DataManager, schedulerProvider: SchedulerProvider, comp
                 .observeOn(schedulerProvider.ui())
                 .subscribe(
                         { messageResponse ->
-                            if(messageResponse.isSuccessful){
+                            if (messageResponse.isSuccessful) {
                                 val message: ChatMessage? = messageResponse.body()
-                                if(message!=null){
+                                if (message != null) {
                                     realm.executeTransaction {
                                         realm.insert(message)
                                     }
-                                }else{
+                                } else {
                                     handleApiError(null)
                                 }
-                            }else{
+                            } else {
                                 handleApiError(ANError(messageResponse.raw()))
                             }
                         },
@@ -180,7 +170,7 @@ constructor(dataManager: DataManager, schedulerProvider: SchedulerProvider, comp
     }
 
     override fun onMessageClick(message: ChatMessage) {
-        if(Functions.hasContentFor(message, Constants.CONTENT_TYPE_IMAGE_TEXT))
+        if (Functions.hasContentFor(message, Constants.CONTENT_TYPE_IMAGE_TEXT))
             mvpView.showImage(message.imageUrl)
     }
 
@@ -303,13 +293,13 @@ constructor(dataManager: DataManager, schedulerProvider: SchedulerProvider, comp
 
     override fun onContentLoaded(uri: Uri?, contentType: String?) {
         if (contentType.equals(ContentManager.Content.IMAGE.toString())) {
-            if(uri!=null){
+            if (uri != null) {
                 sendImageMessage(uri.path)
             }
         }
     }
 
-    private fun updateChatMessages(){
+    private fun updateChatMessages() {
         compositeDisposable.add(dataManager.apiHelper.getChatMessages()
                 .subscribeOn(schedulerProvider.io())
                 .observeOn(schedulerProvider.ui())
@@ -321,26 +311,25 @@ constructor(dataManager: DataManager, schedulerProvider: SchedulerProvider, comp
                 }
                 .subscribe(
                         { messageResponse ->
-                            if(messageResponse.isSuccessful){
+                            if (messageResponse.isSuccessful) {
                                 val messages: List<ChatMessage>? = messageResponse.body()
-                                if(messages!=null){
-                                    for(message in messages){
-                                        for(chatMessage in chatMessages){
-                                            if(message.id == chatMessage.id){
+                                if (messages != null) {
+                                    for (message in messages) {
+                                        for (chatMessage in chatMessages) {
+                                            if (message.id == chatMessage.id) {
                                                 message.localFilePath = chatMessage.localFilePath
                                                 break
                                             }
                                         }
                                     }
-                                    realm.executeTransaction {
-                                        r ->
+                                    realm.executeTransaction { r ->
                                         chatMessages.deleteAllFromRealm()
                                         r.insert(messages)
                                     }
-                                }else{
+                                } else {
                                     handleApiError(null)
                                 }
-                            }else{
+                            } else {
                                 handleApiError(ANError(messageResponse.raw()))
                             }
                         },
@@ -350,24 +339,24 @@ constructor(dataManager: DataManager, schedulerProvider: SchedulerProvider, comp
                 ))
     }
 
-    private fun sendImageMessage(imageUri: String){
+    private fun sendImageMessage(imageUri: String) {
         val encodedImage = Functions.getEncodedImage(imageUri)
-        if(encodedImage!=null){
+        if (encodedImage != null) {
             compositeDisposable.add(dataManager.sendImageTextMessage(file64base = encodedImage)
                     .subscribeOn(schedulerProvider.io())
                     .observeOn(schedulerProvider.ui())
                     .subscribe(
                             { messageResponse ->
-                                if(messageResponse.isSuccessful){
+                                if (messageResponse.isSuccessful) {
                                     val message: ChatMessage? = messageResponse.body()
-                                    if(message!=null){
+                                    if (message != null) {
                                         realm.executeTransaction {
                                             realm.copyToRealm(message)
                                         }
-                                    }else{
+                                    } else {
                                         handleApiError(null)
                                     }
-                                }else{
+                                } else {
                                     handleApiError(ANError(messageResponse.raw()))
                                 }
                             },
@@ -379,25 +368,25 @@ constructor(dataManager: DataManager, schedulerProvider: SchedulerProvider, comp
         }
     }
 
-    private fun sendAudioMessage(fileUri: String){
+    private fun sendAudioMessage(fileUri: String) {
         val file = File(fileUri)
-        if(file.exists()&&file.isFile){
+        if (file.exists() && file.isFile) {
             compositeDisposable.add(dataManager.sendAudioMessage(file)
                     .subscribeOn(schedulerProvider.io())
                     .observeOn(schedulerProvider.ui())
                     .subscribe(
                             { messageResponse ->
-                                if(messageResponse.isSuccessful){
+                                if (messageResponse.isSuccessful) {
                                     val message: ChatMessage? = messageResponse.body()
-                                    if(message!=null){
+                                    if (message != null) {
                                         message.localFilePath = fileUri
                                         realm.executeTransaction {
                                             realm.copyToRealm(message)
                                         }
-                                    }else{
+                                    } else {
                                         handleApiError(null)
                                     }
-                                }else{
+                                } else {
                                     handleApiError(ANError(messageResponse.raw()))
                                 }
                             },
@@ -406,11 +395,10 @@ constructor(dataManager: DataManager, schedulerProvider: SchedulerProvider, comp
                             }
                     )
             )
-        }else{
+        } else {
 
         }
     }
-
 
 
 }

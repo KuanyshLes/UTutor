@@ -1,12 +1,13 @@
 package com.support.robigroup.ututor.ui.login
 
 import android.content.Intent
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import com.support.robigroup.ututor.R
 import com.support.robigroup.ututor.features.main.MenuActivity
 import com.support.robigroup.ututor.ui.base.BaseActivity
 import com.support.robigroup.ututor.ui.login.login_fragment.LoginFragment
+import com.support.robigroup.ututor.ui.login.reg_fragment.RegistrationFragment
+import com.support.robigroup.ututor.ui.login.reg_phone_number_fragment.RegPhoneNumberFragment
 import javax.inject.Inject
 
 class LoginRegistrationActivity : BaseActivity(), LoginRegistrationActivityMvpView {
@@ -27,7 +28,7 @@ class LoginRegistrationActivity : BaseActivity(), LoginRegistrationActivityMvpVi
 
     }
 
-    override fun openMainActivity() {
+    override fun startMenuActivity() {
         startActivity(Intent(baseContext, MenuActivity::class.java))
         finish()
     }
@@ -37,10 +38,31 @@ class LoginRegistrationActivity : BaseActivity(), LoginRegistrationActivityMvpVi
         if(loginFragment==null){
             loginFragment = LoginFragment.newInstance()
         }
-        supportFragmentManager.beginTransaction().replace(R.id.container, loginFragment, LoginFragment.TAG).commit()
+        supportFragmentManager.beginTransaction()
+                .replace(R.id.container, loginFragment, LoginFragment.TAG)
+                .addToBackStack(LoginFragment.TAG)
+                .commit()
     }
 
     override fun replaceRegistrationFragment() {
+        var registrationFragment = supportFragmentManager.findFragmentByTag(RegistrationFragment.TAG)
+        if(registrationFragment==null){
+            registrationFragment = RegistrationFragment.newInstance()
+        }
+        supportFragmentManager.beginTransaction()
+                .replace(R.id.container, registrationFragment, RegistrationFragment.TAG)
+                .addToBackStack(RegistrationFragment.TAG)
+                .commit()
+    }
 
+    override fun replaceRegPhoneNumberFragment() {
+        var regPhoneNumberFragment = supportFragmentManager.findFragmentByTag(RegPhoneNumberFragment.TAG)
+        if(regPhoneNumberFragment==null){
+            regPhoneNumberFragment = RegPhoneNumberFragment.newInstance()
+        }
+        supportFragmentManager.beginTransaction()
+                .replace(R.id.container, regPhoneNumberFragment, RegPhoneNumberFragment.TAG)
+                .addToBackStack(RegPhoneNumberFragment.TAG)
+                .commit()
     }
 }

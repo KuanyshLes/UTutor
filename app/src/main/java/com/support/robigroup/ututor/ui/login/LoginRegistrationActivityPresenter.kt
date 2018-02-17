@@ -2,7 +2,6 @@ package com.support.robigroup.ututor.ui.login
 
 import com.support.robigroup.ututor.Constants
 import com.support.robigroup.ututor.data.DataManager
-import com.support.robigroup.ututor.singleton.SingletonSharedPref
 import com.support.robigroup.ututor.ui.base.BasePresenter
 import com.support.robigroup.ututor.utils.SchedulerProvider
 import io.reactivex.disposables.CompositeDisposable
@@ -18,9 +17,9 @@ constructor(
 
     override fun onViewInitialized() {
         if(isSignedIn()){
-            mvpView.openMainActivity()
-        }else{
             mvpView.replaceLoginFragment()
+        }else{
+            mvpView.startMenuActivity()
         }
     }
 

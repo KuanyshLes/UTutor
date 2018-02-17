@@ -8,7 +8,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import com.support.robigroup.ututor.Constants
 
 import com.support.robigroup.ututor.R
 import com.support.robigroup.ututor.api.RestAPI
@@ -30,7 +29,7 @@ class GetCodeFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        get_code_button.setOnClickListener {
+        sendPhoneNumberButton.setOnClickListener {
             validatePhone()
         }
     }
