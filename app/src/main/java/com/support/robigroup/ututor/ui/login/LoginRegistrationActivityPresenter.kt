@@ -16,11 +16,7 @@ constructor(
 ):BasePresenter<V>(dataManager, schedulerProvider, compositeDisposable),
         LoginRegistrationActivityMvpPresenter<V>{
 
-    private lateinit var sharedPref: SingletonSharedPref
-
     override fun onViewInitialized() {
-        sharedPref = SingletonSharedPref.getInstance()
-
         if(isSignedIn()){
             mvpView.openMainActivity()
         }else{
@@ -29,6 +25,6 @@ constructor(
     }
 
     private fun isSignedIn(): Boolean{
-        return sharedPref.getString(Constants.KEY_TOKEN,"") == ""
+        return sharedPreferences.getString(Constants.KEY_TOKEN,"") == ""
     }
 }

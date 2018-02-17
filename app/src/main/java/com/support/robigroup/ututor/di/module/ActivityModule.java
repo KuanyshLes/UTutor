@@ -31,6 +31,12 @@ import com.support.robigroup.ututor.ui.chat.eval.RatePresenter;
 import com.support.robigroup.ututor.ui.history.HistoryMvpPresenter;
 import com.support.robigroup.ututor.ui.history.HistoryMvpView;
 import com.support.robigroup.ututor.ui.history.HistoryPresenter;
+import com.support.robigroup.ututor.ui.login.LoginFragmentMvpPresenter;
+import com.support.robigroup.ututor.ui.login.LoginFragmentMvpView;
+import com.support.robigroup.ututor.ui.login.LoginRegistrationActivityMvpPresenter;
+import com.support.robigroup.ututor.ui.login.LoginRegistrationActivityMvpView;
+import com.support.robigroup.ututor.ui.login.LoginRegistrationActivityPresenter;
+import com.support.robigroup.ututor.ui.login.login_fragment.LoginFragmentPresenter;
 import com.support.robigroup.ututor.utils.AppSchedulerProvider;
 import com.support.robigroup.ututor.utils.SchedulerProvider;
 
@@ -90,6 +96,20 @@ public class ActivityModule {
     @PerActivity
     HistoryMvpPresenter<HistoryMvpView> provideHistoryPresenter(
             HistoryPresenter<HistoryMvpView> presenter) {
+        return presenter;
+    }
+
+    @Provides
+    @PerActivity
+    LoginRegistrationActivityMvpPresenter<LoginRegistrationActivityMvpView> provideLoginRegistrationActivityPresenter(
+            LoginRegistrationActivityPresenter<LoginRegistrationActivityMvpView> presenter) {
+        return presenter;
+    }
+
+    @Provides
+    @PerActivity
+    LoginFragmentMvpPresenter<LoginFragmentMvpView> provideLoginFragmentPresenter(
+            LoginFragmentPresenter<LoginFragmentMvpView> presenter) {
         return presenter;
     }
 

@@ -7,6 +7,7 @@ interface LoginRegistrationActivityMvpView: MvpView{
 
     fun openMainActivity()
     fun replaceLoginFragment()
+    fun replaceRegistrationFragment()
 
 }
 
@@ -16,9 +17,17 @@ interface LoginRegistrationActivityMvpPresenter<V: LoginRegistrationActivityMvpV
 
 interface LoginFragmentMvpView: MvpView{
 
+    fun setIncorrectLoginError(error: String)
+    fun setIncorrectPasswordError(error: String)
+    fun resetErrors()
+    fun openRegistrationFragment()
+
 }
 
 interface LoginFragmentMvpPresenter<V: LoginFragmentMvpView>: MvpPresenter<V>{
+
+    fun onSignUpButtonClicked()
+    fun onSignInButtonClicked(email: String, password: String)
 
 }
 

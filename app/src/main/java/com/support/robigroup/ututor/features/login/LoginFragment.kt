@@ -44,8 +44,8 @@ class LoginFragment : Fragment() {
         logd("onCreateView LoginFragment")
         val view: View? = container?.inflate(R.layout.fragment_login)
         passwordContainer = view!!.findViewById(R.id.passwordContainer)
-        email_sign_in_button = view.findViewById(R.id.emailSignInButton)
-        go_sign_up_button = view.findViewById(R.id.go_sign_up_button)
+//        email_sign_in_button = view.findViewById(R.id.emailSignInButton)
+//        go_sign_up_button = view.findViewById(R.id.go_sign_up_button)
         emailContainer = view.findViewById(R.id.emailContainer)
         logoImage = view.findViewById(R.id.reg_logo_image)
         return view

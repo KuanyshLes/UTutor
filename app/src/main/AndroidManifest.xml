@@ -25,7 +25,7 @@
             android:value="fc0f79b53415bb668a46d6d48f15a2e54b5f6555" />
 
         <activity
-            android:name=".features.login.LoginActivity"
+            android:name=".ui.login.LoginRegistrationActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
@@ -95,8 +95,9 @@
         <activity
             android:name=".ui.chat.ActivityChat"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
-        <activity android:name=".ui.login.LoginRegistrationActivity"></activity>
+            android:theme="@style/AppTheme.NoActionBar">
+
+        </activity>
     </application>
 
 </manifest>

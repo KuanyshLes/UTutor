@@ -1,32 +1,32 @@
 package com.support.robigroup.ututor.ui.login.login_fragment
 
 
+import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
-import android.support.v4.app.Fragment
 import android.text.SpannableString
 import android.text.Spanned
-import android.text.TextPaint
 import android.text.method.LinkMovementMethod
-import android.text.style.ClickableSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
-
 import com.support.robigroup.ututor.R
 import com.support.robigroup.ututor.commons.inflate
 import com.support.robigroup.ututor.ui.base.BaseFragment
+import com.support.robigroup.ututor.ui.login.LoginFragmentMvpPresenter
+import com.support.robigroup.ututor.ui.login.LoginFragmentMvpView
+import com.support.robigroup.ututor.ui.login.LoginRegistrationActivityMvpView
 import kotlinx.android.synthetic.main.fragment_login.*
+import javax.inject.Inject
 
 
-/**
- * A simple [Fragment] subclass.
- * Use the [LoginFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
-class LoginFragment : BaseFragment() {
+class LoginFragment : BaseFragment(), LoginFragmentMvpView {
+
+    @Inject
+    lateinit var mPresenter: LoginFragmentMvpPresenter<LoginFragmentMvpView>
+    lateinit var mRegistrationActivity: LoginRegistrationActivityMvpView
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -43,51 +43,67 @@ class LoginFragment : BaseFragment() {
             false
         })
 
-        signInButton!!.setOnClickListener { attemptLogin() }
+        signInButton.setOnClickListener { attemptLogin() }
+        signUpButton.text = getSpannableText()
+        signUpButton.movementMethod = LinkMovementMethod.getInstance()
+        signUpButton.highlightColor = Color.TRANSPARENT
+    }
 
-        //Editing clickable 'sign up' inside other text
-        var accountCheck: String = resources.getString(R.string.action_go_sign_up)
-        val signUp: String = resources.getString(R.string.action_sign_up)
-        val i1 = accountCheck.length+1
-        accountCheck = accountCheck.plus(" ").plus(signUp).plus("!")
-        val i2 = accountCheck.length
-
-        val ss = SpannableString(accountCheck)
-        val clickableSpan = object : ClickableSpan() {
-            override fun onClick(textView: View) {
-                mListener!!.onSignUpTextClicked()
-            }
-
-            override fun updateDrawState(ds: TextPaint) {
-                super.updateDrawState(ds)
-//                ds.isUnderlineText = false
-            }
-        }
-        ss.setSpan(clickableSpan, i1, i2, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-        signUpButton!!.text = ss
-        signUpButton!!.movementMethod = LinkMovementMethod.getInstance()
-        signUpButton!!.highlightColor = Color.TRANSPARENT
+    override fun onAttach(context: Context?) {
+        super.onAttach(context)
+        mRegistrationActivity = activity as LoginRegistrationActivityMvpView
     }
 
     override fun setUp(view: View?) {
 
     }
 
+    override fun openRegistrationFragment() {
+        mRegistrationActivity.replaceRegistrationFragment()
+    }
+
+    override fun setIncorrectLoginError(error: String) {
+        emailContainer.error = error
+    }
+
+    override fun setIncorrectPasswordError(error: String) {
+        passwordContainer.error = error
+    }
+
+    override fun resetErrors() {
+        emailContainer.error = null
+        passwordContainer.error = null
+    }
+
     private fun attemptLogin() {
         val emailStr = emailContainer!!.text.toString()
         val passwordStr = passwordContainer!!.text.toString()
-        mListener!!.onSignInButtonClicked(emailStr,passwordStr)
+        mPresenter.onSignInButtonClicked(emailStr, passwordStr)
+    }
 
-
+    private fun getSpannableText(): SpannableString{
+        var textNoAccount = resources.getString(R.string.action_go_sign_up)
+        val textSignUp = resources.getString(R.string.action_sign_up)
+        val startIndex = textNoAccount.length+1
+        textNoAccount = textNoAccount.plus(" ").plus(textSignUp).plus("!")
+        val lastIndex = textNoAccount.length
+        val ss = SpannableString(textNoAccount)
+        ss.setSpan(
+                {  _: View ->
+                    mPresenter.onSignUpButtonClicked()
+                },
+                startIndex,
+                lastIndex,
+                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        return ss
     }
 
     companion object {
-        fun newInstance(param1: String, param2: String): LoginFragment {
+        fun newInstance(): LoginFragment {
             val fragment = LoginFragment()
             return fragment
         }
-
         val TAG = "loginFragment"
     }
 
-}// Required empty public constructor
+}

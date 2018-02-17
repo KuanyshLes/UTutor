@@ -12,6 +12,7 @@ import com.google.gson.JsonSyntaxException;
 import com.support.robigroup.ututor.R;
 import com.support.robigroup.ututor.data.DataManager;
 import com.support.robigroup.ututor.data.network.ApiError;
+import com.support.robigroup.ututor.singleton.SingletonSharedPref;
 import com.support.robigroup.ututor.utils.AppConstants;
 import com.support.robigroup.ututor.utils.SchedulerProvider;
 
@@ -32,6 +33,7 @@ public class BasePresenter<V extends MvpView> implements MvpPresenter<V> {
     private final DataManager mDataManager;
     private final SchedulerProvider mSchedulerProvider;
     private final CompositeDisposable mCompositeDisposable;
+    private final SingletonSharedPref mSharedPreferences;
 
     private V mMvpView;
 
@@ -42,6 +44,7 @@ public class BasePresenter<V extends MvpView> implements MvpPresenter<V> {
         this.mDataManager = dataManager;
         this.mSchedulerProvider = schedulerProvider;
         this.mCompositeDisposable = compositeDisposable;
+        this.mSharedPreferences = SingletonSharedPref.getInstance();
     }
 
     @Override
@@ -77,6 +80,10 @@ public class BasePresenter<V extends MvpView> implements MvpPresenter<V> {
 
     public CompositeDisposable getCompositeDisposable() {
         return mCompositeDisposable;
+    }
+
+    public SingletonSharedPref getSharedPreferences() {
+        return mSharedPreferences;
     }
 
     @Override
