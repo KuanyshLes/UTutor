@@ -9,8 +9,6 @@ import com.support.robigroup.ututor.data.file.AppFileHelper;
 import com.support.robigroup.ututor.data.file.FileHelper;
 import com.support.robigroup.ututor.data.network.AppNetworkHelper;
 import com.support.robigroup.ututor.data.network.NetworkHelper;
-import com.support.robigroup.ututor.data.prefs.AppPreferencesHelper;
-import com.support.robigroup.ututor.data.prefs.PreferencesHelper;
 import com.support.robigroup.ututor.di.ApplicationContext;
 import com.support.robigroup.ututor.di.DatabaseInfo;
 import com.support.robigroup.ututor.di.PreferenceInfo;
@@ -58,12 +56,6 @@ public class ApplicationModule {
     @Singleton
     DataManager provideDataManager(AppDataManager appDataManager) {
         return appDataManager;
-    }
-
-    @Provides
-    @Singleton
-    PreferencesHelper providePreferencesHelper(AppPreferencesHelper appPreferencesHelper) {
-        return appPreferencesHelper;
     }
 
     @Provides

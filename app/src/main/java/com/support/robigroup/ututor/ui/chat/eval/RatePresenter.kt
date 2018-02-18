@@ -17,7 +17,7 @@ constructor(dataManager: DataManager, schedulerProvider: SchedulerProvider, comp
 
     override fun onClickRateButton(rating: Float) {
         compositeDisposable.add(dataManager
-                .apiHelper.evalChat(rating.toInt(), chatInformation.Id!!)
+                .apiHelper.evalChat(chatInformation.Id!!, (rating*100/5).toInt())
                 .subscribeOn(schedulerProvider.io())
                 .observeOn(schedulerProvider.ui())
                 .doAfterTerminate {
@@ -30,7 +30,7 @@ constructor(dataManager: DataManager, schedulerProvider: SchedulerProvider, comp
                 .subscribe(
                         { message ->
                             if(message.isSuccessful){
-                                mvpView.showMessage("Успешно")
+                                mvpView.showMessage("Успешно отправлен!")
                             }else{
                                 handleApiError(ANError(message.raw()))
                             }

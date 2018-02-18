@@ -9,7 +9,6 @@ import android.support.v4.widget.DrawerLayout
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
-import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.widget.ImageView
@@ -80,7 +79,14 @@ open class MenuesActivity : AppCompatActivity(), NavigationView.OnNavigationItem
             mTextMyBalance.text = String.format("%.0f₸",myBal ?: 0.0)
             mUserImage.setImageURI(Constants.BASE_URL+profile.ProfilePhotoPath)
             mUserName.text = profile.FullName
-            Log.d("profile", profileString)
+            var langStr = SingletonSharedPref.getInstance().getString(Constants.KEY_LANGUAGE,"")
+            if(langStr==""){
+                langStr="kk"
+                SingletonSharedPref.getInstance().put(Constants.KEY_LANGUAGE, "kk")
+            }
+            val language = Functions.getLanguage(langStr)
+            mFlag.setImageResource(language.flagIcon)
+            mLanguage.text = language.text
         }
 
     }
@@ -114,9 +120,6 @@ open class MenuesActivity : AppCompatActivity(), NavigationView.OnNavigationItem
 
     override fun onStart() {
         super.onStart()
-        val language = Functions.getLanguage(SingletonSharedPref.getInstance().getString(Constants.KEY_LANGUAGE,"kk"))
-        mFlag.setImageResource(language.flagIcon)
-        mLanguage.text = language.text
     }
 
     override fun onDestroy() {
@@ -139,9 +142,6 @@ open class MenuesActivity : AppCompatActivity(), NavigationView.OnNavigationItem
             R.id.nav_home_work ->{
                 MenuActivity.open(this)
             }
-//            R.id.nav_help -> {
-//
-//            }
             R.id.nav_logout -> {
                 SingletonSharedPref.getInstance().clear()
                 stopService(Intent(this, NotificationService::class.java))

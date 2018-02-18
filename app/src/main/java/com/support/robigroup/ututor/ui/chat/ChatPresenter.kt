@@ -58,7 +58,8 @@ constructor(dataManager: DataManager, schedulerProvider: SchedulerProvider, comp
                     logd("object is not valid")
                 } else {
                     if (rs.StatusId == Constants.STATUS_COMPLETED) {
-                        mvpView.showEvalDialog()
+                        if(isViewAttached)
+                            mvpView.showEvalDialog()
                     } else if (rs.TeacherReady && rs.LearnerReady) {
                         mvpView.closeReadyDialog()
                     } else if (rs.LearnerReady && !rs.TeacherReady) {
@@ -81,6 +82,8 @@ constructor(dataManager: DataManager, schedulerProvider: SchedulerProvider, comp
             }
         }
     }
+
+
 
     override fun onFinishClick() {
         mvpView.showFinishDialog()
@@ -127,7 +130,6 @@ constructor(dataManager: DataManager, schedulerProvider: SchedulerProvider, comp
                         { response ->
                             if (response.isSuccessful) {
                                 updateChatInformation(response.body())
-                                mvpView.showEvalDialog()
                             } else {
                                 mvpView.startMenuActivity()
                             }
@@ -176,8 +178,6 @@ constructor(dataManager: DataManager, schedulerProvider: SchedulerProvider, comp
 
     override fun onChatFinished() {
         dataManager.cleanDirectories()
-        chatInformation.removeAllChangeListeners()
-        chatMessages.removeAllChangeListeners()
         realm.executeTransaction {
             realm.where(ChatInformation::class.java).findAll().deleteAllFromRealm()
             realm.where(ChatMessage::class.java).findAll().deleteAllFromRealm()
@@ -186,6 +186,8 @@ constructor(dataManager: DataManager, schedulerProvider: SchedulerProvider, comp
 
     override fun onDetach() {
         audioCallback?.onComplete()
+        chatInformation?.removeAllChangeListeners()
+        chatMessages?.removeAllChangeListeners()
         super.onDetach()
     }
 

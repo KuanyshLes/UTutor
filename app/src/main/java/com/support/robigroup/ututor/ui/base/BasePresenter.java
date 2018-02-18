@@ -35,7 +35,6 @@ public class BasePresenter<V extends MvpView> implements MvpPresenter<V> {
     private final DataManager mDataManager;
     private final SchedulerProvider mSchedulerProvider;
     private final CompositeDisposable mCompositeDisposable;
-    private final SingletonSharedPref mSharedPreferences;
 
     private V mMvpView;
 
@@ -46,7 +45,6 @@ public class BasePresenter<V extends MvpView> implements MvpPresenter<V> {
         this.mDataManager = dataManager;
         this.mSchedulerProvider = schedulerProvider;
         this.mCompositeDisposable = compositeDisposable;
-        this.mSharedPreferences = SingletonSharedPref.getInstance();
     }
 
     @Override
@@ -69,7 +67,7 @@ public class BasePresenter<V extends MvpView> implements MvpPresenter<V> {
     }
 
     public void checkViewAttached() {
-        if (!isViewAttached()) throw new MvpViewNotAttachedException();
+
     }
 
     public DataManager getDataManager() {
@@ -85,7 +83,7 @@ public class BasePresenter<V extends MvpView> implements MvpPresenter<V> {
     }
 
     public SingletonSharedPref getSharedPreferences() {
-        return mSharedPreferences;
+        return getDataManager().getSharedPreferences();
     }
 
     @Override
@@ -142,13 +140,6 @@ public class BasePresenter<V extends MvpView> implements MvpPresenter<V> {
 
     @Override
     public void setUserAsLoggedOut() {
-        getDataManager().setAccessToken(null);
-    }
-
-    public static class MvpViewNotAttachedException extends RuntimeException {
-        public MvpViewNotAttachedException() {
-            super("Please call Presenter.onAttach(MvpView) before" +
-                    " requesting data to the Presenter");
-        }
+        getDataManager().setUserAsLoggedOut();
     }
 }

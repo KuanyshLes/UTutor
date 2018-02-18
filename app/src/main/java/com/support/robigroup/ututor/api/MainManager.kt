@@ -33,37 +33,14 @@ class MainManager(
             Single<Response<LessonRequestForTeacher>>
         = RestAPI.getApi().postLessonRequest(teacherId, subjectId, language, classNumber)
 
-    fun postLearnerReady(): Single<Response<ResponseBody>> = RestAPI.getApi().postChatReady()
-
-    fun postChatComplete(): Single<Response<ChatLesson>> = RestAPI.getApi().postChatComplete()
-
     fun postRequestCancel(id: String): Single<Response<ResponseBody>> = RestAPI.getApi().postCancelRequest(id)
-
-    fun evalChat(rating: Int,lessonId: Int): Single<Response<ResponseBody>> = RestAPI.getApi().evalChat(rating,lessonId)
 
     fun getChatInformation(): Single<Response<ChatLesson>> = RestAPI.getApi().getInformationAboutChat()
 
     fun getHistory(): Single<Response<List<ChatHistory>>> = RestAPI.getApi().getHistory()
 
-    fun getHistoryMessages(chatId: Int): Single<Response<List<ChatMessage>>> = RestAPI.getApi().getHistoryMessages(chatId)
-
     fun resetPassword(oldPassword: String, confirmPassword: String, newPassword: String) :Single<Response<ResponseBody>>{
         return RestAPI.getApi().resetPassword(oldPassword,confirmPassword,newPassword).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
     }
-
-    fun sendMessage(messageText: String? = null, file64base: String? = null): Single<Response<ChatMessage>> =
-            if(file64base != null&&messageText!=null){
-                val res: HashMap<String,String> = HashMap()
-                res.put("File",file64base)
-                res.put("Message",messageText)
-                RestAPI.getApi().postMessagePhoto(res)
-            } else if(file64base!=null) {
-                val res: HashMap<String,String> = HashMap()
-                res.put("File",file64base)
-                RestAPI.getApi().postMessagePhoto(res)
-            }else{
-                RestAPI.getApi().postTextMessage(messageText!!)
-            }
-
 
 }

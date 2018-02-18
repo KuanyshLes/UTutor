@@ -3,25 +3,16 @@ package com.support.robigroup.ututor.data;
 import com.support.robigroup.ututor.api.APIInterface;
 import com.support.robigroup.ututor.data.file.FileHelper;
 import com.support.robigroup.ututor.data.network.NetworkHelper;
-import com.support.robigroup.ututor.data.prefs.PreferencesHelper;
+import com.support.robigroup.ututor.singleton.SingletonSharedPref;
 
 
-
-public interface DataManager extends  PreferencesHelper, NetworkHelper, FileHelper {
+public interface DataManager extends NetworkHelper, FileHelper {
 
     void setUserAsLoggedOut();
 
     APIInterface getApiHelper();
 
-
-
-    void updateUserInfo(
-            String accessToken,
-            Long userId,
-            LoggedInMode loggedInMode,
-            String userName,
-            String email,
-            String profilePicPath);
+    SingletonSharedPref getSharedPreferences();
 
     enum LoggedInMode {
 

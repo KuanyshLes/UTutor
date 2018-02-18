@@ -59,7 +59,7 @@ class TeachersActivity : AppCompatActivity(), OnTeachersActivityInteractionListe
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_teachers)
 
-        language = SingletonSharedPref.getInstance().getString(Constants.KEY_LANGUAGE)
+        language = SingletonSharedPref.getInstance().getString(Constants.KEY_LANGUAGE, "kk")
 
         realm = Realm.getDefaultInstance()
         chatInfos = realm.where(ChatInformation::class.java).findAll()

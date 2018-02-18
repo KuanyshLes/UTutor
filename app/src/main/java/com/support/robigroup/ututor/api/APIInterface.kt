@@ -117,10 +117,10 @@ interface APIInterface {
             @Header("Authorization") header: String = SingletonSharedPref.getInstance().getString(Constants.KEY_TOKEN)
     ): Single<Response<ChatMessage>>
 
-    @GET("api/lesson/rate")
+    @POST("api/lesson/rate")
     fun evalChat(
-            @Query("LessonId") rating: Int,
-            @Query("Raiting") lessonId: Int,
+            @Query("LessonId") lessonId: Int,
+            @Query("Raiting") rating: Int,
             @Header("Authorization") header: String = SingletonSharedPref.getInstance().getString(Constants.KEY_TOKEN)
     ): Single<Response<ResponseBody>>
 

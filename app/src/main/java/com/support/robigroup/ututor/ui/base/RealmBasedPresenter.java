@@ -33,8 +33,8 @@ public class RealmBasedPresenter<V extends MvpView>  extends BasePresenter<V> im
 
     @Override
     public void onDetach() {
-        realm.close();
         super.onDetach();
+        realm.close();
     }
 
     @Override
