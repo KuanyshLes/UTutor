@@ -1,18 +1,3 @@
-/*
- * Copyright (C) 2017 MINDORKS NEXTGEN PRIVATE LIMITED
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     https://mindorks.com/license/apache-v2
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License
- */
-
 package com.support.robigroup.ututor.di.module;
 
 import android.content.Context;
@@ -40,9 +25,15 @@ import com.support.robigroup.ututor.ui.login.RegPhoneNumberFragmentMvpPresenter;
 import com.support.robigroup.ututor.ui.login.RegPhoneNumberFragmentView;
 import com.support.robigroup.ututor.ui.login.RegistrationFragmentMvpPresenter;
 import com.support.robigroup.ututor.ui.login.RegistrationFragmentView;
-import com.support.robigroup.ututor.ui.login.login_fragment.LoginFragmentPresenter;
-import com.support.robigroup.ututor.ui.login.reg_fragment.RegPhoneNumberFragmentPresenter;
-import com.support.robigroup.ututor.ui.login.reg_fragment.RegistrationFragmentPresenter;
+import com.support.robigroup.ututor.ui.login.SetPasswordFragmentMvpPresenter;
+import com.support.robigroup.ututor.ui.login.SetPasswordFragmentView;
+import com.support.robigroup.ututor.ui.login.VerifyPhoneNumberFragmentMvpPresenter;
+import com.support.robigroup.ututor.ui.login.VerifyPhoneNumberFragmentView;
+import com.support.robigroup.ututor.ui.login.loginFragment.LoginFragmentPresenter;
+import com.support.robigroup.ututor.ui.login.regFragment.RegistrationFragmentPresenter;
+import com.support.robigroup.ututor.ui.login.regFragment.VerifyPhoneNumberFragmentPresenter;
+import com.support.robigroup.ututor.ui.login.regPhoneNumberFragment.RegPhoneNumberFragmentPresenter;
+import com.support.robigroup.ututor.ui.login.setPasswordFragment.SetPasswordFragmentPresenter;
 import com.support.robigroup.ututor.utils.AppSchedulerProvider;
 import com.support.robigroup.ututor.utils.SchedulerProvider;
 
@@ -50,10 +41,6 @@ import com.support.robigroup.ututor.utils.SchedulerProvider;
 import dagger.Module;
 import dagger.Provides;
 import io.reactivex.disposables.CompositeDisposable;
-
-/**
- * Created by janisharali on 27/01/17.
- */
 
 @Module
 public class ActivityModule {
@@ -130,6 +117,20 @@ public class ActivityModule {
     @PerActivity
     RegPhoneNumberFragmentMvpPresenter<RegPhoneNumberFragmentView> provideRegPhoneFragmentPresenter(
             RegPhoneNumberFragmentPresenter<RegPhoneNumberFragmentView> presenter){
+        return presenter;
+    }
+
+    @Provides
+    @PerActivity
+    VerifyPhoneNumberFragmentMvpPresenter<VerifyPhoneNumberFragmentView> provideVerifyPhoneNumberFragmentPresenter(
+            VerifyPhoneNumberFragmentPresenter<VerifyPhoneNumberFragmentView> presenter){
+        return presenter;
+    }
+
+    @Provides
+    @PerActivity
+    SetPasswordFragmentMvpPresenter<SetPasswordFragmentView> provideSetPasswordFragmentPresenter(
+            SetPasswordFragmentPresenter<SetPasswordFragmentView> presenter){
         return presenter;
     }
 

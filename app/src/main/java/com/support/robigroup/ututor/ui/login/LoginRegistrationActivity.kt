@@ -5,9 +5,11 @@ import android.os.Bundle
 import com.support.robigroup.ututor.R
 import com.support.robigroup.ututor.features.main.MenuActivity
 import com.support.robigroup.ututor.ui.base.BaseActivity
-import com.support.robigroup.ututor.ui.login.login_fragment.LoginFragment
-import com.support.robigroup.ututor.ui.login.reg_fragment.RegistrationFragment
-import com.support.robigroup.ututor.ui.login.reg_phone_number_fragment.RegPhoneNumberFragment
+import com.support.robigroup.ututor.ui.login.loginFragment.LoginFragment
+import com.support.robigroup.ututor.ui.login.regFragment.RegistrationFragment
+import com.support.robigroup.ututor.ui.login.regPhoneNumberFragment.RegPhoneNumberFragment
+import com.support.robigroup.ututor.ui.login.setPasswordFragment.SetPasswordFragment
+import com.support.robigroup.ututor.ui.login.verifyPhoneNumberFragment.VerifyPhoneNumberFragment
 import javax.inject.Inject
 
 class LoginRegistrationActivity : BaseActivity(), LoginRegistrationActivityMvpView {
@@ -40,7 +42,6 @@ class LoginRegistrationActivity : BaseActivity(), LoginRegistrationActivityMvpVi
         }
         supportFragmentManager.beginTransaction()
                 .replace(R.id.container, loginFragment, LoginFragment.TAG)
-                .addToBackStack(LoginFragment.TAG)
                 .commit()
     }
 
@@ -67,13 +68,24 @@ class LoginRegistrationActivity : BaseActivity(), LoginRegistrationActivityMvpVi
     }
 
     override fun replaceVerifyPhoneNumberFragment() {
-        var regPhoneNumberFragment = supportFragmentManager.findFragmentByTag(RegPhoneNumberFragment.TAG)
-        if(regPhoneNumberFragment==null){
-            regPhoneNumberFragment = RegPhoneNumberFragment.newInstance()
+        var verifyPhoneNumberFragment = supportFragmentManager.findFragmentByTag(VerifyPhoneNumberFragment.TAG)
+        if(verifyPhoneNumberFragment==null){
+            verifyPhoneNumberFragment = VerifyPhoneNumberFragment.newInstance()
         }
         supportFragmentManager.beginTransaction()
-                .replace(R.id.container, regPhoneNumberFragment, RegPhoneNumberFragment.TAG)
-                .addToBackStack(RegPhoneNumberFragment.TAG)
+                .replace(R.id.container, verifyPhoneNumberFragment, RegPhoneNumberFragment.TAG)
+                .addToBackStack(VerifyPhoneNumberFragment.TAG)
+                .commit()
+    }
+
+    override fun replaceSetPasswordFragment() {
+        var setPasswordFragment = supportFragmentManager.findFragmentByTag(SetPasswordFragment.TAG)
+        if(setPasswordFragment==null){
+            setPasswordFragment = SetPasswordFragment.newInstance()
+        }
+        supportFragmentManager.beginTransaction()
+                .replace(R.id.container, setPasswordFragment, SetPasswordFragment.TAG)
+                .addToBackStack(SetPasswordFragment.TAG)
                 .commit()
     }
 }

@@ -1,4 +1,4 @@
-package com.support.robigroup.ututor.ui.login.reg_fragment
+package com.support.robigroup.ututor.ui.login.regFragment
 
 import com.androidnetworking.error.ANError
 import com.support.robigroup.ututor.Constants

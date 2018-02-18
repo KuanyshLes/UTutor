@@ -1,14 +1,18 @@
-package com.support.robigroup.ututor.ui.login.reg_fragment
+package com.support.robigroup.ututor.ui.login.regFragment
 
 import com.androidnetworking.error.ANError
 import com.support.robigroup.ututor.Constants
+import com.support.robigroup.ututor.api.FakeServer
 import com.support.robigroup.ututor.data.DataManager
 import com.support.robigroup.ututor.ui.base.RealmBasedPresenter
 import com.support.robigroup.ututor.ui.login.VerifyPhoneNumberFragmentMvpPresenter
 import com.support.robigroup.ututor.ui.login.VerifyPhoneNumberFragmentView
 import com.support.robigroup.ututor.utils.SchedulerProvider
+import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
+import okhttp3.ResponseBody
 import org.json.JSONObject
+import retrofit2.Response
 import javax.inject.Inject
 
 
@@ -19,6 +23,8 @@ constructor(dataManager: DataManager,
             compositeDisposable: CompositeDisposable)
     : RealmBasedPresenter<V>(dataManager, schedulerProvider, compositeDisposable),
         VerifyPhoneNumberFragmentMvpPresenter<V> {
+
+
 
     override fun onVerifyPhoneNumberButtonClicked(code: String) {
 
@@ -31,7 +37,15 @@ constructor(dataManager: DataManager,
 
         val phoneNumber = sharedPreferences.getString(Constants.KEY_PHONE_NUMBER)
         val emailToken = sharedPreferences.getString(Constants.KEY_SAVE_EMAIL_TOKEN)
-        compositeDisposable.add(dataManager.apiHelper.verifyPhoneNumberWithCode(code, phoneNumber, emailToken)
+
+        var remoteSource: Single<Response<ResponseBody>>? = null
+        if(Constants.DEBUG){
+            remoteSource = FakeServer.getFakeValidVerifyCodeResponse()
+        }else{
+            remoteSource = dataManager.apiHelper.verifyPhoneNumberWithCode(code, phoneNumber, emailToken)
+        }
+
+        compositeDisposable.add(remoteSource
                 .subscribeOn(schedulerProvider.io())
                 .observeOn(schedulerProvider.ui())
                 .doOnSubscribe {
@@ -41,6 +55,7 @@ constructor(dataManager: DataManager,
                     mvpView.hideLoading()
                 }
                 .subscribe({ response ->
+
                     if (response.isSuccessful) {
                         try {
                             val body = JSONObject(response.body()?.string())

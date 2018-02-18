@@ -1,15 +1,19 @@
-package com.support.robigroup.ututor.ui.login.reg_fragment
+package com.support.robigroup.ututor.ui.login.regPhoneNumberFragment
 
 import com.androidnetworking.error.ANError
 import com.support.robigroup.ututor.Constants
+import com.support.robigroup.ututor.api.FakeServer
 import com.support.robigroup.ututor.data.DataManager
 import com.support.robigroup.ututor.ui.base.RealmBasedPresenter
 import com.support.robigroup.ututor.ui.login.RegPhoneNumberFragmentMvpPresenter
 import com.support.robigroup.ututor.ui.login.RegPhoneNumberFragmentView
 import com.support.robigroup.ututor.utils.CommonUtils
 import com.support.robigroup.ututor.utils.SchedulerProvider
+import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
+import okhttp3.ResponseBody
 import org.json.JSONObject
+import retrofit2.Response
 import javax.inject.Inject
 
 
@@ -35,7 +39,15 @@ constructor(dataManager: DataManager,
         }
 
         val emailToken = sharedPreferences.getString(Constants.KEY_SAVE_EMAIL_TOKEN)
-        compositeDisposable.add(dataManager.apiHelper.getPhone(number, emailToken)
+
+        var remoteSource: Single<Response<ResponseBody>>? = null
+        if(Constants.DEBUG){
+            remoteSource = FakeServer.getFakePhoneNumberResponse()
+        }else{
+            remoteSource = dataManager.apiHelper.getPhone(number, emailToken)
+        }
+
+        compositeDisposable.add(remoteSource
                 .subscribeOn(schedulerProvider.io())
                 .observeOn(schedulerProvider.ui())
                 .doOnSubscribe {
@@ -48,6 +60,7 @@ constructor(dataManager: DataManager,
                     response ->
                     if (response.isSuccessful) {
                         sharedPreferences.put(Constants.KEY_PHONE_NUMBER, number)
+                        mvpView.openVerifyCodeFragment()
                     } else {
                         try {
                             val body = JSONObject(response.errorBody()?.string())

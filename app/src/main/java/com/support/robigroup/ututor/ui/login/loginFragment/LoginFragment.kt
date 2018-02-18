@@ -1,4 +1,4 @@
-package com.support.robigroup.ututor.ui.login.login_fragment
+package com.support.robigroup.ututor.ui.login.loginFragment
 
 
 import android.content.Context

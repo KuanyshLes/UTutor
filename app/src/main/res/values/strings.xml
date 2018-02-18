@@ -126,7 +126,7 @@
     <string name="old_password">Старый пароль</string>
     <string name="new_password">Новый пароль</string>
     <string name="confirm_password">Подвердите пароль</string>
-    <string name="desc_password">Пароль должен содержать цифры, прописные, и строчные буквы и состоять хотя бы из 8 символов</string>
+    <string name="valid_password_description">Пароль должен содержать цифры, буквы и состоять хотя бы из 8 символов</string>
     <string name="success_password">Пароли изменены</string>
     <string name="un_success_password">Пароли не был изменен</string>
     <string name="feedback_send">Отзыв отправлен</string>

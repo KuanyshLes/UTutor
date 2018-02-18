@@ -84,6 +84,13 @@ public final class CommonUtils {
         return matcher.matches();
     }
 
+    public static boolean isPasswordValid(String password) {
+        String PASSWORD_PATTERN = "^(?=.*\\d)(?=.*[a-zA-Z])(?=\\S+$).{8,16}$";
+        Pattern pattern = Pattern.compile(PASSWORD_PATTERN);
+        Matcher matcher = pattern.matcher(password);
+        return matcher.matches();
+    }
+
     public static String loadJSONFromAsset(Context context, String jsonFileName)
             throws IOException {
 

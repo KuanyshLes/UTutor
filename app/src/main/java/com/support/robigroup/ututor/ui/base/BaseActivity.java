@@ -32,17 +32,14 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.crashlytics.android.Crashlytics;
 import com.support.robigroup.ututor.R;
 import com.support.robigroup.ututor.UTutor;
 import com.support.robigroup.ututor.di.component.ActivityComponent;
 import com.support.robigroup.ututor.di.component.DaggerActivityComponent;
 import com.support.robigroup.ututor.di.module.ActivityModule;
-import com.support.robigroup.ututor.features.login.LoginActivity;
+import com.support.robigroup.ututor.ui.login.LoginRegistrationActivity;
 import com.support.robigroup.ututor.utils.CommonUtils;
 import com.support.robigroup.ututor.utils.NetworkUtils;
-
-import io.fabric.sdk.android.Fabric;
 
 
 public abstract class BaseActivity extends AppCompatActivity
@@ -156,7 +153,7 @@ public abstract class BaseActivity extends AppCompatActivity
 
     @Override
     public void openActivityOnTokenExpire() {
-        startActivity(new Intent(this, LoginActivity.class));
+        startActivity(new Intent(this, LoginRegistrationActivity.class));
         finish();
     }
 

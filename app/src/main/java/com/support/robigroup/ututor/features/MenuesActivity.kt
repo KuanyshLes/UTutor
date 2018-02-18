@@ -2,12 +2,12 @@ package com.support.robigroup.ututor.features
 
 import android.app.Activity
 import android.content.Intent
-import android.support.v7.app.AppCompatActivity
 import android.support.design.widget.NavigationView
 import android.support.design.widget.Snackbar
 import android.support.v4.view.GravityCompat
 import android.support.v4.widget.DrawerLayout
 import android.support.v7.app.ActionBarDrawerToggle
+import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.util.Log
 import android.view.MenuItem
@@ -25,10 +25,10 @@ import com.support.robigroup.ututor.commons.Profile
 import com.support.robigroup.ututor.commons.requestErrorHandler
 import com.support.robigroup.ututor.features.account.AccountActivity
 import com.support.robigroup.ututor.features.feedback.FeedbackActivity
-import com.support.robigroup.ututor.ui.history.HistoryList
-import com.support.robigroup.ututor.features.login.LoginActivity
 import com.support.robigroup.ututor.features.main.MenuActivity
 import com.support.robigroup.ututor.singleton.SingletonSharedPref
+import com.support.robigroup.ututor.ui.history.HistoryList
+import com.support.robigroup.ututor.ui.login.LoginRegistrationActivity
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -146,7 +146,7 @@ open class MenuesActivity : AppCompatActivity(), NavigationView.OnNavigationItem
                 SingletonSharedPref.getInstance().clear()
                 stopService(Intent(this, NotificationService::class.java))
                 finish()
-                startActivity(Intent(this, LoginActivity::class.java))
+                startActivity(Intent(this, LoginRegistrationActivity::class.java))
             }
         }
 

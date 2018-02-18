@@ -1,4 +1,4 @@
-package com.support.robigroup.ututor.ui.login.reg_fragment
+package com.support.robigroup.ututor.ui.login.regFragment
 
 import android.content.Context
 import android.os.Bundle
