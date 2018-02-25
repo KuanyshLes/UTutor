@@ -43,8 +43,8 @@
 
         <service
             android:name=".NotificationService"
-            android:enabled="true"
-            android:exported="false" />
+            android:exported="false"
+            android:stopWithTask="false"/>
 
         <activity
             android:name=".features.teachers.TeachersActivity"
