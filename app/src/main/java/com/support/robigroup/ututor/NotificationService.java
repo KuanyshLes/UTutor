@@ -1,13 +1,9 @@
 package com.support.robigroup.ututor;
 
-import android.app.AlarmManager;
-import android.app.PendingIntent;
 import android.app.Service;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.IBinder;
-import android.os.SystemClock;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
@@ -15,8 +11,8 @@ import com.google.gson.Gson;
 import com.support.robigroup.ututor.commons.ChatInformation;
 import com.support.robigroup.ututor.commons.ChatLesson;
 import com.support.robigroup.ututor.commons.Functions;
-import com.support.robigroup.ututor.ui.chat.model.ChatMessage;
 import com.support.robigroup.ututor.singleton.SingletonSharedPref;
+import com.support.robigroup.ututor.ui.chat.model.ChatMessage;
 
 import io.realm.Realm;
 import microsoft.aspnet.signalr.client.ConnectionState;
@@ -39,11 +35,6 @@ public class NotificationService extends Service {
     private static final String SERVER_URL = "http://ututor.kz";
     private static final String KEY_TOKEN = "TOKEN";
 
-    private final static String MESSAGE_RECEIVED = "lessonChatReceived";
-    private final static String TEACHER_ACCEPTED = "TeacherAccepted";
-    private final static String CHAT_READY= "ChatReady";
-    private final static String CHAT_COMPLETED= "ChatReady";
-
     private HubConnection mHubConnection;
     private HubProxy mHubProxy;
     private String token;
@@ -52,7 +43,7 @@ public class NotificationService extends Service {
     private final Logger logger = new Logger() {
         @Override
         public void log(String s, LogLevel logLevel) {
-            Log.i("Notification Service",s);
+//            Log.i("Notification Service",s);
         }
     };
 
@@ -87,7 +78,7 @@ public class NotificationService extends Service {
             startSignalR();
             isStarted = true;
         }
-        return START_STICKY;
+        return super.onStartCommand(intent, flags, startId);
     }
 
     private void runOnUiThread(Runnable runnable) {
@@ -182,20 +173,6 @@ public class NotificationService extends Service {
                     , ChatLesson.class
             );
         }
-    }
-
-    @Override
-    public void onTaskRemoved(Intent rootIntent) {
-        super.onTaskRemoved(rootIntent);
-        Log.e("Notification Service","onTaskRemoved");
-        Intent restartServiceTask = new Intent(getApplicationContext(),this.getClass());
-        restartServiceTask.setPackage(getPackageName());
-        PendingIntent restartPendingIntent =PendingIntent.getService(getApplicationContext(), 1,restartServiceTask, PendingIntent.FLAG_ONE_SHOT);
-        AlarmManager myAlarmService = (AlarmManager) getApplicationContext().getSystemService(Context.ALARM_SERVICE);
-        myAlarmService.set(
-                AlarmManager.ELAPSED_REALTIME,
-                SystemClock.elapsedRealtime() + 1000,
-                restartPendingIntent);
     }
 
     private void notifyChatCompleted(final ChatLesson chatLesson) {

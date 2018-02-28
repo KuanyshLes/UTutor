@@ -43,8 +43,7 @@
 
         <service
             android:name=".NotificationService"
-            android:exported="false"
-            android:stopWithTask="false"/>
+            android:exported="false"/>
 
         <activity
             android:name=".features.teachers.TeachersActivity"
@@ -62,17 +61,6 @@
             android:name=".ui.history.HistoryList"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".features.settings.SettingsActivity"
-            android:label="@string/title_activity_settings">
-
-            <!-- <intent-filter> -->
-            <!-- <action android:name="android.intent.action.MAIN" /> -->
-
-
-            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
-            <!-- </intent-filter> -->
-        </activity>
         <activity
             android:name=".features.account.AccountActivity"
             android:screenOrientation="portrait"
