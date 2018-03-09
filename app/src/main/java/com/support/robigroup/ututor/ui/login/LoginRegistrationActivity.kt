@@ -1,9 +1,10 @@
 package com.support.robigroup.ututor.ui.login
 
-import android.content.Intent
 import android.os.Bundle
+import com.support.robigroup.ututor.Constants
 import com.support.robigroup.ututor.R
 import com.support.robigroup.ututor.features.main.MenuActivity
+import com.support.robigroup.ututor.singleton.SingletonSharedPref
 import com.support.robigroup.ututor.ui.base.BaseActivity
 import com.support.robigroup.ututor.ui.login.loginFragment.LoginFragment
 import com.support.robigroup.ututor.ui.login.regFragment.RegistrationFragment
@@ -31,8 +32,10 @@ class LoginRegistrationActivity : BaseActivity(), LoginRegistrationActivityMvpVi
     }
 
     override fun startMenuActivity() {
-        startActivity(Intent(baseContext, MenuActivity::class.java))
-        finish()
+        if(SingletonSharedPref.getInstance().getString(Constants.KEY_TOKEN, "").length > 10){
+            MenuActivity.open(this)
+            finish()
+        }
     }
 
     override fun replaceLoginFragment() {

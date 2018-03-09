@@ -20,7 +20,7 @@ class RestAPI{
         private val logging = HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
 
         private var client = OkHttpClient.Builder()
-                .readTimeout(5, TimeUnit.SECONDS)
+                .readTimeout(10, TimeUnit.SECONDS)
                 .connectTimeout(5, TimeUnit.SECONDS)
                 .addInterceptor(logging)
                 .addInterceptor(object : Interceptor {

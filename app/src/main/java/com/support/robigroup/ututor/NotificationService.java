@@ -32,18 +32,16 @@ public class NotificationService extends Service {
     public static boolean isStarted = false;
 
     private static final String CHAT_HUB = "chat";
-    private static final String SERVER_URL = "http://ututor.kz";
     private static final String KEY_TOKEN = "TOKEN";
 
     private HubConnection mHubConnection;
     private HubProxy mHubProxy;
-    private String token;
     private Realm realm;
     private Handler handler;
     private final Logger logger = new Logger() {
         @Override
         public void log(String s, LogLevel logLevel) {
-//            Log.i("Notification Service",s);
+            Log.i("Notification Service",s);
         }
     };
 
@@ -92,7 +90,7 @@ public class NotificationService extends Service {
 
         }else{
             Platform.loadPlatformComponent(new AndroidPlatformComponent());
-            mHubConnection = new HubConnection(SERVER_URL,queryString,true, logger);
+            mHubConnection = new HubConnection(Constants.BASE_URL, queryString,true, logger);
             mHubProxy = mHubConnection.createHubProxy(CHAT_HUB);
 
             mHubConnection.reconnecting(new Runnable() {
@@ -111,6 +109,7 @@ public class NotificationService extends Service {
                         }
                     }
             );
+
 
             mHubConnection.start(new LongPollingTransport(logger));
 
@@ -183,7 +182,7 @@ public class NotificationService extends Service {
             public void execute(Realm realm) {
                 ChatInformation request = realm.where(ChatInformation.class).findFirst();
                 if(request!=null){
-                    request.setStatusId(Constants.INSTANCE.getSTATUS_COMPLETED());
+                    request.setStatusId(Constants.STATUS_COMPLETED);
                     request.setInvoiceSum(chatLesson.getInvoiceSum());
                     request.setEndTime(chatLesson.getEndTime());
                     request.setDuration(chatLesson.getDuration());

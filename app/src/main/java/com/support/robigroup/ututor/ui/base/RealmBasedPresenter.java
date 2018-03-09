@@ -44,7 +44,7 @@ public class RealmBasedPresenter<V extends MvpView>  extends BasePresenter<V> im
             public void execute(Realm realm) {
                 ChatInformation request = realm.where(ChatInformation.class).findFirst();
                 if(request!=null){
-                    request.setStatusId(Constants.INSTANCE.getSTATUS_COMPLETED());
+                    request.setStatusId(Constants.STATUS_COMPLETED);
                     request.setInvoiceSum(chatLesson.getInvoiceSum());
                     request.setEndTime(chatLesson.getEndTime());
                     request.setDuration(chatLesson.getDuration());

@@ -93,11 +93,11 @@ public class ChatMessage extends RealmObject implements IMessage, MessageContent
     }
 
     public String getIconUrl(){
-        return Constants.INSTANCE.getBASE_URL()+ getFileIconPath();
+        return Constants.BASE_URL+ getFileIconPath();
     }
 
     public String getImageUrl(){
-        return Constants.INSTANCE.getBASE_URL()+getFilePath();
+        return Constants.BASE_URL+getFilePath();
     }
 
     public void setFileIconPath(String fileIconPath) {

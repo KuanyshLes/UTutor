@@ -177,13 +177,7 @@ data class LoginResponse(
         val expires_in: Int,
         val FullName: String,
         val Role: String
-){
-    companion object {
-        val KEY_TOKEN = "TOKEN"
-        val KEY_FULL_NAME = "full_name"
-        val KEY_LANGUAGE = "language"
-    }
-}
+)
 
 data class ChatLesson(
         var Id: Int? = null,

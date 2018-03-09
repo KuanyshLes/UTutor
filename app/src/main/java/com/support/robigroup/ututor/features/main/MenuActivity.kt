@@ -110,10 +110,6 @@ class MenuActivity : MenuesActivity() {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-    }
-
     companion object {
         fun open(c: Context){
             c.startActivity(Intent(c, MenuActivity::class.java))

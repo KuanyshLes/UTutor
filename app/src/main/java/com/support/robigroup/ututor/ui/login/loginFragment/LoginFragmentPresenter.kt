@@ -73,10 +73,15 @@ constructor(
     }
 
     private fun saveTokenAndFinish(response: LoginResponse) {
-        sharedPreferences.put(LoginResponse.KEY_TOKEN, Constants.KEY_BEARER.plus(response.access_token))
-        sharedPreferences.put(LoginResponse.KEY_FULL_NAME, response.FullName)
-        sharedPreferences.put(LoginResponse.KEY_LANGUAGE, "kk")
-        mvpView.startMenuActivity()
+        if(response.access_token.isEmpty()){
+            handleApiError(ANError())
+        }else{
+            sharedPreferences.put(Constants.KEY_TOKEN, Constants.KEY_BEARER.plus(response.access_token))
+            sharedPreferences.put(Constants.KEY_FULL_NAME, response.FullName)
+            sharedPreferences.put(Constants.KEY_LANGUAGE, "kk")
+            mvpView.startMenuActivity()
+        }
+
     }
 
 }

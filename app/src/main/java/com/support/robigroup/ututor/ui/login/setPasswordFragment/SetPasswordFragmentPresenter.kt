@@ -76,6 +76,9 @@ constructor(dataManager: DataManager,
                     if (response.isSuccessful) {
                         try {
                             val body = JSONObject(response.body()?.string())
+                            if(body.getString(Constants.KEY_GET_TOKEN_FROM_RESULT_BODY).isEmpty()){
+                                throw Exception("empty token exception")
+                            }
                             val token = Constants.KEY_BEARER + body.getString(Constants.KEY_GET_TOKEN_FROM_RESULT_BODY)
                             sharedPreferences.put(Constants.KEY_TOKEN, token)
                             mvpView.openMenuActivity()
