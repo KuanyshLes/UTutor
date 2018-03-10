@@ -14,9 +14,6 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import io.realm.Realm
-import com.crashlytics.android.Crashlytics
-import io.fabric.sdk.android.Fabric
-
 
 
 class MenuActivity : MenuesActivity() {
@@ -105,8 +102,8 @@ class MenuActivity : MenuesActivity() {
 
     fun onClickChoose(v: View){
         when(v.id){
-            R.id.choose_test -> MainActivity.open(this,2)
-            R.id.choose_homework -> MainActivity.open(this,1)
+            R.id.chooseTest -> MainActivity.open(this,2)
+            R.id.chooseHomeWork -> MainActivity.open(this,1)
         }
     }
 

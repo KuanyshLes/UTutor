@@ -19,6 +19,12 @@ constructor(dataManager: DataManager, schedulerProvider: SchedulerProvider, comp
         requestProfile()
     }
 
+    override fun onLogoutClicked() {
+        sharedPreferences.clear()
+        mvpView.stopBackgroundService()
+        mvpView.openLoginRegistrationActivity()
+    }
+
     private fun requestProfile(){
         compositeDisposable.add(dataManager.apiHelper.getBalance()
                 .subscribeOn(schedulerProvider.io())

@@ -39,6 +39,9 @@ import com.support.robigroup.ututor.ui.login.regFragment.RegistrationFragmentPre
 import com.support.robigroup.ututor.ui.login.regFragment.VerifyPhoneNumberFragmentPresenter;
 import com.support.robigroup.ututor.ui.login.regPhoneNumberFragment.RegPhoneNumberFragmentPresenter;
 import com.support.robigroup.ututor.ui.login.setPasswordFragment.SetPasswordFragmentPresenter;
+import com.support.robigroup.ututor.ui.navigationDrawer.main.MainFragmentMvpPresenter;
+import com.support.robigroup.ututor.ui.navigationDrawer.main.MainFragmentMvpView;
+import com.support.robigroup.ututor.ui.navigationDrawer.main.MainFragmentPresenter;
 import com.support.robigroup.ututor.utils.AppSchedulerProvider;
 import com.support.robigroup.ututor.utils.SchedulerProvider;
 
@@ -150,6 +153,13 @@ public class ActivityModule {
     @PerActivity
     ChatListMvpPresenter<ChatsListMvpView> provideChatListPresenter(
             HistoryChatListPresenter<ChatsListMvpView> presenter){
+        return presenter;
+    }
+
+    @Provides
+    @PerActivity
+    MainFragmentMvpPresenter<MainFragmentMvpView> provideMainFragmentPresenter(
+            MainFragmentPresenter<MainFragmentMvpView> presenter){
         return presenter;
     }
 }

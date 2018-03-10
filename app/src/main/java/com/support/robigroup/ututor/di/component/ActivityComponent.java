@@ -28,6 +28,7 @@ import com.support.robigroup.ututor.ui.login.setPasswordFragment.SetPasswordFrag
 import com.support.robigroup.ututor.ui.login.verifyPhoneNumberFragment.VerifyPhoneNumberFragment;
 import com.support.robigroup.ututor.ui.navigationDrawer.DrawerActivity;
 import com.support.robigroup.ututor.ui.navigationDrawer.history.HistoryChatListFragment;
+import com.support.robigroup.ututor.ui.navigationDrawer.main.MainFragment;
 
 import dagger.Component;
 
@@ -57,5 +58,7 @@ public interface ActivityComponent {
     void inject(DrawerActivity drawerActivity);
 
     void inject(HistoryChatListFragment historyChatListFragment);
+
+    void inject(MainFragment historyChatListFragment);
 
 }

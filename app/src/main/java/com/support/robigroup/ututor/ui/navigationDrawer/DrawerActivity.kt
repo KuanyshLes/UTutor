@@ -14,12 +14,15 @@ import android.widget.TextView
 import com.facebook.drawee.view.SimpleDraweeView
 import com.google.gson.Gson
 import com.support.robigroup.ututor.Constants
+import com.support.robigroup.ututor.NotificationService
 import com.support.robigroup.ututor.R
 import com.support.robigroup.ututor.commons.Functions
 import com.support.robigroup.ututor.commons.Profile
 import com.support.robigroup.ututor.singleton.SingletonSharedPref
 import com.support.robigroup.ututor.ui.base.BaseActivity
+import com.support.robigroup.ututor.ui.login.LoginRegistrationActivity
 import com.support.robigroup.ututor.ui.navigationDrawer.history.HistoryChatListFragment
+import com.support.robigroup.ututor.ui.navigationDrawer.main.MainFragment
 import kotlinx.android.synthetic.main.activity_navigation_drawer.*
 import kotlinx.android.synthetic.main.app_bar_navigation_drawer.*
 import javax.inject.Inject
@@ -71,22 +74,27 @@ class DrawerActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedLi
 //                AccountActivity.open(this)
             }
             R.id.nav_home_work -> {
-//                MenuActivity.open(this)
+                replaceMainFragment()
             }
             R.id.nav_logout -> {
-//                SingletonSharedPref.getInstance().clear()
-//                stopService(Intent(this, NotificationService::class.java))
-//                finish()
-//                startActivity(Intent(this, LoginRegistrationActivity::class.java))
+                mPresenter.onLogoutClicked()
             }
         }
-
         drawer_layout.closeDrawer(GravityCompat.START)
         return true
     }
 
     override fun setActionBarTitle(title: String) {
         supportActionBar?.title = title
+    }
+
+    override fun stopBackgroundService() {
+        stopService(Intent(this, NotificationService::class.java))
+    }
+
+    override fun openLoginRegistrationActivity() {
+        startActivity(Intent(this, LoginRegistrationActivity::class.java))
+        finish()
     }
 
     override fun updateProfile() {
@@ -136,6 +144,17 @@ class DrawerActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedLi
         supportFragmentManager.beginTransaction()
                 .replace(R.id.containerDrawerFragments, registrationFragment, HistoryChatListFragment.TAG)
                 .addToBackStack(HistoryChatListFragment.TAG)
+                .commit()
+    }
+
+    private fun replaceMainFragment() {
+        var mainFragment = supportFragmentManager.findFragmentByTag(MainFragment.TAG)
+        if(mainFragment==null){
+            mainFragment = MainFragment.newInstance()
+        }
+        supportFragmentManager.beginTransaction()
+                .replace(R.id.containerDrawerFragments, mainFragment, MainFragment.TAG)
+                .addToBackStack(MainFragment.TAG)
                 .commit()
     }
 
