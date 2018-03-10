@@ -39,7 +39,7 @@ class MainActivity :
         super.onCreate(savedInstanceState)
         Fabric.with(this, Crashlytics())
         setContentView(R.layout.app_bar_main_nav)
-        setSupportActionBar(toolbar)
+        setSupportActionBar(drawer_toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         type = intent.getIntExtra(KEY_TYPE,0)

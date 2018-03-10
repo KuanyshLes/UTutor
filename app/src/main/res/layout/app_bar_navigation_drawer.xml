@@ -4,30 +4,30 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.support.robigroup.ututor.ui.history.HistoryChatMessagesActivity">
+    tools:context="com.support.robigroup.ututor.ui.navigationDrawer.DrawerActivity">
+
     <android.support.design.widget.AppBarLayout
-        android:id="@+id/appBarLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:theme="@style/AppTheme.AppBarOverlay">
 
         <android.support.v7.widget.Toolbar
-            android:id="@+id/drawer_toolbar"
+            android:id="@+id/nav_drawer_toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
+            app:titleTextColor="@color/colorWhite"
             android:background="@color/colorLightBlue"
-            android:gravity="center"
-            app:popupTheme="@style/AppTheme.PopupOverlay"
-            app:theme="@style/ThemeOverlay.AppCompat"
-            app:titleTextColor="@color/colorWhite" />
+            app:popupTheme="@style/AppTheme.PopupOverlay" />
 
     </android.support.design.widget.AppBarLayout>
 
-    <com.stfalcon.chatkit.messages.MessagesList
-        android:id="@+id/messagesList"
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:outcomingDefaultBubbleColor="@color/colorBlueUp"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+        android:id="@+id/containerDrawerFragments"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+    </FrameLayout>
+
 
 </android.support.design.widget.CoordinatorLayout>

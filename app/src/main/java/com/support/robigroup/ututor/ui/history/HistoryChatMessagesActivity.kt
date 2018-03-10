@@ -9,12 +9,8 @@ import android.media.MediaPlayer
 import android.os.Build
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import com.bumptech.glide.Glide
-import com.crashlytics.android.Crashlytics
-import com.facebook.drawee.drawable.ProgressBarDrawable
 import com.facebook.drawee.generic.GenericDraweeHierarchyBuilder
 import com.stfalcon.chatkit.commons.ImageLoader
 import com.stfalcon.chatkit.messages.MessageHolders
@@ -34,19 +30,20 @@ import com.support.robigroup.ututor.ui.chat.holders.IncomingImageMessageVH
 import com.support.robigroup.ututor.ui.chat.holders.OutcomingAudioMessageVH
 import com.support.robigroup.ututor.ui.chat.holders.OutcomingImageMessageVH
 import com.support.robigroup.ututor.ui.chat.model.ChatMessage
+import com.support.robigroup.ututor.ui.navigationDrawer.history.HistoryChatMessagesMvpPresenter
+import com.support.robigroup.ututor.ui.navigationDrawer.history.HistoryChatMessagesMvpView
 import com.support.robigroup.ututor.utils.CommonUtils
-import io.fabric.sdk.android.Fabric
 import kotlinx.android.synthetic.main.activity_history_messages.*
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
 
 
-class HistoryMessages : BaseActivity(), HistoryMvpView{
+class HistoryChatMessagesActivity : BaseActivity(), HistoryChatMessagesMvpView {
 
 
     @Inject
-    lateinit var mPresenter: HistoryMvpPresenter<HistoryMvpView>
+    lateinit var mPresenterChatMessages: HistoryChatMessagesMvpPresenter<HistoryChatMessagesMvpView>
 
     private lateinit var messagesList: MessagesList
     private lateinit var messagesAdapter: MessagesListAdapter<ChatMessage>
@@ -76,10 +73,10 @@ class HistoryMessages : BaseActivity(), HistoryMvpView{
         setContentView(R.layout.activity_history_messages)
 
         activityComponent.inject(this)
-        mPresenter.onAttach(this)
+        mPresenterChatMessages.onAttach(this)
 
         setUp()
-        mPresenter.onViewInitialized()
+        mPresenterChatMessages.onViewInitialized()
     }
 
     override fun setToolbarTitle(title: String) {
@@ -91,7 +88,7 @@ class HistoryMessages : BaseActivity(), HistoryMvpView{
     }
 
     override fun setUp() {
-        setSupportActionBar(toolbar)
+        setSupportActionBar(drawer_toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         messagesList = findViewById(R.id.messagesList)
@@ -102,14 +99,14 @@ class HistoryMessages : BaseActivity(), HistoryMvpView{
                         R.layout.item_incoming_text_image_message,
                         OutcomingImageMessageVH::class.java,
                         R.layout.item_outcoming_text_image_message,
-                        mPresenter)
+                        mPresenterChatMessages)
                 .registerContentType(
                         Constants.CONTENT_TYPE_VOICE,
                         IncomingAudioMessageVH::class.java,
                         R.layout.item_incoming_audio_message,
                         OutcomingAudioMessageVH::class.java,
                         R.layout.item_outcoming_audio_message,
-                        mPresenter)
+                        mPresenterChatMessages)
 
         messagesAdapter = MessagesListAdapter(Constants.LEARNER_ID, holders, imageLoader)
         messagesAdapter.enableSelectionMode({ count ->
@@ -117,12 +114,12 @@ class HistoryMessages : BaseActivity(), HistoryMvpView{
             menu.findItem(R.id.action_delete).isVisible = false
             menu.findItem(R.id.action_copy).isVisible = count > 0
         })
-        messagesAdapter.setOnMessageClickListener(mPresenter)
+        messagesAdapter.setOnMessageClickListener(mPresenterChatMessages)
         messagesList.setAdapter(messagesAdapter)
 
-        //audio initialising
+        //audio initializing
         mediaPlayer = MediaPlayer()
-        mediaPlayer.setOnCompletionListener(mPresenter)
+        mediaPlayer.setOnCompletionListener(mPresenterChatMessages)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -160,7 +157,7 @@ class HistoryMessages : BaseActivity(), HistoryMvpView{
         if(mediaPlayer.isPlaying)
             mediaPlayer.stop()
         mediaPlayer.release()
-        mPresenter.onDetach()
+        mPresenterChatMessages.onDetach()
     }
 
     override fun showImage(url: String) {
@@ -198,7 +195,7 @@ class HistoryMessages : BaseActivity(), HistoryMvpView{
         }
         mediaPlayer.setDataSource(filePath)
         mediaPlayer.prepare()
-        mPresenter.onPlayerPrepared()
+        mPresenterChatMessages.onPlayerPrepared()
     }
 
     override fun getPlayDuration(): Int {
@@ -222,7 +219,7 @@ class HistoryMessages : BaseActivity(), HistoryMvpView{
         mediaPlayer.pause()
     }
 
-    override fun getPlayPresenter(): PlayPresenter = mPresenter
+    override fun getPlayPresenter(): PlayPresenter = mPresenterChatMessages
 
     override fun seekTo(progress: Int) {
         mediaPlayer.seekTo(progress)
@@ -231,7 +228,7 @@ class HistoryMessages : BaseActivity(), HistoryMvpView{
     companion object {
         val ARG_CHAT_HISTORY = "mChatHistory"
         fun open(con: Context, chatHistory: ChatHistory){
-            con.startActivity(Intent(con, HistoryMessages::class.java).putExtra(ARG_CHAT_HISTORY,chatHistory))
+            con.startActivity(Intent(con, HistoryChatMessagesActivity::class.java).putExtra(ARG_CHAT_HISTORY,chatHistory))
         }
     }
 

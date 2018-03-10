@@ -14,9 +14,6 @@ import com.support.robigroup.ututor.features.main.adapters.ClassAdapter
 import com.support.robigroup.ututor.features.teachers.TeachersActivity
 import kotlinx.android.synthetic.main.activity_classes.*
 import kotlin.properties.Delegates
-import com.crashlytics.android.Crashlytics
-import io.fabric.sdk.android.Fabric
-
 
 
 class ClassesActivity : AppCompatActivity(), ClassesActivityListener {
@@ -42,7 +39,7 @@ class ClassesActivity : AppCompatActivity(), ClassesActivityListener {
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.adapter = adapter
 
-        setSupportActionBar(toolbar)
+        setSupportActionBar(drawer_toolbar)
         supportActionBar?.title = mSubject.Name
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 

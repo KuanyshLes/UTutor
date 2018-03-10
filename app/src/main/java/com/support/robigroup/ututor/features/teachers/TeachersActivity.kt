@@ -23,9 +23,6 @@ import io.realm.Realm
 import io.realm.RealmResults
 import kotlinx.android.synthetic.main.activity_teachers.*
 import kotlin.properties.Delegates
-import com.crashlytics.android.Crashlytics
-import io.fabric.sdk.android.Fabric
-
 
 
 class TeachersActivity : AppCompatActivity(), OnTeachersActivityInteractionListener {
@@ -70,7 +67,7 @@ class TeachersActivity : AppCompatActivity(), OnTeachersActivityInteractionListe
         if(list_teachers.adapter == null){
             list_teachers.adapter = myAdapter
         }
-        setSupportActionBar(toolbar)
+        setSupportActionBar(drawer_toolbar)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
 
         mSubject = intent.getParcelableExtra(TeachersActivity.ARG_SUBJECT)

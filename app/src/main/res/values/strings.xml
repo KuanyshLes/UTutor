@@ -234,5 +234,8 @@
     <string name="api_default_error">Ошибка сервера, сообщите нам!</string>
     <string name="some_error">Неизвестный ошибка вышла!</string>
     <string name="internet_connection_error">Проверте интернет соединение!</string>
+    <string name="title_activity_navigation_drawer">NavigationDrawerActivity</string>
+
+    <string name="action_settings">Settings</string>
 
 </resources>

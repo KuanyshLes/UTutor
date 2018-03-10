@@ -43,7 +43,7 @@
 
         <service
             android:name=".NotificationService"
-            android:exported="false"/>
+            android:exported="false" />
 
         <activity
             android:name=".features.teachers.TeachersActivity"
@@ -55,7 +55,7 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".features.draw.CanvasActivity" />
         <activity
-            android:name=".ui.history.HistoryMessages"
+            android:name=".ui.history.HistoryChatMessagesActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ui.history.HistoryList"
@@ -82,9 +82,11 @@
         <activity
             android:name=".ui.chat.ActivityChat"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar">
-
-        </activity>
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity
+            android:name=".ui.navigationDrawer.DrawerActivity"
+            android:label="@string/title_activity_navigation_drawer"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

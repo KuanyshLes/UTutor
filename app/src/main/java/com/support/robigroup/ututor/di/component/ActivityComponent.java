@@ -19,13 +19,15 @@ import com.support.robigroup.ututor.di.PerActivity;
 import com.support.robigroup.ututor.di.module.ActivityModule;
 import com.support.robigroup.ututor.ui.chat.ActivityChat;
 import com.support.robigroup.ututor.ui.chat.eval.RateDialog;
-import com.support.robigroup.ututor.ui.history.HistoryMessages;
+import com.support.robigroup.ututor.ui.history.HistoryChatMessagesActivity;
 import com.support.robigroup.ututor.ui.login.LoginRegistrationActivity;
 import com.support.robigroup.ututor.ui.login.loginFragment.LoginFragment;
 import com.support.robigroup.ututor.ui.login.regFragment.RegistrationFragment;
 import com.support.robigroup.ututor.ui.login.regPhoneNumberFragment.RegPhoneNumberFragment;
 import com.support.robigroup.ututor.ui.login.setPasswordFragment.SetPasswordFragment;
 import com.support.robigroup.ututor.ui.login.verifyPhoneNumberFragment.VerifyPhoneNumberFragment;
+import com.support.robigroup.ututor.ui.navigationDrawer.DrawerActivity;
+import com.support.robigroup.ututor.ui.navigationDrawer.history.HistoryChatListFragment;
 
 import dagger.Component;
 
@@ -38,7 +40,7 @@ public interface ActivityComponent {
 
     void inject(RateDialog rateDialog);
 
-    void inject(HistoryMessages activity);
+    void inject(HistoryChatMessagesActivity activity);
 
     void inject(LoginRegistrationActivity activity);
 
@@ -51,5 +53,9 @@ public interface ActivityComponent {
     void inject(VerifyPhoneNumberFragment verifyPhoneNumberFragment);
 
     void inject(SetPasswordFragment setPasswordFragment);
+
+    void inject(DrawerActivity drawerActivity);
+
+    void inject(HistoryChatListFragment historyChatListFragment);
 
 }

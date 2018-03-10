@@ -9,13 +9,15 @@ import com.support.robigroup.ututor.data.DataManager
 import com.support.robigroup.ututor.ui.base.RealmBasedPresenter
 import com.support.robigroup.ututor.ui.chat.AudioPlayerCallback
 import com.support.robigroup.ututor.ui.chat.model.ChatMessage
+import com.support.robigroup.ututor.ui.navigationDrawer.history.HistoryChatMessagesMvpPresenter
+import com.support.robigroup.ututor.ui.navigationDrawer.history.HistoryChatMessagesMvpView
 import com.support.robigroup.ututor.utils.SchedulerProvider
 import io.reactivex.disposables.CompositeDisposable
 import javax.inject.Inject
 
-class HistoryPresenter<V : HistoryMvpView> @Inject
+class HistoryChatMessagesPresenter<V : HistoryChatMessagesMvpView> @Inject
 constructor(dataManager: DataManager, schedulerProvider: SchedulerProvider, compositeDisposable: CompositeDisposable)
-    : RealmBasedPresenter<V>(dataManager, schedulerProvider, compositeDisposable), HistoryMvpPresenter<V> {
+    : RealmBasedPresenter<V>(dataManager, schedulerProvider, compositeDisposable), HistoryChatMessagesMvpPresenter<V> {
 
 
     private lateinit var mChatHistory: ChatHistory

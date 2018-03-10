@@ -6,14 +6,12 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.util.Log;
-
 import com.google.gson.Gson;
 import com.support.robigroup.ututor.commons.ChatInformation;
 import com.support.robigroup.ututor.commons.ChatLesson;
 import com.support.robigroup.ututor.commons.Functions;
 import com.support.robigroup.ututor.singleton.SingletonSharedPref;
 import com.support.robigroup.ututor.ui.chat.model.ChatMessage;
-
 import io.realm.Realm;
 import microsoft.aspnet.signalr.client.ConnectionState;
 import microsoft.aspnet.signalr.client.LogLevel;

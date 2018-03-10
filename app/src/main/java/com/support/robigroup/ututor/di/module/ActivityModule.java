@@ -2,7 +2,6 @@ package com.support.robigroup.ututor.di.module;
 
 import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
 
 
 import com.support.robigroup.ututor.di.ActivityContext;
@@ -13,9 +12,15 @@ import com.support.robigroup.ututor.ui.chat.ChatPresenter;
 import com.support.robigroup.ututor.ui.chat.RateMvpPresenter;
 import com.support.robigroup.ututor.ui.chat.RateMvpView;
 import com.support.robigroup.ututor.ui.chat.eval.RatePresenter;
-import com.support.robigroup.ututor.ui.history.HistoryMvpPresenter;
-import com.support.robigroup.ututor.ui.history.HistoryMvpView;
-import com.support.robigroup.ututor.ui.history.HistoryPresenter;
+import com.support.robigroup.ututor.ui.navigationDrawer.DrawerMvpPresenter;
+import com.support.robigroup.ututor.ui.navigationDrawer.DrawerMvpView;
+import com.support.robigroup.ututor.ui.navigationDrawer.DrawerPresenter;
+import com.support.robigroup.ututor.ui.navigationDrawer.history.ChatListMvpPresenter;
+import com.support.robigroup.ututor.ui.navigationDrawer.history.ChatsListMvpView;
+import com.support.robigroup.ututor.ui.navigationDrawer.history.HistoryChatListPresenter;
+import com.support.robigroup.ututor.ui.navigationDrawer.history.HistoryChatMessagesMvpPresenter;
+import com.support.robigroup.ututor.ui.navigationDrawer.history.HistoryChatMessagesMvpView;
+import com.support.robigroup.ututor.ui.history.HistoryChatMessagesPresenter;
 import com.support.robigroup.ututor.ui.login.LoginFragmentMvpPresenter;
 import com.support.robigroup.ututor.ui.login.LoginFragmentMvpView;
 import com.support.robigroup.ututor.ui.login.LoginRegistrationActivityMvpPresenter;
@@ -87,8 +92,8 @@ public class ActivityModule {
 
     @Provides
     @PerActivity
-    HistoryMvpPresenter<HistoryMvpView> provideHistoryPresenter(
-            HistoryPresenter<HistoryMvpView> presenter) {
+    HistoryChatMessagesMvpPresenter<HistoryChatMessagesMvpView> provideHistoryPresenter(
+            HistoryChatMessagesPresenter<HistoryChatMessagesMvpView> presenter) {
         return presenter;
     }
 
@@ -135,7 +140,16 @@ public class ActivityModule {
     }
 
     @Provides
-    LinearLayoutManager provideLinearLayoutManager(AppCompatActivity activity) {
-        return new LinearLayoutManager(activity);
+    @PerActivity
+    DrawerMvpPresenter<DrawerMvpView> provideDrawerPresenter(
+            DrawerPresenter<DrawerMvpView> presenter){
+        return presenter;
+    }
+
+    @Provides
+    @PerActivity
+    ChatListMvpPresenter<ChatsListMvpView> provideChatListPresenter(
+            HistoryChatListPresenter<ChatsListMvpView> presenter){
+        return presenter;
     }
 }

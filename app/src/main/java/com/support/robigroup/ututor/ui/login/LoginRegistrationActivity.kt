@@ -3,7 +3,6 @@ package com.support.robigroup.ututor.ui.login
 import android.os.Bundle
 import com.support.robigroup.ututor.Constants
 import com.support.robigroup.ututor.R
-import com.support.robigroup.ututor.features.main.MenuActivity
 import com.support.robigroup.ututor.singleton.SingletonSharedPref
 import com.support.robigroup.ututor.ui.base.BaseActivity
 import com.support.robigroup.ututor.ui.login.loginFragment.LoginFragment
@@ -11,6 +10,7 @@ import com.support.robigroup.ututor.ui.login.regFragment.RegistrationFragment
 import com.support.robigroup.ututor.ui.login.regPhoneNumberFragment.RegPhoneNumberFragment
 import com.support.robigroup.ututor.ui.login.setPasswordFragment.SetPasswordFragment
 import com.support.robigroup.ututor.ui.login.verifyPhoneNumberFragment.VerifyPhoneNumberFragment
+import com.support.robigroup.ututor.ui.navigationDrawer.DrawerActivity
 import javax.inject.Inject
 
 class LoginRegistrationActivity : BaseActivity(), LoginRegistrationActivityMvpView {
@@ -33,7 +33,7 @@ class LoginRegistrationActivity : BaseActivity(), LoginRegistrationActivityMvpVi
 
     override fun startMenuActivity() {
         if(SingletonSharedPref.getInstance().getString(Constants.KEY_TOKEN, "").length > 10){
-            MenuActivity.open(this)
+            DrawerActivity.open(this)
             finish()
         }
     }

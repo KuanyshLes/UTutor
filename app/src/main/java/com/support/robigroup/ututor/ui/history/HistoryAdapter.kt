@@ -54,9 +54,9 @@ class HistoryAdapter(
     }
 
     inner class ViewHolder(val mView: View) : RecyclerView.ViewHolder(mView) {
-        var mSubjectName: TextView = mView.findViewById<TextView>(R.id.his_subject_name) as TextView
-        var mSubjectTime: TextView = mView.findViewById<TextView>(R.id.his_des) as TextView
-        var mTeacher: TextView = mView.findViewById<TextView>(R.id.his_teacher_name) as TextView
+        var mSubjectName: TextView = mView.findViewById(R.id.his_subject_name)
+        var mSubjectTime: TextView = mView.findViewById(R.id.his_des)
+        var mTeacher: TextView = mView.findViewById(R.id.his_teacher_name)
         var mTeacherImage: ImageView = mView.findViewById<SimpleDraweeView>(R.id.his_teacher_image)
         lateinit var mItem: ChatHistory
     }

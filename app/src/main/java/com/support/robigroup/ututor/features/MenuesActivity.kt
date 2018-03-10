@@ -49,7 +49,7 @@ open class MenuesActivity : AppCompatActivity(), NavigationView.OnNavigationItem
         val view: View  = activity.findViewById(android.R.id.content)
         drawerLayout = view.findViewById(R.id.drawer_layout)
         navView = view.findViewById(R.id.nav_view)
-        toolbar = view.findViewById(R.id.toolbar)
+        toolbar = view.findViewById(R.id.drawer_toolbar)
 
         setSupportActionBar(toolbar)
 
@@ -66,7 +66,6 @@ open class MenuesActivity : AppCompatActivity(), NavigationView.OnNavigationItem
         drawerLayout.addDrawerListener(toggle)
         toggle.syncState()
         navView.setNavigationItemSelectedListener(this)
-
     }
 
     fun updateUI(){
@@ -74,7 +73,7 @@ open class MenuesActivity : AppCompatActivity(), NavigationView.OnNavigationItem
         if(profileString.equals("")){
             Functions.builtMessageNoInternet(this,{requestProfile()})
         }else{
-            val profile = Gson().fromJson<Profile>(profileString,Profile::class.java)
+            val profile = Gson().fromJson<Profile>(profileString, Profile::class.java)
             val myBal = profile.Balance
             mTextMyBalance.text = String.format("%.0f₸",myBal ?: 0.0)
             mUserImage.setImageURI(Constants.BASE_URL+profile.ProfilePhotoPath)
