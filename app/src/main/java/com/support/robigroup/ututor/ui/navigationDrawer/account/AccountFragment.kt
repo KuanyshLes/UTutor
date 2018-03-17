@@ -10,7 +10,7 @@ import com.support.robigroup.ututor.commons.inflate
 import com.support.robigroup.ututor.ui.base.BaseFragment
 import com.support.robigroup.ututor.ui.chat.ActivityChat
 import com.support.robigroup.ututor.ui.navigationDrawer.DrawerMvpView
-import kotlinx.android.synthetic.main.activity_account.*
+import kotlinx.android.synthetic.main.fragment_account.*
 import javax.inject.Inject
 
 class AccountFragment : BaseFragment(), AccountFragmentMvpView {

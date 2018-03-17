@@ -62,7 +62,7 @@ class RateDialog : BaseDialog(), RateMvpView {
 
     override fun onCancel(dialog: DialogInterface?) {
         super.onCancel(dialog)
-        (activity as ActivityChat).startMenuActivity()
+        (activity as ActivityChat).startDrawerActivity()
 
     }
 

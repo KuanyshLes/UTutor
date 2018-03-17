@@ -15,6 +15,6 @@ interface ClassesActivityListener{
 }
 
 interface OnTeachersActivityInteractionListener {
-    fun onTeacherItemClicked(item: Teacher)
+    fun onTeacherChooseClicked(item: Teacher)
     fun onCancelRequest(item: Teacher)
 }

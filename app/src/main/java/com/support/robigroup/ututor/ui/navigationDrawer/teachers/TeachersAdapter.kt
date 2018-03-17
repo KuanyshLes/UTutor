@@ -1,4 +1,4 @@
-package com.support.robigroup.ututor.features.teachers.adapters
+package com.support.robigroup.ututor.ui.navigationDrawer.teachers
 
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.RecyclerView
@@ -52,16 +52,6 @@ class TeachersAdapter(private val interactionListener: OnTeachersActivityInterac
         notifyItemRemoved(position)
     }
 
-    fun clearOthers(position: Int){
-        for(i in position+1 until items.size){
-            removeAt(position+1)
-        }
-        if(position!=0)
-            for(i in 0 until position){
-                removeAt(0)
-            }
-    }
-
     inner class TeachersViewHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
             parent.inflate(R.layout.item_teacher)) {
 
@@ -87,7 +77,7 @@ class TeachersAdapter(private val interactionListener: OnTeachersActivityInterac
                 teacher_button_hide.setBackgroundColor(ContextCompat.getColor(context,R.color.colorGreyLight))
             }
             teacher_choose_button.setOnClickListener {
-                interactionListener.onTeacherItemClicked(item)
+                interactionListener.onTeacherChooseClicked(item)
             }
             if(item.LessonRequestId==null){
                 teacher_choose_button.text = itemView.context.getString(R.string.choose_teacher)

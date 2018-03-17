@@ -5,7 +5,6 @@ import android.net.Uri
 import com.androidnetworking.error.ANError
 import com.stfalcon.contentmanager.ContentManager
 import com.support.robigroup.ututor.Constants
-import com.support.robigroup.ututor.NotificationService
 import com.support.robigroup.ututor.commons.ChatInformation
 import com.support.robigroup.ututor.commons.Functions
 import com.support.robigroup.ututor.commons.logd
@@ -40,7 +39,7 @@ constructor(dataManager: DataManager, schedulerProvider: SchedulerProvider, comp
             if (dif > 500 && dif < Constants.WAIT_TIME) {
                 mvpView.showReadyDialog(dif)
             } else {
-                mvpView.startMenuActivity()
+                mvpView.startDrawerActivity()
             }
         } else {
             updateChatMessages()
@@ -119,7 +118,7 @@ constructor(dataManager: DataManager, schedulerProvider: SchedulerProvider, comp
     }
 
     override fun onCounterFinish() {
-        mvpView.startMenuActivity()
+        mvpView.startDrawerActivity()
     }
 
     override fun onOkFinishClick() {
@@ -131,7 +130,7 @@ constructor(dataManager: DataManager, schedulerProvider: SchedulerProvider, comp
                             if (response.isSuccessful) {
                                 updateChatInformation(response.body())
                             } else {
-                                mvpView.startMenuActivity()
+                                mvpView.startDrawerActivity()
                             }
                         },
                         { error ->

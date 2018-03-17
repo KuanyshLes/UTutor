@@ -23,8 +23,6 @@ import com.crashlytics.android.Crashlytics
 import io.fabric.sdk.android.Fabric
 
 
-
-
 class MainActivity :
         AppCompatActivity(),
         OnMainActivityInteractionListener {
@@ -39,7 +37,7 @@ class MainActivity :
         super.onCreate(savedInstanceState)
         Fabric.with(this, Crashlytics())
         setContentView(R.layout.app_bar_main_nav)
-        setSupportActionBar(drawer_toolbar)
+        setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         type = intent.getIntExtra(KEY_TYPE,0)

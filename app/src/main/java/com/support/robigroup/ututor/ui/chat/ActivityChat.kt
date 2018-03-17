@@ -38,7 +38,6 @@ import com.support.robigroup.ututor.GlideApp
 import com.support.robigroup.ututor.NotificationService
 import com.support.robigroup.ututor.R
 import com.support.robigroup.ututor.commons.logd
-import com.support.robigroup.ututor.features.main.MenuActivity
 import com.support.robigroup.ututor.ui.base.BaseActivity
 import com.support.robigroup.ututor.ui.base.CircleProgressBarDrawable
 import com.support.robigroup.ututor.ui.chat.eval.RateDialog
@@ -48,6 +47,7 @@ import com.support.robigroup.ututor.ui.chat.holders.OutcomingAudioMessageVH
 import com.support.robigroup.ututor.ui.chat.holders.OutcomingImageMessageVH
 import com.support.robigroup.ututor.ui.chat.model.ChatMessage
 import com.support.robigroup.ututor.ui.chat.ready.ReadyDialog
+import com.support.robigroup.ututor.ui.navigationDrawer.DrawerActivity
 import com.support.robigroup.ututor.utils.CommonUtils
 import kotlinx.android.synthetic.main.activity_chat.*
 import java.text.SimpleDateFormat
@@ -123,7 +123,7 @@ class ActivityChat : BaseActivity(), ChatMvpView {
         if (tag != null) {
             when (tag) {
                 Constants.TAG_RATE_DIALOG ->
-                    startMenuActivity()
+                    startDrawerActivity()
             }
         }
         super.onFragmentDetached(tag)
@@ -491,9 +491,9 @@ class ActivityChat : BaseActivity(), ChatMvpView {
     }
 
     //dialog, activity methods
-    override fun startMenuActivity() {
+    override fun startDrawerActivity() {
         mPresenter.onChatFinished()
-        MenuActivity.open(this)
+        DrawerActivity.open(this)
         finish()
     }
 

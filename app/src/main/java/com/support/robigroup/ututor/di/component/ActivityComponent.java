@@ -31,6 +31,7 @@ import com.support.robigroup.ututor.ui.navigationDrawer.account.AccountFragment;
 import com.support.robigroup.ututor.ui.navigationDrawer.feedback.FeedbackFragment;
 import com.support.robigroup.ututor.ui.navigationDrawer.history.HistoryChatListFragment;
 import com.support.robigroup.ututor.ui.navigationDrawer.main.MainFragment;
+import com.support.robigroup.ututor.ui.navigationDrawer.teachers.TeachersActivity;
 
 import dagger.Component;
 
@@ -66,5 +67,7 @@ public interface ActivityComponent {
     void inject(AccountFragment accountFragment);
 
     void inject(FeedbackFragment feedbackFragment);
+
+    void inject(TeachersActivity teachersActivity);
 
 }

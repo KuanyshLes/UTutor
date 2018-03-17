@@ -5,7 +5,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.NavigationView
 import android.support.v4.view.GravityCompat
-import android.support.v4.widget.DrawerLayout
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.widget.Toolbar
 import android.view.MenuItem
@@ -39,7 +38,6 @@ class DrawerActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedLi
     lateinit var mLanguage: TextView
     lateinit var mUserImage: SimpleDraweeView
     lateinit var mFlag: ImageView
-    lateinit var drawerLayout: DrawerLayout
     lateinit var toolbar: Toolbar
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -82,7 +80,7 @@ class DrawerActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedLi
                 mPresenter.onLogoutClicked()
             }
         }
-        drawer_layout.closeDrawer(GravityCompat.START)
+        drawerLayout.closeDrawer(GravityCompat.START)
         return true
     }
 
@@ -123,8 +121,8 @@ class DrawerActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedLi
         setSupportActionBar(nav_drawer_toolbar)
 
         val toggle = ActionBarDrawerToggle(
-                this, drawer_layout, nav_drawer_toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
-        drawer_layout.addDrawerListener(toggle)
+                this, drawerLayout, nav_drawer_toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
+        drawerLayout.addDrawerListener(toggle)
         toggle.syncState()
 
         nav_view.setNavigationItemSelectedListener(this)

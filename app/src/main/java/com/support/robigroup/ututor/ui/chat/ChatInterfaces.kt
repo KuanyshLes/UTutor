@@ -23,7 +23,7 @@ interface ChatMvpView : MvpView, PlayView, RecordView, HoldingButtonView{
     fun closeReadyDialog()
     fun onLearnerReadyDialog()
     fun showEvalDialog()
-    fun startMenuActivity()
+    fun startDrawerActivity()
     fun onCancelImageLoad()
     fun notifyItemRangeInserted(messages: List<ChatMessage>, startIndex: Int, rangeLength: Int)
     fun notifyItemRangeUpdated(messages: List<ChatMessage>, startIndex: Int, rangeLength: Int)
