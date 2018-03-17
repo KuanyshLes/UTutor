@@ -1,4 +1,4 @@
-package com.support.robigroup.ututor.features.account.adapter
+package com.support.robigroup.ututor.ui.navigationDrawer.account
 
 import android.support.v7.widget.RecyclerView
 import android.view.View

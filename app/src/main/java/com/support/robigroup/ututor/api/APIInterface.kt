@@ -13,7 +13,7 @@ import retrofit2.http.*
 interface APIInterface {
 
     @FormUrlEncoded
-    @POST("token")
+    @POST("api/token")
     fun getToken(
             @Field("username") username: String,
             @Field("password") password: String

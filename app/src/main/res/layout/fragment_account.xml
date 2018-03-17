@@ -1,0 +1,164 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:visibility="gone">
+
+        <com.facebook.drawee.view.SimpleDraweeView
+            android:id="@+id/account_ava"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_height="80dp"
+            android:layout_margin="@dimen/margin_10"
+            android:layout_width="80dp"
+            app:placeholderImage="@drawable/ic_logo_blue"
+            app:roundAsCircle="true" />
+
+        <TextView
+            android:id="@+id/account_name"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_toEndOf="@+id/account_ava"
+            android:layout_toRightOf="@+id/account_ava"
+            android:layout_width="wrap_content"
+            android:text="@string/ex_name"
+            android:textColor="@color/black"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/account_language"
+            android:layout_below="@+id/account_name"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@+id/account_ava"
+            android:layout_toRightOf="@+id/account_ava"
+            android:layout_width="wrap_content"
+            android:text="@string/ex_language"
+            android:textSize="14sp" />
+
+    </RelativeLayout>
+
+    <View
+        android:background="@color/colorGreyLight"
+        android:layout_height="2dp"
+        android:layout_width="match_parent"
+        android:visibility="gone" />
+
+
+    <RelativeLayout
+        style="@style/acc_relative_layout"
+        android:id="@+id/change_fio"
+        android:layout_marginLeft="@dimen/acc_changes_margin_left"
+        android:layout_marginStart="@dimen/acc_changes_margin_left"
+        android:visibility="gone">
+
+        <TextView
+            style="@style/acc_change_text"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:text="@string/change_fio" />
+
+        <ImageView
+            style="@style/acc_change_image"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true" />
+    </RelativeLayout>
+
+    <View
+        android:background="@color/colorGreyLight"
+        android:layout_height="1dp"
+        android:layout_marginLeft="@dimen/acc_changes_margin_left"
+        android:layout_marginStart="@dimen/acc_changes_margin_left"
+        android:layout_width="match_parent"
+        android:visibility="gone" />
+
+    <RelativeLayout
+        style="@style/acc_relative_layout"
+        android:id="@+id/change_email"
+        android:layout_marginLeft="@dimen/acc_changes_margin_left"
+        android:layout_marginStart="@dimen/acc_changes_margin_left"
+        android:visibility="gone">
+
+        <TextView
+            style="@style/acc_change_text"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:text="@string/change_email" />
+
+        <ImageView
+            style="@style/acc_change_image"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            app:srcCompat="@drawable/ic_arrow_right_grey" />
+    </RelativeLayout>
+
+    <View
+        android:background="@color/colorGreyLight"
+        android:layout_height="1dp"
+        android:layout_marginLeft="@dimen/acc_changes_margin_left"
+        android:layout_marginStart="@dimen/acc_changes_margin_left"
+        android:layout_width="match_parent"
+        android:visibility="gone"
+        app:srcCompat="@drawable/ic_arrow_right_grey" />
+
+    <RelativeLayout
+        style="@style/acc_relative_layout"
+        android:id="@+id/changePassword"
+        android:layout_marginLeft="@dimen/acc_changes_margin_left"
+        android:layout_marginStart="@dimen/acc_changes_margin_left">
+
+        <TextView
+            style="@style/acc_change_text"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:text="@string/change_password" />
+
+        <ImageView
+            style="@style/acc_change_image"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            app:srcCompat="@drawable/ic_arrow_right_grey" />
+    </RelativeLayout>
+
+    <View
+        android:background="@color/colorGreyLight"
+        android:layout_height="1dp"
+        android:layout_marginLeft="@dimen/acc_changes_margin_left"
+        android:layout_marginStart="@dimen/acc_changes_margin_left"
+        android:layout_width="match_parent" />
+
+    <RelativeLayout
+        style="@style/acc_relative_layout"
+        android:id="@+id/changeLanguage"
+        android:layout_marginLeft="@dimen/acc_changes_margin_left"
+        android:layout_marginStart="@dimen/acc_changes_margin_left">
+
+        <TextView
+            style="@style/acc_change_text"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:text="@string/change_language" />
+
+        <ImageView
+            style="@style/acc_change_image"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            app:srcCompat="@drawable/ic_arrow_right_grey" />
+    </RelativeLayout>
+
+    <View
+        android:background="@color/colorGreyLight"
+        android:layout_height="1dp"
+        android:layout_marginLeft="@dimen/acc_changes_margin_left"
+        android:layout_marginStart="@dimen/acc_changes_margin_left"
+        android:layout_width="match_parent" />
+
+</LinearLayout>
+

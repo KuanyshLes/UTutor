@@ -5,5 +5,5 @@
     android:id="@+id/list_languages"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.support.robigroup.ututor.features.account.ChangeLanguageActivity"
+    tools:context="com.support.robigroup.ututor.ui.navigationDrawer.account.ChangeLanguageActivity"
     tools:listitem="@layout/item_language" />

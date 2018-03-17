@@ -21,6 +21,8 @@ import com.support.robigroup.ututor.commons.Profile
 import com.support.robigroup.ututor.singleton.SingletonSharedPref
 import com.support.robigroup.ututor.ui.base.BaseActivity
 import com.support.robigroup.ututor.ui.login.LoginRegistrationActivity
+import com.support.robigroup.ututor.ui.navigationDrawer.account.AccountFragment
+import com.support.robigroup.ututor.ui.navigationDrawer.feedback.FeedbackFragment
 import com.support.robigroup.ututor.ui.navigationDrawer.history.HistoryChatListFragment
 import com.support.robigroup.ututor.ui.navigationDrawer.main.MainFragment
 import kotlinx.android.synthetic.main.activity_navigation_drawer.*
@@ -68,10 +70,10 @@ class DrawerActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedLi
                 replaceHistoryListFragment()
             }
             R.id.nav_feedback -> {
-//                FeedbackActivity.open(this)
+                replaceFeedbackFragment()
             }
             R.id.nav_settings -> {
-//                AccountActivity.open(this)
+                replaceAccountFragment()
             }
             R.id.nav_home_work -> {
                 replaceMainFragment()
@@ -134,6 +136,8 @@ class DrawerActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedLi
         mLanguage = hView.findViewById(R.id.user_language)
         mFlag = hView.findViewById(R.id.flag_image)
         mUserImage = hView.findViewById(R.id.user_image)
+
+        replaceMainFragment()
     }
 
     private fun replaceHistoryListFragment() {
@@ -155,6 +159,28 @@ class DrawerActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedLi
         supportFragmentManager.beginTransaction()
                 .replace(R.id.containerDrawerFragments, mainFragment, MainFragment.TAG)
                 .addToBackStack(MainFragment.TAG)
+                .commit()
+    }
+
+    private fun replaceAccountFragment() {
+        var accountFragment = supportFragmentManager.findFragmentByTag(AccountFragment.TAG)
+        if(accountFragment==null){
+            accountFragment = AccountFragment.newInstance()
+        }
+        supportFragmentManager.beginTransaction()
+                .replace(R.id.containerDrawerFragments, accountFragment, AccountFragment.TAG)
+                .addToBackStack(AccountFragment.TAG)
+                .commit()
+    }
+
+    private fun replaceFeedbackFragment() {
+        var feedbackFragment = supportFragmentManager.findFragmentByTag(FeedbackFragment.TAG)
+        if(feedbackFragment==null){
+            feedbackFragment = FeedbackFragment.newInstance()
+        }
+        supportFragmentManager.beginTransaction()
+                .replace(R.id.containerDrawerFragments, feedbackFragment, FeedbackFragment.TAG)
+                .addToBackStack(FeedbackFragment.TAG)
                 .commit()
     }
 

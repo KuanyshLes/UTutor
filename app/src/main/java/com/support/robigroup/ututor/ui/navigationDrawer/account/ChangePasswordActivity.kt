@@ -1,4 +1,4 @@
-package com.support.robigroup.ututor.features.account
+package com.support.robigroup.ututor.ui.navigationDrawer.account
 
 import android.content.Context
 import android.content.Intent
@@ -101,7 +101,7 @@ class ChangePasswordActivity : AppCompatActivity() {
 
     companion object {
         fun open(c: Context){
-            c.startActivity(Intent(c,ChangePasswordActivity::class.java))
+            c.startActivity(Intent(c, ChangePasswordActivity::class.java))
         }
     }
 }

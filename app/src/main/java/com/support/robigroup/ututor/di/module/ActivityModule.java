@@ -15,6 +15,12 @@ import com.support.robigroup.ututor.ui.chat.eval.RatePresenter;
 import com.support.robigroup.ututor.ui.navigationDrawer.DrawerMvpPresenter;
 import com.support.robigroup.ututor.ui.navigationDrawer.DrawerMvpView;
 import com.support.robigroup.ututor.ui.navigationDrawer.DrawerPresenter;
+import com.support.robigroup.ututor.ui.navigationDrawer.account.AccountFragmentMvpPresenter;
+import com.support.robigroup.ututor.ui.navigationDrawer.account.AccountFragmentMvpView;
+import com.support.robigroup.ututor.ui.navigationDrawer.account.AccountFragmentPresenter;
+import com.support.robigroup.ututor.ui.navigationDrawer.feedback.FeedbackFragmentMvpPresenter;
+import com.support.robigroup.ututor.ui.navigationDrawer.feedback.FeedbackFragmentMvpView;
+import com.support.robigroup.ututor.ui.navigationDrawer.feedback.FeedbackFragmentPresenter;
 import com.support.robigroup.ututor.ui.navigationDrawer.history.ChatListMvpPresenter;
 import com.support.robigroup.ututor.ui.navigationDrawer.history.ChatsListMvpView;
 import com.support.robigroup.ututor.ui.navigationDrawer.history.HistoryChatListPresenter;
@@ -160,6 +166,20 @@ public class ActivityModule {
     @PerActivity
     MainFragmentMvpPresenter<MainFragmentMvpView> provideMainFragmentPresenter(
             MainFragmentPresenter<MainFragmentMvpView> presenter){
+        return presenter;
+    }
+
+    @Provides
+    @PerActivity
+    AccountFragmentMvpPresenter<AccountFragmentMvpView> provideAccountFragmentPresenter(
+            AccountFragmentPresenter<AccountFragmentMvpView> presenter){
+        return presenter;
+    }
+
+    @Provides
+    @PerActivity
+    FeedbackFragmentMvpPresenter<FeedbackFragmentMvpView> provideFeedbackFragmentPresenter(
+            FeedbackFragmentPresenter<FeedbackFragmentMvpView> presenter){
         return presenter;
     }
 }

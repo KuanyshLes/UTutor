@@ -6,6 +6,8 @@ import android.os.Bundle
 import android.view.View
 import com.support.robigroup.ututor.R
 import com.support.robigroup.ututor.features.MenuesActivity
+import com.support.robigroup.ututor.ui.navigationDrawer.account.ChangeLanguageActivity
+import com.support.robigroup.ututor.ui.navigationDrawer.account.ChangePasswordActivity
 
 class AccountActivity : MenuesActivity(){
 
@@ -27,10 +29,10 @@ class AccountActivity : MenuesActivity(){
             R.id.change_email ->{
 
             }
-            R.id.change_password ->{
+            R.id.changePassword ->{
                 ChangePasswordActivity.open(this)
             }
-            R.id.change_language ->{
+            R.id.changeLanguage ->{
                 ChangeLanguageActivity.open(this)
             }
         }

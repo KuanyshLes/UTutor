@@ -1,4 +1,4 @@
-package com.support.robigroup.ututor.features.account
+package com.support.robigroup.ututor.ui.navigationDrawer.account
 
 import android.content.Context
 import android.content.Intent
@@ -7,7 +7,6 @@ import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.view.MenuItem
 import com.support.robigroup.ututor.R
-import com.support.robigroup.ututor.features.account.adapter.LanguagesAdapter
 import kotlinx.android.synthetic.main.activity_change_language.*
 
 class ChangeLanguageActivity : AppCompatActivity() {
@@ -36,7 +35,7 @@ class ChangeLanguageActivity : AppCompatActivity() {
 
     companion object {
         fun open(c: Context){
-            c.startActivity(Intent(c,ChangeLanguageActivity::class.java))
+            c.startActivity(Intent(c, ChangeLanguageActivity::class.java))
         }
     }
 

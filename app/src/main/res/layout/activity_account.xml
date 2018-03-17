@@ -137,7 +137,7 @@
                 android:visibility="gone"
                 app:srcCompat="@drawable/ic_arrow_right_grey" />
             <RelativeLayout
-                android:id="@+id/change_password"
+                android:id="@+id/changePassword"
                 style="@style/acc_relative_layout"
                 android:layout_marginLeft="@dimen/acc_changes_margin_left"
                 android:layout_marginStart="@dimen/acc_changes_margin_left">
@@ -160,7 +160,7 @@
                 android:layout_marginStart="@dimen/acc_changes_margin_left"
                 android:background="@color/colorGreyLight" />
             <RelativeLayout
-                android:id="@+id/change_language"
+                android:id="@+id/changeLanguage"
                 style="@style/acc_relative_layout"
                 android:layout_marginLeft="@dimen/acc_changes_margin_left"
                 android:layout_marginStart="@dimen/acc_changes_margin_left">
