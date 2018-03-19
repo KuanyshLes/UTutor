@@ -26,6 +26,11 @@ class LoginRegistrationActivity : BaseActivity(), LoginRegistrationActivityMvpVi
         mPresenter.onViewInitialized()
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        mPresenter.onDetach()
+    }
+
 
     override fun setUp() {
 

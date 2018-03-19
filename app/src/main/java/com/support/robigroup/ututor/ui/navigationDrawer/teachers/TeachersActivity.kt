@@ -46,6 +46,11 @@ class TeachersActivity : BaseActivity(), TeachersMvpView, OnTeachersActivityInte
         }
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        mPresenter.onDetach()
+    }
+
     override fun setUp() {
         setSupportActionBar(drawer_toolbar)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)

@@ -7,6 +7,7 @@ import android.support.design.widget.NavigationView
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.widget.Toolbar
+import android.util.Log
 import android.view.MenuItem
 import android.widget.ImageView
 import android.widget.TextView
@@ -27,6 +28,13 @@ import com.support.robigroup.ututor.ui.navigationDrawer.main.MainFragment
 import kotlinx.android.synthetic.main.activity_navigation_drawer.*
 import kotlinx.android.synthetic.main.app_bar_navigation_drawer.*
 import javax.inject.Inject
+import android.content.ComponentName
+import android.os.Build
+import android.content.DialogInterface
+import android.content.ActivityNotFoundException
+import android.support.v4.content.ContextCompat.startActivity
+import android.support.v7.app.AlertDialog
+
 
 class DrawerActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedListener, DrawerMvpView {
 
@@ -47,6 +55,45 @@ class DrawerActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedLi
         mPresenter.onAttach(this)
         setUp()
         mPresenter.onViewInitialized()
+        showEnableNotificationDialog()
+    }
+
+    private fun showEnableNotificationDialog() {
+        val xiaomi = "Xiaomi"
+        val CALC_PACKAGE_NAME = "com.miui.securitycenter"
+        val CALC_PACKAGE_ACITIVITY = "com.miui.permcenter.autostart.AutoStartManagementActivity"
+        if (Build.BRAND.equals("xiaomi", ignoreCase = true)) {
+            val builder: AlertDialog.Builder
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                builder = AlertDialog.Builder(this, android.R.style.Theme_Material_Dialog_Alert)
+            } else {
+                builder = AlertDialog.Builder(this)
+            }
+            builder.setTitle("Ask for permission")
+                    .setMessage("In Xiomi devices you should configure this permission by manually")
+                    .setPositiveButton(android.R.string.yes, DialogInterface.OnClickListener { dialogInterface, i ->
+                        try {
+                            val intent = Intent()
+                            intent.component = ComponentName(CALC_PACKAGE_NAME, CALC_PACKAGE_ACITIVITY)
+                            this.startActivity(intent)
+                        } catch (e: ActivityNotFoundException) {
+                            Log.e("Notification Request", "Failed to launch AutoStart Screen ", e)
+                        } catch (e: Exception) {
+                            Log.e("Notification Request", "Failed to launch AutoStart Screen ", e)
+                        }
+                    })
+                    .setNegativeButton(android.R.string.no, DialogInterface.OnClickListener { dialogInterface, i ->
+                        dialogInterface.cancel()
+                    })
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .show()
+        }
+
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        mPresenter.onDetach()
     }
 
 
@@ -89,6 +136,7 @@ class DrawerActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedLi
     }
 
     override fun stopBackgroundService() {
+        Log.e("Notification Service", "Stopping servie from drawer Actiavity")
         stopService(Intent(this, NotificationService::class.java))
     }
 
@@ -140,7 +188,7 @@ class DrawerActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedLi
 
     private fun replaceHistoryListFragment() {
         var registrationFragment = supportFragmentManager.findFragmentByTag(HistoryChatListFragment.TAG)
-        if(registrationFragment==null){
+        if (registrationFragment == null) {
             registrationFragment = HistoryChatListFragment.newInstance()
         }
         supportFragmentManager.beginTransaction()
@@ -151,7 +199,7 @@ class DrawerActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedLi
 
     private fun replaceMainFragment() {
         var mainFragment = supportFragmentManager.findFragmentByTag(MainFragment.TAG)
-        if(mainFragment==null){
+        if (mainFragment == null) {
             mainFragment = MainFragment.newInstance()
         }
         supportFragmentManager.beginTransaction()
@@ -162,7 +210,7 @@ class DrawerActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedLi
 
     private fun replaceAccountFragment() {
         var accountFragment = supportFragmentManager.findFragmentByTag(AccountFragment.TAG)
-        if(accountFragment==null){
+        if (accountFragment == null) {
             accountFragment = AccountFragment.newInstance()
         }
         supportFragmentManager.beginTransaction()
@@ -173,7 +221,7 @@ class DrawerActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedLi
 
     private fun replaceFeedbackFragment() {
         var feedbackFragment = supportFragmentManager.findFragmentByTag(FeedbackFragment.TAG)
-        if(feedbackFragment==null){
+        if (feedbackFragment == null) {
             feedbackFragment = FeedbackFragment.newInstance()
         }
         supportFragmentManager.beginTransaction()

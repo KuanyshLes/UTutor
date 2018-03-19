@@ -31,6 +31,11 @@ class RegPhoneNumberFragment : BaseFragment(), RegPhoneNumberFragmentView {
         mRegistrationActivity = activity as LoginRegistrationActivityMvpView
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        mPresenter.onDetach()
+    }
+
     override fun setUp(view: View?) {
 
     }

@@ -43,7 +43,11 @@
 
         <service
             android:name=".NotificationService"
-            android:exported="false" />
+            android:exported="false"
+            android:enabled="true"
+            android:process=":NotificationService"
+            android:stopWithTask="false">
+        </service>
 
         <activity
             android:name=".ui.navigationDrawer.teachers.TeachersActivity"
@@ -53,6 +57,7 @@
             android:name=".features.main.ClassesActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
+
         <activity android:name=".features.draw.CanvasActivity" />
 
         <activity

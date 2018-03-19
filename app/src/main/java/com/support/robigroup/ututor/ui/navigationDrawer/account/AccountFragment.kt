@@ -38,6 +38,11 @@ class AccountFragment : BaseFragment(), AccountFragmentMvpView {
         mListener?.setActionBarTitle(getString(R.string.drawer_item_settings))
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        mPresenter.onDetach()
+    }
+
     override fun setUp(view: View?) {
         changePassword.setOnClickListener {
             ChangePasswordActivity.open(baseActivity)

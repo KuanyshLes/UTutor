@@ -28,6 +28,11 @@ class RegistrationFragment : BaseFragment(), RegistrationFragmentView {
         return view
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        mPresenter.onDetach()
+    }
+
     override fun onAttach(context: Context?) {
         super.onAttach(context)
         mRegistrationActivity = activity as LoginRegistrationActivityMvpView

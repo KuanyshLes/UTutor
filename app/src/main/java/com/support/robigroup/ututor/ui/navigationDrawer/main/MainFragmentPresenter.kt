@@ -1,5 +1,6 @@
 package com.support.robigroup.ututor.ui.navigationDrawer.main
 
+import android.util.Log
 import com.androidnetworking.error.ANError
 import com.support.robigroup.ututor.Constants
 import com.support.robigroup.ututor.commons.ChatInformation
@@ -13,9 +14,7 @@ import io.reactivex.disposables.CompositeDisposable
 import java.net.HttpURLConnection
 import javax.inject.Inject
 
-/**
- * Created by Bimurat Mukhtar on 10.03.2018.
- */
+
 class MainFragmentPresenter<V : MainFragmentMvpView> @Inject
 constructor(dataManager: DataManager, schedulerProvider: SchedulerProvider, compositeDisposable: CompositeDisposable)
     : RealmBasedPresenter<V>(dataManager, schedulerProvider, compositeDisposable), MainFragmentMvpPresenter<V> {
@@ -46,18 +45,23 @@ constructor(dataManager: DataManager, schedulerProvider: SchedulerProvider, comp
     }
 
     private fun checkChatAndOpenIfExists(chatLesson: ChatLesson?){
+
         if(isChatValidNow(chatLesson)){
             if(chatInformation == null){
                 createChatInLocalDatabaseFromServer(chatLesson!!)
+                Log.e("chat","c1")
             }
             if((chatLesson!!.TeacherReady && chatLesson.LearnerReady)
-                    || (!isChatWaitTimeExpired(chatInformation))){
+                    || isChatWaitTimeExpired(chatInformation)){
                 mvpView.openChat()
+                Log.e("chat","c2")
             }else {
                 clearChatData()
+                Log.e("chat","c3")
             }
         }else{
             clearChatData()
+            Log.e("chat","c4")
         }
     }
 
@@ -75,11 +79,15 @@ constructor(dataManager: DataManager, schedulerProvider: SchedulerProvider, comp
         realm.executeTransaction {
             realm.copyToRealm(res)
         }
+        Log.e("chat","databaseChat")
     }
 
     private fun clearChatData(){
-        chatMessages.deleteAllFromRealm()
-        chatInformation?.deleteFromRealm()
+        Log.e("chat","clearChatData")
+        realm.executeTransaction {
+            chatMessages.deleteAllFromRealm()
+            chatInformation?.deleteFromRealm()
+        }
     }
 
 }

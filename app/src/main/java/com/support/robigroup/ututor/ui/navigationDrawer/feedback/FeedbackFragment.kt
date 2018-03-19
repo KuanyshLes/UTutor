@@ -92,6 +92,7 @@ class FeedbackFragment : BaseFragment(), FeedbackFragmentMvpView {
     override fun onDestroyView() {
         super.onDestroyView()
         hideKeyboard()
+        mPresenter.onDetach()
     }
 
     override fun onAttach(context: Context?) {

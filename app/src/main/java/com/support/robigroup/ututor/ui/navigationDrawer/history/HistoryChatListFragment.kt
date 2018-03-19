@@ -40,6 +40,11 @@ class HistoryChatListFragment : BaseFragment(), ChatsListMvpView, OnHistoryListI
         mPresenter.onViewInitialized()
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        mPresenter.onDetach()
+    }
+
     override fun setUp(view: View?) {
         mListener?.setActionBarTitle(getString(R.string.history))
         mHistoryAdapter = HistoryAdapter(ArrayList(), this)

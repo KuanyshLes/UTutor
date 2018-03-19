@@ -1,6 +1,9 @@
 package com.support.robigroup.ututor;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.IBinder;
@@ -22,6 +25,7 @@ import microsoft.aspnet.signalr.client.hubs.HubConnection;
 import microsoft.aspnet.signalr.client.hubs.HubProxy;
 import microsoft.aspnet.signalr.client.hubs.SubscriptionHandler;
 import microsoft.aspnet.signalr.client.hubs.SubscriptionHandler1;
+import microsoft.aspnet.signalr.client.hubs.SubscriptionHandler2;
 import microsoft.aspnet.signalr.client.transport.LongPollingTransport;
 
 
@@ -54,6 +58,7 @@ public class NotificationService extends Service {
         super.onCreate();
         handler = new Handler();
         realm = Realm.getDefaultInstance();
+
         Log.e("Notification Service", "on create service");
 
     }
@@ -64,7 +69,10 @@ public class NotificationService extends Service {
         mHubConnection.stop();
         realm.close();
         isStarted = false;
+
         Log.e("Notification Service", "on destroy service");
+        Intent intent = new Intent("com.support.robigroup.ututor.starter");
+        sendBroadcast(intent);
 
     }
 
@@ -74,7 +82,8 @@ public class NotificationService extends Service {
             startSignalR();
             isStarted = true;
         }
-        return super.onStartCommand(intent, flags, startId);
+        Log.i("LocalService", "Received start id " + startId + ": " + intent);
+        return START_STICKY;
     }
 
     private void runOnUiThread(Runnable runnable) {
@@ -155,19 +164,19 @@ public class NotificationService extends Service {
                     }
                     , ChatMessage.class);
             mHubProxy.on("ChatCompleted",
-                    new SubscriptionHandler1<ChatLesson>(){
+                    new SubscriptionHandler2<ChatLesson, Boolean>(){
                         @Override
-                        public void run(final ChatLesson lesson) {
+                        public void run(final ChatLesson lesson, final Boolean sura) {
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    Log.e("Notification Service","ChatCompleted");
+                                    Log.e("Notification Service","ChatCompleted " + sura.toString());
                                     notifyChatCompleted(lesson);
                                 }
                             });
                         }
                     }
-                    , ChatLesson.class
+                    , ChatLesson.class, Boolean.class
             );
         }
     }
@@ -189,6 +198,12 @@ public class NotificationService extends Service {
             }
         });
         stopSelf();
+    }
+
+    @Override
+    public void onTaskRemoved(Intent rootIntent) {
+        super.onTaskRemoved(rootIntent);
+        Log.e("Notification Service", "TASK REMOVED");
     }
 
     private void notifyTeacherAccepted(final ChatInformation chatInformation){

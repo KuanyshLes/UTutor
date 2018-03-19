@@ -30,6 +30,11 @@ class MainFragment : BaseFragment(), MainFragmentMvpView {
         return view
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        mPresenter.onDetach()
+    }
+
     override fun openChat() {
         ActivityChat.open(baseActivity)
     }
